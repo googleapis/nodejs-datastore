@@ -37,7 +37,7 @@
     "CONTRIBUTORS",
     "LICENSE"
   ],
-  "repository": "googlecloudplatform/google-cloud-node",
+  "repository": "googleapis/nodejs-datastore",
   "keywords": [
     "google apis client",
     "google api client",
@@ -75,9 +75,7 @@
     "through2": "^2.0.0"
   },
   "scripts": {
-    "publish-module": "node ../../scripts/publish.js datastore",
-    "test": "mocha test/*.js",
-    "system-test": "mocha system-test/*.js --no-timeouts --bail"
+    "generate-scaffolding": "repo-tools generate all && repo-tools generate lib_samples_readme -l samples/ --config ../.cloud-repo-tools.json"
   },
   "license": "Apache-2.0",
   "engines": {
