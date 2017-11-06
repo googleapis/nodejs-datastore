@@ -31,7 +31,7 @@ var entity = module.exports;
 var InvalidKeyError = createErrorClass('InvalidKey', function(opts) {
   var errorMessages = {
     MISSING_KIND: 'A key should contain at least a kind.',
-    MISSING_ANCESTOR_ID: 'Ancestor keys require an id or name.'
+    MISSING_ANCESTOR_ID: 'Ancestor keys require an id or name.',
   };
 
   this.message = errorMessages[opts.code];
@@ -170,9 +170,11 @@ function Key(options) {
   Object.defineProperty(this, 'path', {
     enumerable: true,
     get: function() {
-      return arrify(this.parent && this.parent.path)
-        .concat([this.kind, this.name || this.id]);
-    }
+      return arrify(this.parent && this.parent.path).concat([
+        this.kind,
+        this.name || this.id,
+      ]);
+    },
   });
 }
 
@@ -311,7 +313,7 @@ function encodeValue(value) {
 
     valueProto.timestampValue = {
       seconds: Math.floor(seconds),
-      nanos: value.getMilliseconds() * 1e6
+      nanos: value.getMilliseconds() * 1e6,
     };
 
     return valueProto;
@@ -329,7 +331,7 @@ function encodeValue(value) {
 
   if (is.array(value)) {
     valueProto.arrayValue = {
-      values: value.map(entity.encodeValue)
+      values: value.map(entity.encodeValue),
     };
     return valueProto;
   }
@@ -351,7 +353,7 @@ function encodeValue(value) {
     }
 
     valueProto.entityValue = {
-      properties: value
+      properties: value,
     };
 
     return valueProto;
@@ -441,7 +443,7 @@ function entityToEntityProto(entityObject) {
     properties: Object.keys(properties).reduce(function(encoded, key) {
       encoded[key] = entity.encodeValue(properties[key]);
       return encoded;
-    }, {})
+    }, {}),
   };
 
   if (excludeFromIndexes && excludeFromIndexes.length > 0) {
@@ -569,7 +571,7 @@ entity.isKeyComplete = isKeyComplete;
  */
 function keyFromKeyProto(keyProto) {
   var keyOptions = {
-    path: []
+    path: [],
   };
 
   if (keyProto.partitionId && keyProto.partitionId.namespaceId) {
@@ -589,7 +591,7 @@ function keyFromKeyProto(keyProto) {
       keyOptions.path.push(id);
     } else if (index < keyProto.path.length - 1) {
       throw new InvalidKeyError({
-        code: 'MISSING_ANCESTOR_ID'
+        code: 'MISSING_ANCESTOR_ID',
       });
     }
   });
@@ -619,17 +621,17 @@ entity.keyFromKeyProto = keyFromKeyProto;
 function keyToKeyProto(key) {
   if (is.undefined(key.kind)) {
     throw new InvalidKeyError({
-      code: 'MISSING_KIND'
+      code: 'MISSING_KIND',
     });
   }
 
   var keyProto = {
-    path: []
+    path: [],
   };
 
   if (key.namespace) {
     keyProto.partitionId = {
-      namespaceId: key.namespace
+      namespaceId: key.namespace,
     };
   }
 
@@ -640,12 +642,12 @@ function keyToKeyProto(key) {
     if (numKeysWalked > 0 && is.undefined(key.id) && is.undefined(key.name)) {
       // This isn't just an incomplete key. An ancestor key is incomplete.
       throw new InvalidKeyError({
-        code: 'MISSING_ANCESTOR_ID'
+        code: 'MISSING_ANCESTOR_ID',
       });
     }
 
     var pathElement = {
-      kind: key.kind
+      kind: key.kind,
     };
 
     if (is.defined(key.id)) {
@@ -700,48 +702,48 @@ entity.keyToKeyProto = keyToKeyProto;
  */
 function queryToQueryProto(query) {
   var OP_TO_OPERATOR = {
-    '=':  'EQUAL',
-    '>':  'GREATER_THAN',
+    '=': 'EQUAL',
+    '>': 'GREATER_THAN',
     '>=': 'GREATER_THAN_OR_EQUAL',
-    '<':  'LESS_THAN',
+    '<': 'LESS_THAN',
     '<=': 'LESS_THAN_OR_EQUAL',
-    HAS_ANCESTOR: 'HAS_ANCESTOR'
+    HAS_ANCESTOR: 'HAS_ANCESTOR',
   };
 
   var SIGN_TO_ORDER = {
     '-': 'DESCENDING',
-    '+': 'ASCENDING'
+    '+': 'ASCENDING',
   };
 
   var queryProto = {
     distinctOn: query.groupByVal.map(function(groupBy) {
       return {
-        name: groupBy
+        name: groupBy,
       };
     }),
 
     kind: query.kinds.map(function(kind) {
       return {
-        name: kind
+        name: kind,
       };
     }),
 
     order: query.orders.map(function(order) {
       return {
         property: {
-          name: order.name
+          name: order.name,
         },
-        direction: SIGN_TO_ORDER[order.sign]
+        direction: SIGN_TO_ORDER[order.sign],
       };
     }),
 
     projection: query.selectVal.map(function(select) {
       return {
         property: {
-          name: select
-        }
+          name: select,
+        },
       };
-    })
+    }),
   };
 
   if (query.endVal) {
@@ -750,7 +752,7 @@ function queryToQueryProto(query) {
 
   if (query.limitVal > 0) {
     queryProto.limit = {
-      value: query.limitVal
+      value: query.limitVal,
     };
   }
 
@@ -775,19 +777,19 @@ function queryToQueryProto(query) {
       return {
         propertyFilter: {
           property: {
-            name: filter.name
+            name: filter.name,
           },
           op: OP_TO_OPERATOR[filter.op],
-          value: value
-        }
+          value: value,
+        },
       };
     });
 
     queryProto.filter = {
       compositeFilter: {
         filters: filters,
-        op: 'AND'
-      }
+        op: 'AND',
+      },
     };
   }
 

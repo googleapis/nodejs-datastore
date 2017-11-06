@@ -34,7 +34,7 @@ var fakeUtil = extend({}, util, {
     if (Class.name === 'DatastoreRequest') {
       promisified = true;
     }
-  }
+  },
 });
 
 var overrides = {};
@@ -83,10 +83,10 @@ describe('Request', function() {
   before(function() {
     Request = proxyquire('../src/request.js', {
       '@google-cloud/common': {
-        util: fakeUtil
+        util: fakeUtil,
       },
       './entity.js': entity,
-      './query.js': FakeQuery
+      './query.js': FakeQuery,
     });
 
     override('Request', Request);
@@ -99,7 +99,7 @@ describe('Request', function() {
   beforeEach(function() {
     key = new entity.Key({
       namespace: 'namespace',
-      path: ['Company', 123]
+      path: ['Company', 123],
     });
     FakeQuery.prototype = new Query();
     resetOverrides();
@@ -117,10 +117,10 @@ describe('Request', function() {
       var obj = {
         data: {
           nested: {
-            obj: true
-          }
+            obj: true,
+          },
         },
-        method: 'insert'
+        method: 'insert',
       };
       var expectedPreparedEntityObject = extend(true, {}, obj);
 
@@ -128,17 +128,14 @@ describe('Request', function() {
 
       assert.notStrictEqual(preparedEntityObject, obj);
 
-      assert.notStrictEqual(
-        preparedEntityObject.data.nested,
-        obj.data.nested
-      );
+      assert.notStrictEqual(preparedEntityObject.data.nested, obj.data.nested);
 
       assert.deepEqual(preparedEntityObject, expectedPreparedEntityObject);
     });
 
     it('should format an entity', function() {
       var key = {};
-      var entityObject = { data: true };
+      var entityObject = {data: true};
       entityObject[entity.KEY_SYMBOL] = key;
 
       var preparedEntityObject = Request.prepareEntityObject_(entityObject);
@@ -151,13 +148,11 @@ describe('Request', function() {
   describe('allocateIds', function() {
     var incompleteKey;
     var apiResponse = {
-      keys: [
-        { path: [{ id_type: 'id', kind: 'Kind', id: 123 }] }
-      ]
+      keys: [{path: [{id_type: 'id', kind: 'Kind', id: 123}]}],
     };
 
     beforeEach(function() {
-      incompleteKey = new entity.Key({ namespace: null, path: ['Kind'] });
+      incompleteKey = new entity.Key({namespace: null, path: ['Kind']});
     });
 
     it('should produce proper allocate IDs req protos', function(done) {
@@ -217,7 +212,7 @@ describe('Request', function() {
       request.request_ = function() {};
 
       overrides.util.createLimiter = function(makeRequest) {
-        var transformStream = new stream.Transform({ objectMode: true });
+        var transformStream = new stream.Transform({objectMode: true});
         transformStream.destroy = through.obj().destroy.bind(transformStream);
 
         setImmediate(function() {
@@ -226,7 +221,7 @@ describe('Request', function() {
 
         return {
           makeRequest: makeRequest,
-          stream: transformStream
+          stream: transformStream,
         };
       };
     });
@@ -256,7 +251,7 @@ describe('Request', function() {
 
         return {
           makeRequest: makeRequest,
-          stream: through()
+          stream: through(),
         };
       };
 
@@ -282,9 +277,7 @@ describe('Request', function() {
         done();
       };
 
-      request
-        .createReadStream(key, { consistency: 'strong' })
-        .on('error', done);
+      request.createReadStream(key, {consistency: 'strong'}).on('error', done);
     });
 
     it('should allow setting strong eventual consistency', function(done) {
@@ -294,13 +287,13 @@ describe('Request', function() {
       };
 
       request
-        .createReadStream(key, { consistency: 'eventual' })
+        .createReadStream(key, {consistency: 'eventual'})
         .on('error', done);
     });
 
     describe('error', function() {
       var error = new Error('Error.');
-      var apiResponse = { a: 'b', c: 'd' };
+      var apiResponse = {a: 'b', c: 'd'};
 
       beforeEach(function() {
         request.request_ = function(protoOpts, reqOpts, callback) {
@@ -311,7 +304,8 @@ describe('Request', function() {
       });
 
       it('should emit error', function(done) {
-        request.createReadStream(key)
+        request
+          .createReadStream(key)
           .on('data', util.noop)
           .on('error', function(err) {
             assert.strictEqual(err, error);
@@ -322,14 +316,12 @@ describe('Request', function() {
       it('should end stream', function(done) {
         var stream = request.createReadStream(key);
 
-        stream
-          .on('data', util.noop)
-          .on('error', function() {
-            setImmediate(function() {
-              assert.strictEqual(stream._destroyed, true);
-              done();
-            });
+        stream.on('data', util.noop).on('error', function() {
+          setImmediate(function() {
+            assert.strictEqual(stream._destroyed, true);
+            done();
           });
+        });
       });
     });
 
@@ -340,47 +332,47 @@ describe('Request', function() {
             entity: {
               key: {
                 partitionId: {
-                  projectId: 'grape-spaceship-123'
+                  projectId: 'grape-spaceship-123',
                 },
                 path: [
                   {
                     kind: 'Post',
-                    name: 'post1'
-                  }
-                ]
+                    name: 'post1',
+                  },
+                ],
               },
               properties: {
                 title: {
-                  stringValue: 'How to make the perfect pizza in your grill'
+                  stringValue: 'How to make the perfect pizza in your grill',
                 },
                 tags: {
                   arrayValue: {
                     values: [
                       {
-                        stringValue: 'pizza'
+                        stringValue: 'pizza',
                       },
                       {
-                        stringValue: 'grill'
-                      }
-                    ]
-                  }
+                        stringValue: 'grill',
+                      },
+                    ],
+                  },
                 },
                 rating: {
-                  integerValue: '5'
+                  integerValue: '5',
                 },
                 author: {
-                  stringValue: 'Silvano'
+                  stringValue: 'Silvano',
                 },
                 wordCount: {
-                  integerValue: '400'
+                  integerValue: '400',
                 },
                 isDraft: {
-                  booleanValue: false
-                }
-              }
-            }
-          }
-        ]
+                  booleanValue: false,
+                },
+              },
+            },
+          },
+        ],
       };
 
       var expectedResult = entity.formatArray(apiResponse.found)[0];
@@ -391,7 +383,7 @@ describe('Request', function() {
 
       var apiResponseWithDeferred = extend(true, {}, apiResponse);
       apiResponseWithDeferred.deferred = [
-        apiResponseWithDeferred.found[0].entity.key
+        apiResponseWithDeferred.found[0].entity.key,
       ];
 
       beforeEach(function() {
@@ -402,7 +394,7 @@ describe('Request', function() {
         overrides.util.createLimiter = function(makeRequest) {
           return {
             makeRequest: makeRequest,
-            stream: new stream.Transform({ objectMode: true })
+            stream: new stream.Transform({objectMode: true}),
           };
         };
       });
@@ -446,7 +438,8 @@ describe('Request', function() {
       });
 
       it('should push results to the stream', function(done) {
-        request.createReadStream(key)
+        request
+          .createReadStream(key)
           .on('error', done)
           .on('data', function(entity) {
             assert.deepEqual(entity, expectedResult);
@@ -464,7 +457,8 @@ describe('Request', function() {
           });
         };
 
-        request.createReadStream([key, key])
+        request
+          .createReadStream([key, key])
           .on('data', function() {
             entitiesEmitted++;
             this.end();
@@ -486,7 +480,8 @@ describe('Request', function() {
           });
         };
 
-        request.createReadStream(key)
+        request
+          .createReadStream(key)
           .on('error', done)
           .on('data', function() {
             this.end();
@@ -512,7 +507,7 @@ describe('Request', function() {
     });
 
     it('should return apiResponse in callback', function(done) {
-      var resp = { success: true };
+      var resp = {success: true};
       request.request_ = function(protoOpts, reqOpts, callback) {
         callback(null, resp);
       };
@@ -528,7 +523,7 @@ describe('Request', function() {
         assert.equal(reqOpts.mutations.length, 2);
         callback();
       };
-      request.delete([ key, key ], done);
+      request.delete([key, key], done);
     });
 
     describe('transactions', function() {
@@ -549,10 +544,7 @@ describe('Request', function() {
   describe('get', function() {
     describe('success', function() {
       var keys = [key];
-      var fakeEntities = [
-        { a: 'a' },
-        { b: 'b' }
-      ];
+      var fakeEntities = [{a: 'a'}, {b: 'b'}];
 
       beforeEach(function() {
         request.createReadStream = sinon.spy(function() {
@@ -637,9 +629,9 @@ describe('Request', function() {
   describe('insert', function() {
     it('should prepare entity objects', function(done) {
       var entityObject = {};
-      var preparedEntityObject = { prepared: true };
+      var preparedEntityObject = {prepared: true};
       var expectedEntityObject = extend({}, preparedEntityObject, {
-        method: 'insert'
+        method: 'insert',
       });
 
       overrides.Request.prepareEntityObject_ = function(obj) {
@@ -657,21 +649,23 @@ describe('Request', function() {
 
     it('should pass the correct arguments to save', function(done) {
       request.save = function(entities, callback) {
-        assert.deepEqual(entities, [{
-          key: {
-            namespace: 'ns',
-            kind: 'Company',
-            path: ['Company', undefined],
+        assert.deepEqual(entities, [
+          {
+            key: {
+              namespace: 'ns',
+              kind: 'Company',
+              path: ['Company', undefined],
+            },
+            data: {},
+            method: 'insert',
           },
-          data: {},
-          method: 'insert'
-        }]);
+        ]);
 
         callback();
       };
 
-      var key = new entity.Key({ namespace: 'ns', path: ['Company'] });
-      request.insert({ key: key, data: {} }, done);
+      var key = new entity.Key({namespace: 'ns', path: ['Company']});
+      request.insert({key: key, data: {}}, done);
     });
   });
 
@@ -681,7 +675,7 @@ describe('Request', function() {
       request.request_ = util.noop;
 
       overrides.util.createLimiter = function(makeRequest) {
-        var transformStream = new stream.Transform({ objectMode: true });
+        var transformStream = new stream.Transform({objectMode: true});
         transformStream.destroy = through.obj().destroy.bind(transformStream);
 
         setImmediate(function() {
@@ -690,7 +684,7 @@ describe('Request', function() {
 
         return {
           makeRequest: makeRequest,
-          stream: transformStream
+          stream: transformStream,
         };
       };
     });
@@ -705,7 +699,7 @@ describe('Request', function() {
 
         return {
           makeRequest: makeRequest,
-          stream: through()
+          stream: through(),
         };
       };
 
@@ -733,7 +727,7 @@ describe('Request', function() {
     });
 
     it('should make correct request', function(done) {
-      var query = { namespace: 'namespace' };
+      var query = {namespace: 'namespace'};
       var queryProto = {};
 
       overrides.entity.queryToQueryProto = function() {
@@ -763,7 +757,7 @@ describe('Request', function() {
       };
 
       request
-        .runQueryStream({}, { consistency: 'strong' })
+        .runQueryStream({}, {consistency: 'strong'})
         .on('error', done)
         .emit('reading');
     });
@@ -775,7 +769,7 @@ describe('Request', function() {
       };
 
       request
-        .runQueryStream({}, { consistency: 'eventual' })
+        .runQueryStream({}, {consistency: 'eventual'})
         .on('error', done)
         .emit('reading');
     });
@@ -790,27 +784,26 @@ describe('Request', function() {
       });
 
       it('should emit error on a stream', function(done) {
-        request.runQueryStream({})
-          .on('error', function(err) {
-            assert.strictEqual(err, error);
-            done();
-          });
+        request.runQueryStream({}).on('error', function(err) {
+          assert.strictEqual(err, error);
+          done();
+        });
       });
     });
 
     describe('success', function() {
       var entityResultsPerApiCall = {
-        1: [{ a: true }],
-        2: [{ b: true }, { c: true }]
+        1: [{a: true}],
+        2: [{b: true}, {c: true}],
       };
 
       var apiResponse = {
         batch: {
-          entityResults: [{ a: true }, { b: true }, { c: true }],
+          entityResults: [{a: true}, {b: true}, {c: true}],
           endCursor: new Buffer('abc'),
           moreResults: 'MORE_RESULTS_AFTER_LIMIT',
-          skippedResults: 0
-        }
+          skippedResults: 0,
+        },
       };
 
       beforeEach(function() {
@@ -846,12 +839,12 @@ describe('Request', function() {
       it('should re-run query if not finished', function(done) {
         var query = {
           limitVal: 1,
-          offsetVal: 8
+          offsetVal: 8,
         };
         var queryProto = {
           limit: {
-            value: query.limitVal
-          }
+            value: query.limitVal,
+          },
         };
 
         var timesRequestCalled = 0;
@@ -937,14 +930,15 @@ describe('Request', function() {
             entities.push(entity);
           })
           .on('end', function() {
-            var allResults = [].slice.call(entityResultsPerApiCall[1])
+            var allResults = [].slice
+              .call(entityResultsPerApiCall[1])
               .concat(entityResultsPerApiCall[2]);
 
             assert.deepEqual(entities, allResults);
 
             assert.deepEqual(info, {
               endCursor: apiResponse.batch.endCursor,
-              moreResults: apiResponse.batch.moreResults
+              moreResults: apiResponse.batch.moreResults,
             });
 
             done();
@@ -956,7 +950,7 @@ describe('Request', function() {
         var limitCalled = false;
 
         var query = {
-          limitVal: -1
+          limitVal: -1,
         };
 
         request.request_ = function(protoOpts, reqOpts, callback) {
@@ -967,11 +961,11 @@ describe('Request', function() {
           } else {
             batch = {
               moreResults: 'NOT_FINISHED',
-              endCursor: new Buffer('abc')
+              endCursor: new Buffer('abc'),
             };
           }
 
-          callback(null, { batch: batch });
+          callback(null, {batch: batch});
         };
 
         overrides.entity.queryToQueryProto = function() {
@@ -1014,7 +1008,8 @@ describe('Request', function() {
           }
         };
 
-        request.runQueryStream({})
+        request
+          .runQueryStream({})
           .on('data', function() {
             entitiesEmitted++;
             this.end();
@@ -1033,7 +1028,8 @@ describe('Request', function() {
           callback(null, apiResponse);
         };
 
-        request.runQueryStream({})
+        request
+          .runQueryStream({})
           .on('error', done)
           .on('data', function() {
             this.end();
@@ -1051,10 +1047,7 @@ describe('Request', function() {
 
     describe('success', function() {
       var fakeInfo = {};
-      var fakeEntities = [
-        { a: 'a' },
-        { b: 'b' }
-      ];
+      var fakeEntities = [{a: 'a'}, {b: 'b'}];
 
       beforeEach(function() {
         request.runQueryStream = sinon.spy(function() {
@@ -1139,43 +1132,43 @@ describe('Request', function() {
             upsert: {
               key: {
                 partitionId: {
-                  namespaceId: 'namespace'
+                  namespaceId: 'namespace',
                 },
                 path: [
                   {
                     kind: 'Company',
-                    id: 123
-                  }
-                ]
+                    id: 123,
+                  },
+                ],
               },
               properties: {
                 k: {
-                  stringValue: 'v'
-                }
-              }
-            }
+                  stringValue: 'v',
+                },
+              },
+            },
           },
           {
             upsert: {
               key: {
                 partitionId: {
-                  namespaceId: 'namespace'
+                  namespaceId: 'namespace',
                 },
                 path: [
                   {
                     kind: 'Company',
-                    id: 123
-                  }
-                ]
+                    id: 123,
+                  },
+                ],
               },
               properties: {
                 k: {
-                  stringValue: 'v'
-                }
-              }
-            }
-          }
-        ]
+                  stringValue: 'v',
+                },
+              },
+            },
+          },
+        ],
       };
 
       request.request_ = function(protoOpts, reqOpts, callback) {
@@ -1186,10 +1179,10 @@ describe('Request', function() {
 
         callback();
       };
-      request.save([
-        { key: key, data: { k: 'v' } },
-        { key: key, data: { k: 'v' } }
-      ], done);
+      request.save(
+        [{key: key, data: {k: 'v'}}, {key: key, data: {k: 'v'}}],
+        done
+      );
     });
 
     it('should prepare entity objects', function(done) {
@@ -1202,7 +1195,7 @@ describe('Request', function() {
         return {
           key: key,
           method: 'insert',
-          data: { k: 'v' }
+          data: {k: 'v'},
         };
       };
 
@@ -1222,33 +1215,39 @@ describe('Request', function() {
         assert(is.object(reqOpts.mutations[2].upsert));
 
         var insert = reqOpts.mutations[0].insert;
-        assert.deepEqual(insert.properties.k, { stringValue: 'v' });
+        assert.deepEqual(insert.properties.k, {stringValue: 'v'});
 
         var update = reqOpts.mutations[1].update;
-        assert.deepEqual(update.properties.k2, { stringValue: 'v2' });
+        assert.deepEqual(update.properties.k2, {stringValue: 'v2'});
 
         var upsert = reqOpts.mutations[2].upsert;
-        assert.deepEqual(upsert.properties.k3, { stringValue: 'v3' });
+        assert.deepEqual(upsert.properties.k3, {stringValue: 'v3'});
 
         callback();
       };
 
-      request.save([
-        { key: key, method: 'insert', data: { k: 'v' } },
-        { key: key, method: 'update', data: { k2: 'v2' } },
-        { key: key, method: 'upsert', data: { k3: 'v3' } }
-      ], done);
+      request.save(
+        [
+          {key: key, method: 'insert', data: {k: 'v'}},
+          {key: key, method: 'update', data: {k2: 'v2'}},
+          {key: key, method: 'upsert', data: {k3: 'v3'}},
+        ],
+        done
+      );
     });
 
     it('should throw if a given method is not recognized', function() {
       assert.throws(function() {
-        request.save({
-          key: key,
-          method: 'auto_insert_id',
-          data: {
-            k: 'v'
-          }
-        }, assert.ifError);
+        request.save(
+          {
+            key: key,
+            method: 'auto_insert_id',
+            data: {
+              k: 'v',
+            },
+          },
+          assert.ifError
+        );
       }, /Method auto_insert_id not recognized/);
     });
 
@@ -1261,10 +1260,10 @@ describe('Request', function() {
           data: {
             value: {
               a: 'b',
-              c: [1, 2, 3]
-            }
-          }
-        }
+              c: [1, 2, 3],
+            },
+          },
+        },
       ];
       var expectedEntities = extend(true, {}, entities);
 
@@ -1279,12 +1278,12 @@ describe('Request', function() {
     });
 
     it('should return apiResponse in callback', function(done) {
-      var key = new entity.Key({ namespace: 'ns', path: ['Company'] });
+      var key = new entity.Key({namespace: 'ns', path: ['Company']});
       var mockCommitResponse = {};
       request.request_ = function(protoOpts, reqOpts, callback) {
         callback(null, mockCommitResponse);
       };
-      request.save({ key: key, data: {} }, function(err, apiResponse) {
+      request.save({key: key, data: {}}, function(err, apiResponse) {
         assert.ifError(err);
         assert.strictEqual(mockCommitResponse, apiResponse);
         done();
@@ -1299,16 +1298,19 @@ describe('Request', function() {
         done();
       };
 
-      request.save({
-        key: key,
-        data: [
-          {
-            name: 'name',
-            value: 'value',
-            excludeFromIndexes: true
-          }
-        ]
-      }, assert.ifError);
+      request.save(
+        {
+          key: key,
+          data: [
+            {
+              name: 'name',
+              value: 'value',
+              excludeFromIndexes: true,
+            },
+          ],
+        },
+        assert.ifError
+      );
     });
 
     it('should allow setting the indexed value on arrays', function(done) {
@@ -1322,22 +1324,25 @@ describe('Request', function() {
         done();
       };
 
-      request.save({
-        key: key,
-        data: [
-          {
-            name: 'name',
-            value: ['one', 'two', 'three'],
-            excludeFromIndexes: true
-          }
-        ]
-      }, assert.ifError);
+      request.save(
+        {
+          key: key,
+          data: [
+            {
+              name: 'name',
+              value: ['one', 'two', 'three'],
+              excludeFromIndexes: true,
+            },
+          ],
+        },
+        assert.ifError
+      );
     });
 
     it('should assign ID on keys without them', function(done) {
-      var incompleteKey = new entity.Key({ path: ['Incomplete'] });
-      var incompleteKey2 = new entity.Key({ path: ['Incomplete'] });
-      var completeKey = new entity.Key({ path: ['Complete', 'Key'] });
+      var incompleteKey = new entity.Key({path: ['Incomplete']});
+      var incompleteKey2 = new entity.Key({path: ['Incomplete']});
+      var completeKey = new entity.Key({path: ['Complete', 'Key']});
 
       var keyProtos = [];
       var ids = [1, 2];
@@ -1345,13 +1350,13 @@ describe('Request', function() {
       var response = {
         mutationResults: [
           {
-            key: {}
+            key: {},
           },
           {
-            key: {}
+            key: {},
           },
-          {}
-        ]
+          {},
+        ],
       };
 
       request.request_ = function(protoOpts, reqOpts, callback) {
@@ -1361,26 +1366,29 @@ describe('Request', function() {
       overrides.entity.keyFromKeyProto = function(keyProto) {
         keyProtos.push(keyProto);
         return {
-          id: ids[keyProtos.length - 1]
+          id: ids[keyProtos.length - 1],
         };
       };
 
-      request.save([
-        { key: incompleteKey, data: {} },
-        { key: incompleteKey2, data: {} },
-        { key: completeKey, data: {} }
-      ], function(err) {
-        assert.ifError(err);
+      request.save(
+        [
+          {key: incompleteKey, data: {}},
+          {key: incompleteKey2, data: {}},
+          {key: completeKey, data: {}},
+        ],
+        function(err) {
+          assert.ifError(err);
 
-        assert.strictEqual(incompleteKey.id, ids[0]);
-        assert.strictEqual(incompleteKey2.id, ids[1]);
+          assert.strictEqual(incompleteKey.id, ids[0]);
+          assert.strictEqual(incompleteKey2.id, ids[1]);
 
-        assert.strictEqual(keyProtos.length, 2);
-        assert.strictEqual(keyProtos[0], response.mutationResults[0].key);
-        assert.strictEqual(keyProtos[1], response.mutationResults[1].key);
+          assert.strictEqual(keyProtos.length, 2);
+          assert.strictEqual(keyProtos[0], response.mutationResults[0].key);
+          assert.strictEqual(keyProtos[1], response.mutationResults[1].key);
 
-        done();
-      });
+          done();
+        }
+      );
     });
 
     describe('transactions', function() {
@@ -1394,7 +1402,7 @@ describe('Request', function() {
       it('should queue request & callback', function() {
         request.save({
           key: key,
-          data: [{ name: 'name', value: 'value' }]
+          data: [{name: 'name', value: 'value'}],
         });
 
         assert.equal(typeof request.requestCallbacks_[0], 'function');
@@ -1406,9 +1414,9 @@ describe('Request', function() {
   describe('update', function() {
     it('should prepare entity objects', function(done) {
       var entityObject = {};
-      var preparedEntityObject = { prepared: true };
+      var preparedEntityObject = {prepared: true};
       var expectedEntityObject = extend({}, preparedEntityObject, {
-        method: 'update'
+        method: 'update',
       });
 
       overrides.Request.prepareEntityObject_ = function(obj) {
@@ -1426,30 +1434,32 @@ describe('Request', function() {
 
     it('should pass the correct arguments to save', function(done) {
       request.save = function(entities, callback) {
-        assert.deepEqual(entities, [{
-          key: {
-            namespace: 'ns',
-            kind: 'Company',
-            path: ['Company', undefined],
+        assert.deepEqual(entities, [
+          {
+            key: {
+              namespace: 'ns',
+              kind: 'Company',
+              path: ['Company', undefined],
+            },
+            data: {},
+            method: 'update',
           },
-          data: {},
-          method: 'update'
-        }]);
+        ]);
 
         callback();
       };
 
-      var key = new entity.Key({ namespace: 'ns', path: ['Company'] });
-      request.update({ key: key, data: {} }, done);
+      var key = new entity.Key({namespace: 'ns', path: ['Company']});
+      request.update({key: key, data: {}}, done);
     });
   });
 
   describe('upsert', function() {
     it('should prepare entity objects', function(done) {
       var entityObject = {};
-      var preparedEntityObject = { prepared: true };
+      var preparedEntityObject = {prepared: true};
       var expectedEntityObject = extend({}, preparedEntityObject, {
-        method: 'upsert'
+        method: 'upsert',
       });
 
       overrides.Request.prepareEntityObject_ = function(obj) {
@@ -1467,21 +1477,23 @@ describe('Request', function() {
 
     it('should pass the correct arguments to save', function(done) {
       request.save = function(entities, callback) {
-        assert.deepEqual(entities, [{
-          key: {
-            namespace: 'ns',
-            kind: 'Company',
-            path: ['Company', undefined],
+        assert.deepEqual(entities, [
+          {
+            key: {
+              namespace: 'ns',
+              kind: 'Company',
+              path: ['Company', undefined],
+            },
+            data: {},
+            method: 'upsert',
           },
-          data: {},
-          method: 'upsert'
-        }]);
+        ]);
 
         callback();
       };
 
-      var key = new entity.Key({ namespace: 'ns', path: ['Company'] });
-      request.upsert({ key: key, data: {} }, done);
+      var key = new entity.Key({namespace: 'ns', path: ['Company']});
+      request.upsert({key: key, data: {}}, done);
     });
   });
 
@@ -1524,7 +1536,7 @@ describe('Request', function() {
           done();
         };
 
-        request.request_({ method: 'commit' }, reqOpts, assert.ifError);
+        request.request_({method: 'commit'}, reqOpts, assert.ifError);
       });
     });
 
@@ -1546,7 +1558,7 @@ describe('Request', function() {
         };
 
         request.id = 'transaction-id';
-        request.request_({ method: 'commit' }, reqOpts, assert.ifError);
+        request.request_({method: 'commit'}, reqOpts, assert.ifError);
       });
 
       it('should set the rollback transaction info', function(done) {
@@ -1559,12 +1571,12 @@ describe('Request', function() {
         };
 
         request.id = 'transaction-id';
-        request.request_({ method: 'rollback' }, reqOpts, assert.ifError);
+        request.request_({method: 'rollback'}, reqOpts, assert.ifError);
       });
 
       it('should set the lookup transaction info', function(done) {
         var reqOpts = {
-          readOptions: {}
+          readOptions: {},
         };
 
         request.request = function(protoOpts, reqOpts_) {
@@ -1575,12 +1587,12 @@ describe('Request', function() {
         };
 
         request.id = 'transaction-id';
-        request.request_({ method: 'lookup' }, reqOpts, assert.ifError);
+        request.request_({method: 'lookup'}, reqOpts, assert.ifError);
       });
 
       it('should set the lookup transaction info', function(done) {
         var reqOpts = {
-          readOptions: {}
+          readOptions: {},
         };
 
         request.request = function(protoOpts, reqOpts_) {
@@ -1591,20 +1603,20 @@ describe('Request', function() {
         };
 
         request.id = 'transaction-id';
-        request.request_({ method: 'runQuery' }, reqOpts, assert.ifError);
+        request.request_({method: 'runQuery'}, reqOpts, assert.ifError);
       });
 
       it('should throw if read consistency is specified', function() {
         var reqOpts = {
           readOptions: {
-            readConsistency: 1
-          }
+            readConsistency: 1,
+          },
         };
 
         request.id = 'transaction-id';
 
         assert.throws(function() {
-          request.request_({ method: 'runQuery' }, reqOpts, assert.ifError);
+          request.request_({method: 'runQuery'}, reqOpts, assert.ifError);
         }, /Read consistency cannot be specified in a transaction\./);
       });
     });

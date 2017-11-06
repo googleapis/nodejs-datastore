@@ -111,7 +111,7 @@ Query.prototype.filter = function(property, operator, value) {
   this.filters.push({
     name: property.trim(),
     op: operator.trim(),
-    val: value
+    val: value,
   });
   return this;
 };
@@ -128,7 +128,7 @@ Query.prototype.filter = function(property, operator, value) {
  * var ancestoryQuery = query.hasAncestor(datastore.key(['Parent', 123]));
  */
 Query.prototype.hasAncestor = function(key) {
-  this.filters.push({ name: '__key__', op: 'HAS_ANCESTOR', val: key });
+  this.filters.push({name: '__key__', op: 'HAS_ANCESTOR', val: key});
   return this;
 };
 
@@ -156,7 +156,7 @@ Query.prototype.hasAncestor = function(key) {
 Query.prototype.order = function(property, options) {
   var sign = options && options.descending ? '-' : '+';
 
-  this.orders.push({ name: property, sign: sign });
+  this.orders.push({name: property, sign: sign});
   return this;
 };
 

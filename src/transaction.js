@@ -125,11 +125,9 @@ Transaction.prototype.commit = function(callback) {
   var keys = {};
 
   this.modifiedEntities_
-
     // Reverse the order of the queue to respect the "last queued request wins"
     // behavior.
     .reverse()
-
     // Limit the operations we're going to send through to only the most
     // recently queued operations. E.g., if a user tries to save with the same
     // key they just asked to be deleted, the delete request will be ignored,
@@ -148,14 +146,12 @@ Transaction.prototype.commit = function(callback) {
         return true;
       }
     })
-
     // Group entities together by method: `save` mutations, then `delete`. Note:
     // `save` mutations being first is required to maintain order when assigning
     // IDs to incomplete keys.
     .sort(function(a, b) {
       return a.method < b.method ? 1 : a.method > b.method ? -1 : 0;
     })
-
     // Group arguments together so that we only make one call to each method.
     // This is important for `DatastoreRequest.save`, especially, as that method
     // handles assigning auto-generated IDs to the original keys passed in. When
@@ -163,8 +159,8 @@ Transaction.prototype.commit = function(callback) {
     // keys together is necessary to maintain order.
     .reduce(function(acc, entityObject) {
       var lastEntityObject = acc[acc.length - 1];
-      var sameMethod = lastEntityObject &&
-        entityObject.method === lastEntityObject.method;
+      var sameMethod =
+        lastEntityObject && entityObject.method === lastEntityObject.method;
 
       if (!lastEntityObject || !sameMethod) {
         acc.push(entityObject);
@@ -174,7 +170,6 @@ Transaction.prototype.commit = function(callback) {
 
       return acc;
     }, [])
-
     // Call each of the mutational methods (DatastoreRequest[save,delete]) to
     // build up a `req` array on this instance. This will also build up a
     // `callbacks` array, that is the same callback that would run if we were
@@ -189,13 +184,13 @@ Transaction.prototype.commit = function(callback) {
 
   var protoOpts = {
     service: 'Datastore',
-    method: 'commit'
+    method: 'commit',
   };
 
   // Take the `req` array built previously, and merge them into one request to
   // send as the final transactional commit.
   var reqOpts = {
-    mutations: flatten(this.requests_.map(prop('mutations')))
+    mutations: flatten(this.requests_.map(prop('mutations'))),
   };
 
   this.request_(protoOpts, reqOpts, function(err, resp) {
@@ -293,10 +288,10 @@ Transaction.prototype.delete = function(entities) {
   arrify(entities).forEach(function(ent) {
     self.modifiedEntities_.push({
       entity: {
-        key: ent
+        key: ent,
       },
       method: 'delete',
-      args: [ent]
+      args: [ent],
     });
   });
 };
@@ -335,7 +330,7 @@ Transaction.prototype.rollback = function(callback) {
 
   var protoOpts = {
     service: 'Datastore',
-    method: 'rollback'
+    method: 'rollback',
   };
 
   this.request_(protoOpts, function(err, resp) {
@@ -392,7 +387,7 @@ Transaction.prototype.run = function(callback) {
 
   var protoOpts = {
     service: 'Datastore',
-    method: 'beginTransaction'
+    method: 'beginTransaction',
   };
 
   this.request_(protoOpts, function(err, resp) {
@@ -534,10 +529,10 @@ Transaction.prototype.save = function(entities) {
   arrify(entities).forEach(function(ent) {
     self.modifiedEntities_.push({
       entity: {
-        key: ent.key
+        key: ent.key,
       },
       method: 'save',
-      args: [ent]
+      args: [ent],
     });
   });
 };
@@ -548,7 +543,7 @@ Transaction.prototype.save = function(entities) {
  * that a callback is omitted.
  */
 common.util.promisifyAll(Transaction, {
-  exclude: ['createQuery', 'delete', 'save']
+  exclude: ['createQuery', 'delete', 'save'],
 });
 
 module.exports = Transaction;

@@ -47,7 +47,7 @@ var fakeEntity = {
   },
   isDsKey: function() {
     this.calledWith_ = arguments;
-  }
+  },
 };
 
 var fakeUtil = extend({}, util);
@@ -79,28 +79,28 @@ describe('Datastore', function() {
     credentials: {},
     keyFilename: 'key/file',
     email: 'email',
-    namespace: NAMESPACE
+    namespace: NAMESPACE,
   };
 
   before(function() {
     Datastore = proxyquire('../', {
       '@google-cloud/common': {
-        util: fakeUtil
+        util: fakeUtil,
       },
       '@google-cloud/common-grpc': {
-        Service: FakeGrpcService
+        Service: FakeGrpcService,
       },
       './entity.js': fakeEntity,
       './query.js': FakeQuery,
       './transaction.js': FakeTransaction,
-      './v1': FakeV1
+      './v1': FakeV1,
     });
   });
 
   beforeEach(function() {
     datastore = new Datastore({
       projectId: PROJECT_ID,
-      namespace: NAMESPACE
+      namespace: NAMESPACE,
     });
   });
 
@@ -180,16 +180,16 @@ describe('Datastore', function() {
       assert.deepStrictEqual(calledWith.protoServices, {
         Datastore: {
           path: 'google/datastore/v1/datastore.proto',
-          service: 'datastore.v1'
-        }
+          service: 'datastore.v1',
+        },
       });
 
       assert.deepEqual(calledWith.scopes, [
-        'https://www.googleapis.com/auth/datastore'
+        'https://www.googleapis.com/auth/datastore',
       ]);
       assert.deepEqual(calledWith.packageJson, require('../package.json'));
       assert.deepEqual(calledWith.grpcMetadata, {
-        'google-cloud-resource-prefix': 'projects/' + datastore.projectId
+        'google-cloud-resource-prefix': 'projects/' + datastore.projectId,
       });
     });
   });
@@ -220,7 +220,7 @@ describe('Datastore', function() {
 
   describe('geoPoint', function() {
     it('should expose GeoPoint builder', function() {
-      var aGeoPoint = { latitude: 24, longitude: 88 };
+      var aGeoPoint = {latitude: 24, longitude: 88};
       var geoPoint = Datastore.geoPoint(aGeoPoint);
       assert.strictEqual(geoPoint.value, aGeoPoint);
     });
@@ -425,7 +425,7 @@ describe('Datastore', function() {
     });
 
     it('should not set customEndpoint_ when using default baseurl', function() {
-      var datastore = new Datastore({ projectId: PROJECT_ID });
+      var datastore = new Datastore({projectId: PROJECT_ID});
       datastore.determineBaseUrl_();
       assert.strictEqual(datastore.customEndpoint_, undefined);
     });

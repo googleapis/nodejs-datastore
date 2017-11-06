@@ -32,12 +32,12 @@ var fakeUtil = extend({}, util, {
 
     promisified = true;
     assert.deepEqual(options.exclude, ['createQuery', 'delete', 'save']);
-  }
+  },
 });
 
 var DatastoreRequestOverride = {
   delete: util.noop,
-  save: util.noop
+  save: util.noop,
 };
 
 var FakeDatastoreRequest = {
@@ -54,8 +54,8 @@ var FakeDatastoreRequest = {
       var results = DatastoreRequestOverride.save.apply(null, args);
       DatastoreRequestOverride.save = util.noop;
       return results;
-    }
-  }
+    },
+  },
 };
 
 describe('Transaction', function() {
@@ -68,19 +68,19 @@ describe('Transaction', function() {
   var DATASTORE = {
     request: function() {},
     projectId: PROJECT_ID,
-    namespace: NAMESPACE
+    namespace: NAMESPACE,
   };
 
   function key(path) {
-    return new entity.Key({ path: arrify(path) });
+    return new entity.Key({path: arrify(path)});
   }
 
   before(function() {
     Transaction = proxyquire('../src/transaction.js', {
       '@google-cloud/common': {
-        util: fakeUtil
+        util: fakeUtil,
       },
-      './request.js': FakeDatastoreRequest
+      './request.js': FakeDatastoreRequest,
     });
   });
 
@@ -119,8 +119,8 @@ describe('Transaction', function() {
             });
 
             return fakeDataset.request;
-          }
-        }
+          },
+        },
       };
 
       transaction = new Transaction(fakeDataset);
@@ -184,7 +184,7 @@ describe('Transaction', function() {
     });
 
     it('should pass apiResponse to callback', function(done) {
-      var resp = { success: true };
+      var resp = {success: true};
       transaction.request_ = function(protoOpts, reqOpts, callback) {
         callback = callback || reqOpts;
         callback(null, resp);
@@ -200,8 +200,8 @@ describe('Transaction', function() {
       var deleteArg1 = key(['Product', 123]);
       var deleteArg2 = key(['Product', 234]);
 
-      var saveArg1 = { key: key(['Product', 345]), data: '' };
-      var saveArg2 = { key: key(['Product', 456]), data: '' };
+      var saveArg1 = {key: key(['Product', 345]), data: ''};
+      var saveArg2 = {key: key(['Product', 456]), data: ''};
 
       // Queue saves & deletes in varying order.
       transaction.delete(deleteArg1);
@@ -233,16 +233,13 @@ describe('Transaction', function() {
       assert.equal(args.length, 2);
 
       // Save arguments must come first.
-      assert.deepEqual(args, [
-        [saveArg1, saveArg2],
-        [deleteArg1, deleteArg2]
-      ]);
+      assert.deepEqual(args, [[saveArg1, saveArg2], [deleteArg1, deleteArg2]]);
     });
 
     it('should honor ordering of mutations (last wins)', function() {
       // The delete should be ignored.
       transaction.delete(key(['Product', 123]));
-      transaction.save({ key: key(['Product', 123]), data: '' });
+      transaction.save({key: key(['Product', 123]), data: ''});
 
       var deleteCalled = 0;
       DatastoreRequestOverride.delete = function() {
@@ -262,8 +259,8 @@ describe('Transaction', function() {
     });
 
     it('should not squash key-incomplete mutations', function(done) {
-      transaction.save({ key: key(['Product']), data: '' });
-      transaction.save({ key: key(['Product']), data: '' });
+      transaction.save({key: key(['Product']), data: ''});
+      transaction.save({key: key(['Product']), data: ''});
 
       DatastoreRequestOverride.save = function(entities) {
         assert.strictEqual(entities.length, 2);
@@ -278,27 +275,16 @@ describe('Transaction', function() {
     it('should send the built request object', function(done) {
       transaction.requests_ = [
         {
-          mutations: [
-            { a: 'b' },
-            { c: 'd' }
-          ]
+          mutations: [{a: 'b'}, {c: 'd'}],
         },
         {
-          mutations: [
-            { e: 'f' },
-            { g: 'h' }
-          ]
-        }
+          mutations: [{e: 'f'}, {g: 'h'}],
+        },
       ];
 
       transaction.request_ = function(protoOpts, reqOpts) {
         assert.deepEqual(reqOpts, {
-          mutations: [
-            { a: 'b' },
-            { c: 'd' },
-            { e: 'f' },
-            { g: 'h' }
-          ]
+          mutations: [{a: 'b'}, {c: 'd'}, {e: 'f'}, {g: 'h'}],
         });
         done();
       };
@@ -311,8 +297,12 @@ describe('Transaction', function() {
       var cb2Called = false;
 
       transaction.requestCallbacks_ = [
-        function() { cb1Called = true; },
-        function() { cb2Called = true; }
+        function() {
+          cb1Called = true;
+        },
+        function() {
+          cb2Called = true;
+        },
       ];
 
       transaction.request_ = function(protoOpts, reqOpts, cb) {
@@ -350,7 +340,7 @@ describe('Transaction', function() {
       var keys = [
         key('Product', 123),
         key('Product', 234),
-        key('Product', 345)
+        key('Product', 345),
       ];
 
       transaction.delete(keys);
@@ -392,7 +382,7 @@ describe('Transaction', function() {
     });
 
     it('should pass apiResponse to callback', function(done) {
-      var resp = { success: true };
+      var resp = {success: true};
       transaction.request_ = function(protoOpts, reqOpts, callback) {
         callback = callback || reqOpts;
         callback(null, resp);
@@ -432,7 +422,7 @@ describe('Transaction', function() {
       transaction.request_ = function(protoOpts) {
         assert.deepEqual(protoOpts, {
           service: 'Datastore',
-          method: 'beginTransaction'
+          method: 'beginTransaction',
         });
 
         done();
@@ -463,7 +453,7 @@ describe('Transaction', function() {
 
     describe('success', function() {
       var apiResponse = {
-        transaction: TRANSACTION_ID
+        transaction: TRANSACTION_ID,
       };
 
       beforeEach(function() {
@@ -496,9 +486,9 @@ describe('Transaction', function() {
   describe('save', function() {
     it('should push entities into a queue', function() {
       var entities = [
-        { key: key('Product', 123), data: 123 },
-        { key: key('Product', 234), data: 234 },
-        { key: key('Product', 345), data: 345 }
+        {key: key('Product', 123), data: 123},
+        {key: key('Product', 234), data: 234},
+        {key: key('Product', 345), data: 345},
       ];
 
       transaction.save(entities);

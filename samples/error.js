@@ -18,20 +18,21 @@
 const Datastore = require('@google-cloud/datastore');
 
 // [START error]
-function runQuery () {
+function runQuery() {
   // Instantiates a client
   const datastore = Datastore();
 
   const query = datastore.createQuery(['Company']).start('badrequest');
 
-  return datastore.runQuery(query)
-    .then((results) => {
+  return datastore
+    .runQuery(query)
+    .then(results => {
       const entities = results[0];
       console.log('Entities:');
-      entities.forEach((entity) => console.log(entity));
+      entities.forEach(entity => console.log(entity));
       return entities;
     })
-    .catch((err) => {
+    .catch(err => {
       console.log(err.errors); // [...]
       console.log(err.code); // 400
       console.log(err.message); // "Bad Request"

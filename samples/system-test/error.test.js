@@ -22,7 +22,7 @@ const tools = require(`@google-cloud/nodejs-repo-tools`);
 test.beforeEach(tools.stubConsole);
 test.afterEach.always(tools.restoreConsole);
 
-test(`should have an error`, async (t) => {
+test(`should have an error`, async t => {
   const err = await t.throws(error.runQuery());
   t.truthy(err);
   t.is(err.code, 400);

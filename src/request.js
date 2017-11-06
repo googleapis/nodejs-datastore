@@ -48,7 +48,7 @@ var Query = require('./query.js');
  */
 var CONSISTENCY_PROTO_CODE = {
   eventual: 2,
-  strong: 1
+  strong: 1,
 };
 
 /*! Developer Documentation
@@ -96,7 +96,7 @@ DatastoreRequest.prepareEntityObject_ = function(obj) {
   if (obj[entity.KEY_SYMBOL]) {
     return {
       key: obj[entity.KEY_SYMBOL],
-      data: entityObject
+      data: entityObject,
     };
   }
 
@@ -180,11 +180,11 @@ DatastoreRequest.prototype.allocateIds = function(incompleteKey, n, callback) {
 
   var protoOpts = {
     service: 'Datastore',
-    method: 'allocateIds'
+    method: 'allocateIds',
   };
 
   var reqOpts = {
-    keys: incompleteKeys
+    keys: incompleteKeys,
   };
 
   this.request_(protoOpts, reqOpts, function(err, resp) {
@@ -244,18 +244,18 @@ DatastoreRequest.prototype.createReadStream = function(keys, options) {
   function makeRequest(keys) {
     var protoOpts = {
       service: 'Datastore',
-      method: 'lookup'
+      method: 'lookup',
     };
 
     var reqOpts = {
-      keys: keys
+      keys: keys,
     };
 
     if (options.consistency) {
       var code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
 
       reqOpts.readOptions = {
-        readConsistency: code
+        readConsistency: code,
       };
     }
 
@@ -339,15 +339,15 @@ DatastoreRequest.prototype.delete = function(keys, callback) {
 
   var protoOpts = {
     service: 'Datastore',
-    method: 'commit'
+    method: 'commit',
   };
 
   var reqOpts = {
     mutations: arrify(keys).map(function(key) {
       return {
-        delete: entity.keyToKeyProto(key)
+        delete: entity.keyToKeyProto(key),
       };
-    })
+    }),
   };
 
   if (this.id) {
@@ -452,10 +452,12 @@ DatastoreRequest.prototype.get = function(keys, options, callback) {
 
   this.createReadStream(keys, options)
     .on('error', callback)
-    .pipe(concat(function(results) {
-      var isSingleLookup = !is.array(keys);
-      callback(null, isSingleLookup ? results[0] : results);
-    }));
+    .pipe(
+      concat(function(results) {
+        var isSingleLookup = !is.array(keys);
+        callback(null, isSingleLookup ? results[0] : results);
+      })
+    );
 };
 
 /**
@@ -584,9 +586,11 @@ DatastoreRequest.prototype.runQuery = function(query, options, callback) {
     .on('info', function(info_) {
       info = info_;
     })
-    .pipe(concat(function(results) {
-      callback(null, results, info);
-    }));
+    .pipe(
+      concat(function(results) {
+        callback(null, results, info);
+      })
+    );
 };
 
 /**
@@ -635,23 +639,23 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
   function makeRequest(query) {
     var protoOpts = {
       service: 'Datastore',
-      method: 'runQuery'
+      method: 'runQuery',
     };
 
     var reqOpts = {
-      query: entity.queryToQueryProto(query)
+      query: entity.queryToQueryProto(query),
     };
 
     if (options.consistency) {
       var code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
       reqOpts.readOptions = {
-        readConsistency: code
+        readConsistency: code,
       };
     }
 
     if (query.namespace) {
       reqOpts.partitionId = {
-        namespaceId: query.namespace
+        namespaceId: query.namespace,
       };
     }
 
@@ -665,7 +669,7 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
     }
 
     var info = {
-      moreResults: resp.batch.moreResults
+      moreResults: resp.batch.moreResults,
     };
 
     if (resp.batch.endCursor) {
@@ -693,9 +697,7 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
       // The query is "NOT_FINISHED". Get the rest of the results.
       var offset = query.offsetVal === -1 ? 0 : query.offsetVal;
 
-      query
-        .start(info.endCursor)
-        .offset(offset - resp.batch.skippedResults);
+      query.start(info.endCursor).offset(offset - resp.batch.skippedResults);
 
       var limit = query.limitVal;
       if (limit && limit > -1) {
@@ -918,7 +920,7 @@ DatastoreRequest.prototype.save = function(entities, callback) {
   var methods = {
     insert: true,
     update: true,
-    upsert: true
+    upsert: true,
   };
 
   // Iterate over the entity objects, build a proto from all keys and values,
@@ -976,11 +978,11 @@ DatastoreRequest.prototype.save = function(entities, callback) {
 
   var protoOpts = {
     service: 'Datastore',
-    method: 'commit'
+    method: 'commit',
   };
 
   var reqOpts = {
-    mutations: mutations
+    mutations: mutations,
   };
 
   function onCommit(err, resp) {
@@ -1099,7 +1101,7 @@ DatastoreRequest.prototype.request_ = function(protoOpts, reqOpts, callback) {
     }
 
     reqOpts.readOptions = {
-      transaction: this.id
+      transaction: this.id,
     };
   }
 

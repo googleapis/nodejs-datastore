@@ -296,7 +296,7 @@ var Transaction = require('./transaction.js');
 function Datastore(options) {
   if (!(this instanceof Datastore)) {
     options = common.util.normalizeArguments(this, options, {
-      projectIdRequired: false
+      projectIdRequired: false,
     });
     return new Datastore(options);
   }
@@ -315,14 +315,14 @@ function Datastore(options) {
     protoServices: {
       Datastore: {
         path: 'google/datastore/v1/datastore.proto',
-        service: 'datastore.v1'
-      }
+        service: 'datastore.v1',
+      },
     },
     scopes: ['https://www.googleapis.com/auth/datastore'],
     packageJson: require('../package.json'),
     grpcMetadata: {
-      'google-cloud-resource-prefix': 'projects/' + this.projectId
-    }
+      'google-cloud-resource-prefix': 'projects/' + this.projectId,
+    },
   };
 
   commonGrpc.Service.call(this, config, options);
@@ -450,8 +450,8 @@ Datastore.prototype.KEY = Datastore.KEY = entity.KEY_SYMBOL;
  *
  * @type {string}
  */
-Datastore.prototype.MORE_RESULTS_AFTER_CURSOR =
-Datastore.MORE_RESULTS_AFTER_CURSOR = 'MORE_RESULTS_AFTER_CURSOR';
+Datastore.prototype.MORE_RESULTS_AFTER_CURSOR = Datastore.MORE_RESULTS_AFTER_CURSOR =
+  'MORE_RESULTS_AFTER_CURSOR';
 
 /**
  * This is one of three values which may be returned from
@@ -462,8 +462,8 @@ Datastore.MORE_RESULTS_AFTER_CURSOR = 'MORE_RESULTS_AFTER_CURSOR';
  *
  * @type {string}
  */
-Datastore.prototype.MORE_RESULTS_AFTER_LIMIT =
-Datastore.MORE_RESULTS_AFTER_LIMIT = 'MORE_RESULTS_AFTER_LIMIT';
+Datastore.prototype.MORE_RESULTS_AFTER_LIMIT = Datastore.MORE_RESULTS_AFTER_LIMIT =
+  'MORE_RESULTS_AFTER_LIMIT';
 
 /**
  * This is one of three values which may be returned from
@@ -474,8 +474,8 @@ Datastore.MORE_RESULTS_AFTER_LIMIT = 'MORE_RESULTS_AFTER_LIMIT';
  *
  * @type {string}
  */
-Datastore.prototype.NO_MORE_RESULTS =
-Datastore.NO_MORE_RESULTS = 'NO_MORE_RESULTS';
+Datastore.prototype.NO_MORE_RESULTS = Datastore.NO_MORE_RESULTS =
+  'NO_MORE_RESULTS';
 
 /**
  * Create a query for the specified kind. See {module:datastore/query} for all
@@ -548,10 +548,12 @@ Datastore.prototype.createQuery = function(namespace, kind) {
  * });
  */
 Datastore.prototype.key = function(options) {
-  options = is.object(options) ? options : {
-    namespace: this.namespace,
-    path: arrify(options)
-  };
+  options = is.object(options)
+    ? options
+    : {
+        namespace: this.namespace,
+        path: arrify(options),
+      };
 
   return new entity.Key(options);
 };
