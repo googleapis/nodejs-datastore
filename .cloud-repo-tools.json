@@ -2,6 +2,8 @@
   "requiresKeyFile": true,
   "requiresProjectId": true,
   "product": "datastore",
+  "client_reference_url": "https://cloud.google.com/nodejs/docs/reference/datastore/latest/",
+  "release_quality": "ga",
   "samples": [
     {
       "id": "tasks",
