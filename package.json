@@ -1,34 +1,13 @@
 {
   "name": "@google-cloud/datastore",
-  "version": "1.1.0",
-  "author": "Google Inc.",
   "description": "Cloud Datastore Client Library for Node.js",
-  "contributors": [
-    {
-      "name": "Burcu Dogan",
-      "email": "jbd@google.com"
-    },
-    {
-      "name": "Johan Euphrosine",
-      "email": "proppy@google.com"
-    },
-    {
-      "name": "Patrick Costello",
-      "email": "pcostell@google.com"
-    },
-    {
-      "name": "Ryan Seys",
-      "email": "ryan@ryanseys.com"
-    },
-    {
-      "name": "Silvano Luciani",
-      "email": "silvano@google.com"
-    },
-    {
-      "name": "Stephen Sawchuk",
-      "email": "sawchuk@gmail.com"
-    }
-  ],
+  "version": "1.1.0",
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "repository": "googleapis/nodejs-datastore",
   "main": "./src/index.js",
   "files": [
     "protos",
@@ -37,7 +16,6 @@
     "CONTRIBUTORS",
     "LICENSE"
   ],
-  "repository": "googleapis/nodejs-datastore",
   "keywords": [
     "google apis client",
     "google api client",
@@ -50,6 +28,30 @@
     "google datastore",
     "datastore"
   ],
+  "contributors": [
+    "Ace Nassri <anassri@google.com>",
+    "Ali Ijaz Sheikh <ofrobots@google.com>",
+    "Dave Gramlich <callmehiphop@gmail.com>",
+    "Eric Uldall <ericuldall@gmail.com>",
+    "Geoffrey Gowan <geoffrey.gowan@gmail.com>",
+    "Jason Dobry <jason.dobry@gmail.com>",
+    "Jason Dobry <jmdobry@users.noreply.github.com>",
+    "Jun Mukai <jun.mukai@gmail.com>",
+    "Luke Sneeringer <lukesneeringer@google.com>",
+    "Patrick Costello <pcostello@google.com>",
+    "Philip Irri <philip@irri.se>",
+    "Song Wang <songwang@google.com>",
+    "Stephen <stephenplusplus@users.noreply.github.com>",
+    "Stephen Sawchuk <sawchuk@gmail.com>",
+    "Stephen Sawchuk <stephenplusplus@users.noreply.github.com>",
+    "Tim Swast <swast@google.com>",
+    "Walter Poupore <WalterHub@users.noreply.github.com>",
+    "antoine beauᵛᵃᴵˢ⁻lacᵃˢˢᵉ <beaulac@users.noreply.github.com>",
+    "tcrognon <tcrognon@gmail.com>"
+  ],
+  "scripts": {
+    "generate-scaffolding": "repo-tools generate all && repo-tools generate lib_samples_readme -l samples/ --config ../.cloud-repo-tools.json"
+  },
   "dependencies": {
     "@google-cloud/common": "^0.13.0",
     "@google-cloud/common-grpc": "^0.4.0",
@@ -74,12 +76,5 @@
     "proxyquire": "^1.7.10",
     "sinon": "^1.17.6",
     "through2": "^2.0.0"
-  },
-  "scripts": {
-    "generate-scaffolding": "repo-tools generate all && repo-tools generate lib_samples_readme -l samples/ --config ../.cloud-repo-tools.json"
-  },
-  "license": "Apache-2.0",
-  "engines": {
-    "node": ">=4.0.0"
   }
 }
