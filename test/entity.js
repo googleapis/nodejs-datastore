@@ -17,6 +17,7 @@
 'use strict';
 
 var assert = require('assert');
+var Buffer = require('safe-buffer').Buffer;
 var deepStrictEqual = require('deep-strict-equal');
 assert.deepStrictEqual =
   assert.deepStrictEqual ||
@@ -182,7 +183,7 @@ describe('entity', function() {
       var expectedValue = [{}];
 
       var valueProto = {
-        value_type: 'arrayValue',
+        valueType: 'arrayValue',
         arrayValue: {
           values: expectedValue,
         },
@@ -208,7 +209,7 @@ describe('entity', function() {
       var expectedValue = new Buffer('Hi');
 
       var valueProto = {
-        value_type: 'blobValue',
+        valueType: 'blobValue',
         blobValue: expectedValue.toString('base64'),
       };
 
@@ -219,7 +220,7 @@ describe('entity', function() {
       var expectedValue = null;
 
       var valueProto = {
-        value_type: 'nullValue',
+        valueType: 'nullValue',
         nullValue: 0,
       };
 
@@ -231,7 +232,7 @@ describe('entity', function() {
       var expectedValue = 8.3;
 
       var valueProto = {
-        value_type: 'doubleValue',
+        valueType: 'doubleValue',
         doubleValue: expectedValue,
       };
 
@@ -242,7 +243,7 @@ describe('entity', function() {
       var expectedValue = 8;
 
       var valueProto = {
-        value_type: 'integerValue',
+        valueType: 'integerValue',
         integerValue: expectedValue,
       };
 
@@ -253,7 +254,7 @@ describe('entity', function() {
       var expectedValue = {};
 
       var valueProto = {
-        value_type: 'entityValue',
+        valueType: 'entityValue',
         entityValue: expectedValue,
       };
 
@@ -269,7 +270,7 @@ describe('entity', function() {
       var expectedValue = {};
 
       var valueProto = {
-        value_type: 'keyValue',
+        valueType: 'keyValue',
         keyValue: expectedValue,
       };
 
@@ -290,7 +291,7 @@ describe('entity', function() {
       var expectedValue = new Date(seconds * 1000 + ms);
 
       var valueProto = {
-        value_type: 'timestampValue',
+        valueType: 'timestampValue',
         timestampValue: {
           seconds: seconds,
           nanos: ms * 1e6,
@@ -304,7 +305,7 @@ describe('entity', function() {
       var expectedValue = false;
 
       var valueProto = {
-        value_type: 'booleanValue',
+        valueType: 'booleanValue',
         booleanValue: expectedValue,
       };
 
@@ -544,7 +545,7 @@ describe('entity', function() {
       var entityProto = {
         properties: {
           name: {
-            value_type: 'stringValue',
+            valueType: 'stringValue',
             stringValue: expectedEntity.name,
           },
         },
@@ -816,12 +817,12 @@ describe('entity', function() {
       },
       path: [
         {
-          id_type: 'id',
+          idType: 'id',
           kind: 'Kind',
           id: '111',
         },
         {
-          id_type: 'name',
+          idType: 'name',
           kind: 'Kind2',
           name: 'name',
         },

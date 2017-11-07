@@ -18,43 +18,44 @@
 
 var assert = require('assert');
 var extend = require('extend');
-var path = require('path');
 var proxyquire = require('proxyquire');
 var util = require('@google-cloud/common').util;
+
+var v1 = require('../src/v1/index.js');
 
 var fakeEntity = {
   KEY_SYMBOL: Symbol('fake key symbol'),
   Int: function(value) {
     this.value = value;
   },
-  isDsInt: function() {
-    this.calledWith_ = arguments;
-  },
   Double: function(value) {
     this.value = value;
-  },
-  isDsDouble: function() {
-    this.calledWith_ = arguments;
   },
   GeoPoint: function(value) {
     this.value = value;
   },
-  isDsGeoPoint: function() {
-    this.calledWith_ = arguments;
-  },
   Key: function() {
-    this.calledWith_ = arguments;
-  },
-  isDsKey: function() {
     this.calledWith_ = arguments;
   },
 };
 
 var fakeUtil = extend({}, util);
 
-function FakeGrpcService() {
-  this.calledWith_ = arguments;
+var googleAutoAuthOverride;
+function fakeGoogleAutoAuth() {
+  return (googleAutoAuthOverride || util.noop).apply(null, arguments);
 }
+
+var createInsecureOverride;
+var fakeGoogleGax = {
+  grpc: {
+    credentials: {
+      createInsecure: function() {
+        return (createInsecureOverride || util.noop).apply(null, arguments);
+      },
+    },
+  },
+};
 
 function FakeQuery() {
   this.calledWith_ = arguments;
@@ -87,21 +88,28 @@ describe('Datastore', function() {
       '@google-cloud/common': {
         util: fakeUtil,
       },
-      '@google-cloud/common-grpc': {
-        Service: FakeGrpcService,
-      },
       './entity.js': fakeEntity,
       './query.js': FakeQuery,
       './transaction.js': FakeTransaction,
       './v1': FakeV1,
+      'google-auto-auth': fakeGoogleAutoAuth,
+      'google-gax': fakeGoogleGax,
     });
   });
 
   beforeEach(function() {
+    createInsecureOverride = null;
+    googleAutoAuthOverride = null;
+
     datastore = new Datastore({
       projectId: PROJECT_ID,
       namespace: NAMESPACE,
     });
+  });
+
+  after(function() {
+    createInsecureOverride = null;
+    googleAutoAuthOverride = null;
   });
 
   it('should export GAX client', function() {
@@ -128,6 +136,40 @@ describe('Datastore', function() {
       fakeUtil.normalizeArguments = normalizeArguments;
     });
 
+    it('should initialize an empty Client map', function() {
+      assert(datastore.clients_ instanceof Map);
+      assert.strictEqual(datastore.clients_.size, 0);
+    });
+
+    it('should alias itself to the datastore property', function() {
+      assert.strictEqual(datastore.datastore, datastore);
+    });
+
+    it('should localize the namespace', function() {
+      assert.strictEqual(datastore.namespace, NAMESPACE);
+    });
+
+    it('should localize the projectId', function() {
+      assert.strictEqual(datastore.projectId, PROJECT_ID);
+    });
+
+    it('should default project ID to placeholder', function() {
+      var datastore = new Datastore({});
+      assert.strictEqual(datastore.projectId, '{{projectId}}');
+    });
+
+    it('should use DATASTORE_PROJECT_ID', function() {
+      var datastoreProjectIdCached = process.env.DATASTORE_PROJECT_ID;
+      var projectId = 'overridden-project-id';
+
+      process.env.DATASTORE_PROJECT_ID = projectId;
+
+      var datastore = new Datastore(OPTIONS);
+      process.env.DATASTORE_PROJECT_ID = datastoreProjectIdCached;
+
+      assert.strictEqual(datastore.projectId, projectId);
+    });
+
     it('should set the default base URL', function() {
       assert.strictEqual(datastore.defaultBaseUrl_, 'datastore.googleapis.com');
     });
@@ -145,52 +187,72 @@ describe('Datastore', function() {
       new Datastore(OPTIONS);
     });
 
-    it('should localize the namespace', function() {
-      assert.strictEqual(datastore.namespace, NAMESPACE);
+    it('should localize the options', function() {
+      var options = {
+        a: 'b',
+        c: 'd',
+      };
+
+      var datastore = new Datastore(options);
+
+      assert.notStrictEqual(datastore.options, options);
+
+      assert.deepEqual(
+        datastore.options,
+        extend(
+          {
+            libName: 'gccl',
+            libVersion: require('../package.json').version,
+            scopes: v1.DatastoreClient.scopes,
+            servicePath: datastore.baseUrl_,
+            port: 443,
+          },
+          options
+        )
+      );
     });
 
-    it('should localize the projectId', function() {
-      assert.strictEqual(datastore.projectId, PROJECT_ID);
-    });
+    it('should set port if detected', function() {
+      var determineBaseUrl_ = Datastore.prototype.determineBaseUrl_;
 
-    it('should use DATASTORE_PROJECT_ID', function() {
-      var datastoreProjectIdCached = process.env.DATASTORE_PROJECT_ID;
-      var projectId = 'overridden-project-id';
-
-      process.env.DATASTORE_PROJECT_ID = projectId;
+      var port = 99;
+      Datastore.prototype.determineBaseUrl_ = function() {
+        Datastore.prototype.determineBaseUrl_ = determineBaseUrl_;
+        this.port_ = port;
+      };
 
       var datastore = new Datastore(OPTIONS);
-      process.env.DATASTORE_PROJECT_ID = datastoreProjectIdCached;
 
-      assert.strictEqual(datastore.projectId, projectId);
+      assert.strictEqual(datastore.options.port, port);
     });
 
-    it('should inherit from GrpcService', function() {
+    it('should set grpc ssl credentials if custom endpoint', function() {
+      var determineBaseUrl_ = Datastore.prototype.determineBaseUrl_;
+
+      Datastore.prototype.determineBaseUrl_ = function() {
+        Datastore.prototype.determineBaseUrl_ = determineBaseUrl_;
+        this.customEndpoint_ = true;
+      };
+
+      var fakeInsecureCreds = {};
+      createInsecureOverride = function() {
+        return fakeInsecureCreds;
+      };
+
       var datastore = new Datastore(OPTIONS);
 
-      var calledWith = datastore.calledWith_[0];
+      assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
+    });
 
-      assert.strictEqual(calledWith.projectIdRequired, false);
-      assert.strictEqual(calledWith.baseUrl, datastore.baseUrl_);
-      assert.strictEqual(calledWith.customEndpoint, datastore.customEndpoint_);
+    it('should cache a local google-auto-auth instance', function() {
+      var fakeGoogleAutoAuthInstance = {};
 
-      var protosDir = path.resolve(__dirname, '../protos');
-      assert.strictEqual(calledWith.protosDir, protosDir);
+      googleAutoAuthOverride = function() {
+        return fakeGoogleAutoAuthInstance;
+      };
 
-      assert.deepStrictEqual(calledWith.protoServices, {
-        Datastore: {
-          path: 'google/datastore/v1/datastore.proto',
-          service: 'datastore.v1',
-        },
-      });
-
-      assert.deepEqual(calledWith.scopes, [
-        'https://www.googleapis.com/auth/datastore',
-      ]);
-      assert.deepEqual(calledWith.packageJson, require('../package.json'));
-      assert.deepEqual(calledWith.grpcMetadata, {
-        'google-cloud-resource-prefix': 'projects/' + datastore.projectId,
-      });
+      var datastore = new Datastore({});
+      assert.strictEqual(datastore.auth, fakeGoogleAutoAuthInstance);
     });
   });
 
@@ -206,18 +268,6 @@ describe('Datastore', function() {
     });
   });
 
-  describe('isDouble', function() {
-    it('should expose Double identifier', function() {
-      var something = {};
-      Datastore.isDouble(something);
-      assert.strictEqual(fakeEntity.calledWith_[0], something);
-    });
-
-    it('should also be on the prototype', function() {
-      assert.strictEqual(datastore.isDouble, Datastore.isDouble);
-    });
-  });
-
   describe('geoPoint', function() {
     it('should expose GeoPoint builder', function() {
       var aGeoPoint = {latitude: 24, longitude: 88};
@@ -230,18 +280,6 @@ describe('Datastore', function() {
     });
   });
 
-  describe('isGeoPoint', function() {
-    it('should expose GeoPoint identifier', function() {
-      var something = {};
-      Datastore.isGeoPoint(something);
-      assert.strictEqual(fakeEntity.calledWith_[0], something);
-    });
-
-    it('should also be on the prototype', function() {
-      assert.strictEqual(datastore.isGeoPoint, Datastore.isGeoPoint);
-    });
-  });
-
   describe('int', function() {
     it('should expose Int builder', function() {
       var anInt = 7;
@@ -251,18 +289,6 @@ describe('Datastore', function() {
 
     it('should also be on the prototype', function() {
       assert.strictEqual(datastore.int, Datastore.int);
-    });
-  });
-
-  describe('isInt', function() {
-    it('should expose Int identifier', function() {
-      var something = {};
-      Datastore.isInt(something);
-      assert.strictEqual(fakeEntity.calledWith_[0], something);
-    });
-
-    it('should also be on the prototype', function() {
-      assert.strictEqual(datastore.isInt, Datastore.isInt);
     });
   });
 
@@ -366,18 +392,6 @@ describe('Datastore', function() {
     });
   });
 
-  describe('isKey', function() {
-    it('should expose Key identifier', function() {
-      var something = {};
-      datastore.isKey(something);
-      assert.strictEqual(fakeEntity.calledWith_[0], something);
-    });
-
-    it('should also be on the namespace', function() {
-      assert.strictEqual(datastore.isKey, Datastore.isKey);
-    });
-  });
-
   describe('transaction', function() {
     it('should return a Transaction object', function() {
       var transaction = datastore.transaction();
@@ -403,25 +417,31 @@ describe('Datastore', function() {
     });
 
     it('should remove slashes from the baseUrl', function() {
-      var expectedBaseUrl = 'localhost:8080';
+      var expectedBaseUrl = 'localhost';
 
-      setHost('localhost:8080/');
+      setHost('localhost/');
       datastore.determineBaseUrl_();
       assert.strictEqual(datastore.baseUrl_, expectedBaseUrl);
 
-      setHost('localhost:8080//');
+      setHost('localhost//');
       datastore.determineBaseUrl_();
       assert.strictEqual(datastore.baseUrl_, expectedBaseUrl);
     });
 
     it('should remove the protocol if specified', function() {
-      setHost('http://localhost:8080');
+      setHost('http://localhost');
       datastore.determineBaseUrl_();
-      assert.strictEqual(datastore.baseUrl_, 'localhost:8080');
+      assert.strictEqual(datastore.baseUrl_, 'localhost');
 
-      setHost('https://localhost:8080');
+      setHost('https://localhost');
       datastore.determineBaseUrl_();
-      assert.strictEqual(datastore.baseUrl_, 'localhost:8080');
+      assert.strictEqual(datastore.baseUrl_, 'localhost');
+    });
+
+    it('should set port if one was found', function() {
+      setHost('http://localhost:9090');
+      datastore.determineBaseUrl_();
+      assert.strictEqual(datastore.port_, '9090');
     });
 
     it('should not set customEndpoint_ when using default baseurl', function() {
@@ -442,6 +462,8 @@ describe('Datastore', function() {
 
     describe('with DATASTORE_EMULATOR_HOST environment variable', function() {
       var DATASTORE_EMULATOR_HOST = 'localhost:9090';
+      var EXPECTED_BASE_URL = 'localhost';
+      var EXPECTED_PORT = '9090';
 
       beforeEach(function() {
         setHost(DATASTORE_EMULATOR_HOST);
@@ -453,7 +475,8 @@ describe('Datastore', function() {
 
       it('should use the DATASTORE_EMULATOR_HOST env var', function() {
         datastore.determineBaseUrl_();
-        assert.strictEqual(datastore.baseUrl_, DATASTORE_EMULATOR_HOST);
+        assert.strictEqual(datastore.baseUrl_, EXPECTED_BASE_URL);
+        assert.strictEqual(datastore.port_, EXPECTED_PORT);
       });
 
       it('should set customEndpoint_', function() {
