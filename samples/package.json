@@ -13,12 +13,12 @@
   },
   "dependencies": {
     "@google-cloud/datastore": "1.1.0",
+    "sinon": "^3.3.0",
     "yargs": "9.0.1"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.17",
     "ava": "0.22.0",
-    "proxyquire": "1.8.0",
-    "sinon": "3.3.0"
+    "proxyquire": "1.8.0"
   }
 }

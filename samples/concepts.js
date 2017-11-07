@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 const sinon = require('sinon');
 
 // By default, the client will authenticate using the service account file
@@ -166,7 +168,7 @@ class Entity extends TestHelper {
     return this.datastore.save(task);
   }
 
-  testProperties(t) {
+  testProperties() {
     // [START properties]
     const task = [
       {
@@ -343,7 +345,7 @@ class Entity extends TestHelper {
       .then(() => this.datastore.delete(taskKey));
   }
 
-  testBatchUpsert(t) {
+  testBatchUpsert() {
     const taskKey1 = this.datastore.key(['Task', 1]);
     const taskKey2 = this.datastore.key(['Task', 2]);
 
@@ -944,7 +946,7 @@ class Query extends TestHelper {
     return this.datastore.runQuery(query);
   }
 
-  testInequalitySortInvalidNotFirst(t) {
+  testInequalitySortInvalidNotFirst() {
     const datastore = this.datastore;
 
     // [START inequality_sort_invalid_not_first]

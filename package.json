@@ -63,6 +63,7 @@
     "google-proto-files": "^0.13.1",
     "is": "^3.0.1",
     "lodash.flatten": "^4.2.0",
+    "lodash.merge": "^4.6.0",
     "prop-assign": "^1.0.0",
     "propprop": "^0.3.0",
     "safe-buffer": "^5.1.1",
