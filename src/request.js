@@ -27,6 +27,13 @@ var extend = require('extend');
 var is = require('is');
 var propAssign = require('prop-assign');
 var split = require('split-array-stream');
+var streamEvents = require('stream-events');
+var through = require('through2');
+
+// Import the clients for each version supported by this package.
+const gapic = Object.freeze({
+  v1: require('./v1'),
+});
 
 /**
  * @type {module:datastore/entity}
@@ -106,8 +113,12 @@ DatastoreRequest.prepareEntityObject_ = function(obj) {
 /**
  * Generate IDs without creating entities.
  *
- * @param {Key} incompleteKey - The key object to complete.
- * @param {number} n - How many IDs to generate.
+ * @param {Key} key - The key object to complete.
+ * @param {number|object} options - Either the number of IDs to allocate or an
+ *     options object for further customization of the request.
+ * @param {number} options.allocations - How many IDs to allocate.
+ * @param {object} options.gaxOptions - Request configuration options, outlined
+ *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
  * @param {function} callback - The callback function.
  * @param {?error} callback.err - An error returned while making this request
  * @param {array} callback.keys - The generated IDs
@@ -168,35 +179,37 @@ DatastoreRequest.prepareEntityObject_ = function(obj) {
  *   var apiResponse = data[1];
  * });
  */
-DatastoreRequest.prototype.allocateIds = function(incompleteKey, n, callback) {
-  if (entity.isKeyComplete(incompleteKey)) {
+DatastoreRequest.prototype.allocateIds = function(key, options, callback) {
+  if (entity.isKeyComplete(key)) {
     throw new Error('An incomplete key should be provided.');
   }
 
-  var incompleteKeys = [];
-  for (var i = 0; i < n; i++) {
-    incompleteKeys.push(entity.keyToKeyProto(incompleteKey));
+  if (is.number(options)) {
+    options = {
+      allocations: options,
+    };
   }
 
-  var protoOpts = {
-    service: 'Datastore',
-    method: 'allocateIds',
-  };
+  this.request_(
+    {
+      client: 'DatastoreClient',
+      method: 'allocateIds',
+      reqOpts: {
+        keys: new Array(options.allocations).fill(entity.keyToKeyProto(key)),
+      },
+      gaxOpts: options.gaxOptions,
+    },
+    function(err, resp) {
+      if (err) {
+        callback(err, null, resp);
+        return;
+      }
 
-  var reqOpts = {
-    keys: incompleteKeys,
-  };
+      var keys = arrify(resp.keys).map(entity.keyFromKeyProto);
 
-  this.request_(protoOpts, reqOpts, function(err, resp) {
-    if (err) {
-      callback(err, null, resp);
-      return;
+      callback(null, keys, resp);
     }
-
-    var keys = (resp.keys || []).map(entity.keyFromKeyProto);
-
-    callback(null, keys, resp);
-  });
+  );
 };
 
 /**
@@ -234,19 +247,13 @@ DatastoreRequest.prototype.createReadStream = function(keys, options) {
     throw new Error('At least one Key object is required.');
   }
 
-  var limiter = common.util.createLimiter(makeRequest, options);
-  var stream = limiter.stream;
+  var stream = streamEvents(through.obj());
 
   stream.once('reading', function() {
-    limiter.makeRequest(keys);
+    makeRequest(keys);
   });
 
   function makeRequest(keys) {
-    var protoOpts = {
-      service: 'Datastore',
-      method: 'lookup',
-    };
-
     var reqOpts = {
       keys: keys,
     };
@@ -259,30 +266,38 @@ DatastoreRequest.prototype.createReadStream = function(keys, options) {
       };
     }
 
-    self.request_(protoOpts, reqOpts, function(err, resp) {
-      if (err) {
-        stream.destroy(err);
-        return;
+    self.request_(
+      {
+        client: 'DatastoreClient',
+        method: 'lookup',
+        reqOpts: reqOpts,
+        gaxOpts: options.gaxOptions,
+      },
+      function(err, resp) {
+        if (err) {
+          stream.destroy(err);
+          return;
+        }
+
+        var entities = entity.formatArray(resp.found);
+        var nextKeys = (resp.deferred || [])
+          .map(entity.keyFromKeyProto)
+          .map(entity.keyToKeyProto);
+
+        split(entities, stream, function(streamEnded) {
+          if (streamEnded) {
+            return;
+          }
+
+          if (nextKeys.length > 0) {
+            makeRequest(nextKeys);
+            return;
+          }
+
+          stream.push(null);
+        });
       }
-
-      var entities = entity.formatArray(resp.found);
-      var nextKeys = (resp.deferred || [])
-        .map(entity.keyFromKeyProto)
-        .map(entity.keyToKeyProto);
-
-      split(entities, stream, function(streamEnded) {
-        if (streamEnded) {
-          return;
-        }
-
-        if (nextKeys.length > 0) {
-          limiter.makeRequest(nextKeys);
-          return;
-        }
-
-        stream.push(null);
-      });
-    });
+    );
   }
 
   return stream;
@@ -292,6 +307,8 @@ DatastoreRequest.prototype.createReadStream = function(keys, options) {
  * Delete all entities identified with the specified key(s).
  *
  * @param {Key|Key[]} key - Datastore key object(s).
+ * @param {object=} gaxOptions - Request configuration options, outlined here:
+ *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
  * @param {function} callback - The callback function.
  * @param {?error} callback.err - An error returned while making this request
  * @param {object} callback.apiResponse - The full API response.
@@ -334,13 +351,13 @@ DatastoreRequest.prototype.createReadStream = function(keys, options) {
  *   var apiResponse = data[0];
  * });
  */
-DatastoreRequest.prototype.delete = function(keys, callback) {
-  callback = callback || common.util.noop;
+DatastoreRequest.prototype.delete = function(keys, gaxOptions, callback) {
+  if (is.fn(gaxOptions)) {
+    callback = gaxOptions;
+    gaxOptions = {};
+  }
 
-  var protoOpts = {
-    service: 'Datastore',
-    method: 'commit',
-  };
+  callback = callback || common.util.noop;
 
   var reqOpts = {
     mutations: arrify(keys).map(function(key) {
@@ -355,7 +372,15 @@ DatastoreRequest.prototype.delete = function(keys, callback) {
     return;
   }
 
-  this.request_(protoOpts, reqOpts, callback);
+  this.request_(
+    {
+      client: 'DatastoreClient',
+      method: 'commit',
+      reqOpts: reqOpts,
+      gaxOpts: gaxOptions,
+    },
+    callback
+  );
 };
 
 /**
@@ -371,7 +396,8 @@ DatastoreRequest.prototype.delete = function(keys, callback) {
  *     If not specified, default values are chosen by Datastore for the
  *     operation. Learn more about strong and eventual consistency
  *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
- * @param {number} options.maxApiCalls - Maximum API calls to make.
+ * @param {object} options.gaxOptions - Request configuration options, outlined
+ *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
  * @param {function} callback - The callback function.
  * @param {?error} callback.err - An error returned while making this request
  * @param {object|object[]} callback.entity - The entity object(s) which match
@@ -499,7 +525,8 @@ DatastoreRequest.prototype.insert = function(entities, callback) {
  *     If not specified, default values are chosen by Datastore for the
  *     operation. Learn more about strong and eventual consistency
  *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
- * @param {number} options.maxApiCalls - Maximum API calls to make.
+ * @param {object} options.gaxOptions - Request configuration options, outlined
+ *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
  * @param {function=} callback - The callback function. If omitted, a readable
  *     stream instance is returned.
  * @param {?error} callback.err - An error returned while making this request
@@ -600,6 +627,8 @@ DatastoreRequest.prototype.runQuery = function(query, options, callback) {
  *
  * @param {module:datastore/query} query - Query object.
  * @param {object=} options - Optional configuration.
+ * @param {object} options.gaxOptions - Request configuration options, outlined
+ *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
  *
  * @example
  * datastore.runQueryStream(query)
@@ -629,19 +658,13 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
 
   query = extend(true, new Query(), query);
 
-  var limiter = common.util.createLimiter(makeRequest, options);
-  var stream = limiter.stream;
+  var stream = streamEvents(through.obj());
 
   stream.once('reading', function() {
-    limiter.makeRequest(query);
+    makeRequest(query);
   });
 
   function makeRequest(query) {
-    var protoOpts = {
-      service: 'Datastore',
-      method: 'runQuery',
-    };
-
     var reqOpts = {
       query: entity.queryToQueryProto(query),
     };
@@ -659,7 +682,15 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
       };
     }
 
-    self.request_(protoOpts, reqOpts, onResultSet);
+    self.request_(
+      {
+        client: 'DatastoreClient',
+        method: 'runQuery',
+        reqOpts: reqOpts,
+        gaxOpts: options.gaxOptions,
+      },
+      onResultSet
+    );
   }
 
   function onResultSet(err, resp) {
@@ -704,7 +735,7 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
         query.limit(limit - resp.batch.entityResults.length);
       }
 
-      limiter.makeRequest(query);
+      makeRequest(query);
     });
   }
 
@@ -736,6 +767,8 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
  *     indexing using a simple JSON path notation. See the example below to see
  *     how to target properties at different levels of nesting within your
  *     entity.
+ * @param {object=} gaxOptions - Request configuration options, outlined here:
+ *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
  * @param {string=} entities.method - Explicit method to use, either 'insert',
  *     'update', or 'upsert'.
  * @param {object} entities.data - Data to save with the provided key.
@@ -912,8 +945,13 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
  *   var apiResponse = data[0];
  * });
  */
-DatastoreRequest.prototype.save = function(entities, callback) {
+DatastoreRequest.prototype.save = function(entities, gaxOptions, callback) {
   entities = arrify(entities);
+
+  if (is.fn(gaxOptions)) {
+    callback = gaxOptions;
+    gaxOptions = {};
+  }
 
   var insertIndexes = {};
   var mutations = [];
@@ -976,11 +1014,6 @@ DatastoreRequest.prototype.save = function(entities, callback) {
       mutations.push(mutation);
     });
 
-  var protoOpts = {
-    service: 'Datastore',
-    method: 'commit',
-  };
-
   var reqOpts = {
     mutations: mutations,
   };
@@ -1011,7 +1044,15 @@ DatastoreRequest.prototype.save = function(entities, callback) {
     return;
   }
 
-  this.request_(protoOpts, reqOpts, onCommit);
+  this.request_(
+    {
+      client: 'DatastoreClient',
+      method: 'commit',
+      reqOpts: reqOpts,
+      gaxOpts: gaxOptions,
+    },
+    onCommit
+  );
 };
 
 /**
@@ -1062,24 +1103,24 @@ DatastoreRequest.prototype.upsert = function(entities, callback) {
  * Make a request to the API endpoint. Properties to indicate a transactional or
  * non-transactional operation are added automatically.
  *
- * @param {string} method - Datastore action (allocateIds, commit, etc.).
- * @param {object=} body - Request configuration object.
+ * @param {object} config - Configuration object.
+ * @param {object} config.gaxOpts - GAX options.
+ * @param {function} config.method - The gax method to call.
+ * @param {object} config.reqOpts - Request options.
  * @param {function} callback - The callback function.
  *
  * @private
  */
-DatastoreRequest.prototype.request_ = function(protoOpts, reqOpts, callback) {
-  if (!callback) {
-    callback = reqOpts;
-    reqOpts = {};
-  }
+DatastoreRequest.prototype.request_ = function(config, callback) {
+  var datastore = this.datastore;
 
   callback = callback || common.util.noop;
 
   var isTransaction = is.defined(this.id);
-  var method = protoOpts.method;
+  var method = config.method;
+  var reqOpts = extend(true, {}, config.reqOpts);
 
-  reqOpts.projectId = this.projectId;
+  reqOpts.projectId = datastore.projectId;
 
   // Set properties to indicate if we're in a transaction or not.
   if (method === 'commit') {
@@ -1105,7 +1146,33 @@ DatastoreRequest.prototype.request_ = function(protoOpts, reqOpts, callback) {
     };
   }
 
-  this.request(protoOpts, reqOpts, callback);
+  datastore.auth.getProjectId(function(err, projectId) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    var clientName = config.client;
+
+    if (!datastore.clients_.has(clientName)) {
+      datastore.clients_.set(
+        clientName,
+        new gapic.v1[clientName](datastore.options)
+      );
+    }
+
+    var gaxClient = datastore.clients_.get(clientName);
+
+    reqOpts = common.util.replaceProjectIdToken(reqOpts, projectId);
+
+    var gaxOpts = extend(true, {}, config.gaxOpts, {
+      headers: {
+        'google-cloud-resource-prefix': `projects/${projectId}`,
+      },
+    });
+
+    gaxClient[method](reqOpts, gaxOpts, callback);
+  });
 };
 
 /*! Developer Documentation

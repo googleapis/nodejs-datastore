@@ -22,10 +22,11 @@
 
 var arrify = require('arrify');
 var common = require('@google-cloud/common');
-var commonGrpc = require('@google-cloud/common-grpc');
+var extend = require('extend');
+var grpc = require('google-gax').grpc;
+var googleAuth = require('google-auto-auth');
 var is = require('is');
-var modelo = require('modelo');
-var path = require('path');
+var util = require('util');
 
 /**
  * @type {module:datastore/request}
@@ -50,6 +51,11 @@ var Query = require('./query.js');
  * @private
  */
 var Transaction = require('./transaction.js');
+
+// Import the clients for each version supported by this package.
+const gapic = Object.freeze({
+  v1: require('./v1'),
+});
 
 /**
  * @constructor
@@ -301,34 +307,36 @@ function Datastore(options) {
     return new Datastore(options);
   }
 
+  options = options || {};
+
+  this.clients_ = new Map();
+  this.datastore = this;
+  this.namespace = options.namespace;
+  this.projectId =
+    process.env.DATASTORE_PROJECT_ID || options.projectId || '{{projectId}}';
+
   this.defaultBaseUrl_ = 'datastore.googleapis.com';
   this.determineBaseUrl_(options.apiEndpoint);
 
-  this.namespace = options.namespace;
-  this.projectId = process.env.DATASTORE_PROJECT_ID || options.projectId;
-
-  var config = {
-    projectIdRequired: false,
-    baseUrl: this.baseUrl_,
-    customEndpoint: this.customEndpoint_,
-    protosDir: path.resolve(__dirname, '../protos'),
-    protoServices: {
-      Datastore: {
-        path: 'google/datastore/v1/datastore.proto',
-        service: 'datastore.v1',
-      },
+  this.options = extend(
+    {
+      libName: 'gccl',
+      libVersion: require('../package.json').version,
+      scopes: gapic.v1.DatastoreClient.scopes,
+      servicePath: this.baseUrl_,
+      port: is.number(this.port_) ? this.port_ : 443,
     },
-    scopes: ['https://www.googleapis.com/auth/datastore'],
-    packageJson: require('../package.json'),
-    grpcMetadata: {
-      'google-cloud-resource-prefix': 'projects/' + this.projectId,
-    },
-  };
+    options
+  );
 
-  commonGrpc.Service.call(this, config, options);
+  if (this.customEndpoint_) {
+    this.options.sslCreds = grpc.credentials.createInsecure();
+  }
+
+  this.auth = googleAuth(this.options);
 }
 
-modelo.inherits(Datastore, DatastoreRequest, commonGrpc.Service);
+util.inherits(Datastore, DatastoreRequest);
 
 /**
  * Helper function to get a Datastore Double object.
@@ -595,6 +603,7 @@ Datastore.prototype.determineBaseUrl_ = function(customApiEndpoint) {
   var baseUrl = this.defaultBaseUrl_;
   var leadingProtocol = new RegExp('^https*://');
   var trailingSlashes = new RegExp('/*$');
+  var port = new RegExp(':(\\d+)');
 
   if (customApiEndpoint) {
     baseUrl = customApiEndpoint;
@@ -604,8 +613,13 @@ Datastore.prototype.determineBaseUrl_ = function(customApiEndpoint) {
     this.customEndpoint_ = true;
   }
 
+  if (port.test(baseUrl)) {
+    this.port_ = baseUrl.match(port)[1];
+  }
+
   this.baseUrl_ = baseUrl
     .replace(leadingProtocol, '')
+    .replace(port, '')
     .replace(trailingSlashes, '');
 };
 
@@ -614,4 +628,4 @@ Datastore.Query = Query;
 Datastore.Transaction = Transaction;
 
 module.exports = Datastore;
-module.exports.v1 = require('./v1');
+module.exports.v1 = gapic.v1;

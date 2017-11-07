@@ -22,11 +22,10 @@ var Buffer = require('safe-buffer').Buffer;
 
 var Datastore = require('../');
 var entity = require('../src/entity.js');
-var env = require('../../../system-test/env.js');
 
 describe('Datastore', function() {
   var testKinds = [];
-  var datastore = new Datastore(env);
+  var datastore = new Datastore({});
   // Override the Key method so we can track what keys are created during the
   // tests. They are then deleted in the `after` hook.
   var key = datastore.key;
