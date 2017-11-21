@@ -31,11 +31,13 @@ View the [source code][tasks_0_code].
 __Usage:__ `node tasks.js --help`
 
 ```
+tasks.js <command>
+
 Commands:
-  new <description>  Adds a task with a description <description>.
-  done <taskId>      Marks the specified task as done.
-  list               Lists all tasks ordered by creation time.
-  delete <taskId>    Deletes a task.
+  tasks.js new <description>  Adds a task with a description <description>.
+  tasks.js done <taskId>      Marks the specified task as done.
+  tasks.js list               Lists all tasks ordered by creation time.
+  tasks.js delete <taskId>    Deletes a task.
 
 Options:
   --version  Show version number                                                                               [boolean]

@@ -19,8 +19,8 @@ const Datastore = require('@google-cloud/datastore');
 
 // [START error]
 function runQuery() {
-  // Instantiates a client
-  const datastore = Datastore();
+  // Creates a client
+  const datastore = new Datastore();
 
   const query = datastore.createQuery(['Company']).start('badrequest');
 
@@ -34,14 +34,14 @@ function runQuery() {
     })
     .catch(err => {
       console.log(err.errors); // [...]
-      console.log(err.code); // 400
+      console.log(err.code); // 3 (a gRPC error code)
       console.log(err.message); // "Bad Request"
       console.log(err.response); // {...}
 
       // Process error
 
       // For example, treat permission error like no entities were found
-      if (err.code === 403) {
+      if (/* some condition */true) {
         return [];
       }
 

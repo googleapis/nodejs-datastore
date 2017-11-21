@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * @private
- * @module datastore/entity
- */
-
 'use strict';
 
 var arrify = require('arrify');
@@ -42,19 +37,26 @@ var InvalidKeyError = createErrorClass('InvalidKey', function(opts) {
  * A symbol to access the Key object from an entity object.
  *
  * @type {symbol}
+ * @private
  */
 entity.KEY_SYMBOL = Symbol('KEY');
 
 /**
  * Build a Datastore Double object. For long doubles, a string can be provided.
  *
- * @constructor
- * @param {number} value - The double value.
+ * @class
+ * @param {number} value The double value.
  *
  * @example
- * var aDouble = new Double(7.3);
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const aDouble = datastore.double(7.3);
  */
 function Double(value) {
+  /**
+   * @name Double#value
+   * @type {number}
+   */
   this.value = value;
 }
 
@@ -63,8 +65,9 @@ entity.Double = Double;
 /**
  * Check if something is a Datastore Double object.
  *
+ * @private
  * @param {*} value
- * @return {boolean}
+ * @returns {boolean}
  */
 function isDsDouble(value) {
   return value instanceof entity.Double;
@@ -75,13 +78,19 @@ entity.isDsDouble = isDsDouble;
 /**
  * Build a Datastore Int object. For long integers, a string can be provided.
  *
- * @constructor
- * @param {number|string} value - The integer value.
+ * @class
+ * @param {number|string} value The integer value.
  *
  * @example
- * var anInt = new Int(7);
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const anInt = datastore.int(7);
  */
 function Int(value) {
+  /**
+   * @name Int#value
+   * @type {string}
+   */
   this.value = value.toString();
 }
 
@@ -90,8 +99,9 @@ entity.Int = Int;
 /**
  * Check if something is a Datastore Int object.
  *
+ * @private
  * @param {*} value
- * @return {boolean}
+ * @returns {boolean}
  */
 function isDsInt(value) {
   return value instanceof entity.Int;
@@ -102,20 +112,30 @@ entity.isDsInt = isDsInt;
 /**
  * Build a Datastore Geo Point object.
  *
- * @constructor
- * @param {object} coordinates - Coordinate value.
- * @param {number} coordinates.latitude - Latitudinal value.
- * @param {number} coordinates.longitude - Longitudinal value.
+ * @class
+ * @param {object} coordinates Coordinate value.
+ * @param {number} coordinates.latitude Latitudinal value.
+ * @param {number} coordinates.longitude Longitudinal value.
  *
  * @example
- * var coordinates = {
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const coordinates = {
  *   latitude: 40.6894,
  *   longitude: -74.0447
  * };
  *
- * var geoPoint = new GeoPoint(coordinates);
+ * const geoPoint = datastore.geoPoint(coordinates);
  */
 function GeoPoint(coordinates) {
+  /**
+   * Coordinate value.
+   *
+   * @name GeoPoint#coordinates
+   * @type {object}
+   * @property {number} latitude Latitudinal value.
+   * @property {number} longitude Longitudinal value.
+   */
   this.value = coordinates;
 }
 
@@ -124,8 +144,9 @@ entity.GeoPoint = GeoPoint;
 /**
  * Check if something is a Datastore Geo Point object.
  *
+ * @private
  * @param {*} value
- * @return {boolean}
+ * @returns {boolean}
  */
 function isDsGeoPoint(value) {
   return value instanceof entity.GeoPoint;
@@ -136,18 +157,24 @@ entity.isDsGeoPoint = isDsGeoPoint;
 /**
  * Build a Datastore Key object.
  *
- * @constructor
- * @param {object} - Configuration object.
- * @param {...*} options.path - Key path.
- * @param {string=} options.namespace - Optional namespace.
+ * @class
+ * @param {object|string|array} Configuration object.
+ * @param {string|array} options.path  Key path.
+ * @param {string} [options.namespace] Optional namespace.
  *
  * @example
- * var key = new Key({
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const key = datastore.key({
  *   namespace: 'ns',
  *   path: ['Company', 123]
  * });
  */
 function Key(options) {
+  /**
+   * @name Key#namespace
+   * @type {string}
+   */
   this.namespace = options.namespace;
 
   if (options.path.length % 2 === 0) {
@@ -168,6 +195,10 @@ function Key(options) {
 
   // `path` is computed on demand to consider any changes that may have been
   // made to the key.
+  /**
+   * @name Key#path
+   * @type {array}
+   */
   Object.defineProperty(this, 'path', {
     enumerable: true,
     get: function() {
@@ -184,8 +215,9 @@ entity.Key = Key;
 /**
  * Check if something is a Datastore Key object.
  *
+ * @private
  * @param {*} value
- * @return {boolean}
+ * @returns {boolean}
  */
 function isDsKey(value) {
   return value instanceof entity.Key;
@@ -196,8 +228,9 @@ entity.isDsKey = isDsKey;
 /**
  * Convert a protobuf Value message to its native value.
  *
- * @param {object} valueProto - The protobuf Value message to convert.
- * @return {*}
+ * @private
+ * @param {object} valueProto The protobuf Value message to convert.
+ * @returns {*}
  *
  * @example
  * decodeValueProto({
@@ -264,8 +297,9 @@ entity.decodeValueProto = decodeValueProto;
 /**
  * Convert any native value to a protobuf Value message object.
  *
- * @param {*} value - Native value.
- * @return {object}
+ * @private
+ * @param {*} value Native value.
+ * @returns {object}
  *
  * @example
  * encodeValue('Hi');
@@ -370,8 +404,9 @@ entity.encodeValue = encodeValue;
  *
  * @todo Use registered metadata if provided.
  *
- * @param {object} entityProto - The protocol entity object to convert.
- * @return {object}
+ * @private
+ * @param {object} entityProto The protocol entity object to convert.
+ * @returns {object}
  *
  * @example
  * entityFromEntityProto({
@@ -408,8 +443,9 @@ entity.entityFromEntityProto = entityFromEntityProto;
 /**
  * Convert an entity object to an entity protocol object.
  *
- * @param {object} entityObject - The entity object to convert.
- * @return {object}
+ * @private
+ * @param {object} entityObject The entity object to convert.
+ * @returns {object}
  *
  * @example
  * entityToEntityProto({
@@ -506,10 +542,11 @@ entity.entityToEntityProto = entityToEntityProto;
 /**
  * Convert an API response array to a qualified Key and data object.
  *
- * @param {object[]} results - The response array.
- * @param {object} results.entity - An entity object.
- * @param {object} results.entity.key - The entity's key.
- * @return {object[]}
+ * @private
+ * @param {object[]} results The response array.
+ * @param {object} results.entity An entity object.
+ * @param {object} results.entity.key The entity's key.
+ * @returns {object[]}
  *
  * @example
  * request_('runQuery', {}, function(err, response) {
@@ -536,8 +573,9 @@ entity.formatArray = formatArray;
 /**
  * Check if a key is complete.
  *
- * @param {Key} key - The Key object.
- * @return {boolean}
+ * @private
+ * @param {Key} key The Key object.
+ * @returns {boolean}
  *
  * @example
  * isKeyComplete(new Key(['Company', 'Google'])); // true
@@ -553,8 +591,9 @@ entity.isKeyComplete = isKeyComplete;
 /**
  * Convert a key protocol object to a Key object.
  *
- * @param {object} keyProto - The key protocol object to convert.
- * @return {Key}
+ * @private
+ * @param {object} keyProto The key protocol object to convert.
+ * @returns {Key}
  *
  * @example
  * var key = keyFromKeyProto({
@@ -605,8 +644,9 @@ entity.keyFromKeyProto = keyFromKeyProto;
 /**
  * Convert a Key object to a key protocol object.
  *
- * @param {Key} key - The Key object to convert.
- * @return {object}
+ * @private
+ * @param {Key} key The Key object to convert.
+ * @returns {object}
  *
  * @example
  * var keyProto = keyToKeyProto(new Key(['Company', 1]));
@@ -671,9 +711,8 @@ entity.keyToKeyProto = keyToKeyProto;
  * Convert a query object to a query protocol object.
  *
  * @private
- *
- * @param {object} q - The query object to convert.
- * @return {object}
+ * @param {object} q The query object to convert.
+ * @returns {object}
  *
  * @example
  * queryToQueryProto({
