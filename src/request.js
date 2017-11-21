@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/*!
- * @module datastore/request
- */
-
 'use strict';
 
 var arrify = require('arrify');
@@ -35,16 +31,7 @@ const gapic = Object.freeze({
   v1: require('./v1'),
 });
 
-/**
- * @type {module:datastore/entity}
- * @private
- */
 var entity = require('./entity.js');
-
-/**
- * @type {module:datastore/query}
- * @private
- */
 var Query = require('./query.js');
 
 /**
@@ -58,19 +45,14 @@ var CONSISTENCY_PROTO_CODE = {
   strong: 1,
 };
 
-/*! Developer Documentation
- *
- * Handles request logic for Datastore.
+/**
+ * Handle logic for Datastore API operations. Handles request logic for
+ * Datastore.
  *
  * Creates requests to the Datastore endpoint. Designed to be inherited by
- * {module:datastore} and {module:datastore/transaction} objects.
- */
-/**
- * Handle logic for Datastore API operations.
+ * the {@link Datastore} and {@link Transaction} classes.
  *
- * @constructor
- * @alias module:datastore/request
- * @mixin
+ * @class
  */
 function DatastoreRequest() {}
 
@@ -92,9 +74,9 @@ function DatastoreRequest() {}
  *
  * @private
  *
- * @resource [#1803]{@link https://github.com/GoogleCloudPlatform/google-cloud-node/issues/1803}
+ * @see [#1803]{@link https://github.com/GoogleCloudPlatform/google-cloud-node/issues/1803}
  *
- * @param {object} obj - The user's input object.
+ * @param {object} obj The user's input object.
  */
 DatastoreRequest.prepareEntityObject_ = function(obj) {
   var entityObject = extend(true, {}, obj);
@@ -113,16 +95,16 @@ DatastoreRequest.prepareEntityObject_ = function(obj) {
 /**
  * Generate IDs without creating entities.
  *
- * @param {Key} key - The key object to complete.
- * @param {number|object} options - Either the number of IDs to allocate or an
+ * @param {Key} key The key object to complete.
+ * @param {number|object} options Either the number of IDs to allocate or an
  *     options object for further customization of the request.
- * @param {number} options.allocations - How many IDs to allocate.
- * @param {object} options.gaxOptions - Request configuration options, outlined
+ * @param {number} options.allocations How many IDs to allocate.
+ * @param {object} [options.gaxOptions] Request configuration options, outlined
  *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request
- * @param {array} callback.keys - The generated IDs
- * @param {object} callback.apiResponse - The full API response.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request
+ * @param {array} callback.keys The generated IDs
+ * @param {object} callback.apiResponse The full API response.
  *
  * @example
  * var incompleteKey = datastore.key(['Company']);
@@ -217,8 +199,8 @@ DatastoreRequest.prototype.allocateIds = function(key, options, callback) {
  *
  * @throws {Error} If at least one Key object is not provided.
  *
- * @param {Key|Key[]} keys - Datastore key object(s).
- * @param {object=} options - Optional configuration. See {module:datastore#get}
+ * @param {Key|Key[]} keys Datastore key object(s).
+ * @param {object} [options] Optional configuration. See {@link Datastore#get}
  *     for a complete list of options.
  *
  * @example
@@ -306,12 +288,12 @@ DatastoreRequest.prototype.createReadStream = function(keys, options) {
 /**
  * Delete all entities identified with the specified key(s).
  *
- * @param {Key|Key[]} key - Datastore key object(s).
- * @param {object=} gaxOptions - Request configuration options, outlined here:
+ * @param {Key|Key[]} key Datastore key object(s).
+ * @param {object} [gaxOptions] Request configuration options, outlined here:
  *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request
- * @param {object} callback.apiResponse - The full API response.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request
+ * @param {object} callback.apiResponse The full API response.
  *
  * @example
  * var key = datastore.key(['Company', 123]);
@@ -390,17 +372,17 @@ DatastoreRequest.prototype.delete = function(keys, gaxOptions, callback) {
  *
  * @throws {Error} If at least one Key object is not provided.
  *
- * @param {Key|Key[]} keys - Datastore key object(s).
- * @param {object=} options - Optional configuration.
- * @param {string} options.consistency - Specify either `strong` or `eventual`.
+ * @param {Key|Key[]} keys Datastore key object(s).
+ * @param {object} [options] Optional configuration.
+ * @param {string} [options.consistency] Specify either `strong` or `eventual`.
  *     If not specified, default values are chosen by Datastore for the
  *     operation. Learn more about strong and eventual consistency
  *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
- * @param {object} options.gaxOptions - Request configuration options, outlined
+ * @param {object} [options.gaxOptions] Request configuration options, outlined
  *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request
- * @param {object|object[]} callback.entity - The entity object(s) which match
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request
+ * @param {object|object[]} callback.entity The entity object(s) which match
  *     the provided keys.
  *
  * @example
@@ -487,18 +469,18 @@ DatastoreRequest.prototype.get = function(keys, options, callback) {
 };
 
 /**
- * Maps to {module:datastore#save}, forcing the method to be `insert`.
+ * Maps to {@link Datastore#save}, forcing the method to be `insert`.
  *
- * @param {object|object[]} entities - Datastore key object(s).
- * @param {Key} entities.key - Datastore key object.
- * @param {string[]=} entities.excludeFromIndexes - Exclude properties from
+ * @param {object|object[]} entities Datastore key object(s).
+ * @param {Key} entities.key Datastore key object.
+ * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
  *     indexing using a simple JSON path notation. See the examples in
- *     {module:datastore#save} to see how to target properties at different
+ *     {@link Datastore#save} to see how to target properties at different
  *     levels of nesting within your entity.
- * @param {object} entities.data - Data to save with the provided key.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request
- * @param {object} callback.apiResponse - The full API response.
+ * @param {object} entities.data Data to save with the provided key.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request
+ * @param {object} callback.apiResponse The full API response.
  */
 DatastoreRequest.prototype.insert = function(entities, callback) {
   entities = arrify(entities)
@@ -519,28 +501,28 @@ DatastoreRequest.prototype.insert = function(entities, callback) {
  * query. You can pass that object back to this method to see if more results
  * exist.
  *
- * @param {module:datastore/query} query - Query object.
- * @param {object=} options - Optional configuration.
- * @param {string} options.consistency - Specify either `strong` or `eventual`.
+ * @param {Query} query Query object.
+ * @param {object} [options] Optional configuration.
+ * @param {string} [options.consistency] Specify either `strong` or `eventual`.
  *     If not specified, default values are chosen by Datastore for the
  *     operation. Learn more about strong and eventual consistency
  *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
- * @param {object} options.gaxOptions - Request configuration options, outlined
+ * @param {object} [options.gaxOptions] Request configuration options, outlined
  *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {function=} callback - The callback function. If omitted, a readable
+ * @param {function} [callback] The callback function. If omitted, a readable
  *     stream instance is returned.
- * @param {?error} callback.err - An error returned while making this request
- * @param {object[]} callback.entities - A list of entities.
- * @param {object} callback.info - An object useful for pagination.
- * @param {?string} callback.info.endCursor - Use this in a follow-up query to
+ * @param {?error} callback.err An error returned while making this request
+ * @param {object[]} callback.entities A list of entities.
+ * @param {object} callback.info An object useful for pagination.
+ * @param {?string} callback.info.endCursor Use this in a follow-up query to
  *     begin from where these results ended.
- * @param {string} callback.info.moreResults - Datastore responds with one of:
+ * @param {string} callback.info.moreResults Datastore responds with one of:
  *
- *     - {module:datastore#MORE_RESULTS_AFTER_LIMIT}: There *may* be more
+ *     - {@link Datastore#MORE_RESULTS_AFTER_LIMIT}: There *may* be more
  *       results after the specified limit.
- *     - {module:datastore#MORE_RESULTS_AFTER_CURSOR}: There *may* be more
+ *     - {@link Datastore#MORE_RESULTS_AFTER_CURSOR}: There *may* be more
  *       results after the specified end cursor.
- *     - {module:datastore#NO_MORE_RESULTS}: There are no more results.
+ *     - {@link Datastore#NO_MORE_RESULTS}: There are no more results.
  *
  * @example
  * //-
@@ -623,11 +605,11 @@ DatastoreRequest.prototype.runQuery = function(query, options, callback) {
 /**
  * Get a list of entities as a readable object stream.
  *
- * See {module:datastore#runQuery} for a list of all available options.
+ * See {@link Datastore#runQuery} for a list of all available options.
  *
- * @param {module:datastore/query} query - Query object.
- * @param {object=} options - Optional configuration.
- * @param {object} options.gaxOptions - Request configuration options, outlined
+ * @param {Query} query Query object.
+ * @param {object} [options] Optional configuration.
+ * @param {object} [options.gaxOptions] Request configuration options, outlined
  *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
  *
  * @example
@@ -757,24 +739,24 @@ DatastoreRequest.prototype.runQueryStream = function(query, options) {
  * included in *all* indexes, you must supply an `excludeFromIndexes` array. See
  * below for an example.
  *
- * @borrows {module:datastore/transaction#save} as save
+ * @borrows {@link Transaction#save} as save
  *
  * @throws {Error} If an unrecognized method is provided.
  *
- * @param {object|object[]} entities - Datastore key object(s).
- * @param {Key} entities.key - Datastore key object.
- * @param {string[]=} entities.excludeFromIndexes - Exclude properties from
+ * @param {object|object[]} entities Datastore key object(s).
+ * @param {Key} entities.key Datastore key object.
+ * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
  *     indexing using a simple JSON path notation. See the example below to see
  *     how to target properties at different levels of nesting within your
- *     entity.
- * @param {object=} gaxOptions - Request configuration options, outlined here:
- *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {string=} entities.method - Explicit method to use, either 'insert',
+ * @param {string} [entities.method] Explicit method to use, either 'insert',
  *     'update', or 'upsert'.
- * @param {object} entities.data - Data to save with the provided key.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request
- * @param {object} callback.apiResponse - The full API response.
+ * @param {object} entities.data Data to save with the provided key.
+ *     entity.
+ * @param {object} [gaxOptions] Request configuration options, outlined here:
+ *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request
+ * @param {object} callback.apiResponse The full API response.
  *
  * @example
  * //-
@@ -1056,18 +1038,18 @@ DatastoreRequest.prototype.save = function(entities, gaxOptions, callback) {
 };
 
 /**
- * Maps to {module:datastore#save}, forcing the method to be `update`.
+ * Maps to {@link Datastore#save}, forcing the method to be `update`.
  *
- * @param {object|object[]} entities - Datastore key object(s).
- * @param {Key} entities.key - Datastore key object.
- * @param {string[]=} entities.excludeFromIndexes - Exclude properties from
+ * @param {object|object[]} entities Datastore key object(s).
+ * @param {Key} entities.key Datastore key object.
+ * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
  *     indexing using a simple JSON path notation. See the examples in
- *     {module:datastore#save} to see how to target properties at different
+ *     {@link Datastore#save} to see how to target properties at different
  *     levels of nesting within your entity.
- * @param {object} entities.data - Data to save with the provided key.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request
- * @param {object} callback.apiResponse - The full API response.
+ * @param {object} entities.data Data to save with the provided key.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request
+ * @param {object} callback.apiResponse The full API response.
  */
 DatastoreRequest.prototype.update = function(entities, callback) {
   entities = arrify(entities)
@@ -1078,18 +1060,18 @@ DatastoreRequest.prototype.update = function(entities, callback) {
 };
 
 /**
- * Maps to {module:datastore#save}, forcing the method to be `upsert`.
+ * Maps to {@link Datastore#save}, forcing the method to be `upsert`.
  *
- * @param {object|object[]} entities - Datastore key object(s).
- * @param {Key} entities.key - Datastore key object.
- * @param {string[]=} entities.excludeFromIndexes - Exclude properties from
+ * @param {object|object[]} entities Datastore key object(s).
+ * @param {Key} entities.key Datastore key object.
+ * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
  *     indexing using a simple JSON path notation. See the examples in
- *     {module:datastore#save} to see how to target properties at different
+ *     {@link Datastore#save} to see how to target properties at different
  *     levels of nesting within your entity.
- * @param {object} entities.data - Data to save with the provided key.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request
- * @param {object} callback.apiResponse - The full API response.
+ * @param {object} entities.data Data to save with the provided key.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request
+ * @param {object} callback.apiResponse The full API response.
  */
 DatastoreRequest.prototype.upsert = function(entities, callback) {
   entities = arrify(entities)
@@ -1103,11 +1085,11 @@ DatastoreRequest.prototype.upsert = function(entities, callback) {
  * Make a request to the API endpoint. Properties to indicate a transactional or
  * non-transactional operation are added automatically.
  *
- * @param {object} config - Configuration object.
- * @param {object} config.gaxOpts - GAX options.
- * @param {function} config.method - The gax method to call.
- * @param {object} config.reqOpts - Request options.
- * @param {function} callback - The callback function.
+ * @param {object} config Configuration object.
+ * @param {object} config.gaxOpts GAX options.
+ * @param {function} config.method The gax method to call.
+ * @param {object} config.reqOpts Request options.
+ * @param {function} callback The callback function.
  *
  * @private
  */
@@ -1182,4 +1164,9 @@ DatastoreRequest.prototype.request_ = function(config, callback) {
  */
 common.util.promisifyAll(DatastoreRequest);
 
+/**
+ * Reference to the {@link DatastoreRequest} class.
+ * @name module:@google-cloud/datastore.DatastoreRequest
+ * @see DatastoreRequest
+ */
 module.exports = DatastoreRequest;

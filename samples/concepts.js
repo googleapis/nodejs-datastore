@@ -44,7 +44,7 @@ class TestHelper {
     const options = {
       projectId: projectId,
     };
-    this.datastore = Datastore(options);
+    this.datastore = new Datastore(options);
   }
 }
 

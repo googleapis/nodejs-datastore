@@ -22,8 +22,8 @@
 // https://googlecloudplatform.github.io/google-cloud-node/#/docs/datastore/latest/guides/authentication
 const Datastore = require('@google-cloud/datastore');
 
-// Instantiates a client
-const datastore = Datastore();
+// Creates a client
+const datastore = new Datastore();
 // [END build_service]
 
 /*

@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/*!
- * @module datastore/transaction
- */
-
 'use strict';
 
 var arrify = require('arrify');
@@ -27,41 +23,43 @@ var is = require('is');
 var prop = require('propprop');
 var util = require('util');
 
-/**
- * @type {module:datastore/entity}
- * @private
- */
 var entity = require('./entity.js');
-
-/**
- * @type {module:datastore/request}
- * @private
- */
 var Request = require('./request.js');
 
-/*! Developer Documentation
- *
- * @param {module:datastore} datastore - A Datastore instance.
- */
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
  * transaction is guaranteed to be atomic, which means that transactions are
  * never partially applied. Either all of the operations in the transaction are
  * applied, or none of them are applied.
  *
- * @resource [Transactions Reference]{@link https://cloud.google.com/datastore/docs/concepts/transactions}
+ * @see [Transactions Reference]{@link https://cloud.google.com/datastore/docs/concepts/transactions}
  *
- * @constructor
- * @alias module:datastore/transaction
+ * @class
+ * @extends {Request}
+ * @param {Datastore} datastore A Datastore instance.
  * @mixes module:datastore/request
  *
  * @example
- * var transaction = datastore.transaction();
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
  */
 function Transaction(datastore) {
+  /**
+   * @name Transaction#datastore
+   * @type {Datastore}
+   */
   this.datastore = datastore;
 
+  /**
+   * @name Transaction#projectId
+   * @type {string}
+   */
   this.projectId = datastore.projectId;
+  /**
+   * @name Transaction#namespace
+   * @type {string}
+   */
   this.namespace = datastore.namespace;
 
   this.request = datastore.request_.bind(datastore);
@@ -93,15 +91,19 @@ util.inherits(Transaction, Request);
  *
  * If the commit request fails, we will automatically rollback the transaction.
  *
- * @param {object=} gaxOptions - Request configuration options, outlined here:
+ * @param {object} [gaxOptions] Request configuration options, outlined here:
  *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request.
  *   If the commit fails, we automatically try to rollback the transaction (see
  *   {module:datastore/transaction#rollback}).
- * @param {object} callback.apiResponse - The full API response.
+ * @param {object} callback.apiResponse The full API response.
  *
  * @example
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ *
  * transaction.commit(function(err, apiResponse) {
  *   if (err) {
  *     // Transaction could not be committed.
@@ -231,15 +233,19 @@ Transaction.prototype.commit = function(gaxOptions, callback) {
  * Create a query for the specified kind. See {module:datastore/query} for all
  * of the available methods.
  *
- * @resource [Datastore Queries]{@link https://cloud.google.com/datastore/docs/concepts/queries}
+ * @see [Datastore Queries]{@link https://cloud.google.com/datastore/docs/concepts/queries}
  *
- * @see {module:datastore/query}
+ * @see {@link Query}
  *
- * @param {string=} namespace - Namespace.
- * @param {string} kind - The kind to query.
- * @return {module:datastore/query}
+ * @param {string} [namespace] Namespace.
+ * @param {string} kind The kind to query.
+ * @returns {Query}
  *
  * @example
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ *
  * // Run the query inside the transaction.
  * transaction.run(function(err) {
  *   if (err) {
@@ -269,9 +275,13 @@ Transaction.prototype.createQuery = function() {
  * Delete all entities identified with the specified key(s) in the current
  * transaction.
  *
- * @param {Key|Key[]} key - Datastore key object(s).
+ * @param {Key|Key[]} key Datastore key object(s).
  *
  * @example
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ *
  * transaction.run(function(err) {
  *   if (err) {
  *     // Error handling omitted.
@@ -310,13 +320,17 @@ Transaction.prototype.delete = function(entities) {
 /**
  * Reverse a transaction remotely and finalize the current transaction instance.
  *
- * @param {object=} gaxOptions - Request configuration options, outlined here:
+ * @param {object} [gaxOptions] Request configuration options, outlined here:
  *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {function} callback - The callback function.
- * @param {?error} callback.err - An error returned while making this request.
- * @param {object} callback.apiResponse - The full API response.
+ * @param {function} callback The callback function.
+ * @param {?error} callback.err An error returned while making this request.
+ * @param {object} callback.apiResponse The full API response.
  *
  * @example
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ *
  * transaction.run(function(err) {
  *   if (err) {
  *     // Error handling omitted.
@@ -364,16 +378,20 @@ Transaction.prototype.rollback = function(gaxOptions, callback) {
  * Begin a remote transaction. In the callback provided, run your transactional
  * commands.
  *
- * @param {object=} gaxOptions - Request configuration options, outlined here:
+ * @param {object} [gaxOptions] Request configuration options, outlined here:
  *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
- * @param {function} callback - The function to execute within the context of
+ * @param {function} callback The function to execute within the context of
  *     a transaction.
- * @param {?error} callback.err - An error returned while making this request.
- * @param {module:datastore/transaction} callback.transaction - This transaction
+ * @param {?error} callback.err An error returned while making this request.
+ * @param {Transaction} callback.transaction This transaction
  *     instance.
- * @param {object} callback.apiResponse - The full API response.
+ * @param {object} callback.apiResponse The full API response.
  *
  * @example
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ *
  * transaction.run(function(err, transaction) {
  *   // Perform Datastore transactional operations.
  *   var key = datastore.key(['Company', 123]);
@@ -446,23 +464,25 @@ Transaction.prototype.run = function(gaxOptions, callback) {
  * included in *all* indexes, you must supply an `excludeFromIndexes` array. See
  * below for an example.
  *
- * @param {object|object[]} entities - Datastore key object(s).
- * @param {Key} entities.key - Datastore key object.
- * @param {string[]=} entities.excludeFromIndexes - Exclude properties from
+ * @param {object|object[]} entities Datastore key object(s).
+ * @param {Key} entities.key Datastore key object.
+ * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
  *     indexing using a simple JSON path notation. See the example below to see
  *     how to target properties at different levels of nesting within your
  *     entity.
- * @param {object} entities.data - Data to save with the provided key.
+ * @param {object} entities.data Data to save with the provided key.
  *
  * @example
- * //-
- * // Save a single entity.
- * //
+ * <caption>Save a single entity.</caption>
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ *
  * // Notice that we are providing an incomplete key. After the transaction is
  * // committed, the Key object held by the `key` variable will be populated
  * // with a path containing its generated ID.
  * //-
- * var key = datastore.key('Company');
+ * const key = datastore.key('Company');
  *
  * transaction.run(function(err) {
  *   if (err) {
@@ -483,10 +503,14 @@ Transaction.prototype.run = function(gaxOptions, callback) {
  *   });
  * });
  *
- * //-
+ * @example
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ *
  * // Use an array, `excludeFromIndexes`, to exclude properties from indexing.
  * // This will allow storing string values larger than 1500 bytes.
- * //-
+ *
  * transaction.run(function(err) {
  *   if (err) {
  *     // Error handling omitted.
@@ -519,11 +543,13 @@ Transaction.prototype.run = function(gaxOptions, callback) {
  *   });
  * });
  *
- * //-
- * // Save multiple entities at once.
- * //-
- * var companyKey = datastore.key(['Company', 123]);
- * var productKey = datastore.key(['Product', 'Computer']);
+ * @example
+ * <caption>Save multiple entities at once.</caption>
+ * const Datastore = require('@google-cloud/datastore');
+ * const datastore = new Datastore();
+ * const transaction = datastore.transaction();
+ * const companyKey = datastore.key(['Company', 123]);
+ * const productKey = datastore.key(['Product', 'Computer']);
  *
  * transaction.run(function(err) {
  *   if (err) {
@@ -575,4 +601,9 @@ common.util.promisifyAll(Transaction, {
   exclude: ['createQuery', 'delete', 'save'],
 });
 
+/**
+ * Reference to the {@link Transaction} class.
+ * @name module:@google-cloud/datastore.Transaction
+ * @see Transaction
+ */
 module.exports = Transaction;
