@@ -105,6 +105,24 @@ describe('Transaction', function() {
       assert.strictEqual(transaction.namespace, NAMESPACE);
     });
 
+    it('should localize the transaction ID', function() {
+      var options = {
+        id: 'transaction-id'
+      };
+
+      var transaction = new Transaction(DATASTORE, options);
+      assert.strictEqual(transaction.id, options.id);
+    });
+
+    it('should localize readOnly', function() {
+      var options = {
+        readOnly: true
+      };
+
+      var transaction = new Transaction(DATASTORE, options);
+      assert.strictEqual(transaction.readOnly, true);
+    });
+
     it('should localize request function', function(done) {
       var transaction;
 
@@ -440,7 +458,8 @@ describe('Transaction', function() {
       transaction.request_ = function(config) {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'beginTransaction');
-        assert.deepEqual(config.gaxOpts, {});
+        assert.deepEqual(config.reqOpts, { transactionOptions: {} });
+        assert.strictEqual(config.gaxOpts, undefined);
         done();
       };
 
@@ -455,7 +474,84 @@ describe('Transaction', function() {
         done();
       };
 
-      transaction.run(gaxOptions);
+      transaction.run({ gaxOptions: gaxOptions });
+    });
+
+    describe('options.readOnly', function() {
+      it('should respect the readOnly option', function(done) {
+        var options = {
+          readOnly: true
+        };
+
+        transaction.request_ = function(config) {
+          assert.deepEqual(config.reqOpts.transactionOptions.readOnly, {});
+          done();
+        };
+
+        transaction.run(options, assert.ifError);
+      });
+
+      it('should respect the global readOnly option', function(done) {
+        transaction.readOnly = true;
+
+        transaction.request_ = function(config) {
+          assert.deepEqual(config.reqOpts.transactionOptions.readOnly, {});
+          done();
+        };
+
+        transaction.run(assert.ifError);
+      });
+    });
+
+    describe('options.transactionId', function() {
+      it('should respect the transactionId option', function(done) {
+        var options = {
+          transactionId: 'transaction-id'
+        };
+
+        transaction.request_ = function(config) {
+          assert.deepEqual(config.reqOpts.transactionOptions.readWrite, {
+            previousTransaction: options.transactionId
+          });
+          done();
+        };
+
+        transaction.run(options, assert.ifError);
+      });
+
+      it('should respect the global transactionId option', function(done) {
+        transaction.id = 'transaction-id';
+
+        transaction.request_ = function(config) {
+          assert.deepEqual(config.reqOpts.transactionOptions.readWrite, {
+            previousTransaction: transaction.id
+          });
+          done();
+        };
+
+        transaction.run(assert.ifError);
+      });
+    });
+
+    describe('options.transactionOptions', function() {
+      it('should allow full override of transactionOptions', function(done) {
+        transaction.readOnly = true;
+
+        var options = {
+          transactionOptions: {
+            readWrite: {
+              previousTransaction: 'transaction-id'
+            }
+          }
+        };
+
+        transaction.request_ = function(config) {
+          assert.deepEqual(config.reqOpts, options);
+          done();
+        };
+
+        transaction.run(options, assert.ifError);
+      });
     });
 
     describe('error', function() {
