@@ -44,7 +44,7 @@ var Request = require('./request.js');
  * const datastore = new Datastore();
  * const transaction = datastore.transaction();
  */
-function Transaction(datastore) {
+function Transaction(datastore, options) {
   /**
    * @name Transaction#datastore
    * @type {Datastore}
@@ -61,6 +61,11 @@ function Transaction(datastore) {
    * @type {string}
    */
   this.namespace = datastore.namespace;
+
+  options = options || {};
+
+  this.id = options.id;
+  this.readOnly = options.readOnly === true;
 
   this.request = datastore.request_.bind(datastore);
 
@@ -378,8 +383,12 @@ Transaction.prototype.rollback = function(gaxOptions, callback) {
  * Begin a remote transaction. In the callback provided, run your transactional
  * commands.
  *
- * @param {object} [gaxOptions] Request configuration options, outlined here:
- *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+ * @param {object} [options] Configuration object.
+ * @param {object} [options.gaxOptions] Request configuration options, outlined
+ *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+ * @param {boolean} [options.readOnly=false] A read-only transaction cannot
+ *     modify entities.
+ * @param {string} [options.transactionId] The ID of a previous transaction.
  * @param {function} callback The function to execute within the context of
  *     a transaction.
  * @param {?error} callback.err An error returned while making this request.
@@ -420,21 +429,41 @@ Transaction.prototype.rollback = function(gaxOptions, callback) {
  *   var apiResponse = data[1];
  * });
  */
-Transaction.prototype.run = function(gaxOptions, callback) {
+Transaction.prototype.run = function(options, callback) {
   var self = this;
 
-  if (is.fn(gaxOptions)) {
-    callback = gaxOptions;
-    gaxOptions = {};
+  if (is.fn(options)) {
+    callback = options;
+    options = {};
   }
 
+  options = options || {};
   callback = callback || common.util.noop;
+
+  var reqOpts = {
+    transactionOptions: {}
+  };
+
+  if (options.readOnly || this.readOnly) {
+    reqOpts.transactionOptions.readOnly = {};
+  }
+
+  if (options.transactionId || this.id) {
+    reqOpts.transactionOptions.readWrite = {
+      previousTransaction: options.transactionId || this.id
+    };
+  }
+
+  if (options.transactionOptions) {
+    reqOpts.transactionOptions = options.transactionOptions;
+  }
 
   this.request_(
     {
       client: 'DatastoreClient',
       method: 'beginTransaction',
-      gaxOpts: gaxOptions,
+      reqOpts: reqOpts,
+      gaxOpts: options.gaxOptions,
     },
     function(err, resp) {
       if (err) {
