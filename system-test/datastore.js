@@ -981,7 +981,7 @@ describe('Datastore', function() {
     });
 
     it('should read in a readOnly transaction', function(done) {
-      var transaction = datastore.transaction({ readOnly: true });
+      var transaction = datastore.transaction({readOnly: true});
       var key = datastore.key(['Company', 'Google']);
 
       transaction.run(function(err) {
@@ -991,7 +991,7 @@ describe('Datastore', function() {
     });
 
     it('should not write in a readOnly transaction', function(done) {
-      var transaction = datastore.transaction({ readOnly: true });
+      var transaction = datastore.transaction({readOnly: true});
       var key = datastore.key(['Company', 'Google']);
 
       transaction.run(function(err) {
@@ -1000,7 +1000,7 @@ describe('Datastore', function() {
         transaction.get(key, function(err) {
           assert.ifError(err);
 
-          transaction.save({ key: key, data: {} });
+          transaction.save({key: key, data: {}});
 
           transaction.commit(function(err) {
             assert(err instanceof Error);

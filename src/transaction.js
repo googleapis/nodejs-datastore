@@ -441,7 +441,7 @@ Transaction.prototype.run = function(options, callback) {
   callback = callback || common.util.noop;
 
   var reqOpts = {
-    transactionOptions: {}
+    transactionOptions: {},
   };
 
   if (options.readOnly || this.readOnly) {
@@ -450,7 +450,7 @@ Transaction.prototype.run = function(options, callback) {
 
   if (options.transactionId || this.id) {
     reqOpts.transactionOptions.readWrite = {
-      previousTransaction: options.transactionId || this.id
+      previousTransaction: options.transactionId || this.id,
     };
   }
 

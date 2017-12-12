@@ -41,7 +41,8 @@ function runQuery() {
       // Process error
 
       // For example, treat permission error like no entities were found
-      if (/* some condition */false) {
+      // eslint-disable-next-line no-constant-condition
+      if (/* some condition */ false) {
         return [];
       }
 

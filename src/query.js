@@ -148,7 +148,6 @@ Query.prototype.filter = function(property, operator, value) {
     operator = '=';
   }
 
-  // TODO: Add filter validation.
   this.filters.push({
     name: property.trim(),
     op: operator.trim(),

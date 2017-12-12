@@ -107,7 +107,7 @@ describe('Transaction', function() {
 
     it('should localize the transaction ID', function() {
       var options = {
-        id: 'transaction-id'
+        id: 'transaction-id',
       };
 
       var transaction = new Transaction(DATASTORE, options);
@@ -116,7 +116,7 @@ describe('Transaction', function() {
 
     it('should localize readOnly', function() {
       var options = {
-        readOnly: true
+        readOnly: true,
       };
 
       var transaction = new Transaction(DATASTORE, options);
@@ -458,7 +458,7 @@ describe('Transaction', function() {
       transaction.request_ = function(config) {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'beginTransaction');
-        assert.deepEqual(config.reqOpts, { transactionOptions: {} });
+        assert.deepEqual(config.reqOpts, {transactionOptions: {}});
         assert.strictEqual(config.gaxOpts, undefined);
         done();
       };
@@ -474,13 +474,13 @@ describe('Transaction', function() {
         done();
       };
 
-      transaction.run({ gaxOptions: gaxOptions });
+      transaction.run({gaxOptions: gaxOptions});
     });
 
     describe('options.readOnly', function() {
       it('should respect the readOnly option', function(done) {
         var options = {
-          readOnly: true
+          readOnly: true,
         };
 
         transaction.request_ = function(config) {
@@ -506,12 +506,12 @@ describe('Transaction', function() {
     describe('options.transactionId', function() {
       it('should respect the transactionId option', function(done) {
         var options = {
-          transactionId: 'transaction-id'
+          transactionId: 'transaction-id',
         };
 
         transaction.request_ = function(config) {
           assert.deepEqual(config.reqOpts.transactionOptions.readWrite, {
-            previousTransaction: options.transactionId
+            previousTransaction: options.transactionId,
           });
           done();
         };
@@ -524,7 +524,7 @@ describe('Transaction', function() {
 
         transaction.request_ = function(config) {
           assert.deepEqual(config.reqOpts.transactionOptions.readWrite, {
-            previousTransaction: transaction.id
+            previousTransaction: transaction.id,
           });
           done();
         };
@@ -540,9 +540,9 @@ describe('Transaction', function() {
         var options = {
           transactionOptions: {
             readWrite: {
-              previousTransaction: 'transaction-id'
-            }
-          }
+              previousTransaction: 'transaction-id',
+            },
+          },
         };
 
         transaction.request_ = function(config) {
