@@ -284,7 +284,7 @@ describe('Datastore', function() {
 
   describe('isGeoPoint', function() {
     it('should pass value to entity', function() {
-      var value = { fakeLatitude: 1, fakeLongitude: 2 };
+      var value = {fakeLatitude: 1, fakeLongitude: 2};
       var called = false;
       fakeEntity.isDsGeoPoint = function(arg) {
         assert.strictEqual(arg, value);
@@ -312,7 +312,7 @@ describe('Datastore', function() {
 
   describe('isKey', function() {
     it('should pass value to entity', function() {
-      var value = { zz: true };
+      var value = {zz: true};
       var called = false;
       fakeEntity.isDsKey = function(arg) {
         assert.strictEqual(arg, value);
