@@ -268,6 +268,62 @@ describe('Datastore', function() {
     });
   });
 
+  describe('isDouble', function() {
+    it('should pass value to entity', function() {
+      var value = 0.42;
+      var called = false;
+      fakeEntity.isDsDouble = function(arg) {
+        assert.strictEqual(arg, value);
+        called = true;
+        return false;
+      };
+      assert.strictEqual(datastore.isDouble(value), false);
+      assert.strictEqual(called, true);
+    });
+  });
+
+  describe('isGeoPoint', function() {
+    it('should pass value to entity', function() {
+      var value = { fakeLatitude: 1, fakeLongitude: 2 };
+      var called = false;
+      fakeEntity.isDsGeoPoint = function(arg) {
+        assert.strictEqual(arg, value);
+        called = true;
+        return false;
+      };
+      assert.strictEqual(datastore.isGeoPoint(value), false);
+      assert.strictEqual(called, true);
+    });
+  });
+
+  describe('isInt', function() {
+    it('should pass value to entity', function() {
+      var value = 42;
+      var called = false;
+      fakeEntity.isDsInt = function(arg) {
+        assert.strictEqual(arg, value);
+        called = true;
+        return false;
+      };
+      assert.strictEqual(datastore.isInt(value), false);
+      assert.strictEqual(called, true);
+    });
+  });
+
+  describe('isKey', function() {
+    it('should pass value to entity', function() {
+      var value = { zz: true };
+      var called = false;
+      fakeEntity.isDsKey = function(arg) {
+        assert.strictEqual(arg, value);
+        called = true;
+        return false;
+      };
+      assert.strictEqual(datastore.isKey(value), false);
+      assert.strictEqual(called, true);
+    });
+  });
+
   describe('geoPoint', function() {
     it('should expose GeoPoint builder', function() {
       var aGeoPoint = {latitude: 24, longitude: 88};
