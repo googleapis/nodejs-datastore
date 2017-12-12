@@ -20,7 +20,7 @@ const Datastore = require('@google-cloud/datastore');
 // [START error]
 function runQuery() {
   // Creates a client
-  const datastore = new Datastore();
+  const datastore = new Datastore({});
 
   const query = datastore.createQuery(['Company']).start('badrequest');
 
@@ -41,7 +41,7 @@ function runQuery() {
       // Process error
 
       // For example, treat permission error like no entities were found
-      if (/* some condition */true) {
+      if (/* some condition */false) {
         return [];
       }
 

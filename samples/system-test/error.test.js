@@ -25,5 +25,5 @@ test.afterEach.always(tools.restoreConsole);
 test(`should have an error`, async t => {
   const err = await t.throws(error.runQuery());
   t.truthy(err);
-  t.is(err.code, 3);
+  t.is(err.code, 400);
 });

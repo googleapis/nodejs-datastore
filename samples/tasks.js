@@ -23,7 +23,7 @@
 const Datastore = require('@google-cloud/datastore');
 
 // Creates a client
-const datastore = new Datastore();
+const datastore = new Datastore({});
 // [END build_service]
 
 /*
@@ -177,7 +177,6 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 list`, `Lists all tasks ordered by creation time`)
   .example(`node $0 delete 12345`, `Deletes task 12345.`)
   .wrap(120)
-  .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/datastore/docs`)
   .help()
   .strict().argv;

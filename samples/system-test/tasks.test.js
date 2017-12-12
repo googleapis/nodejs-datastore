@@ -15,7 +15,8 @@
 
 'use strict';
 
-const datastore = require(`@google-cloud/datastore`)();
+const Datastore = require(`@google-cloud/datastore`);
+const datastore = new Datastore({});
 const path = require(`path`);
 const test = require(`ava`);
 const tools = require(`@google-cloud/nodejs-repo-tools`);
