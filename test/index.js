@@ -268,6 +268,30 @@ describe('Datastore', function() {
     });
   });
 
+  describe('geoPoint', function() {
+    it('should expose GeoPoint builder', function() {
+      var aGeoPoint = {latitude: 24, longitude: 88};
+      var geoPoint = Datastore.geoPoint(aGeoPoint);
+      assert.strictEqual(geoPoint.value, aGeoPoint);
+    });
+
+    it('should also be on the prototype', function() {
+      assert.strictEqual(datastore.geoPoint, Datastore.geoPoint);
+    });
+  });
+
+  describe('int', function() {
+    it('should expose Int builder', function() {
+      var anInt = 7;
+      var int = Datastore.int(anInt);
+      assert.strictEqual(int.value, anInt);
+    });
+
+    it('should also be on the prototype', function() {
+      assert.strictEqual(datastore.int, Datastore.int);
+    });
+  });
+
   describe('isDouble', function() {
     it('should pass value to entity', function() {
       var value = 0.42;
@@ -321,30 +345,6 @@ describe('Datastore', function() {
       };
       assert.strictEqual(datastore.isKey(value), false);
       assert.strictEqual(called, true);
-    });
-  });
-
-  describe('geoPoint', function() {
-    it('should expose GeoPoint builder', function() {
-      var aGeoPoint = {latitude: 24, longitude: 88};
-      var geoPoint = Datastore.geoPoint(aGeoPoint);
-      assert.strictEqual(geoPoint.value, aGeoPoint);
-    });
-
-    it('should also be on the prototype', function() {
-      assert.strictEqual(datastore.geoPoint, Datastore.geoPoint);
-    });
-  });
-
-  describe('int', function() {
-    it('should expose Int builder', function() {
-      var anInt = 7;
-      var int = Datastore.int(anInt);
-      assert.strictEqual(int.value, anInt);
-    });
-
-    it('should also be on the prototype', function() {
-      assert.strictEqual(datastore.int, Datastore.int);
     });
   });
 
