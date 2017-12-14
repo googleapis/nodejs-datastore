@@ -28,13 +28,25 @@ var fakeEntity = {
   Int: function(value) {
     this.value = value;
   },
+  isDsInt: function() {
+    this.calledWith_ = arguments;
+  },
   Double: function(value) {
     this.value = value;
+  },
+  isDsDouble: function() {
+    this.calledWith_ = arguments;
   },
   GeoPoint: function(value) {
     this.value = value;
   },
+  isDsGeoPoint: function() {
+    this.calledWith_ = arguments;
+  },
   Key: function() {
+    this.calledWith_ = arguments;
+  },
+  isDsKey: function() {
     this.calledWith_ = arguments;
   },
 };
@@ -296,6 +308,7 @@ describe('Datastore', function() {
     it('should pass value to entity', function() {
       var value = 0.42;
       var called = false;
+      var saved = fakeEntity.isDsDouble;
       fakeEntity.isDsDouble = function(arg) {
         assert.strictEqual(arg, value);
         called = true;
@@ -303,6 +316,13 @@ describe('Datastore', function() {
       };
       assert.strictEqual(datastore.isDouble(value), false);
       assert.strictEqual(called, true);
+      fakeEntity.isDsDouble = saved;
+    });
+
+    it('should expose Double identifier', function() {
+      var something = {};
+      Datastore.isDouble(something);
+      assert.strictEqual(fakeEntity.calledWith_[0], something);
     });
   });
 
@@ -310,6 +330,7 @@ describe('Datastore', function() {
     it('should pass value to entity', function() {
       var value = {fakeLatitude: 1, fakeLongitude: 2};
       var called = false;
+      var saved = fakeEntity.isDsGeoPoint;
       fakeEntity.isDsGeoPoint = function(arg) {
         assert.strictEqual(arg, value);
         called = true;
@@ -317,6 +338,13 @@ describe('Datastore', function() {
       };
       assert.strictEqual(datastore.isGeoPoint(value), false);
       assert.strictEqual(called, true);
+      fakeEntity.isDsGeoPoint = saved;
+    });
+
+    it('should expose GeoPoint identifier', function() {
+      var something = {};
+      Datastore.isGeoPoint(something);
+      assert.strictEqual(fakeEntity.calledWith_[0], something);
     });
   });
 
@@ -324,6 +352,7 @@ describe('Datastore', function() {
     it('should pass value to entity', function() {
       var value = 42;
       var called = false;
+      var saved = fakeEntity.isDsInt;
       fakeEntity.isDsInt = function(arg) {
         assert.strictEqual(arg, value);
         called = true;
@@ -331,6 +360,13 @@ describe('Datastore', function() {
       };
       assert.strictEqual(datastore.isInt(value), false);
       assert.strictEqual(called, true);
+      fakeEntity.isDsInt = saved;
+    });
+
+    it('should expose Int identifier', function() {
+      var something = {};
+      Datastore.isInt(something);
+      assert.strictEqual(fakeEntity.calledWith_[0], something);
     });
   });
 
@@ -338,6 +374,7 @@ describe('Datastore', function() {
     it('should pass value to entity', function() {
       var value = {zz: true};
       var called = false;
+      var saved = fakeEntity.isDsKey;
       fakeEntity.isDsKey = function(arg) {
         assert.strictEqual(arg, value);
         called = true;
@@ -345,6 +382,13 @@ describe('Datastore', function() {
       };
       assert.strictEqual(datastore.isKey(value), false);
       assert.strictEqual(called, true);
+      fakeEntity.isDsKey = saved;
+    });
+
+    it('should expose Key identifier', function() {
+      var something = {};
+      datastore.isKey(something);
+      assert.strictEqual(fakeEntity.calledWith_[0], something);
     });
   });
 
