@@ -58,14 +58,14 @@
     "system-test": "repo-tools test run --cmd mocha -- system-test/*.js --no-timeouts"
   },
   "dependencies": {
-    "@google-cloud/common": "^0.14.0",
+    "@google-cloud/common": "^0.15.1",
     "arrify": "^1.0.0",
     "concat-stream": "^1.5.0",
     "create-error-class": "^3.0.2",
     "extend": "^3.0.1",
-    "google-auto-auth": "^0.7.2",
+    "google-auto-auth": "^0.8.1",
     "google-gax": "^0.14.2",
-    "google-proto-files": "^0.13.1",
+    "google-proto-files": "^0.14.1",
     "is": "^3.0.1",
     "lodash.flatten": "^4.2.0",
     "lodash.merge": "^4.6.0",
