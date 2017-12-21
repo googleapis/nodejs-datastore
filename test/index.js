@@ -181,7 +181,12 @@ describe('Datastore', function() {
       process.env.DATASTORE_PROJECT_ID = projectId;
 
       var datastore = new Datastore(OPTIONS);
-      process.env.DATASTORE_PROJECT_ID = datastoreProjectIdCached;
+
+      if (typeof datastoreProjectIdCached === 'string') {
+        process.env.DATASTORE_PROJECT_ID = datastoreProjectIdCached;
+      } else {
+        delete process.env.DATASTORE_PROJECT_ID;
+      }
 
       assert.strictEqual(datastore.projectId, projectId);
     });
@@ -222,6 +227,7 @@ describe('Datastore', function() {
             scopes: v1.DatastoreClient.scopes,
             servicePath: datastore.baseUrl_,
             port: 443,
+            projectId: undefined,
           },
           options
         )
