@@ -378,7 +378,7 @@ function Datastore(options) {
   this.namespace = options.namespace;
 
   const userProvidedProjectId =
-    process.env.DATASTORE_PROJECT_ID || options.projectId;
+    options.projectId || process.env.DATASTORE_PROJECT_ID;
   const defaultProjectId = '{{projectId}}';
 
   /**
@@ -401,7 +401,6 @@ function Datastore(options) {
     },
     options
   );
-
   if (this.customEndpoint_) {
     this.options.sslCreds = grpc.credentials.createInsecure();
   }
