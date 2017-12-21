@@ -246,8 +246,6 @@ describe('Datastore', function() {
       );
     });
 
-    it('should cache the correct projectId', function() {});
-
     it('should set port if detected', function() {
       var determineBaseUrl_ = Datastore.prototype.determineBaseUrl_;
 
