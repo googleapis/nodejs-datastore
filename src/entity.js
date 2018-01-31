@@ -158,9 +158,9 @@ entity.isDsGeoPoint = isDsGeoPoint;
  * Build a Datastore Key object.
  *
  * @class
- * @param {object|string|array} Configuration object.
- * @param {string|array} options.path  Key path.
- * @param {string} [options.namespace] Optional namespace.
+ * @param {object} options - Configuration object.
+ * @param {array} options.path - Key path.
+ * @param {string} [options.namespace] - Optional namespace.
  *
  * @example
  * const Datastore = require('@google-cloud/datastore');
@@ -178,7 +178,7 @@ function Key(options) {
   this.namespace = options.namespace;
 
   if (options.path.length % 2 === 0) {
-    var identifier = options.path.pop();
+    var identifier = popPath();
 
     if (is.number(identifier) || isDsInt(identifier)) {
       this.id = identifier.value || identifier;
@@ -187,7 +187,7 @@ function Key(options) {
     }
   }
 
-  this.kind = options.path.pop();
+  this.kind = popPath();
 
   if (options.path.length > 0) {
     this.parent = new Key(options);
@@ -208,6 +208,13 @@ function Key(options) {
       ]);
     },
   });
+
+  // Allows recursive constructor calls without affecting input path.
+  function popPath() {
+    const path = options.path;
+    options.path = path.slice(0, -1);
+    return path[path.length - 1];
+  }
 }
 
 entity.Key = Key;
