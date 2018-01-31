@@ -177,8 +177,10 @@ function Key(options) {
    */
   this.namespace = options.namespace;
 
+  options.path = [].slice.call(options.path);
+
   if (options.path.length % 2 === 0) {
-    var identifier = popPath();
+    var identifier = options.path.pop();
 
     if (is.number(identifier) || isDsInt(identifier)) {
       this.id = identifier.value || identifier;
@@ -187,7 +189,7 @@ function Key(options) {
     }
   }
 
-  this.kind = popPath();
+  this.kind = options.path.pop();
 
   if (options.path.length > 0) {
     this.parent = new Key(options);
@@ -208,13 +210,6 @@ function Key(options) {
       ]);
     },
   });
-
-  // Allows recursive constructor calls without affecting input path.
-  function popPath() {
-    const path = options.path;
-    options.path = path.slice(0, -1);
-    return path[path.length - 1];
-  }
 }
 
 entity.Key = Key;
