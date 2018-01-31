@@ -158,9 +158,9 @@ entity.isDsGeoPoint = isDsGeoPoint;
  * Build a Datastore Key object.
  *
  * @class
- * @param {object} options - Configuration object.
- * @param {array} options.path - Key path.
- * @param {string} [options.namespace] - Optional namespace.
+ * @param {object} options Configuration object.
+ * @param {array} options.path Key path.
+ * @param {string} [options.namespace] Optional namespace.
  *
  * @example
  * const Datastore = require('@google-cloud/datastore');
