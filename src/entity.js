@@ -507,7 +507,7 @@ function entityToEntityProto(entityObject) {
           entity.properties[path].excludeFromIndexes = true;
         }
       } else if (!path) {
-        // This is a primitive that should be excluded.
+        // This is a primitive or entity root that should be excluded.
         entity.excludeFromIndexes = true;
       }
       return;
@@ -535,10 +535,15 @@ function entityToEntityProto(entityObject) {
 
     if (firstPathPartIsArray) {
       var array = entity.properties[firstPathPart].arrayValue;
-
       array.values.forEach(function(arrayValue) {
-        var memberEntity = (remainderPath && arrayValue.entityValue) || arrayValue;
-        excludePathFromEntity(memberEntity, remainderPath);
+        if (remainderPath === '') {
+          // We want to exclude *this* array property, which is
+          // equivalent with excluding all its arrayValues:
+          excludePathFromEntity(arrayValue, remainderPath);
+        } else {
+          // Path traversal continues at arrayValue.entityValue
+          excludePathFromEntity(arrayValue.entityValue, remainderPath);
+        }
       });
     } else if (firstPathPartIsEntity) {
       var parentEntity = entity.properties[firstPathPart].entityValue;
