@@ -537,7 +537,7 @@ function entityToEntityProto(entityObject) {
       var array = entity.properties[firstPathPart].arrayValue;
 
       array.values.forEach(function(arrayValue) {
-        var memberEntity = arrayValue.entityValue || arrayValue;
+        var memberEntity = (remainderPath && arrayValue.entityValue) || arrayValue;
         excludePathFromEntity(memberEntity, remainderPath);
       });
     } else if (firstPathPartIsEntity) {

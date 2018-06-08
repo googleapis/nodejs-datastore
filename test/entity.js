@@ -591,7 +591,17 @@ describe('entity', function() {
     });
 
     it('should respect excludeFromIndexes', function() {
-      var value = 'Stephen';
+      var value1 = 'Stephen';
+      var value2 = 'Stephen2';
+      var value3 = 'Stephen3';
+      var value4 = 'Stephen4';
+      var value5 = 'Stephen5';
+      var value6 = 'Stephen6';
+      var value7 = 'Stephen7';
+      var value8 = 'Stephen8';
+      var value9 = 'Stephen9';
+      var value10 = 'Stephen10';
+      var value11 = 'Stephen11';
 
       var entityObject = {
         excludeFromIndexes: [
@@ -607,37 +617,37 @@ describe('entity', function() {
         ],
 
         data: {
-          name: value,
+          name: value1,
 
           entity: {
-            name: value,
+            name: value2,
           },
 
           entityExcluded: [
-            value,
+            value3,
             {
-              name: value,
+              name: value4,
             },
           ],
 
           primitiveExcluded: [
-            value,
+            value5,
             {
-              name: value,
+              name: value6,
             },
           ],
 
           array: [
-            value,
+            value7,
             {
-              name: value,
+              name: value8,
             },
             {
               entity: {
-                name: value,
+                name: value9,
                 array: [
                   {
-                    name: value,
+                    name: value10,
                   },
                 ],
               },
@@ -646,7 +656,7 @@ describe('entity', function() {
               array: [
                 {
                   entity: {
-                    name: value,
+                    name: value11,
                   },
                 },
               ],
@@ -659,14 +669,14 @@ describe('entity', function() {
         key: null,
         properties: {
           name: {
-            stringValue: value,
+            stringValue: value1,
             excludeFromIndexes: true,
           },
           entity: {
             entityValue: {
               properties: {
                 name: {
-                  stringValue: value,
+                  stringValue: value2,
                   excludeFromIndexes: true,
                 },
               },
@@ -676,13 +686,13 @@ describe('entity', function() {
             arrayValue: {
               values: [
                 {
-                  stringValue: value,
+                  stringValue: value3,
                 },
                 {
                   entityValue: {
                     properties: {
                       name: {
-                        stringValue: value,
+                        stringValue: value4,
                         excludeFromIndexes: true,
                       },
                     },
@@ -695,17 +705,18 @@ describe('entity', function() {
             arrayValue: {
               values: [
                 {
-                  stringValue: value,
+                  stringValue: value5,
                   excludeFromIndexes: true,
                 },
                 {
                   entityValue: {
                     properties: {
                       name: {
-                        stringValue: value,
+                        stringValue: value6,
                       },
                     },
                   },
+                  excludeFromIndexes: true,
                 },
               ],
             },
@@ -714,18 +725,19 @@ describe('entity', function() {
             arrayValue: {
               values: [
                 {
-                  stringValue: value,
+                  stringValue: value7,
                   excludeFromIndexes: true,
                 },
                 {
                   entityValue: {
                     properties: {
                       name: {
-                        stringValue: value,
+                        stringValue: value8,
                         excludeFromIndexes: true,
                       },
                     },
                   },
+                  excludeFromIndexes: true,
                 },
                 {
                   entityValue: {
@@ -734,7 +746,7 @@ describe('entity', function() {
                         entityValue: {
                           properties: {
                             name: {
-                              stringValue: value,
+                              stringValue: value9,
                               excludeFromIndexes: true,
                             },
                             array: {
@@ -744,7 +756,7 @@ describe('entity', function() {
                                     entityValue: {
                                       properties: {
                                         name: {
-                                          stringValue: value,
+                                          stringValue: value10,
                                           excludeFromIndexes: true,
                                         },
                                       },
@@ -758,6 +770,7 @@ describe('entity', function() {
                       },
                     },
                   },
+                  excludeFromIndexes: true,
                 },
                 {
                   entityValue: {
@@ -772,7 +785,7 @@ describe('entity', function() {
                                     entityValue: {
                                       properties: {
                                         name: {
-                                          stringValue: value,
+                                          stringValue: value11,
                                           excludeFromIndexes: true,
                                         },
                                       },
@@ -786,6 +799,7 @@ describe('entity', function() {
                       },
                     },
                   },
+                  excludeFromIndexes: true,
                 },
               ],
             },
