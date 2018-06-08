@@ -542,7 +542,10 @@ function entityToEntityProto(entityObject) {
           excludePathFromEntity(arrayValue, remainderPath);
         } else {
           // Path traversal continues at arrayValue.entityValue
-          excludePathFromEntity(arrayValue.entityValue, remainderPath);
+          excludePathFromEntity(
+            arrayValue.entityValue || arrayValue,
+            remainderPath
+          );
         }
       });
     } else if (firstPathPartIsEntity) {
