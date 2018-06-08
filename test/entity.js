@@ -603,6 +603,9 @@ describe('entity', function() {
       var value10 = 'Stephen10';
       var value11 = 'Stephen11';
       var value12 = 'Stephen12';
+      var value13 = 'something';
+      var value14 = 'else';
+      var value15 = 'whatever';
 
       var entityObject = {
         excludeFromIndexes: [
@@ -615,7 +618,8 @@ describe('entity', function() {
           'array[].array[].entity.name',
           'entityExcluded[].name',
           'primitiveExcluded[]',
-          'rules[].requirements[].audiences'
+          'rules[].requirements[].audiences',
+          'nestedArrayVariants[].a[].b'
         ],
 
         data: {
@@ -676,7 +680,17 @@ describe('entity', function() {
             {
               requirements: null
             },
-          ]
+          ],
+
+          nestedArrayVariants: [
+            {
+              a: [{b:value13}, {c:value14}],
+            },{
+              a: null,
+            },{
+              a: [value15],
+            },
+          ],
 
         },
       };
@@ -847,6 +861,62 @@ describe('entity', function() {
                     properties: {
                       requirements: {
                         nullValue: 0
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          nestedArrayVariants: {
+            arrayValue: {
+              values: [
+                {
+                  entityValue: {
+                    properties: {
+                      a: {
+                        arrayValue: {
+                          values: [
+                            {
+                              entityValue: {
+                                properties: {
+                                  b: {
+                                    stringValue: value13,
+                                    excludeFromIndexes: true,
+                                  },
+                                },
+                              },
+                            },{
+                              entityValue: {
+                                properties: {
+                                  c: {
+                                    stringValue: value14,
+                                  },
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },{
+                  entityValue: {
+                    properties: {
+                      a: {
+                        nullValue: 0,
+                      },
+                    },
+                  },
+                },{
+                  entityValue: {
+                    properties: {
+                      a: {
+                        arrayValue: {
+                          values: [{
+                            stringValue: value15,
+                          }],
+                        },
                       },
                     },
                   },
