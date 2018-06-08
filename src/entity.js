@@ -546,7 +546,7 @@ function entityToEntityProto(entityObject) {
             remainderPath // === ''
           );
         } else {
-          // Path traversal continues at arrayValue.entityValue,
+          // Path traversal continues at value.entityValue,
           // if it is an entity, or must end at value.
           excludePathFromEntity(
             value.entityValue || value,
