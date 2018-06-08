@@ -534,7 +534,11 @@ function entityToEntityProto(entityObject) {
       return;
     }
 
-    if (firstPathPartIsArray) {
+    if (
+      firstPathPartIsArray &&
+      // check also if the property in question is actually an array value.
+      entity.properties[firstPathPart].arrayValue
+    ) {
       var array = entity.properties[firstPathPart].arrayValue;
       array.values.forEach(function(value) {
         if (remainderPath === '') {

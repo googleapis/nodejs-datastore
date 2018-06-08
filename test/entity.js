@@ -602,6 +602,7 @@ describe('entity', function() {
       var value9 = 'Stephen9';
       var value10 = 'Stephen10';
       var value11 = 'Stephen11';
+      var value12 = 'Stephen12';
 
       var entityObject = {
         excludeFromIndexes: [
@@ -614,6 +615,7 @@ describe('entity', function() {
           'array[].array[].entity.name',
           'entityExcluded[].name',
           'primitiveExcluded[]',
+          'rules[].requirements[].audiences'
         ],
 
         data: {
@@ -662,6 +664,20 @@ describe('entity', function() {
               ],
             },
           ],
+
+          rules: [
+            {
+              requirements: [
+                {
+                  audiences: value12
+                }
+              ]
+            },
+            {
+              requirements: null
+            },
+          ]
+
         },
       };
 
@@ -800,6 +816,40 @@ describe('entity', function() {
                     },
                   },
                   excludeFromIndexes: true,
+                },
+              ],
+            },
+          },
+          rules: {
+            arrayValue: {
+              values: [
+                {
+                  entityValue: {
+                    properties: {
+                      requirements: {
+                        arrayValue: {
+                          values: [{
+                            entityValue: {
+                              properties: {
+                                audiences: {
+                                  stringValue: value12,
+                                  excludeFromIndexes: true,
+                                }
+                              },
+                            },
+                          }],
+                        },
+                      },
+                    },
+                  },
+                },{
+                  entityValue: {
+                    properties: {
+                      requirements: {
+                        nullValue: 0
+                      },
+                    },
+                  },
                 },
               ],
             },
