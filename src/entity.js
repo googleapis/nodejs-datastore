@@ -501,6 +501,7 @@ function entityToEntityProto(entityObject) {
     var hasEntityPath = entityIndex > -1;
 
     if (!hasArrayPath && !hasEntityPath) {
+      // This is the path end node. Traversal ends here in either case.
       if (entity.properties) {
         if (entity.properties[path]) {
           // This is the property to exclude!
@@ -535,16 +536,21 @@ function entityToEntityProto(entityObject) {
 
     if (firstPathPartIsArray) {
       var array = entity.properties[firstPathPart].arrayValue;
-      array.values.forEach(function(arrayValue) {
+      array.values.forEach(function(value) {
         if (remainderPath === '') {
           // We want to exclude *this* array property, which is
-          // equivalent with excluding all its arrayValues:
-          excludePathFromEntity(arrayValue, remainderPath);
-        } else {
-          // Path traversal continues at arrayValue.entityValue
+          // equivalent with excluding all its values
+          // (including entity values at their roots):
           excludePathFromEntity(
-            arrayValue.entityValue || arrayValue,
-            remainderPath
+            value,
+            remainderPath // === ''
+          );
+        } else {
+          // Path traversal continues at arrayValue.entityValue,
+          // if it is an entity, or must end at value.
+          excludePathFromEntity(
+            value.entityValue || value,
+            remainderPath // !== ''
           );
         }
       });
