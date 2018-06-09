@@ -619,7 +619,7 @@ describe('entity', function() {
           'entityExcluded[].name',
           'primitiveExcluded[]',
           'rules[].requirements[].audiences',
-          'nestedArrayVariants[].a[].b'
+          'nestedArrayVariants[].a[].b',
         ],
 
         data: {
@@ -673,25 +673,26 @@ describe('entity', function() {
             {
               requirements: [
                 {
-                  audiences: value12
-                }
-              ]
+                  audiences: value12,
+                },
+              ],
             },
             {
-              requirements: null
+              requirements: null,
             },
           ],
 
           nestedArrayVariants: [
             {
-              a: [{b:value13}, {c:value14}],
-            },{
+              a: [{b: value13}, {c: value14}],
+            },
+            {
               a: null,
-            },{
+            },
+            {
               a: [value15],
             },
           ],
-
         },
       };
 
@@ -842,25 +843,28 @@ describe('entity', function() {
                     properties: {
                       requirements: {
                         arrayValue: {
-                          values: [{
-                            entityValue: {
-                              properties: {
-                                audiences: {
-                                  stringValue: value12,
-                                  excludeFromIndexes: true,
-                                }
+                          values: [
+                            {
+                              entityValue: {
+                                properties: {
+                                  audiences: {
+                                    stringValue: value12,
+                                    excludeFromIndexes: true,
+                                  },
+                                },
                               },
                             },
-                          }],
+                          ],
                         },
                       },
                     },
                   },
-                },{
+                },
+                {
                   entityValue: {
                     properties: {
                       requirements: {
-                        nullValue: 0
+                        nullValue: 0,
                       },
                     },
                   },
@@ -886,7 +890,8 @@ describe('entity', function() {
                                   },
                                 },
                               },
-                            },{
+                            },
+                            {
                               entityValue: {
                                 properties: {
                                   c: {
@@ -900,7 +905,8 @@ describe('entity', function() {
                       },
                     },
                   },
-                },{
+                },
+                {
                   entityValue: {
                     properties: {
                       a: {
@@ -908,14 +914,17 @@ describe('entity', function() {
                       },
                     },
                   },
-                },{
+                },
+                {
                   entityValue: {
                     properties: {
                       a: {
                         arrayValue: {
-                          values: [{
-                            stringValue: value15,
-                          }],
+                          values: [
+                            {
+                              stringValue: value15,
+                            },
+                          ],
                         },
                       },
                     },
