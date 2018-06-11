@@ -696,7 +696,7 @@ describe('entity', function() {
             },
             {
               a: [{b: ['nasty', 'array']}],
-            }
+            },
           ],
 
           alpha: ['beta', 'gamma'],
