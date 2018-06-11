@@ -699,13 +699,9 @@ describe('entity', function() {
             }
           ],
 
-          alpha: [
-            'beta', 'gamma',
-          ],
+          alpha: ['beta', 'gamma'],
 
-          omega: [
-            'beta', 'gamma',
-          ],
+          omega: ['beta', 'gamma'],
         },
       };
 
@@ -990,8 +986,8 @@ describe('entity', function() {
                   excludeFromIndexes: true,
                   stringValue: 'gamma',
                 },
-              ]
-            }
+              ],
+            },
           },
           omega: {
             // `excludeFromIndexes: ['omega']` is not applied, because 'omega' is an array.
@@ -1003,8 +999,8 @@ describe('entity', function() {
                 {
                   stringValue: 'gamma',
                 },
-              ]
-            }
+              ],
+            },
           },
         },
       };
