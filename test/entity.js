@@ -620,6 +620,8 @@ describe('entity', function() {
           'primitiveExcluded[]',
           'rules[].requirements[].audiences',
           'nestedArrayVariants[].a[].b',
+          'alpha[]',
+          'omega',
         ],
 
         data: {
@@ -692,6 +694,17 @@ describe('entity', function() {
             {
               a: [value15],
             },
+            {
+              a: [{b: ['nasty', 'array']}],
+            }
+          ],
+
+          alpha: [
+            'beta', 'gamma',
+          ],
+
+          omega: [
+            'beta', 'gamma',
           ],
         },
       };
@@ -930,8 +943,68 @@ describe('entity', function() {
                     },
                   },
                 },
+                {
+                  entityValue: {
+                    properties: {
+                      a: {
+                        arrayValue: {
+                          values: [
+                            {
+                              entityValue: {
+                                properties: {
+                                  b: {
+                                    // excludeFromIndexes: ['nestedArrayVariants[].a[].b'] does not apply here,
+                                    // To exclude this array (= all its elements), we would use ['nestedArrayVariants[].a[].b[]']
+                                    arrayValue: {
+                                      values: [
+                                        {
+                                          stringValue: 'nasty',
+                                        },
+                                        {
+                                          stringValue: 'array',
+                                        },
+                                      ],
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
               ],
             },
+          },
+          alpha: {
+            // `excludeFromIndexes: ['alpha[]']` results in exclusion of all array elements
+            arrayValue: {
+              values: [
+                {
+                  excludeFromIndexes: true,
+                  stringValue: 'beta',
+                },
+                {
+                  excludeFromIndexes: true,
+                  stringValue: 'gamma',
+                },
+              ]
+            }
+          },
+          omega: {
+            // `excludeFromIndexes: ['omega']` is not applied, because 'omega' is an array.
+            arrayValue: {
+              values: [
+                {
+                  stringValue: 'beta',
+                },
+                {
+                  stringValue: 'gamma',
+                },
+              ]
+            }
           },
         },
       };

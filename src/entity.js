@@ -503,7 +503,11 @@ function entityToEntityProto(entityObject) {
     if (!hasArrayPath && !hasEntityPath) {
       // This is the path end node. Traversal ends here in either case.
       if (entity.properties) {
-        if (entity.properties[path]) {
+        if (
+          entity.properties[path] &&
+          // array properties should be excluded with [] syntax:
+          !entity.properties[path].arrayValue
+        ) {
           // This is the property to exclude!
           entity.properties[path].excludeFromIndexes = true;
         }
