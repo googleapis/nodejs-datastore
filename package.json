@@ -68,7 +68,7 @@
     "create-error-class": "^3.0.2",
     "extend": "^3.0.1",
     "google-auto-auth": "^0.10.1",
-    "google-gax": "^0.16.1",
+    "google-gax": "^0.17.0",
     "google-proto-files": "^0.16.0",
     "is": "^3.2.1",
     "lodash.flatten": "^4.4.0",
