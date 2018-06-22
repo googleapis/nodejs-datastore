@@ -112,7 +112,7 @@ describe('Datastore', function() {
       './transaction.js': FakeTransaction,
       './v1': FakeV1,
       'google-auth-library': {
-        GoogleAuth: fakeGoogleAuth
+        GoogleAuth: fakeGoogleAuth,
       },
       'google-gax': fakeGoogleGax,
     });
