@@ -63,20 +63,20 @@ function fakeGoogleAuth() {
 var createInsecureOverride;
 
 var fakeGoogleGax = {
-    GrpcClient: class extends gax.GrpcClient {
-      constructor(opts) {
-        // super constructor must be called first!
-        super(opts);
-        this.grpc = {
-          credentials: {
-            createInsecure() {
-              return (createInsecureOverride || util.noop).apply(null, arguments);
-            }
-          }};
-      }
-  }
+  GrpcClient: class extends gax.GrpcClient {
+    constructor(opts) {
+      // super constructor must be called first!
+      super(opts);
+      this.grpc = {
+        credentials: {
+          createInsecure() {
+            return (createInsecureOverride || util.noop).apply(null, arguments);
+          },
+        },
+      };
+    }
+  },
 };
-
 
 function FakeQuery() {
   this.calledWith_ = arguments;
