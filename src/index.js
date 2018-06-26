@@ -19,7 +19,7 @@
 var arrify = require('arrify');
 var common = require('@google-cloud/common');
 var extend = require('extend');
-var gax = new require('google-gax')
+var gax = require('google-gax');
 var grpc = new gax.GrpcClient().grpc;
 var GoogleAuth = require('google-auth-library').GoogleAuth;
 var is = require('is');
