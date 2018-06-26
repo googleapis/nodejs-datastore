@@ -14,7 +14,7 @@ library = gapic.node_library(
     'datastore', version, 
     config_path='/google/datastore/artman_datastore.yaml')
 
-# skip index, protos, package.json, and README.md
+# Copy everything except for top level index, package.json, and README.md
 s.copy(
     library,
     excludes=['package.json', 'README.md', 'src/index.js'])
