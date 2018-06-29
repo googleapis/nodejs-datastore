@@ -16,7 +16,7 @@
   "dependencies": {
     "@google-cloud/datastore": "1.4.1",
     "sinon": "6.0.1",
-    "yargs": "11.0.0"
+    "yargs": "11.1.0"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "2.3.0",
