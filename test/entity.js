@@ -141,7 +141,7 @@ describe('entity', function() {
     it('should assign the ID from an Int', function() {
       var id = new entity.Int(11);
       var key = new entity.Key({path: ['Kind', id]});
-      assert.strictEqual(key.id, id.value);
+      assert.strictEqual(key.id.toString(), id.value);
     });
 
     it('should assign the name', function() {
@@ -1184,7 +1184,10 @@ describe('entity', function() {
       assert.strictEqual(keyProto.path[1].name, 'name');
 
       assert.strictEqual(keyProto.path[2].kind, 'Kind3');
-      assert.strictEqual(keyProto.path[2].id, new entity.Int(3).value);
+      assert.strictEqual(
+        keyProto.path[2].id.toString(),
+        new entity.Int(3).value
+      );
       assert.strictEqual(keyProto.path[2].name, undefined);
     });
 
