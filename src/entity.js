@@ -183,7 +183,7 @@ function Key(options) {
     var identifier = options.path.pop();
 
     if (is.number(identifier) || isDsInt(identifier)) {
-      this.id = identifier.value || identifier;
+      this.id = parseInt(identifier.value, 10) || identifier;
     } else if (is.string(identifier)) {
       this.name = identifier;
     }
