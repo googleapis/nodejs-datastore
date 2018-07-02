@@ -657,7 +657,10 @@ function keyFromKeyProto(keyProto) {
 
     // only convert the id to an Integer Type object if it's not already a number
     if (path.idType === 'id') {
-      id = parseInt(id, 10) || new entity.Int(id);
+      var parsedInteger = parseInt(id, 10);
+      id = Number.isSafeInteger(parsedInteger)
+        ? parsedInteger
+        : new entity.Int(id);
     }
 
     if (is.defined(id)) {

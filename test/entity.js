@@ -1165,6 +1165,42 @@ describe('entity', function() {
     });
   });
 
+  describe('keyFromKeyProtoBigInt', function() {
+    var NAMESPACE = 'Namespace';
+
+    var keyProto = {
+      partitionId: {
+        namespaceId: NAMESPACE,
+        projectId: 'project-id',
+      },
+      path: [
+        {
+          idType: 'id',
+          kind: 'Kind',
+          id: '9223372036854775808',
+        },
+        {
+          idType: 'name',
+          kind: 'Kind2',
+          name: 'name',
+        },
+      ],
+    };
+
+    it('should create a proper key for the big int', function(done) {
+      entity.Key = function(keyOptions) {
+        assert.deepEqual(keyOptions, {
+          namespace: NAMESPACE,
+          path: ['Kind', {value: '9223372036854775808'}, 'Kind2', 'name'],
+        });
+
+        done();
+      };
+
+      entity.keyFromKeyProto(keyProto);
+    });
+  });
+
   describe('keyToKeyProto', function() {
     it('should handle hierarchical key definitions', function() {
       var key = new entity.Key({
