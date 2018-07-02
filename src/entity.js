@@ -183,7 +183,7 @@ function Key(options) {
     var identifier = options.path.pop();
 
     if (is.number(identifier) || isDsInt(identifier)) {
-      this.id = parseInt(identifier.value, 10) || identifier;
+      this.id = identifier.value || identifier;
     } else if (is.string(identifier)) {
       this.name = identifier;
     }
@@ -655,8 +655,14 @@ function keyFromKeyProto(keyProto) {
 
     var id = path[path.idType];
 
+    // only convert the id to an Integer Type object if it's not already a number
     if (path.idType === 'id') {
-      id = new entity.Int(id);
+      var parsedInt = parseInt(id, 10);
+      if (isNaN(parsedInt)) {
+        id = new entity.Int(id);
+      } else {
+        id = parsedInt;
+      }
     }
 
     if (is.defined(id)) {
