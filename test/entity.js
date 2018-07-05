@@ -141,7 +141,7 @@ describe('entity', function() {
     it('should assign the ID from an Int', function() {
       var id = new entity.Int(11);
       var key = new entity.Key({path: ['Kind', id]});
-      assert.strictEqual(key.id, id.value);
+      assert.strictEqual(key.id, id);
     });
 
     it('should assign the name', function() {
@@ -1120,7 +1120,7 @@ describe('entity', function() {
       entity.Key = function(keyOptions) {
         assert.deepEqual(keyOptions, {
           namespace: NAMESPACE,
-          path: ['Kind', new entity.Int(111), 'Kind2', 'name'],
+          path: ['Kind', {value: '111'}, 'Kind2', 'name'],
         });
 
         done();

@@ -94,6 +94,14 @@ function Int(value) {
   this.value = value.toString();
 }
 
+Int.prototype.toString = function() {
+  return this.value;
+};
+
+Int.prototype.toJSON = function() {
+  return this.value;
+};
+
 entity.Int = Int;
 
 /**
@@ -183,7 +191,7 @@ function Key(options) {
     var identifier = options.path.pop();
 
     if (is.number(identifier) || isDsInt(identifier)) {
-      this.id = identifier.value || identifier;
+      this.id = identifier;
     } else if (is.string(identifier)) {
       this.name = identifier;
     }
@@ -272,7 +280,10 @@ function decodeValueProto(valueProto) {
     }
 
     case 'integerValue': {
-      return parseInt(value, 10);
+      var parsedInteger = parseInt(value, 10);
+      return Number.isSafeInteger(parsedInteger)
+        ? parsedInteger
+        : new entity.Int(value);
     }
 
     case 'entityValue': {
@@ -655,6 +666,7 @@ function keyFromKeyProto(keyProto) {
 
     var id = path[path.idType];
 
+    // convert the id to an Integer Type object
     if (path.idType === 'id') {
       id = new entity.Int(id);
     }
@@ -724,7 +736,7 @@ function keyToKeyProto(key) {
     };
 
     if (is.defined(key.id)) {
-      pathElement.id = key.id;
+      pathElement.id = key.id.value || key.id;
     }
 
     if (is.defined(key.name)) {
