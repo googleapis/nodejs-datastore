@@ -141,7 +141,7 @@ describe('entity', function() {
     it('should assign the ID from an Int', function() {
       var id = new entity.Int(11);
       var key = new entity.Key({path: ['Kind', id]});
-      assert.strictEqual(key.id, id.value);
+      assert.strictEqual(key.id, id);
     });
 
     it('should assign the name', function() {
@@ -1120,7 +1120,7 @@ describe('entity', function() {
       entity.Key = function(keyOptions) {
         assert.deepEqual(keyOptions, {
           namespace: NAMESPACE,
-          path: ['Kind', 111, 'Kind2', 'name'],
+          path: ['Kind', {value: '111'}, 'Kind2', 'name'],
         });
 
         done();
@@ -1162,42 +1162,6 @@ describe('entity', function() {
         assert.strictEqual(e.message, 'Ancestor keys require an id or name.');
         done();
       }
-    });
-  });
-
-  describe('keyFromKeyProtoBigInt', function() {
-    var NAMESPACE = 'Namespace';
-
-    var keyProto = {
-      partitionId: {
-        namespaceId: NAMESPACE,
-        projectId: 'project-id',
-      },
-      path: [
-        {
-          idType: 'id',
-          kind: 'Kind',
-          id: '9223372036854775808',
-        },
-        {
-          idType: 'name',
-          kind: 'Kind2',
-          name: 'name',
-        },
-      ],
-    };
-
-    it('should create a proper key for the big int', function(done) {
-      entity.Key = function(keyOptions) {
-        assert.deepEqual(keyOptions, {
-          namespace: NAMESPACE,
-          path: ['Kind', {value: '9223372036854775808'}, 'Kind2', 'name'],
-        });
-
-        done();
-      };
-
-      entity.keyFromKeyProto(keyProto);
     });
   });
 
