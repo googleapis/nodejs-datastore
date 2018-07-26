@@ -139,7 +139,10 @@ describe('Request', function() {
 
       assert.notStrictEqual(preparedEntityObject.data.nested, obj.data.nested);
 
-      assert.deepEqual(preparedEntityObject, expectedPreparedEntityObject);
+      assert.deepStrictEqual(
+        preparedEntityObject,
+        expectedPreparedEntityObject
+      );
     });
 
     it('should format an entity', function() {
@@ -150,7 +153,7 @@ describe('Request', function() {
       var preparedEntityObject = Request.prepareEntityObject_(entityObject);
 
       assert.strictEqual(preparedEntityObject.key, key);
-      assert.deepEqual(preparedEntityObject.data, entityObject);
+      assert.strictEqual(preparedEntityObject.data.data, entityObject.data);
     });
   });
 
@@ -301,7 +304,10 @@ describe('Request', function() {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'lookup');
 
-        assert.deepEqual(config.reqOpts.keys[0], entity.keyToKeyProto(key));
+        assert.deepStrictEqual(
+          config.reqOpts.keys[0],
+          entity.keyToKeyProto(key)
+        );
 
         done();
       };
@@ -480,7 +486,7 @@ describe('Request', function() {
             .map(entity.keyFromKeyProto)
             .map(entity.keyToKeyProto);
 
-          assert.deepEqual(config.reqOpts.keys, expectedKeys);
+          assert.deepStrictEqual(config.reqOpts.keys, expectedKeys);
           done();
         };
 
@@ -495,7 +501,7 @@ describe('Request', function() {
           .createReadStream(key)
           .on('error', done)
           .on('data', function(entity) {
-            assert.deepEqual(entity, expectedResult);
+            assert.deepStrictEqual(entity, expectedResult);
           })
           .on('end', done)
           .emit('reading');
@@ -566,7 +572,7 @@ describe('Request', function() {
       };
       request.delete(key, function(err, apiResponse) {
         assert.ifError(err);
-        assert.deepEqual(resp, apiResponse);
+        assert.deepStrictEqual(resp, apiResponse);
         done();
       });
     });
@@ -631,7 +637,7 @@ describe('Request', function() {
 
         request.get(keys, options, function(err, entities) {
           assert.ifError(err);
-          assert.deepEqual(entities, fakeEntities);
+          assert.deepStrictEqual(entities, fakeEntities);
 
           var spy = request.createReadStream.getCall(0);
           assert.strictEqual(spy.args[0], keys);
@@ -660,7 +666,7 @@ describe('Request', function() {
           assert.ifError(err);
 
           var spy = request.createReadStream.getCall(0);
-          assert.deepEqual(spy.args[1], {});
+          assert.deepStrictEqual(spy.args[1], {});
           done();
         });
       });
@@ -704,7 +710,7 @@ describe('Request', function() {
       };
 
       request.save = function(entities) {
-        assert.deepEqual(entities[0], expectedEntityObject);
+        assert.deepStrictEqual(entities[0], expectedEntityObject);
         done();
       };
 
@@ -713,18 +719,17 @@ describe('Request', function() {
 
     it('should pass the correct arguments to save', function(done) {
       request.save = function(entities, callback) {
-        assert.deepEqual(entities, [
+        assert.deepStrictEqual(JSON.parse(JSON.stringify(entities)), [
           {
             key: {
               namespace: 'ns',
               kind: 'Company',
-              path: ['Company', undefined],
+              path: ['Company', null],
             },
             data: {},
             method: 'insert',
           },
         ]);
-
         callback();
       };
 
@@ -746,7 +751,7 @@ describe('Request', function() {
 
       overrides.entity.queryToQueryProto = function(query_) {
         assert.notStrictEqual(query_, query);
-        assert.deepEqual(query_, query);
+        assert.deepStrictEqual(query_, query);
         done();
       };
 
@@ -853,7 +858,7 @@ describe('Request', function() {
       var apiResponse = {
         batch: {
           entityResults: [{a: true}, {b: true}, {c: true}],
-          endCursor: new Buffer('abc'),
+          endCursor: Buffer.from('abc'),
           moreResults: 'MORE_RESULTS_AFTER_LIMIT',
           skippedResults: 0,
         },
@@ -884,7 +889,7 @@ describe('Request', function() {
             entities.push(entity);
           })
           .on('end', function() {
-            assert.deepEqual(entities, apiResponse.batch.entityResults);
+            assert.deepStrictEqual(entities, apiResponse.batch.entityResults);
             done();
           });
       });
@@ -990,9 +995,9 @@ describe('Request', function() {
               .call(entityResultsPerApiCall[1])
               .concat(entityResultsPerApiCall[2]);
 
-            assert.deepEqual(entities, allResults);
+            assert.deepStrictEqual(entities, allResults);
 
-            assert.deepEqual(info, {
+            assert.deepStrictEqual(info, {
               endCursor: apiResponse.batch.endCursor.toString('base64'),
               moreResults: apiResponse.batch.moreResults,
             });
@@ -1017,7 +1022,7 @@ describe('Request', function() {
           } else {
             batch = {
               moreResults: 'NOT_FINISHED',
-              endCursor: new Buffer('abc'),
+              endCursor: Buffer.from('abc'),
             };
           }
 
@@ -1128,7 +1133,7 @@ describe('Request', function() {
 
         request.runQuery(query, options, function(err, entities, info) {
           assert.ifError(err);
-          assert.deepEqual(entities, fakeEntities);
+          assert.deepStrictEqual(entities, fakeEntities);
           assert.strictEqual(info, fakeInfo);
 
           var spy = request.runQueryStream.getCall(0);
@@ -1150,7 +1155,7 @@ describe('Request', function() {
           assert.ifError(err);
 
           var spy = request.runQueryStream.getCall(0);
-          assert.deepEqual(spy.args[1], {});
+          assert.deepStrictEqual(spy.args[1], {});
           done();
         });
       });
@@ -1231,8 +1236,8 @@ describe('Request', function() {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'commit');
 
-        assert.deepEqual(config.reqOpts, expectedReq);
-        assert.deepEqual(config.gaxOpts, {});
+        assert.deepStrictEqual(config.reqOpts, expectedReq);
+        assert.deepStrictEqual(config.gaxOpts, {});
 
         callback();
       };
@@ -1290,13 +1295,13 @@ describe('Request', function() {
         assert(is.object(config.reqOpts.mutations[2].upsert));
 
         var insert = config.reqOpts.mutations[0].insert;
-        assert.deepEqual(insert.properties.k, {stringValue: 'v'});
+        assert.deepStrictEqual(insert.properties.k, {stringValue: 'v'});
 
         var update = config.reqOpts.mutations[1].update;
-        assert.deepEqual(update.properties.k2, {stringValue: 'v2'});
+        assert.deepStrictEqual(update.properties.k2, {stringValue: 'v2'});
 
         var upsert = config.reqOpts.mutations[2].upsert;
-        assert.deepEqual(upsert.properties.k3, {stringValue: 'v3'});
+        assert.deepStrictEqual(upsert.properties.k3, {stringValue: 'v3'});
 
         callback();
       };
@@ -1340,12 +1345,12 @@ describe('Request', function() {
           },
         },
       ];
-      var expectedEntities = extend(true, {}, entities);
+      var expectedEntities = entities.map(x => extend(true, {}, x));
 
       request.request_ = function() {
         // By the time the request is made, the original object has already been
         // transformed into a raw request.
-        assert.deepEqual(entities, expectedEntities);
+        assert.deepStrictEqual(entities, expectedEntities);
         done();
       };
 
@@ -1500,7 +1505,7 @@ describe('Request', function() {
       };
 
       request.save = function(entities) {
-        assert.deepEqual(entities[0], expectedEntityObject);
+        assert.deepStrictEqual(entities[0], expectedEntityObject);
         done();
       };
 
@@ -1509,18 +1514,17 @@ describe('Request', function() {
 
     it('should pass the correct arguments to save', function(done) {
       request.save = function(entities, callback) {
-        assert.deepEqual(entities, [
+        assert.deepStrictEqual(JSON.parse(JSON.stringify(entities)), [
           {
             key: {
               namespace: 'ns',
               kind: 'Company',
-              path: ['Company', undefined],
+              path: ['Company', null],
             },
             data: {},
             method: 'update',
           },
         ]);
-
         callback();
       };
 
@@ -1543,7 +1547,7 @@ describe('Request', function() {
       };
 
       request.save = function(entities) {
-        assert.deepEqual(entities[0], expectedEntityObject);
+        assert.deepStrictEqual(entities[0], expectedEntityObject);
         done();
       };
 
@@ -1552,12 +1556,12 @@ describe('Request', function() {
 
     it('should pass the correct arguments to save', function(done) {
       request.save = function(entities, callback) {
-        assert.deepEqual(entities, [
+        assert.deepStrictEqual(JSON.parse(JSON.stringify(entities)), [
           {
             key: {
               namespace: 'ns',
               kind: 'Company',
-              path: ['Company', undefined],
+              path: ['Company', null],
             },
             data: {},
             method: 'upsert',
@@ -1662,7 +1666,7 @@ describe('Request', function() {
 
       overrides.util.replaceProjectIdToken = function(reqOpts, projectId) {
         assert.notStrictEqual(reqOpts, CONFIG.reqOpts);
-        assert.deepEqual(reqOpts, expectedReqOpts);
+        assert.deepStrictEqual(reqOpts, expectedReqOpts);
         assert.strictEqual(projectId, PROJECT_ID);
 
         return replacedReqOpts;

@@ -245,7 +245,7 @@ entity.isDsKey = isDsKey;
  * // 'Hi'
  *
  * decodeValueProto({
- *   blobValue: new Buffer('68656c6c6f')
+ *   blobValue: Buffer.from('68656c6c6f')
  * });
  * // <Buffer 68 65 6c 6c 6f>
  */
@@ -259,7 +259,7 @@ function decodeValueProto(valueProto) {
     }
 
     case 'blobValue': {
-      return new Buffer(value, 'base64');
+      return Buffer.from(value, 'base64');
     }
 
     case 'nullValue': {
