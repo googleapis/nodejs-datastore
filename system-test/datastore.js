@@ -33,7 +33,7 @@ describe('Datastore', () => {
     return keyObject;
   };
 
-  after((done) => {
+  after(done => {
     function deleteEntities(kind, callback) {
       const query = datastore.createQuery(kind).select('__key__');
 
@@ -43,7 +43,7 @@ describe('Datastore', () => {
           return;
         }
 
-        const keys = entities.map((entity) => {
+        const keys = entities.map(entity => {
           return entity[datastore.KEY];
         });
 
@@ -54,7 +54,7 @@ describe('Datastore', () => {
     async.each(testKinds, deleteEntities, done);
   });
 
-  it('should allocate IDs', (done) => {
+  it('should allocate IDs', done => {
     datastore.allocateIds(datastore.key('Kind'), 10, (err, keys) => {
       assert.ifError(err);
       assert.strictEqual(keys.length, 10);
@@ -78,7 +78,7 @@ describe('Datastore', () => {
       },
     };
 
-    it('should excludeFromIndexes correctly', (done) => {
+    it('should excludeFromIndexes correctly', done => {
       const longString = Buffer.alloc(1501, '.').toString();
       const postKey = datastore.key(['Post', 'post1']);
 
@@ -137,7 +137,7 @@ describe('Datastore', () => {
             'metadata.longStringArray[].nestedLongStringArray[].longString',
           ],
         },
-        (err) => {
+        err => {
           assert.ifError(err);
 
           datastore.get(postKey, (err, entity) => {
@@ -152,10 +152,10 @@ describe('Datastore', () => {
       );
     });
 
-    it('should save/get/delete with a key name', (done) => {
+    it('should save/get/delete with a key name', done => {
       const postKey = datastore.key(['Post', 'post1']);
 
-      datastore.save({key: postKey, data: post}, (err) => {
+      datastore.save({key: postKey, data: post}, err => {
         assert.ifError(err);
 
         datastore.get(postKey, (err, entity) => {
@@ -169,10 +169,10 @@ describe('Datastore', () => {
       });
     });
 
-    it('should save/get/delete with a numeric key id', (done) => {
+    it('should save/get/delete with a numeric key id', done => {
       const postKey = datastore.key(['Post', 123456789]);
 
-      datastore.save({key: postKey, data: post}, (err) => {
+      datastore.save({key: postKey, data: post}, err => {
         assert.ifError(err);
 
         datastore.get(postKey, (err, entity) => {
@@ -185,13 +185,13 @@ describe('Datastore', () => {
       });
     });
 
-    it('should save/get/delete a buffer', (done) => {
+    it('should save/get/delete a buffer', done => {
       const postKey = datastore.key(['Post']);
       const data = {
         buf: Buffer.from('010100000000000000000059400000000000006940', 'hex'),
       };
 
-      datastore.save({key: postKey, data: data}, (err) => {
+      datastore.save({key: postKey, data: data}, err => {
         assert.ifError(err);
 
         const assignedId = postKey.id;
@@ -205,10 +205,10 @@ describe('Datastore', () => {
       });
     });
 
-    it('should save/get/delete with a generated key id', (done) => {
+    it('should save/get/delete with a generated key id', done => {
       const postKey = datastore.key('Post');
 
-      datastore.save({key: postKey, data: post}, (err) => {
+      datastore.save({key: postKey, data: post}, err => {
         assert.ifError(err);
 
         // The key's path should now be complete.
@@ -224,10 +224,10 @@ describe('Datastore', () => {
       });
     });
 
-    it('should save/get/update', (done) => {
+    it('should save/get/update', done => {
       const postKey = datastore.key('Post');
 
-      datastore.save({key: postKey, data: post}, (err) => {
+      datastore.save({key: postKey, data: post}, err => {
         assert.ifError(err);
 
         datastore.get(postKey, (err, entity) => {
@@ -237,7 +237,7 @@ describe('Datastore', () => {
 
           entity.title = 'Updated';
 
-          datastore.save(entity, (err) => {
+          datastore.save(entity, err => {
             assert.ifError(err);
 
             datastore.get(postKey, (err, entity) => {
@@ -250,7 +250,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should save and get with a string ID', (done) => {
+    it('should save and get with a string ID', done => {
       const longIdKey = datastore.key([
         'Post',
         datastore.int('100000000000001234'),
@@ -263,7 +263,7 @@ describe('Datastore', () => {
             test: true,
           },
         },
-        (err) => {
+        err => {
           assert.ifError(err);
 
           datastore.get(longIdKey, (err, entity) => {
@@ -275,10 +275,10 @@ describe('Datastore', () => {
       );
     });
 
-    it('should fail explicitly set second insert on save', (done) => {
+    it('should fail explicitly set second insert on save', done => {
       const postKey = datastore.key('Post');
 
-      datastore.save({key: postKey, data: post}, (err) => {
+      datastore.save({key: postKey, data: post}, err => {
         assert.ifError(err);
 
         // The key's path should now be complete.
@@ -290,7 +290,7 @@ describe('Datastore', () => {
             method: 'insert',
             data: post,
           },
-          (err) => {
+          err => {
             assert.notStrictEqual(err, null); // should fail insert
             datastore.get(postKey, (err, entity) => {
               assert.ifError(err);
@@ -302,7 +302,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should fail explicitly set first update on save', (done) => {
+    it('should fail explicitly set first update on save', done => {
       const postKey = datastore.key('Post');
 
       datastore.save(
@@ -311,14 +311,14 @@ describe('Datastore', () => {
           method: 'update',
           data: post,
         },
-        (err) => {
+        err => {
           assert.notStrictEqual(err, null);
           done();
         }
       );
     });
 
-    it('should save/get/delete multiple entities at once', (done) => {
+    it('should save/get/delete multiple entities at once', done => {
       const post2 = {
         title: 'How to make the perfect homemade pasta',
         tags: ['pasta', 'homemade'],
@@ -334,7 +334,7 @@ describe('Datastore', () => {
 
       datastore.save(
         [{key: key1, data: post}, {key: key2, data: post2}],
-        (err) => {
+        err => {
           assert.ifError(err);
           datastore.get([key1, key2], (err, entities) => {
             assert.ifError(err);
@@ -345,13 +345,13 @@ describe('Datastore', () => {
       );
     });
 
-    it('should get multiple entities in a stream', (done) => {
+    it('should get multiple entities in a stream', done => {
       const key1 = datastore.key('Post');
       const key2 = datastore.key('Post');
 
       datastore.save(
         [{key: key1, data: post}, {key: key2, data: post}],
-        (err) => {
+        err => {
           assert.ifError(err);
 
           let numEntitiesEmitted = 0;
@@ -370,7 +370,7 @@ describe('Datastore', () => {
       );
     });
 
-    it('should save keys as a part of entity and query by key', (done) => {
+    it('should save keys as a part of entity and query by key', done => {
       const personKey = datastore.key(['People', 'US', 'Person', 'name']);
 
       datastore.save(
@@ -381,7 +381,7 @@ describe('Datastore', () => {
             linkedTo: personKey, // himself
           },
         },
-        (err) => {
+        err => {
           assert.ifError(err);
 
           const query = datastore
@@ -400,7 +400,7 @@ describe('Datastore', () => {
     });
 
     describe('entity types', () => {
-      it('should save and decode an int', (done) => {
+      it('should save and decode an int', done => {
         const integerValue = 2015;
         const integerType = Datastore.int(integerValue);
 
@@ -413,7 +413,7 @@ describe('Datastore', () => {
               year: integerType,
             },
           },
-          (err) => {
+          err => {
             assert.ifError(err);
 
             datastore.get(key, (err, entity) => {
@@ -425,7 +425,7 @@ describe('Datastore', () => {
         );
       });
 
-      it('should save and decode a double', (done) => {
+      it('should save and decode a double', done => {
         const doubleValue = 99.99;
         const doubleType = Datastore.double(doubleValue);
 
@@ -438,7 +438,7 @@ describe('Datastore', () => {
               nines: doubleType,
             },
           },
-          (err) => {
+          err => {
             assert.ifError(err);
 
             datastore.get(key, (err, entity) => {
@@ -450,7 +450,7 @@ describe('Datastore', () => {
         );
       });
 
-      it('should save and decode a geo point', (done) => {
+      it('should save and decode a geo point', done => {
         const geoPointValue = {
           latitude: 40.6894,
           longitude: -74.0447,
@@ -466,7 +466,7 @@ describe('Datastore', () => {
               location: geoPointType,
             },
           },
-          (err) => {
+          err => {
             assert.ifError(err);
 
             datastore.get(key, (err, entity) => {
@@ -493,7 +493,7 @@ describe('Datastore', () => {
       ['Rickard', 'Character', 'Eddard', 'Character', 'Robb'],
       ['Rickard', 'Character', 'Eddard', 'Character', 'Bran'],
       ['Rickard', 'Character', 'Eddard', 'Character', 'Jon Snow'],
-    ].map((path) => {
+    ].map(path => {
       return datastore.key(['Book', 'GoT', 'Character'].concat(path));
     });
 
@@ -548,7 +548,7 @@ describe('Datastore', () => {
       },
     ];
 
-    before((done) => {
+    before(done => {
       const keysToSave = keys.map((key, index) => {
         return {
           key: key,
@@ -559,11 +559,11 @@ describe('Datastore', () => {
       datastore.save(keysToSave, done);
     });
 
-    after((done) => {
+    after(done => {
       datastore.delete(keys, done);
     });
 
-    it('should limit queries', (done) => {
+    it('should limit queries', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -586,7 +586,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should not go over a limit', (done) => {
+    it('should not go over a limit', done => {
       const limit = 3;
 
       const q = datastore
@@ -601,7 +601,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should run a query as a stream', (done) => {
+    it('should run a query as a stream', done => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
       let resultsReturned = 0;
       datastore
@@ -616,7 +616,7 @@ describe('Datastore', () => {
         });
     });
 
-    it('should not go over a limit with a stream', (done) => {
+    it('should not go over a limit with a stream', done => {
       const limit = 3;
       const q = datastore
         .createQuery('Character')
@@ -637,7 +637,7 @@ describe('Datastore', () => {
         });
     });
 
-    it('should filter queries with simple indexes', (done) => {
+    it('should filter queries with simple indexes', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -650,7 +650,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should filter queries with defined indexes', (done) => {
+    it('should filter queries with defined indexes', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -664,7 +664,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should filter by ancestor', (done) => {
+    it('should filter by ancestor', done => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
 
       datastore.runQuery(q, (err, entities) => {
@@ -674,7 +674,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should filter by key', (done) => {
+    it('should filter by key', done => {
       const key = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
 
       const q = datastore
@@ -689,7 +689,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should order queries', (done) => {
+    it('should order queries', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -705,7 +705,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should select projections', (done) => {
+    it('should select projections', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -728,7 +728,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should paginate with offset and limit', (done) => {
+    it('should paginate with offset and limit', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -759,7 +759,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should resume from a start cursor', (done) => {
+    it('should resume from a start cursor', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -788,7 +788,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should group queries', (done) => {
+    it('should group queries', done => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
@@ -801,26 +801,26 @@ describe('Datastore', () => {
       });
     });
 
-    it('should query from the Query object', (done) => {
+    it('should query from the Query object', done => {
       const q = datastore.createQuery('Character');
       q.run(done);
     });
   });
 
   describe('transactions', () => {
-    it('should run in a transaction', (done) => {
+    it('should run in a transaction', done => {
       const key = datastore.key(['Company', 'Google']);
       const obj = {
         url: 'www.google.com',
       };
 
       const transaction = datastore.transaction();
-      transaction.run((err) => {
+      transaction.run(err => {
         assert.ifError(err);
-        transaction.get(key, (err) => {
+        transaction.get(key, err => {
           assert.ifError(err);
           transaction.save({key: key, data: obj});
-          transaction.commit((err) => {
+          transaction.commit(err => {
             assert.ifError(err);
             datastore.get(key, (err, entity) => {
               assert.ifError(err);
@@ -832,7 +832,7 @@ describe('Datastore', () => {
       });
     });
 
-    it('should commit all saves and deletes at the end', (done) => {
+    it('should commit all saves and deletes at the end', done => {
       const deleteKey = datastore.key(['Company', 'Subway']);
       const key = datastore.key(['Company', 'Google']);
       const incompleteKey = datastore.key('Company');
@@ -842,12 +842,12 @@ describe('Datastore', () => {
           key: deleteKey,
           data: {},
         },
-        (err) => {
+        err => {
           assert.ifError(err);
 
           const transaction = datastore.transaction();
 
-          transaction.run((err) => {
+          transaction.run(err => {
             assert.ifError(err);
 
             transaction.delete(deleteKey);
@@ -863,7 +863,7 @@ describe('Datastore', () => {
               },
             ]);
 
-            transaction.commit((err) => {
+            transaction.commit(err => {
               assert.ifError(err);
 
               // Incomplete key should have been given an ID.
@@ -872,7 +872,7 @@ describe('Datastore', () => {
               async.parallel(
                 [
                   // The key queued for deletion should have been deleted.
-                  (callback) => {
+                  callback => {
                     datastore.get(deleteKey, (err, entity) => {
                       assert.ifError(err);
                       assert.strictEqual(typeof entity, 'undefined');
@@ -881,7 +881,7 @@ describe('Datastore', () => {
                   },
 
                   // Data should have been updated on the key.
-                  (callback) => {
+                  callback => {
                     datastore.get(key, (err, entity) => {
                       assert.ifError(err);
                       assert.strictEqual(entity.rating, 10);
@@ -897,13 +897,13 @@ describe('Datastore', () => {
       );
     });
 
-    it('should use the last modification to a key', (done) => {
+    it('should use the last modification to a key', done => {
       const incompleteKey = datastore.key('Company');
       const key = datastore.key(['Company', 'Google']);
 
       const transaction = datastore.transaction();
 
-      transaction.run((err) => {
+      transaction.run(err => {
         assert.ifError(err);
 
         transaction.save([
@@ -923,7 +923,7 @@ describe('Datastore', () => {
 
         transaction.delete(key);
 
-        transaction.commit((err) => {
+        transaction.commit(err => {
           assert.ifError(err);
 
           // Should not return a result.
@@ -939,9 +939,9 @@ describe('Datastore', () => {
       });
     });
 
-    it('should query within a transaction', (done) => {
+    it('should query within a transaction', done => {
       const transaction = datastore.transaction();
-      transaction.run((err) => {
+      transaction.run(err => {
         assert.ifError(err);
         const query = transaction.createQuery('Company');
         query.run((err, entities) => {
@@ -955,24 +955,24 @@ describe('Datastore', () => {
       });
     });
 
-    it('should read in a readOnly transaction', (done) => {
+    it('should read in a readOnly transaction', done => {
       const transaction = datastore.transaction({readOnly: true});
       const key = datastore.key(['Company', 'Google']);
-      transaction.run((err) => {
+      transaction.run(err => {
         assert.ifError(err);
         transaction.get(key, done);
       });
     });
 
-    it('should not write in a readOnly transaction', (done) => {
+    it('should not write in a readOnly transaction', done => {
       const transaction = datastore.transaction({readOnly: true});
       const key = datastore.key(['Company', 'Google']);
-      transaction.run((err) => {
+      transaction.run(err => {
         assert.ifError(err);
-        transaction.get(key, (err) => {
+        transaction.get(key, err => {
           assert.ifError(err);
           transaction.save({key: key, data: {}});
-          transaction.commit((err) => {
+          transaction.commit(err => {
             assert(err instanceof Error);
             done();
           });
