@@ -28,8 +28,7 @@ class InvalidKeyError extends Error {
       MISSING_KIND: 'A key should contain at least a kind.',
       MISSING_ANCESTOR_ID: 'Ancestor keys require an id or name.',
     };
-    const message = errorMessages[opts.code];
-    super(message);
+    super(errorMessages[opts.code]);
     this.name = 'InvalidKey';
   }
 }
