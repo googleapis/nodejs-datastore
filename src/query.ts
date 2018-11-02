@@ -16,7 +16,7 @@
 
 'use strict';
 
-const arrify = require('arrify');
+import * as arrify from 'arrify';
 
 /**
  * Build a Query object.
@@ -38,6 +38,17 @@ const arrify = require('arrify');
  * const query = datastore.createQuery('AnimalNamespace', 'Lion');
  */
 class Query {
+  scope;
+  namespace?: string;
+  kinds;
+  filters;
+  orders;
+  groupByVal;
+  selectVal;
+  startVal;
+  endVal;
+  limitVal;
+  offsetVal;
   constructor(scope, namespace, kinds) {
     if (!kinds) {
       kinds = namespace;

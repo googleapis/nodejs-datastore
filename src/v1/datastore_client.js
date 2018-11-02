@@ -19,7 +19,7 @@ const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
 
-const VERSION = require('../../package.json').version;
+const VERSION = require('../../../package.json').version;
 
 /**
  * Each RPC normalizes the partition IDs of the keys in its input entities,
@@ -612,5 +612,6 @@ class DatastoreClient {
     return this._innerApiCalls.reserveIds(request, options, callback);
   }
 }
+
 
 module.exports = DatastoreClient;

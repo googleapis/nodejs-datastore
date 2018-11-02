@@ -16,9 +16,9 @@
 
 'use strict';
 
-const arrify = require('arrify');
-const extend = require('extend');
-const is = require('is');
+import * as arrify from 'arrify';
+import * as extend from 'extend';
+import * as is from 'is';
 
 const entity = module.exports;
 
@@ -268,7 +268,7 @@ function decodeValueProto(valueProto) {
     }
 
     case 'doubleValue': {
-      return parseFloat(value, 10);
+      return Number(value);
     }
 
     case 'integerValue': {
@@ -310,14 +310,15 @@ entity.decodeValueProto = decodeValueProto;
  * // }
  */
 function encodeValue(value) {
-  const valueProto = {};
+  // tslint:disable-next-line no-any
+  const valueProto: any = {};
 
   if (is.boolean(value)) {
     valueProto.booleanValue = value;
     return valueProto;
   }
 
-  if (is.nil(value)) {
+  if (is.null(value)) {
     valueProto.nullValue = 0;
     return valueProto;
   }
@@ -642,7 +643,8 @@ entity.isKeyComplete = isKeyComplete;
  * });
  */
 function keyFromKeyProto(keyProto) {
-  const keyOptions = {
+  // tslint:disable-next-line no-any
+  const keyOptions: any = {
     path: [],
   };
 
@@ -698,7 +700,8 @@ function keyToKeyProto(key) {
     });
   }
 
-  const keyProto = {
+  // tslint:disable-next-line no-any
+  const keyProto: any = {
     path: [],
   };
 
@@ -719,7 +722,8 @@ function keyToKeyProto(key) {
       });
     }
 
-    const pathElement = {
+    // tslint:disable-next-line no-any
+    const pathElement: any = {
       kind: key.kind,
     };
 
@@ -787,7 +791,8 @@ function queryToQueryProto(query) {
     '+': 'ASCENDING',
   };
 
-  const queryProto = {
+  // tslint:disable-next-line no-any
+  const queryProto: any = {
     distinctOn: query.groupByVal.map(groupBy => {
       return {
         name: groupBy,
@@ -838,7 +843,8 @@ function queryToQueryProto(query) {
 
   if (query.filters.length > 0) {
     const filters = query.filters.map(filter => {
-      let value = {};
+      // tslint:disable-next-line no-any
+      let value: any = {};
 
       if (filter.name === '__key__') {
         value.keyValue = entity.keyToKeyProto(filter.val);

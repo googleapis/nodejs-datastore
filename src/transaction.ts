@@ -16,10 +16,10 @@
 
 'use strict';
 
-const arrify = require('arrify');
-const {promisifyAll} = require('@google-cloud/promisify');
+import * as arrify from 'arrify';
+import {promisifyAll} from '@google-cloud/promisify';
 const flatten = require('lodash.flatten');
-const is = require('is');
+import * as is from 'is';
 
 const entity = require('./entity');
 const Request = require('./request');
@@ -156,6 +156,8 @@ class Transaction extends Request {
           keys[stringifiedKey] = true;
           return true;
         }
+
+        return false;
       })
       // Group entities together by method: `save` mutations, then `delete`. Note:
       // `save` mutations being first is required to maintain order when assigning
@@ -349,7 +351,7 @@ class Transaction extends Request {
    *   const apiResponse = data[0];
    * });
    */
-  rollback(gaxOptions, callback) {
+  rollback(gaxOptions, callback?) {
     if (is.fn(gaxOptions)) {
       callback = gaxOptions;
       gaxOptions = {};
@@ -429,7 +431,8 @@ class Transaction extends Request {
     options = options || {};
     callback = callback || (() => {});
 
-    const reqOpts = {
+    // tslint:disable-next-line no-any
+    const reqOpts: any = {
       transactionOptions: {},
     };
 
