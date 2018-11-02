@@ -58,6 +58,7 @@
     "samples-test": "cd samples/ && npm link ../ && npm test && cd ../",
     "test-no-cover": "mocha build/test",
     "test": "npm run cover",
+    "presystem-test": "npm run compile",
     "system-test": "mocha build/system-test --timeout 600000",
     "fix": "eslint 'samples/*.js' 'samples/**/*.js' --fix",
     "clean": "gts clean",
