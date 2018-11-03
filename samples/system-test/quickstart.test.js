@@ -72,7 +72,7 @@ test.cb(`should get a task from Datastore`, t => {
 
   proxyquire(`../quickstart`, {
     '@google-cloud/datastore': {
-      Datastore: sinon.stub().returns(datastoreMock)
+      Datastore: sinon.stub().returns(datastoreMock),
     },
   });
 });

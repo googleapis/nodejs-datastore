@@ -18,7 +18,7 @@
 
 import * as assert from 'assert';
 import * as async from 'async';
-const Datastore = require('../src');
+const {Datastore} = require('../src');
 const entity = require('../src/entity.js');
 
 describe('Datastore', () => {
