@@ -38,7 +38,7 @@ const Request = require('./request');
  * @mixes module:datastore/request
  *
  * @example
- * const Datastore = require('@google-cloud/datastore');
+ * const {Datastore} = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  * const transaction = datastore.transaction();
  */
@@ -103,7 +103,7 @@ class Transaction extends Request {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    *
@@ -245,7 +245,7 @@ class Transaction extends Request {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    *
@@ -281,7 +281,7 @@ class Transaction extends Request {
    * @param {Key|Key[]} key Datastore key object(s).
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    *
@@ -328,7 +328,7 @@ class Transaction extends Request {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    *
@@ -390,7 +390,7 @@ class Transaction extends Request {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    *
@@ -493,7 +493,7 @@ class Transaction extends Request {
    *
    * @example
    * <caption>Save a single entity.</caption>
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    *
@@ -523,7 +523,7 @@ class Transaction extends Request {
    * });
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    *
@@ -564,7 +564,7 @@ class Transaction extends Request {
    *
    * @example
    * <caption>Save multiple entities at once.</caption>
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    * const companyKey = datastore.key(['Company', 123]);

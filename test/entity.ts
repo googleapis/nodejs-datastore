@@ -19,7 +19,7 @@
 import * as assert from 'assert';
 import * as extend from 'extend';
 
-const Datastore = require('../src');
+const Datastore = require('../src').Datastore;
 
 describe('entity', function() {
   let entity;

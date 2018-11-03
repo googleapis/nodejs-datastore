@@ -33,7 +33,7 @@ import * as arrify from 'arrify';
  * @param {string} kind Kind to query.
  *
  * @example
- * const Datastore = require('@google-cloud/datastore');
+ * const {Datastore} = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  * const query = datastore.createQuery('AnimalNamespace', 'Lion');
  */
@@ -131,7 +131,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const query = datastore.createQuery('Company');
    *
@@ -177,7 +177,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const query = datastore.createQuery('MyKind');
    * const ancestoryQuery = query.hasAncestor(datastore.key(['Parent', 123]));
@@ -200,7 +200,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const companyQuery = datastore.createQuery('Company');
    *
@@ -225,7 +225,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const companyQuery = datastore.createQuery('Company');
    * const groupedQuery = companyQuery.groupBy(['name', 'size']);
@@ -247,7 +247,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const companyQuery = datastore.createQuery('Company');
    *
@@ -271,7 +271,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const companyQuery = datastore.createQuery('Company');
    *
@@ -294,7 +294,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const companyQuery = datastore.createQuery('Company');
    *
@@ -317,7 +317,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const companyQuery = datastore.createQuery('Company');
    *
@@ -338,7 +338,7 @@ class Query {
    * @returns {Query}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const companyQuery = datastore.createQuery('Company');
    *
@@ -374,7 +374,7 @@ class Query {
    *     - {@link Datastore#NO_MORE_RESULTS}: There are no more results.
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const query = datastore.createQuery('Company');
    *
@@ -419,7 +419,7 @@ class Query {
    * @returns {stream}
    *
    * @example
-   * const Datastore = require('@google-cloud/datastore');
+   * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const query = datastore.createQuery('Company');
    *

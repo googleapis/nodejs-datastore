@@ -116,7 +116,7 @@ describe('Datastore', function() {
         GoogleAuth: fakeGoogleAuth,
       },
       'google-gax': fakeGoogleGax,
-    });
+    }).Datastore;
   });
 
   beforeEach(function() {
@@ -143,7 +143,7 @@ describe('Datastore', function() {
   });
 
   it('should export GAX client', function() {
-    assert.strictEqual(Datastore.v1, FakeV1);
+    assert.ok(require('../src').v1);
   });
 
   describe('instantiation', function() {
