@@ -357,12 +357,14 @@ describe('Request', function() {
       it('should end stream', function(done) {
         const stream = request.createReadStream(key);
 
-        stream.on('data', function() {}).on('error', function() {
-          setImmediate(function() {
-            assert.strictEqual(stream._destroyed, true);
-            done();
+        stream
+          .on('data', function() {})
+          .on('error', function() {
+            setImmediate(function() {
+              assert.strictEqual(stream._destroyed, true);
+              done();
+            });
           });
-        });
       });
     });
 

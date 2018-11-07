@@ -80,14 +80,14 @@ class Transaction extends Request {
   }
 
   /*! Developer Documentation
-  *
-  * Below, we override two methods that we inherit from DatastoreRequest:
-  * `delete` and `save`. This is done because:
-  *
-  *   A) the documentation needs to be different for a transactional save, and
-  *   B) we build up a "modifiedEntities_" array on this object, used to build
-  *      the final commit request with.
-  */
+   *
+   * Below, we override two methods that we inherit from DatastoreRequest:
+   * `delete` and `save`. This is done because:
+   *
+   *   A) the documentation needs to be different for a transactional save, and
+   *   B) we build up a "modifiedEntities_" array on this object, used to build
+   *      the final commit request with.
+   */
 
   /**
    * Commit the remote transaction and finalize the current transaction instance.
