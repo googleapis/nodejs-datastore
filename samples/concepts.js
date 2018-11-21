@@ -16,6 +16,7 @@
 'use strict';
 
 const sinon = require('sinon');
+const assert = require('assert');
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -427,7 +428,7 @@ class Index extends TestHelper {
     return this.datastore.runQuery(query);
   }
 
-  testExplodingProperties(assert) {
+  testExplodingProperties() {
     const original = datastore.key;
     datastore.key = this.datastore.key;
 
@@ -453,7 +454,7 @@ class Index extends TestHelper {
 }
 
 class Metadata extends TestHelper {
-  testNamespaceRunQuery(assert) {
+  testNamespaceRunQuery() {
     const datastore = this.datastore;
 
     const startNamespace = 'Animals';
@@ -500,7 +501,7 @@ class Metadata extends TestHelper {
       });
   }
 
-  testKindRunQuery(assert) {
+  testKindRunQuery() {
     const datastore = this.datastore;
 
     // [START datastore_kind_run_query]
@@ -524,7 +525,7 @@ class Metadata extends TestHelper {
     });
   }
 
-  testPropertyRunQuery(assert) {
+  testPropertyRunQuery() {
     const datastore = this.datastore;
 
     // [START datastore_property_run_query]
@@ -559,7 +560,7 @@ class Metadata extends TestHelper {
     });
   }
 
-  testPropertyByKindRunQuery(assert) {
+  testPropertyByKindRunQuery() {
     const datastore = this.datastore;
 
     // [START datastore_property_by_kind_run_query]
@@ -925,7 +926,7 @@ class Query extends TestHelper {
     return this.datastore.runQuery(query);
   }
 
-  testCursorPaging(assert) {
+  testCursorPaging() {
     const datastore = this.datastore;
     const pageSize = 1;
 
@@ -1046,7 +1047,7 @@ class Transaction extends TestHelper {
     return this.datastore.save(entities);
   }
 
-  testTransactionalUpdate(assert) {
+  testTransactionalUpdate() {
     const fromKey = this.fromKey;
     const toKey = this.toKey;
     const originalBalance = this.originalBalance;
@@ -1128,7 +1129,7 @@ class Transaction extends TestHelper {
       });
   }
 
-  testTransactionalGetOrCreate(assert) {
+  testTransactionalGetOrCreate() {
     const taskKey = this.datastore.key(['Task', Date.now()]);
 
     // Overwrite so the real Datastore instance is used in `transferFunds`.
@@ -1180,7 +1181,7 @@ class Transaction extends TestHelper {
       });
   }
 
-  testSingleEntityGroupReadOnly(assert) {
+  testSingleEntityGroupReadOnly() {
     // Overwrite so the real Datastore instance is used in `transferFunds`.
     const datastoreMock = datastore;
     datastore = this.datastore;

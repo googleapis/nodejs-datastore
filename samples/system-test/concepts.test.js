@@ -54,24 +54,24 @@ afterEach(tools.restoreConsole);
 
 // Transactions
 it('performs a transactional update', () =>
-  transaction.testTransactionalUpdate(assert));
+  transaction.testTransactionalUpdate());
 it('performs retries if necessary', () => transaction.testTransactionalRetry());
 it('performs a get or create', () =>
-  transaction.testTransactionalGetOrCreate(assert));
+  transaction.testTransactionalGetOrCreate());
 it('gets a snapshot of task list entities', () =>
-  transaction.testSingleEntityGroupReadOnly(assert));
+  transaction.testSingleEntityGroupReadOnly());
 
 // Metadata
-it('performs a namespace query', () => metadata.testNamespaceRunQuery(assert));
-it('performs a kind query', () => metadata.testKindRunQuery(assert));
-it('performs a property query', () => metadata.testPropertyRunQuery(assert));
+it('performs a namespace query', () => metadata.testNamespaceRunQuery());
+it('performs a kind query', () => metadata.testKindRunQuery());
+it('performs a property query', () => metadata.testPropertyRunQuery());
 it('performs a property by kind query', () =>
-  metadata.testPropertyByKindRunQuery(assert));
+  metadata.testPropertyByKindRunQuery());
 
 // Indexes
 it('performs a query with a filter on an unindexed property', () =>
   index.testUnindexedPropertyQuery());
-it('inserts arrays of data', () => index.testExplodingProperties(assert));
+it('inserts arrays of data', () => index.testExplodingProperties());
 
 // Queries
 it('performs a basic query', async () => await query.testRunQuery());
@@ -108,23 +108,23 @@ it('performs an array value equality query', () =>
   query.testArrayValueEquality());
 it('performs an inequality range query', () => query.testInequalityRange());
 it('returns an error from an invalid query', async () => {
-  await assert.throws(query.testInequalityInvalid());
+  await assert.throws(query.testInequalityInvalid);
 });
 it('performs an equal and inequality range query', () =>
   query.testEqualAndInequalityRange());
 it('performs an equality sort query', () => query.testInequalitySort());
 it('returns an error when not sorted on filtered property', async () => {
-  await assert.throws(query.testInequalitySortInvalidNotSame());
+  await assert.throws(query.testInequalitySortInvalidNotSame);
 });
 it('returns an error when not sorted on first filter prop', async () => {
-  await assert.throws(query.testInequalitySortInvalidNotFirst());
+  await assert.throws(query.testInequalitySortInvalidNotFirst);
 });
 it('performs a query with a limit', () => query.testLimit());
 it('allows manual pagination through results', () => {
   return entity.testBatchUpsert().then(() => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        query.testCursorPaging(assert).then(resolve, reject);
+        query.testCursorPaging().then(resolve, reject);
       }, 1000);
     });
   });
