@@ -47,7 +47,7 @@ entity.KEY_SYMBOL = Symbol('KEY');
  * @param {number} value The double value.
  *
  * @example
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  * const aDouble = datastore.double(7.3);
  */
@@ -84,7 +84,7 @@ entity.isDsDouble = isDsDouble;
  * @param {number|string} value The integer value.
  *
  * @example
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  * const anInt = datastore.int(7);
  */
@@ -128,7 +128,7 @@ export interface Coordinates {
  * @param {number} coordinates.longitude Longitudinal value.
  *
  * @example
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  * const coordinates = {
  *   latitude: 40.6894,
@@ -176,7 +176,7 @@ entity.isDsGeoPoint = isDsGeoPoint;
  * @param {string} [options.namespace] Optional namespace.
  *
  * @example
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  * const key = datastore.key({
  *   namespace: 'ns',

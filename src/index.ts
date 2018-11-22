@@ -102,7 +102,7 @@ const gapic = Object.freeze({
  * @param {string} [options.namespace] Namespace to isolate transactions to.
  *
  * @example <caption>Import the client library</caption>
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  *
  * @example <caption>Create a client that uses <a href="https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application">Application Default Credentials (ADC)</a>:</caption>
  * const datastore = new Datastore();
@@ -114,7 +114,7 @@ const gapic = Object.freeze({
  * });
  *
  * @example <caption>Retrieving Records</caption>
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  *
  * // Records, called "entities" in Datastore, are retrieved by using a key. The
@@ -305,7 +305,7 @@ const gapic = Object.freeze({
  * });
  *
  * @example <caption>Queries with Ancestors</caption>
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  *
  * const customerId1 = 2993844;
@@ -437,7 +437,7 @@ class Datastore extends DatastoreRequest {
    * @returns {object}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const threeDouble = datastore.double(3.0);
    */
@@ -456,7 +456,7 @@ class Datastore extends DatastoreRequest {
    * @returns {boolean}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * datastore.isDouble(0.42); // false
    * datastore.isDouble(datastore.double(0.42)); // true
@@ -478,7 +478,7 @@ class Datastore extends DatastoreRequest {
    * @returns {object}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const coordinates = {
    *   latitude: 40.6894,
@@ -502,7 +502,7 @@ class Datastore extends DatastoreRequest {
    * @returns {boolean}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const coordinates = {
    *   latitude: 0,
@@ -530,7 +530,7 @@ class Datastore extends DatastoreRequest {
    * @returns {object}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const sevenInteger = datastore.int(7);
    *
@@ -557,7 +557,7 @@ class Datastore extends DatastoreRequest {
    * @returns {boolean}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * datastore.isInt(42); // false
    * datastore.isInt(datastore.int(42)); // true
@@ -634,7 +634,7 @@ class Datastore extends DatastoreRequest {
    * @returns {Query}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const query = datastore.createQuery('Company');
    */
@@ -659,19 +659,19 @@ class Datastore extends DatastoreRequest {
    *
    * @example
    * <caption>Create an incomplete key with a kind value of `Company`.</caption>
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key('Company');
    *
    * @example
    * <caption>Create a complete key with a kind value of `Company` and id `123`.</caption>
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key(['Company', 123]);
    *
    * @example
    * <caption>If the ID integer is outside the bounds of a JavaScript Number object, create an Int.</caption>
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key([
    *   'Company',
@@ -679,7 +679,7 @@ class Datastore extends DatastoreRequest {
    * ]);
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * // Create a complete key with a kind value of `Company` and name `Google`.
    * // Note: `id` is used for numeric identifiers and `name` is used otherwise.
@@ -687,7 +687,7 @@ class Datastore extends DatastoreRequest {
    *
    * @example
    * <caption>Create a complete key from a provided namespace and path.</caption>
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key({
    *   namespace: 'My-NS',
@@ -711,7 +711,7 @@ class Datastore extends DatastoreRequest {
    * @returns {boolean}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * datastore.isKey({path: ['Company', 123]}); // false
    * datastore.isKey(datastore.key(['Company', 123])); // true
@@ -733,7 +733,7 @@ class Datastore extends DatastoreRequest {
    * @returns {Transaction}
    *
    * @example
-   * const {Datastore} = require('@google-cloud/datastore');
+   * const Datastore = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    */
@@ -817,7 +817,7 @@ export {Datastore};
  * npm install --save @google-cloud/datastore
  *
  * @example <caption>Import the client library</caption>
- * const {Datastore} = require('@google-cloud/datastore');
+ * const Datastore = require('@google-cloud/datastore');
  *
  * @example <caption>Create a client that uses <a href="https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application">Application Default Credentials (ADC)</a>:</caption>
  * const datastore = new Datastore();
