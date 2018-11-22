@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Google, Inc.
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,7 @@
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/google-cloud-node/#/docs/datastore/latest/guides/authentication
-const {Datastore} = require('@google-cloud/datastore');
+const Datastore = require('@google-cloud/datastore');
 
 // Creates a client
 const datastore = new Datastore();
