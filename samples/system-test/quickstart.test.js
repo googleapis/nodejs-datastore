@@ -20,7 +20,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 const tools = require('@google-cloud/nodejs-repo-tools');
 
-const Datastore = proxyquire('@google-cloud/datastore', {});
+const {Datastore} = proxyquire('@google-cloud/datastore', {});
 const datastore = new Datastore();
 
 const entity = {description: 'Buy milk'};
