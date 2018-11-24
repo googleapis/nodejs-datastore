@@ -494,7 +494,7 @@ class Metadata extends TestHelper {
       return kinds;
     }
     // [END datastore_kind_run_query]
-    const kinds = runKindQuery();
+    const kinds = await runKindQuery();
     assert.strictEqual(kinds.includes('Account'), true);
     return;
   }
@@ -916,7 +916,7 @@ class Query extends TestHelper {
       return [entities, info];
     }
     // [END datastore_cursor_paging]
-    const results = await runPageQuery().then;
+    const results = await runPageQuery();
     const entities = results[0];
     assert.strictEqual(Array.isArray(entities), true);
     const info = results[1];
