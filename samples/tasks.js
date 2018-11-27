@@ -119,16 +119,12 @@ async function markDone(taskId) {
 async function listTasks() {
   const query = datastore.createQuery('Task').order('created');
 
-  try {
-    const [tasks] = await datastore.runQuery(query);
-    console.log('Tasks:');
-    tasks.forEach(task => {
-      const taskKey = task[datastore.KEY];
-      console.log(taskKey.id, task);
-    });
-  } catch (err) {
-    console.error('ERROR:', err);
-  }
+  const [tasks] = await datastore.runQuery(query);
+  console.log('Tasks:');
+  tasks.forEach(task => {
+    const taskKey = task[datastore.KEY];
+    console.log(taskKey.id, task);
+  });
 }
 // [END datastore_retrieve_entities]
 
@@ -136,12 +132,8 @@ async function listTasks() {
 async function deleteTask(taskId) {
   const taskKey = datastore.key(['Task', taskId]);
 
-  try {
-    await datastore.delete(taskKey);
-    console.log(`Task ${taskId} deleted successfully.`);
-  } catch (err) {
-    console.error('ERROR:', err);
-  }
+  await datastore.delete(taskKey);
+  console.log(`Task ${taskId} deleted successfully.`);
 }
 // [END datastore_delete_entity]
 

@@ -376,7 +376,7 @@ class Entity extends TestHelper {
     // [START datastore_batch_lookup]
     const keys = [taskKey1, taskKey2];
 
-    const tasks = await datastore.get(keys);
+    const [tasks] = await datastore.get(keys);
     // Tasks retrieved successfully.
     console.log(tasks);
     // [END datastore_batch_lookup]
@@ -433,7 +433,6 @@ class Index extends TestHelper {
     await this.datastore.save(task);
     assert.ok(task.key);
     assert.ok(task.key.id);
-    return;
   }
 }
 
@@ -475,7 +474,6 @@ class Metadata extends TestHelper {
 
     const namespaces = await runNamespaceQuery(startNamespace, endNamespace);
     assert.strictEqual(namespaces.includes('Animals'), true);
-    return;
   }
 
   async testKindRunQuery() {
@@ -496,7 +494,6 @@ class Metadata extends TestHelper {
     // [END datastore_kind_run_query]
     const kinds = await runKindQuery();
     assert.strictEqual(kinds.includes('Account'), true);
-    return;
   }
 
   async testPropertyRunQuery() {
@@ -506,6 +503,7 @@ class Metadata extends TestHelper {
     async function runPropertyQuery() {
       const query = datastore.createQuery('__property__').select('__key__');
       const [entities] = await datastore.runQuery(query);
+      // @TODO convert below object to map
       const propertiesByKind = {};
 
       entities.forEach(entity => {
@@ -527,7 +525,6 @@ class Metadata extends TestHelper {
     // [END datastore_property_run_query]
     const propertiesByKind = await runPropertyQuery();
     assert.deepStrictEqual(propertiesByKind.Account, ['balance']);
-    return;
   }
 
   async testPropertyByKindRunQuery() {
@@ -916,14 +913,11 @@ class Query extends TestHelper {
       return [entities, info];
     }
     // [END datastore_cursor_paging]
-    const results = await runPageQuery();
-    const entities = results[0];
+    const [entities, info] = await runPageQuery();
     assert.strictEqual(Array.isArray(entities), true);
-    const info = results[1];
     if (!info || !info.endCursor) {
       throw new Error('An `info` with an `endCursor` is not present.');
     }
-    return;
   }
 
   async testEventualConsistentQuery() {
@@ -1001,20 +995,31 @@ class Transaction extends TestHelper {
 
     // Overwrite so the real Datastore instance is used in `transferFunds`.
     datastore = this.datastore;
-    await this.restoreBankAccountBalances({
-      keys: [fromKey, toKey],
-      balance: originalBalance,
-    });
-    await transferFunds(fromKey, toKey, amountToTransfer);
-    const results = await Promise.all([
-      this.datastore.get(fromKey),
-      this.datastore.get(toKey),
-    ]);
-    const accounts = results.map(result => result[0]);
-    // Restore `datastore` to the mock API.
-    datastore = datastoreMock;
-    assert.strictEqual(accounts[0].balance, originalBalance - amountToTransfer);
-    assert.strictEqual(accounts[1].balance, originalBalance + amountToTransfer);
+    try {
+      await this.restoreBankAccountBalances({
+        keys: [fromKey, toKey],
+        balance: originalBalance,
+      });
+      await transferFunds(fromKey, toKey, amountToTransfer);
+      const results = await Promise.all([
+        this.datastore.get(fromKey),
+        this.datastore.get(toKey),
+      ]);
+      const accounts = results.map(result => result[0]);
+      // Restore `datastore` to the mock API.
+      datastore = datastoreMock;
+      assert.strictEqual(
+        accounts[0].balance,
+        originalBalance - amountToTransfer
+      );
+      assert.strictEqual(
+        accounts[1].balance,
+        originalBalance + amountToTransfer
+      );
+    } catch (err) {
+      datastore = datastoreMock;
+      throw err;
+    }
   }
 
   async testTransactionalRetry() {
@@ -1036,7 +1041,9 @@ class Transaction extends TestHelper {
       let delay = 100;
 
       async function tryRequest() {
-        return transferFunds(fromKey, toKey, 10).catch(err => {
+        try {
+          await transferFunds(fromKey, toKey, 10);
+        } catch (err) {
           if (currentAttempt <= maxTries) {
             // Use exponential backoff
             setTimeout(async () => {
@@ -1044,19 +1051,17 @@ class Transaction extends TestHelper {
               delay *= 2;
               await tryRequest();
             }, delay);
-            return;
           }
-          return Promise.reject(err);
-        });
+          throw err;
+        }
       }
 
-      return await tryRequest(1, 5);
+      await tryRequest(1, 5);
     }
     // [END datastore_transactional_retry]
     await transferFundsWithRetry();
     // Restore `datastore` to the mock API.
     datastore = datastoreMock;
-    return;
   }
 
   async testTransactionalGetOrCreate() {

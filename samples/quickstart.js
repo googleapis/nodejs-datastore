@@ -47,7 +47,5 @@ async function quickStart() {
   await datastore.save(task);
   console.log(`Saved ${task.key.name}: ${task.data.description}`);
 }
-quickStart().catch(err => {
-  console.error('ERROR:', err);
-});
+quickStart().catch(console.error);
 // [END datastore_quickstart]
