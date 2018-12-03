@@ -332,7 +332,7 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  delete(keys, gaxOptions, callback?) {
+  delete(keys, gaxOptions?, callback?) {
     if (is.fn(gaxOptions)) {
       callback = gaxOptions;
       gaxOptions = {};
@@ -580,7 +580,7 @@ class DatastoreRequest {
    *   const entities = data[0];
    * });
    */
-  runQuery(query, options, callback?) {
+  runQuery(query, options?, callback?) {
     if (is.fn(options)) {
       callback = options;
       options = {};

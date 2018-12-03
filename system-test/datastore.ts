@@ -15,7 +15,6 @@
  */
 
 import * as assert from 'assert';
-import * as async from 'async';
 import {Datastore} from '../src';
 import {entity} from '../src/entity';
 
@@ -31,25 +30,24 @@ describe('Datastore', () => {
     return keyObject;
   };
 
-  after(done => {
-    function deleteEntities(kind, callback) {
-      const query = datastore.createQuery(kind).select('__key__');
+  after(async () => {
+    async function deleteEntities(kind) {
+      const query = await datastore.createQuery(kind).select('__key__');
 
-      datastore.runQuery(query, (err, entities) => {
-        if (err) {
-          callback(err);
-          return;
-        }
-
-        const keys = entities.map(entity => {
-          return entity[datastore.KEY];
-        });
-
-        datastore.delete(keys, callback);
+      const data = await datastore.runQuery(query);
+      const entities = data[0];
+      const keys = entities.map(entity => {
+        return entity[datastore.KEY];
       });
+
+      await datastore.delete(keys);
     }
 
-    async.each(testKinds, deleteEntities, done);
+    let promises: Array<{}> = [];
+    for (let i = 0; i < testKinds.length; i++) {
+      promises.push(deleteEntities(testKinds[i]));
+    }
+    await Promise.all(promises);
   });
 
   it('should allocate IDs', done => {
@@ -816,50 +814,32 @@ describe('Datastore', () => {
 
             const transaction = datastore.transaction();
 
-            transaction.run(err => {
+            transaction.commit(async err => {
               assert.ifError(err);
 
-              transaction.delete(deleteKey);
+              // Incomplete key should have been given an ID.
+              assert.strictEqual(incompleteKey.path.length, 2);
 
-              transaction.save([
-                {
-                  key,
-                  data: {rating: 10},
+              await Promise.all([
+                // The key queued for deletion should have been deleted.
+                callback => {
+                  datastore.get(deleteKey, (err, entity) => {
+                    assert.ifError(err);
+                    assert.strictEqual(typeof entity, 'undefined');
+                    callback();
+                  });
                 },
-                {
-                  key: incompleteKey,
-                  data: {rating: 100},
+
+                // Data should have been updated on the key.
+                callback => {
+                  datastore.get(key, (err, entity) => {
+                    assert.ifError(err);
+                    assert.strictEqual(entity.rating, 10);
+                    callback();
+                  });
                 },
               ]);
-
-              transaction.commit(err => {
-                assert.ifError(err);
-
-                // Incomplete key should have been given an ID.
-                assert.strictEqual(incompleteKey.path.length, 2);
-
-                async.parallel(
-                    [
-                      // The key queued for deletion should have been deleted.
-                      callback => {
-                        datastore.get(deleteKey, (err, entity) => {
-                          assert.ifError(err);
-                          assert.strictEqual(typeof entity, 'undefined');
-                          callback();
-                        });
-                      },
-
-                      // Data should have been updated on the key.
-                      callback => {
-                        datastore.get(key, (err, entity) => {
-                          assert.ifError(err);
-                          assert.strictEqual(entity.rating, 10);
-                          callback();
-                        });
-                      },
-                    ],
-                    done);
-              });
+              done();
             });
           });
     });
