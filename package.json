@@ -34,8 +34,7 @@
     "lint": "eslint 'samples/*.js' 'samples/**/*.js'",
     "cover": "nyc --reporter=lcov mocha build/test && nyc report",
     "samples-test": "cd samples/ && npm link ../ && npm test && cd ../",
-    "test-no-cover": "mocha build/test",
-    "test": "npm run cover",
+    "test": "nyc mocha",
     "presystem-test": "npm run compile",
     "system-test": "mocha build/system-test --timeout 600000",
     "fix": "eslint 'samples/*.js' 'samples/**/*.js' --fix",
@@ -85,10 +84,5 @@
     "proxyquire": "^2.0.1",
     "sinon": "^7.0.0",
     "typescript": "~3.2.0"
-  },
-  "nyc": {
-    "exclude": [
-      "build/test"
-    ]
   }
 }
