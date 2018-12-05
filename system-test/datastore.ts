@@ -22,7 +22,7 @@ describe('Datastore', () => {
   const testKinds: Array<{}> = [];
   const datastore = new Datastore();
   // Override the Key method so we can track what keys are created during the
-  // tests. They are then deleted in the `after` hook.
+  // tests. Keys are then deleted in the `after` hook.
   const key = datastore.key;
   datastore.key = function(options) {
     const keyObject = key.call(this, options);
@@ -43,7 +43,7 @@ describe('Datastore', () => {
       await datastore.delete(keys);
     }
 
-    let promises: Array<{}> = [];
+    const promises: Array<{}> = [];
     for (let i = 0; i < testKinds.length; i++) {
       promises.push(deleteEntities(testKinds[i]));
     }
@@ -821,7 +821,7 @@ describe('Datastore', () => {
               assert.strictEqual(incompleteKey.path.length, 2);
 
               await Promise.all([
-                // The key queued for deletion should have been deleted.
+                // Deletes the key that is in the deletion queue.
                 callback => {
                   datastore.get(deleteKey, (err, entity) => {
                     assert.ifError(err);
@@ -830,7 +830,7 @@ describe('Datastore', () => {
                   });
                 },
 
-                // Data should have been updated on the key.
+                // Updates data on the key.
                 callback => {
                   datastore.get(key, (err, entity) => {
                     assert.ifError(err);
