@@ -32,10 +32,10 @@ describe('Datastore', () => {
 
   after(async () => {
     async function deleteEntities(kind) {
-      const query = await datastore.createQuery(kind).select('__key__');
+      const query = datastore.createQuery(kind).select('__key__');
 
-      const data = await datastore.runQuery(query);
-      const entities = data[0];
+      const [entities] = await datastore.runQuery(query);
+      // const entities = data[0];
       const keys = entities.map(entity => {
         return entity[datastore.KEY];
       });
@@ -43,10 +43,7 @@ describe('Datastore', () => {
       await datastore.delete(keys);
     }
 
-    const promises: Array<{}> = [];
-    for (let i = 0; i < testKinds.length; i++) {
-      promises.push(deleteEntities(testKinds[i]));
-    }
+    const promises = testKinds.map(kind => deleteEntities(kind))
     await Promise.all(promises);
   });
 
@@ -799,49 +796,51 @@ describe('Datastore', () => {
       });
     });
 
-    it('should commit all saves and deletes at the end', done => {
+    it('should commit all saves and deletes at the end', async () => {
       const deleteKey = datastore.key(['Company', 'Subway']);
       const key = datastore.key(['Company', 'Google']);
       const incompleteKey = datastore.key('Company');
 
-      datastore.save(
-          {
-            key: deleteKey,
-            data: {},
-          },
-          err => {
-            assert.ifError(err);
+      await datastore.save(
+        {
+          key: deleteKey,
+          data: {},
+        }
+      );
+      const transaction = datastore.transaction();
 
-            const transaction = datastore.transaction();
+      await transaction.run();
+      transaction.delete(deleteKey);
 
-            transaction.commit(async err => {
-              assert.ifError(err);
+      transaction.save([
+        {
+          key,
+          data: {rating: 10},
+        },
+        {
+          key: incompleteKey,
+          data: {rating: 100},
+        },
+      ]);
 
-              // Incomplete key should have been given an ID.
-              assert.strictEqual(incompleteKey.path.length, 2);
+      await transaction.commit();
 
-              await Promise.all([
-                // Deletes the key that is in the deletion queue.
-                callback => {
-                  datastore.get(deleteKey, (err, entity) => {
-                    assert.ifError(err);
-                    assert.strictEqual(typeof entity, 'undefined');
-                    callback();
-                  });
-                },
+      // Incomplete key should have been given an ID.
+      assert.strictEqual(incompleteKey.path.length, 2);
 
-                // Updates data on the key.
-                callback => {
-                  datastore.get(key, (err, entity) => {
-                    assert.ifError(err);
-                    assert.strictEqual(entity.rating, 10);
-                    callback();
-                  });
-                },
-              ]);
-              done();
-            });
-          });
+      await Promise.all([
+        // Deletes the key that is in the deletion queue.
+        datastore.get(deleteKey, (err, entity) => {
+          assert.ifError(err);
+          assert.strictEqual(typeof entity, 'undefined');
+        }),
+
+        // Updates data on the key.
+        datastore.get(key, (err, entity) => {
+          assert.ifError(err);
+          assert.strictEqual(entity.rating, 10);
+        })
+      ]);
     });
 
     it('should use the last modification to a key', done => {

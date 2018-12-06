@@ -928,7 +928,7 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  save(entities, gaxOptions, callback?) {
+  save(entities, gaxOptions?, callback?) {
     entities = arrify(entities);
 
     if (is.fn(gaxOptions)) {
