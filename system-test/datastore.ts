@@ -35,7 +35,6 @@ describe('Datastore', () => {
       const query = datastore.createQuery(kind).select('__key__');
 
       const [entities] = await datastore.runQuery(query);
-      // const entities = data[0];
       const keys = entities.map(entity => {
         return entity[datastore.KEY];
       });
