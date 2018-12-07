@@ -580,7 +580,7 @@ class DatastoreRequest {
    *   const entities = data[0];
    * });
    */
-  runQuery(query, options?, callback?) {
+  runQuery(query, options?, callback?): void|Promise<any> {
     if (is.fn(options)) {
       callback = options;
       options = {};
