@@ -17,6 +17,7 @@
 import * as assert from 'assert';
 import {Datastore} from '../src';
 import {entity} from '../src/entity';
+import {promisify} from '@google-cloud/promisify';
 
 describe('Datastore', () => {
   const testKinds: Array<{}> = [];
@@ -829,15 +830,20 @@ describe('Datastore', () => {
 
       await Promise.all([
         // Deletes the key that is in the deletion queue.
-        datastore.get(deleteKey, (err, entity) => {
-          assert.ifError(err);
+        datastore.get(deleteKey)
+        .then(([entity]) => {
           assert.strictEqual(typeof entity, 'undefined');
-        }),
-
-        // Updates data on the key.
-        datastore.get(key, (err, entity) => {
+        })
+        .catch(err => {
           assert.ifError(err);
+        }),
+        // Updates data on the key.
+        datastore.get(key)
+        .then(([entity]) => {
           assert.strictEqual(entity.rating, 10);
+        })
+        .catch(err => {
+          assert.ifError(err);
         })
       ]);
     });

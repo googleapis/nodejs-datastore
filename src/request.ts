@@ -448,7 +448,8 @@ class DatastoreRequest {
    *   const entities = data[0];
    * });
    */
-  get(keys, options, callback?) {
+  get(keys, options?): Promise<any>;
+  get(keys, options, callback?): void|Promise<any> {
     if (is.fn(options)) {
       callback = options;
       options = {};
