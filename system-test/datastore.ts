@@ -17,7 +17,6 @@
 import * as assert from 'assert';
 import {Datastore} from '../src';
 import {entity} from '../src/entity';
-import {promisify} from '@google-cloud/promisify';
 
 describe('Datastore', () => {
   const testKinds: Array<{}> = [];
@@ -43,8 +42,7 @@ describe('Datastore', () => {
       await datastore.delete(keys);
     }
 
-    const promises = testKinds.map(kind => deleteEntities(kind))
-    await Promise.all(promises);
+    await Promise.all(testKinds.map(kind => deleteEntities(kind)));
   });
 
   it('should allocate IDs', done => {
@@ -828,24 +826,14 @@ describe('Datastore', () => {
       // Incomplete key should have been given an ID.
       assert.strictEqual(incompleteKey.path.length, 2);
 
-      await Promise.all([
+      const [[deletedEntity], [fetchedEntity]] = await Promise.all([
         // Deletes the key that is in the deletion queue.
-        datastore.get(deleteKey)
-        .then(([entity]) => {
-          assert.strictEqual(typeof entity, 'undefined');
-        })
-        .catch(err => {
-          assert.ifError(err);
-        }),
+        datastore.get(deleteKey),
         // Updates data on the key.
         datastore.get(key)
-        .then(([entity]) => {
-          assert.strictEqual(entity.rating, 10);
-        })
-        .catch(err => {
-          assert.ifError(err);
-        })
       ]);
+      assert.strictEqual(typeof deletedEntity, 'undefined');
+      assert.strictEqual(fetchedEntity.rating, 10);
     });
 
     it('should use the last modification to a key', done => {
