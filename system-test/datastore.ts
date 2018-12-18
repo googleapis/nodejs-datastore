@@ -22,7 +22,7 @@ describe('Datastore', () => {
   const testKinds: Array<{}> = [];
   const datastore = new Datastore();
   // Override the Key method so we can track what keys are created during the
-  // tests. Keys are then deleted in the `after` hook.
+  // tests. They are then deleted in the `after` hook.
   const key = datastore.key;
   datastore.key = function(options) {
     const keyObject = key.call(this, options);
@@ -280,7 +280,7 @@ describe('Datastore', () => {
               data: post,
             },
             err => {
-              assert.notStrictEqual(err, null);  // should fail insert
+              assert.notStrictEqual(err, null);  // should fail insert.
               datastore.get(postKey, (err, entity) => {
                 assert.ifError(err);
                 assert.deepStrictEqual(entity, post);
@@ -799,18 +799,16 @@ describe('Datastore', () => {
       const key = datastore.key(['Company', 'Google']);
       const incompleteKey = datastore.key('Company');
 
-      await datastore.save(
-        {
-          key: deleteKey,
-          data: {},
-        }
-      );
+      await datastore.save({
+        key: deleteKey,
+        data: {},
+      });
       const transaction = datastore.transaction();
 
       await transaction.run();
       transaction.delete(deleteKey);
 
-      transaction.save([
+      await transaction.save([
         {
           key,
           data: {rating: 10},

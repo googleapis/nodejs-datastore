@@ -215,7 +215,7 @@ class Transaction extends DatastoreRequest {
           client: 'DatastoreClient',
           method: 'commit',
           reqOpts,
-          gaxOpts: gaxOptions,
+          gaxOpts: gaxOptions || {},
         },
         (err, resp) => {
           if (err) {

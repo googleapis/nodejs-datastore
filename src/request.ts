@@ -34,6 +34,10 @@ import {entity} from './entity';
 import {Query} from './query';
 import {Datastore} from '.';
 
+export interface EntityDataObj {
+  [key: string]: string;
+}
+
 /**
  * A map of read consistency values to proto codes.
  *
@@ -448,8 +452,8 @@ class DatastoreRequest {
    *   const entities = data[0];
    * });
    */
-  get(keys, options?): Promise<any>;
-  get(keys, options, callback?): void|Promise<any> {
+  get(keys, options?): Promise<EntityDataObj[]>;
+  get(keys, options?, callback?): void|Promise<EntityDataObj[]> {
     if (is.fn(options)) {
       callback = options;
       options = {};
@@ -581,7 +585,8 @@ class DatastoreRequest {
    *   const entities = data[0];
    * });
    */
-  runQuery(query, options?, callback?): void|Promise<any> {
+  runQuery(query, options?): Promise<Array<Array<{}>>>;
+  runQuery(query, options?, callback?): void|Promise<Array<Array<{}>>> {
     if (is.fn(options)) {
       callback = options;
       options = {};
@@ -1037,7 +1042,7 @@ class DatastoreRequest {
           client: 'DatastoreClient',
           method: 'commit',
           reqOpts,
-          gaxOpts: gaxOptions,
+          gaxOpts: gaxOptions || {},
         },
         onCommit);
   }
