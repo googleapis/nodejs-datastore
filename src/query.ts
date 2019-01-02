@@ -447,7 +447,7 @@ class Query {
     const callback =
         typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     const runQuery = this.scope!.runQuery.bind(this.scope);
-    (runQuery as Function)(query, options, callback);
+    return (runQuery as Function)(query, options, callback);
   }
 
   /**
