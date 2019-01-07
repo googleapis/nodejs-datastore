@@ -23,12 +23,6 @@
 /**
  * @namespace google.protobuf
  */
-/**
- * @namespace google.rpc
- */
-/**
- * @namespace google.type
- */
 
 import * as arrify from 'arrify';
 import {GoogleAuth, GoogleAuthOptions} from 'google-auth-library';
