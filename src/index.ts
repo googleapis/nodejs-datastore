@@ -18,13 +18,7 @@
  * @namespace google
  */
 /**
- * @namespace google.cloud
- */
-/**
- * @namespace google.cloud.datastore
- */
-/**
- * @namespace google.cloud.datastore.v1
+ * @namespace google.datastore.v1
  */
 /**
  * @namespace google.protobuf
