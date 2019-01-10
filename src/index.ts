@@ -45,6 +45,7 @@ import {entity} from './entity';
 import {Query} from './query';
 import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
+import {google} from '../proto/datastore';
 
 const {grpc} = new GrpcClient({} as GrpcClientOptions);
 
@@ -383,12 +384,12 @@ const gapic = Object.freeze({
 class Datastore extends DatastoreRequest {
   clients_;
   namespace;
-  projectId: string;
-  defaultBaseUrl_: string;
+  projectId;
+  defaultBaseUrl_;
   options;
-  baseUrl_?: string;
-  port_?: number;
-  customEndpoint_?: boolean;
+  baseUrl_?;
+  port_?;
+  customEndpoint_?;
   auth: GoogleAuth;
   constructor(options?) {
     super();

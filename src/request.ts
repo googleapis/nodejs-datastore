@@ -24,6 +24,9 @@ import * as is from 'is';
 import {split} from 'split-array-stream';
 import * as streamEvents from 'stream-events';
 import * as through from 'through2';
+import { googleDatastore } from '../proto/datastore';
+import { googleEntity } from '../proto/entity';
+import {CallOptions} from 'google-gax';
 
 // Import the clients for each version supported by this package.
 const gapic = Object.freeze({
@@ -38,13 +41,17 @@ export interface EntityDataObj {
   [key: string]: string;
 }
 
+export interface ConsistencyProtoCode {
+  eventual: number;
+  strong: number;
+}
 /**
  * A map of read consistency values to proto codes.
  *
  * @type {object}
  * @private
  */
-const CONSISTENCY_PROTO_CODE = {
+const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   eventual: 2,
   strong: 1,
 };
@@ -59,9 +66,11 @@ const CONSISTENCY_PROTO_CODE = {
  * @class
  */
 class DatastoreRequest {
-  id;
-  requests_;
-  requestCallbacks_;
+  id: string | number | undefined;
+  requests_: never[] | {
+    mutations: Array<{}>;
+  } | undefined;
+  requestsCallbacks_: never[] | Array<(err: {}|void, resp: {}|void) => void> | undefined;
   datastore!: Datastore;
 
   /**
@@ -86,6 +95,7 @@ class DatastoreRequest {
    *
    * @param {object} obj The user's input object.
    */
+  //! Object to object interface accepting any value
   static prepareEntityObject_(obj) {
     const entityObject = extend(true, {}, obj);
 
@@ -172,7 +182,13 @@ class DatastoreRequest {
    *   const apiResponse = data[1];
    * });
    */
-  allocateIds(key, options, callback) {
+  //* Error object set to any 
+  //! Response object set to any
+  //! No overloads, options can be two different data types, callback needs
+  
+  allocateIds(key: entity.Key, options: number, callback): Promise<google.datastore.v1.AllocateIdsResponse>;
+  allocateIds(key: entity.Key, options: Error, callback): void;
+  allocateIds(key: entity.Key, options: number|{}, callback) {
     if (entity.isKeyComplete(key)) {
       throw new Error('An incomplete key should be provided.');
     }
@@ -193,7 +209,7 @@ class DatastoreRequest {
           },
           gaxOpts: options.gaxOptions,
         },
-        (err, resp) => {
+        (err: Error, resp) => {
           if (err) {
             callback(err, null, resp);
             return;
@@ -227,6 +243,11 @@ class DatastoreRequest {
    *     // All entities retrieved.
    *   });
    */
+  //! Keys not set to Datastore key object type
+  //! No overloads for optional param -> follow Datastore#get for possible types
+  //! CONSISTENCY_PROTO_CODE has no signature
+  //! Error & Response objects set to any
+  //! Needs return annotation
   createReadStream(keys, options?) {
     options = options || {};
     keys = arrify(keys).map(entity.keyToKeyProto);
@@ -336,7 +357,12 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  delete(keys, gaxOptions?, callback?) {
+  //! No overloads for combinations
+  //! Keys not set to Datastore key objects
+  //* GaxOptions type needs research
+  //? "Object is possibly undefined" needs research
+  //! Needs return annotation
+  delete(keys, gaxOptions?: CallOptions, callback?) {
     if (is.fn(gaxOptions)) {
       callback = gaxOptions;
       gaxOptions = {};
@@ -452,6 +478,9 @@ class DatastoreRequest {
    *   const entities = data[0];
    * });
    */
+  //! Keys needs Datastore key type
+  //! Options needs identifying -> Options for a createReadStream
+  //! Results needs identifying
   get(keys, options?): Promise<EntityDataObj[]>;
   get(keys, options?, callback?): void|Promise<EntityDataObj[]> {
     if (is.fn(options)) {
@@ -483,6 +512,11 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
+  //? Do we need an overload for a function that has only 1 possible combination
+  //! Entities to datastore key object
+  //! Callback might have more than one type -> Interface needed
+  //! 2x .map() might need optimizing
+  //! Needs return annotation
   insert(entities, callback) {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
@@ -585,6 +619,9 @@ class DatastoreRequest {
    *   const entities = data[0];
    * });
    */
+  //! Query to query object
+  //! Info needs type
+  //! Callback might need to be an any -> ? How do you set type to a function
   runQuery(query, options?): Promise<Array<Array<{}>>>;
   runQuery(query, options?, callback?): void|Promise<Array<Array<{}>>> {
     if (is.fn(options)) {
@@ -638,6 +675,10 @@ class DatastoreRequest {
    *     this.end();
    *   });
    */
+  //! Query to Datastore Query
+  //! Options set to object interface
+  //! CONSISTENCY_PROTO_CODE needs signature
+  //! Error & Response Objects
   runQueryStream(query, options?) {
     options = options || {};
     query = extend(true, new Query(), query);
@@ -671,7 +712,7 @@ class DatastoreRequest {
           onResultSet);
     };
 
-    function onResultSet(err, resp) {
+    function onResultSet(err: Error, resp) {
       if (err) {
         stream.destroy(err);
         return;
@@ -934,7 +975,19 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  save(entities, gaxOptions?, callback?) {
+  //! Entities to Datastore key object -> 
+  //* gaxOptions to "request configuration object"
+  //! Callback to function
+  //! Needs return value annotation
+  //! Overloading for combinations
+  //* Index to number (probably)
+  //! Reduce: Accumulator to -
+  //! Reduce: Data to  -
+  //! Mutation[method] needs index signature
+  //* Error to Error
+  //! this.request_ "Object is possibly undefined"
+  //! this.requestCallbacks_ "Does not exist on this"
+  save(entities: googleEntity.datastore.v1.Entity, gaxOptions?: CallOptions, callback?) {
     entities = arrify(entities);
 
     if (is.fn(gaxOptions)) {
@@ -953,7 +1006,7 @@ class DatastoreRequest {
     // Iterate over the entity objects, build a proto from all keys and values,
     // then place in the correct mutation array (insert, update, etc).
     entities.map(DatastoreRequest.prepareEntityObject_)
-        .forEach((entityObject, index) => {
+        .forEach((entityObject, index: number) => {
           const mutation = {};
           // tslint:disable-next-line no-any
           let entityProto: any = {};
@@ -1011,7 +1064,7 @@ class DatastoreRequest {
       mutations,
     };
 
-    function onCommit(err, resp) {
+    function onCommit(err: Error, resp) {
       if (err || !resp) {
         callback(err, resp);
         return;
@@ -1061,6 +1114,11 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
+  //! Needs return annotation
+  //! Entities to Datastore Key
+  //! Callback to function
+  //? TSlint not picking up on certain "any's", should I annotate anyway?
+  //? Overload
   update(entities, callback) {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
@@ -1085,6 +1143,10 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
+  //! Needs return annotation
+  //! Entities to Datastore Key object
+  //! Callback to function
+  //? Overload
   upsert(entities, callback) {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
@@ -1107,6 +1169,10 @@ class DatastoreRequest {
    *
    * @private
    */
+  //! Needs return annotation
+  //! Config to configuration object interface (specified above?)
+  //! Callback to function
+  //? Overloading
   request_(config, callback) {
     const datastore = this.datastore;
 
