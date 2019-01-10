@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "build",
-    "noImplicitAny": true
+    "noImplicitAny": false
   },
   "include": [
     "src/*.ts",
