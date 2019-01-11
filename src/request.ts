@@ -46,12 +46,16 @@ export interface PrepareEntityObjectResponse {
   data?: googleDatastore.datastore.v1.Entity; // extended entity object
   method?: string;
 }
+export interface AllocateIdsCallback {
+  (a: Error|null, b:entity.Key[]|null, c:AllocateIdsRequestResponse): void;
+}
 export interface AllocateIdsOptions {
   [key: string]: number|CallOptions|KeyProto;
 }
 export interface AllocateIdsRequestResponse {
   keys: KeyProto[];
 }
+export interface AllocateIdsResponse {}
 export interface CreateReadStreamOptions {
   consistency?: string;
   gaxOptions: CallOptions;
@@ -60,20 +64,43 @@ export interface CreateReadStreamRequestResponse {
   found: ResponseResult[];
   deferred?: KeyProto[];
 }
+export interface CreateReadStreamResponse {}
 export interface ConsistencyProtoCode {
   eventual: number;
   strong: number;
 }
 export interface DeleteCallback {}
+export interface DeleteResponse {}
+export interface Entities {}
 export interface InsertCallback {
   (entities?: Entity[], callback?: RunQueryInfo): void;
 }
 export interface InsertResponse {}
 export interface InsertEntitiesInfo {}
 export interface InsertResponse {}
-export interface Keys {
-  [key: string]: KeyProto|KeyProto[]|entity.Key|entity.Key[];
+export interface Keys { //!
+  KeyProto: {
+    [key: string]: entity.Key|entity.Key[];
+  };
 }
+export interface RequestCallback {
+  (a: Error): void;
+}
+export interface RequestConfig {
+  client?: string;
+  gaxOpts?: number|CallOptions|KeyProto;
+  method?: 'commit'|'rollback'|'lookup'|'runQuery'|'allocateIds'|'insert';
+  reqOpts?: RequestOptions;
+}
+export interface RequestOptions {
+  mutations?: [];
+  keys?: Entity;
+}
+export interface RunQueryStreamOptions {}
+export interface UpdateCallback {}
+export interface UpdateResponse {}
+export interface UpsertCallback {}
+export interface UpsertResponse {}
 /**
  * A map of read consistency values to proto codes.
  *
@@ -217,13 +244,14 @@ class DatastoreRequest {
   //* Error object set to any 
   //* Response object set to any
   //* Add overloads, options can be two different data types, callback needs
-
+  //! AllocateIdsCallback
+  //! Void Return Annotation
+      //! AllocateIdsResponse (promise)
   //! Overload & method not accounting for possible number arg
-  Purposeful Error
   // allocateIds(key: entity.Key, options: number, callback: (a: Error|null, b:entity.Key[]|null, c:AllocateIdsRequestResponse) => void): void;
 
-  allocateIds(key: entity.Key, options: AllocateIdsOptions, callback: (a: Error|null, b:entity.Key[]|null, c:AllocateIdsRequestResponse) => void): void;
-  allocateIds(key: entity.Key, options: AllocateIdsOptions, callback: (a: Error|null, b:entity.Key[]|null, c:AllocateIdsRequestResponse) => void) {
+  allocateIds(key: entity.Key, options: AllocateIdsOptions, callback: AllocateIdsCallback): void;
+  allocateIds(key: entity.Key, options: AllocateIdsOptions, callback: AllocateIdsCallback): void {
     if (entity.isKeyComplete(key)) {
       throw new Error('An incomplete key should be provided.');
     }
@@ -278,15 +306,16 @@ class DatastoreRequest {
    *     // All entities retrieved.
    *   });
    */
-  //* Keys not set to Datastore key object type
+  //* Keys
       //! Keys is an object of keys => can't find type "kind" or "KeyProto[]" -> Extend into interface
-  //! Options needs Annotation
+  //! CreateReadStreamOptions
   //! No overloads for optional param -> follow Datastore#get for possible types
   //* CONSISTENCY_PROTO_CODE has no signature
-  //* Error needs annotation
-  //* Response needs annotation
-  //! Needs return annotation -> Streams
-  createReadStream(keys: KeyProto|KeyProto[]|null|undefined, options?: CreateReadStreamOptions|undefined) {
+  //* Error
+  //* Response
+  //! CreateReadStreamResponse -> Stream return annotation
+  createReadStream(keys: Entity|Entity[], options?: CreateReadStreamOptions|undefined): void {
+    // let keys: entity.Key[]; 
     keys = arrify(keys).map(entity.keyToKeyProto); //? ((key: entity.Key) => KeyProto)
     options = options || {};
     if (keys.length === 0) {
@@ -396,12 +425,13 @@ class DatastoreRequest {
    * });
    */
   //! Needs overloads for combinations
-  //! Keys not set to Datastore key objects
-  //! Callback needs annotation
-  //* GaxOptions type needs research
-  //* Needs return annotation
+  //! Keys
+  //! DeleteCallback
+  //* GaxOptions
+  //* Void return annotation
+      //! DeleteResponse (promise)
   //? "Object is possibly undefined" needs research
-  delete(keys: KeyProto|KeyProto[]|null|undefined, gaxOptions?: CallOptions, callback?: DeleteCallback): void {
+  delete(keys: Entity|Entity[], gaxOptions?: CallOptions, callback?: DeleteCallback): void {
     if (is.fn(gaxOptions)) {
       callback = gaxOptions;
       gaxOptions = {};
@@ -521,8 +551,8 @@ class DatastoreRequest {
   //! Options needs identifying
   //* Results needs identifying
       //! Array taking generic types might not be specific enough
-  get(keys: KeyProto|KeyProto[]|null|undefined, options?: CreateReadStreamOptions|undefined): Promise<EntityDataObj[]>;
-  get(keys: KeyProto|KeyProto[]|null|undefined, options?: CreateReadStreamOptions|undefined, callback?:(a:null, b:boolean|number|string|Array<number|string|boolean>) => void): void|Promise<EntityDataObj[]> {
+  get(keys: Entity|Entity[], options?: CreateReadStreamOptions|undefined): Promise<EntityDataObj[]>;
+  get(keys: Entity|Entity[], options?: CreateReadStreamOptions|undefined, callback?:(a:null, b:boolean|number|string|Array<number|string|boolean>) => void): void|Promise<EntityDataObj[]> {
     if (is.fn(options)) {
       callback = options;
       options = {};
@@ -559,9 +589,8 @@ class DatastoreRequest {
       //! Callback seems incorrectly assigned to CallOptions, yet it still works -> InsertCallback
   //! 2x .map() might need optimizing
   //* Needs return annotation
-  //! InsertResponse interface
-  //! InsertCallback interface
-  //! InsertEntitiesArrayInfo interface
+  //! InsertResponse
+  //! InsertCallback
   insert(entities: Entity|Entity[], callback: CallOptions): void {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
@@ -733,10 +762,13 @@ class DatastoreRequest {
    *   });
    */
   //* Query to Datastore Query
-  //! Options set to object interface
   //* CONSISTENCY_PROTO_CODE needs signature
+      //! ConsistencyProtoCode has implicit any type
   //* Error object
-  //! Response Objects
+  //! Response Object
+  //! RunQueryStreamResponse (promise)
+  //! RunQueryStreamOptions
+  //! makeRequest "query" annotation
   runQueryStream(query: Query, options?) {
     options = options || {};
     query = extend(true, new Query(), query);
@@ -1034,19 +1066,20 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  //! Entities to Datastore key object -> 
   //* gaxOptions to "request configuration object"
-  //! Callback to function
-  //! Needs return value annotation
-  //! Overloading for combinations
+  //* Error to Error
   //* Index to number (probably)
+  //* Void return annotation
+      //! SaveResponse (promise)
+  //! Overloading for combinations
+  //! Entities
   //! Reduce: Accumulator to -
   //! Reduce: Data to  -
   //! Mutation[method] needs index signature
-  //* Error to Error
   //! this.request_ "Object is possibly undefined"
   //! this.requestCallbacks_ "Does not exist on this"
-  save(entities: googleEntity.datastore.v1.Entity, gaxOptions?: CallOptions, callback?) {
+  //! "x" annotation
+  save(entities: Entity[], gaxOptions?: CallOptions, callback?):void {
     entities = arrify(entities);
 
     if (is.fn(gaxOptions)) {
@@ -1173,9 +1206,10 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
-  //! Needs return annotation
-  //! Entities to Datastore Key
-  //! Callback to function
+  //* Void return annotation
+      //! UpdateResponse (promise)
+  //! Entities
+  //! UpdateCallback
   //? TSlint not picking up on certain "any's", should I annotate anyway?
   //? Overload
   update(entities, callback) {
@@ -1202,11 +1236,12 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
-  //! Needs return annotation
-  //! Entities to Datastore Key object
-  //! Callback to function
+  //* Void return annotation
+      //! UpsertResponse (promise)
+  //! Entities
+  //! UpsertCallback
   //? Overload
-  upsert(entities, callback) {
+  upsert(entities: Entity[], callback): void {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
           x.method = 'upsert';
@@ -1228,11 +1263,12 @@ class DatastoreRequest {
    *
    * @private
    */
-  //! Needs return annotation
-  //! Config to configuration object interface (specified above?)
-  //! Callback to function
+  //* Needs return annotation
+      //! Needs Promise return annotation
+  //! RequestConfig
+  //! RequestCallback
   //? Overloading
-  request_(config, callback) {
+  request_(config: RequestConfig, callback: RequestCallback): void {
     const datastore = this.datastore;
 
     callback = callback || (() => {});
