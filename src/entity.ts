@@ -18,7 +18,7 @@ import * as arrify from 'arrify';
 import * as extend from 'extend';
 import * as is from 'is';
 import {Query, QueryProto} from './query';
-import {google} from '../proto/datastore';
+// import {google} from '../proto/datastore';
 
 // tslint:disable-next-line no-namespace
 export namespace entity {
@@ -43,7 +43,7 @@ export namespace entity {
    * @type {symbol}
    * @private
    */
-  export const KEY_SYMBOL = Symbol('KEY');
+  export const KEY_SYMBOL: unique symbol = Symbol('KEY');
 
   /**
    * Build a Datastore Double object. For long doubles, a string can be
