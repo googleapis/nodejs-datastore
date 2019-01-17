@@ -18,27 +18,16 @@
  * @namespace google
  */
 /**
- * @namespace google.cloud
- */
-/**
- * @namespace google.cloud.datastore
- */
-/**
- * @namespace google.cloud.datastore.v1
+ * @namespace google.datastore.v1
  */
 /**
  * @namespace google.protobuf
  */
-/**
- * @namespace google.rpc
- */
-/**
- * @namespace google.type
- */
 
 import * as arrify from 'arrify';
-import {GoogleAuth} from 'google-auth-library';
+import {GoogleAuth, GoogleAuthOptions} from 'google-auth-library';
 import {GrpcClient, GrpcClientOptions} from 'google-gax';
+import {ChannelCredentials} from 'grpc';
 import * as is from 'is';
 
 import {entity} from './entity';
@@ -47,6 +36,9 @@ import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
 
 const {grpc} = new GrpcClient({} as GrpcClientOptions);
+
+// tslint:disable-next-line: no-any
+export type PathType = any;
 
 // Import the clients for each version supported by this package.
 const gapic = Object.freeze({
@@ -381,16 +373,16 @@ const gapic = Object.freeze({
  * });
  */
 class Datastore extends DatastoreRequest {
-  clients_;
-  namespace;
+  clients_: Map<string, {}>;
+  namespace?: string;
   projectId: string;
   defaultBaseUrl_: string;
-  options;
+  options: DatastoreOptions;
   baseUrl_?: string;
   port_?: number;
   customEndpoint_?: boolean;
   auth: GoogleAuth;
-  constructor(options?) {
+  constructor(options?: DatastoreOptions) {
     super();
     options = options || {};
     this.clients_ = new Map();
@@ -443,11 +435,11 @@ class Datastore extends DatastoreRequest {
    * const datastore = new Datastore();
    * const threeDouble = datastore.double(3.0);
    */
-  static double(value) {
+  static double(value: number) {
     return new entity.Double(value);
   }
 
-  double(value) {
+  double(value: number) {
     return Datastore.double(value);
   }
 
@@ -463,11 +455,11 @@ class Datastore extends DatastoreRequest {
    * datastore.isDouble(0.42); // false
    * datastore.isDouble(datastore.double(0.42)); // true
    */
-  static isDouble(value) {
+  static isDouble(value?: {}) {
     return entity.isDsDouble(value);
   }
 
-  isDouble(value) {
+  isDouble(value?: {}) {
     return Datastore.isDouble(value);
   }
 
@@ -489,11 +481,11 @@ class Datastore extends DatastoreRequest {
    *
    * const geoPoint = datastore.geoPoint(coordinates);
    */
-  static geoPoint(coordinates) {
+  static geoPoint(coordinates: entity.Coordinates) {
     return new entity.GeoPoint(coordinates);
   }
 
-  geoPoint(coordinates) {
+  geoPoint(coordinates: entity.Coordinates) {
     return Datastore.geoPoint(coordinates);
   }
 
@@ -514,11 +506,11 @@ class Datastore extends DatastoreRequest {
    * datastore.isGeoPoint(coordinates); // false
    * datastore.isGeoPoint(datastore.geoPoint(coordinates)); // true
    */
-  static isGeoPoint(value) {
+  static isGeoPoint(value?: {}) {
     return entity.isDsGeoPoint(value);
   }
 
-  isGeoPoint(value) {
+  isGeoPoint(value?: {}) {
     return Datastore.isGeoPoint(value);
   }
 
@@ -544,11 +536,11 @@ class Datastore extends DatastoreRequest {
    *   datastore.int('100000000000001234')
    * ]);
    */
-  static int(value) {
+  static int(value: number|string) {
     return new entity.Int(value);
   }
 
-  int(value) {
+  int(value: number|string) {
     return Datastore.int(value);
   }
 
@@ -564,11 +556,11 @@ class Datastore extends DatastoreRequest {
    * datastore.isInt(42); // false
    * datastore.isInt(datastore.int(42)); // true
    */
-  static isInt(value) {
+  static isInt(value?: {}) {
     return entity.isDsInt(value);
   }
 
-  isInt(value) {
+  isInt(value?: {}) {
     return Datastore.isInt(value);
   }
 
@@ -643,7 +635,7 @@ class Datastore extends DatastoreRequest {
   createQuery(namespace: string, kind?: string) {
     if (arguments.length < 2) {
       kind = namespace;
-      namespace = this.namespace;
+      namespace = this.namespace!;
     }
     return new Query(this, namespace, arrify(kind));
   }
@@ -697,12 +689,15 @@ class Datastore extends DatastoreRequest {
    *   path: ['Company', 123]
    * });
    */
-  key(options) {
+  key(options: entity.KeyOptions): entity.Key;
+  key(path: PathType[]): entity.Key;
+  key(path: string): entity.Key;
+  key(options: string|entity.KeyOptions|PathType[]): entity.Key {
     options = is.object(options) ? options : {
       namespace: this.namespace,
       path: arrify(options),
     };
-    return new entity.Key(options);
+    return new entity.Key(options as entity.KeyOptions);
   }
 
   /**
@@ -717,10 +712,10 @@ class Datastore extends DatastoreRequest {
    * datastore.isKey({path: ['Company', 123]}); // false
    * datastore.isKey(datastore.key(['Company', 123])); // true
    */
-  static isKey(value) {
+  static isKey(value?: {}) {
     return entity.isDsKey(value);
   }
-  isKey(value) {
+  isKey(value?: {}) {
     return Datastore.isKey(value);
   }
 
@@ -738,7 +733,7 @@ class Datastore extends DatastoreRequest {
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
    */
-  transaction(options?) {
+  transaction(options?: TransactionOptions) {
     return new Transaction(this, options);
   }
 
@@ -751,7 +746,7 @@ class Datastore extends DatastoreRequest {
    *
    * @param {string} customApiEndpoint Custom API endpoint.
    */
-  determineBaseUrl_(customApiEndpoint) {
+  determineBaseUrl_(customApiEndpoint?: string) {
     let baseUrl = this.defaultBaseUrl_;
     const leadingProtocol = new RegExp('^https*://');
     const trailingSlashes = new RegExp('/*$');
@@ -851,3 +846,14 @@ export {Datastore};
  *     Reference to {@link v1.DatastoreClient}.
  */
 module.exports.v1 = gapic.v1;
+
+export interface TransactionOptions {
+  id?: string;
+  readOnly?: boolean;
+}
+
+export interface DatastoreOptions extends GoogleAuthOptions {
+  namespace?: string;
+  apiEndpoint?: string;
+  sslCreds?: ChannelCredentials;
+}
