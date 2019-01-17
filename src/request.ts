@@ -1212,7 +1212,7 @@ export interface AllocateIdsRequestResponse {
 export interface AllocateIdsCallback { //! When correctly using proto google.datastore.v1.Datastore.AllocateIdsCallback, error for argument count occurs
   (a: Error|null, b:entity.Key[]|null, c:AllocateIdsRequestResponse): void;
 }
-export interface AllocateIdsOptions {
+export interface AllocateIdsOptions{
   allocations?: number;
   gaxOptions?: CallOptions;
 }

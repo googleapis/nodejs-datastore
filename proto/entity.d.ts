@@ -1,6 +1,6 @@
 import * as $protobuf from "protobufjs";
 /** Namespace google. */
-export namespace googleEntity {
+export namespace google {
 
     /** Namespace datastore. */
     namespace datastore {

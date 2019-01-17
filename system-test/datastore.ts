@@ -48,8 +48,10 @@ describe('Datastore', () => {
   it('should allocate IDs', done => {
     datastore.allocateIds(datastore.key('Kind'), 10, (err, keys) => {
       assert.ifError(err);
-      assert.strictEqual(keys.length, 10);
-      assert.strictEqual(entity.isKeyComplete(keys[0]), true);
+      if (keys !== null) {
+        assert.strictEqual(keys.length, 10);
+        assert.strictEqual(entity.isKeyComplete(keys[0]), true);
+      }
       done();
     });
   });
