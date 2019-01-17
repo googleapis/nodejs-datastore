@@ -502,7 +502,7 @@ export namespace entity {
     };
 
     if (excludeFromIndexes && excludeFromIndexes.length > 0) {
-      excludeFromIndexes.forEach(excludePath => {
+      excludeFromIndexes.forEach((excludePath: string) => {
         excludePathFromEntity(entityProto, excludePath);
       });
     }
