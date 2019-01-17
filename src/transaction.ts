@@ -18,9 +18,13 @@ import {promisifyAll} from '@google-cloud/promisify';
 import * as arrify from 'arrify';
 import * as is from 'is';
 
-import {Datastore} from '.';
-import {entity} from './entity';
-import {DatastoreRequest} from './request';
+import {Datastore, TransactionOptions} from '.';
+import {entity, Entity, KeyProto, ValueProto} from './entity';
+import {Query} from './query';
+import {DatastoreRequest, RequestConfig, RequestCallback} from './request';
+import { google } from '../proto/datastore';
+import {CallOptions} from 'google-gax';
+import { Stream } from 'stream';
 
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
@@ -44,10 +48,10 @@ class Transaction extends DatastoreRequest {
   projectId: string;
   namespace?: string;
   readOnly: boolean;
-  request;
-  modifiedEntities_;
+  request: Request;
+  modifiedEntities_: ModifiedEntities_;
   skipCommit?: boolean;
-  constructor(datastore: Datastore, options) {
+  constructor(datastore: Datastore, options?: ConstructorOptions) {
     super();
     /**
      * @name Transaction#datastore
@@ -126,13 +130,24 @@ class Transaction extends DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  commit(gaxOptions?, callback?) {
-    if (is.fn(gaxOptions)) {
-      callback = gaxOptions;
-      gaxOptions = {};
-    }
+  //! Failing test: Should accept gaxOptions. AssertionError [ERR_ASSERTION] {} === {}
+  commit(): void;
+  commit(callback: CommitCallback): void;
+  commit(gaxOptions: CommitGaxOptions): Promise<CommitResponse>;
+  commit(gaxOptions: CommitGaxOptions, callback: CommitCallback): Promise<CommitResponse>;
+  commit(gaxOptionsOrCallback?: CommitGaxOptions|CommitCallback, cb?: CommitCallback): void|Promise<CommitResponse> {
+    if (is.fn(gaxOptionsOrCallback) && typeof gaxOptionsOrCallback !== 'object') {
+      cb = gaxOptionsOrCallback;
+      gaxOptionsOrCallback = {};
+    } 
+    else if (typeof gaxOptionsOrCallback === 'object' && gaxOptionsOrCallback !== null) {} //!
+    else gaxOptionsOrCallback = {};
 
-    callback = callback || (() => {});
+    const gaxOptions: CommitGaxOptions = gaxOptionsOrCallback;
+    let callback: CommitCallback;
+
+    if (is.fn(cb) && cb !== undefined) callback = cb;
+    else callback = (()=>{});
 
     if (this.skipCommit) {
       setImmediate(callback);
@@ -152,9 +167,7 @@ class Transaction extends DatastoreRequest {
         .filter(modifiedEntity => {
           const key = modifiedEntity.entity.key;
 
-          if (!entity.isKeyComplete(key)) {
-            return true;
-          }
+          if (!entity.isKeyComplete(key)) return true;
 
           const stringifiedKey = JSON.stringify(modifiedEntity.entity.key);
 
@@ -178,7 +191,7 @@ class Transaction extends DatastoreRequest {
         // callback, having all the keys together is necessary to maintain
         // order.
         .reduce(
-            (acc, entityObject) => {
+            (acc: Entity, entityObject) => {
               const lastEntityObject = acc[acc.length - 1];
               const sameMethod = lastEntityObject &&
                   entityObject.method === lastEntityObject.method;
@@ -278,7 +291,9 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  createQuery(namespace: string, kind?: string) {
+  createQuery(namespace: string): Query;
+  createQuery(namespace: string, kind: string): Query;
+  createQuery(namespace: string, kind?: string): Query {
     return this.datastore.createQuery.call(this, namespace, kind);
   }
 
@@ -314,7 +329,8 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  delete(entities) {
+  delete(entities: Entities): void;
+  delete(entities: Entities): void {
     arrify(entities).forEach(ent => {
       this.modifiedEntities_.push({
         entity: {
@@ -360,19 +376,27 @@ class Transaction extends DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  rollback(gaxOptions, callback?) {
-    if (is.fn(gaxOptions)) {
-      callback = gaxOptions;
-      gaxOptions = {};
+  rollback(gaxOptions: RollbackGaxOptions): Promise<RollbackResponse>;
+  rollback(callback: RollbackCallback): void;
+  rollback(gaxOptionsOrCallback: RollbackGaxOptions|RollbackCallback, cb?: RollbackCallback): void|Promise<RollbackResponse> {
+    if (is.fn(gaxOptionsOrCallback) && typeof gaxOptionsOrCallback !== 'object') {
+      cb = gaxOptionsOrCallback;
+      gaxOptionsOrCallback = {};
     }
+    else if (typeof gaxOptionsOrCallback === 'object' && gaxOptionsOrCallback !== null) {}
+    else gaxOptionsOrCallback = {};
 
-    callback = callback || (() => {});
+    const gaxOptions: RollbackGaxOptions = gaxOptionsOrCallback;
+    let callback: RollbackCallback;
+
+    if (is.fn(cb) && cb !== undefined) callback = cb;
+    else callback = (()=>{});
 
     this.request_(
         {
           client: 'DatastoreClient',
           method: 'rollback',
-          gaxOpts: gaxOptions,
+          gaxOpts: gaxOptions || {},
         },
         (err, resp) => {
           this.skipCommit = true;
@@ -430,14 +454,20 @@ class Transaction extends DatastoreRequest {
    *   const apiResponse = data[1];
    * });
    */
-  run(options?, callback?) {
-    if (is.fn(options)) {
-      callback = options;
-      options = {};
+  run(options?: RunOptions): Promise<RunCallback>;
+  run(callback?: RunCallback): void;
+  run(options?: RunOptions, callback?: RunCallback): void;
+  run(optionsOrCallback?: RunOptions|RunCallback|Entity, cb?: RunCallback): void|Promise<RunCallback> {
+    if (is.fn(optionsOrCallback) && typeof optionsOrCallback !== 'object') {
+      cb = optionsOrCallback;
+      optionsOrCallback = {};
     }
 
-    options = options || {};
-    callback = callback || (() => {});
+    const options: RunOptions = optionsOrCallback;
+    let callback: RunCallback;
+
+    if (is.fn(cb) && cb !== undefined) callback = cb;
+    else callback = (()=>{});
 
     // tslint:disable-next-line no-any
     const reqOpts: any = {
@@ -604,7 +634,8 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  save(entities) {
+  save(entities: Entities): void;
+  save(entities: Entities): void {
     arrify(entities).forEach(ent => {
       this.modifiedEntities_.push({
         entity: {
@@ -617,6 +648,28 @@ class Transaction extends DatastoreRequest {
   }
 }
 
+export interface ConstructorOptions extends TransactionOptions{}
+export type Request = (config: import("./request").RequestConfig, callback: import("./request").RequestCallback) => void;
+export type ModifiedEntities_ = Array<{entity: { key: Entity; }; method: string; args: Entity[];}>;
+
+export interface CommitCallback extends google.datastore.v1.Datastore.CommitCallback{}
+export interface CommitGaxOptions extends CallOptions{}
+export interface CommitResponse extends google.datastore.v1.CommitResponse{}
+
+export type Entities = Entity|Entity[];
+
+export interface RollbackCallback extends google.datastore.v1.Datastore.RollbackCallback{}
+export interface RollbackGaxOptions extends CallOptions{}
+export interface RollbackResponse extends google.datastore.v1.RollbackResponse{}
+
+export type RunCallback = (error: (Error|null), transaction: (Transaction|null), response: google.datastore.v1.BeginTransactionResponse) => void;
+export interface RunOptions{
+  readOnly?: boolean; 
+  transactionId?: string; 
+  transactionOptions?: TransactionOptions; 
+  gaxOptions?: CallOptions;
+}
+export interface RunResponse extends google.datastore.v1.BeginTransactionResponse{}
 
 
 

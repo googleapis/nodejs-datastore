@@ -36,7 +36,6 @@ const gapic = Object.freeze({
 import {entity, Entity, KeyProto, ValueProto} from './entity';
 import {Query, RunQueryInfo, RunQueryOptions, RunQueryResponse, RunQueryCallback} from './query';
 import {Datastore} from '.';
-import { queue, AsyncBooleanResultCallback } from 'async';
 
 /**
  * A map of read consistency values to proto codes.
