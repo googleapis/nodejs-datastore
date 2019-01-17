@@ -617,6 +617,9 @@ class Transaction extends DatastoreRequest {
   }
 }
 
+
+
+
 /*! Developer Documentation
  *
  * All async methods (except for streams) will return a Promise in the event

@@ -18,7 +18,6 @@ import * as arrify from 'arrify';
 import * as extend from 'extend';
 import * as is from 'is';
 import {Query, QueryProto} from './query';
-// import {google} from '../proto/datastore';
 
 // tslint:disable-next-line no-namespace
 export namespace entity {
