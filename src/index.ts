@@ -34,6 +34,7 @@ import {entity} from './entity';
 import {Query} from './query';
 import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
+import {google} from '../proto/datastore';
 
 const {grpc} = new GrpcClient({} as GrpcClientOptions);
 
