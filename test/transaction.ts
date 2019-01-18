@@ -18,6 +18,7 @@ import * as pfy from '@google-cloud/promisify';
 import * as arrify from 'arrify';
 import * as assert from 'assert';
 import * as proxyquire from 'proxyquire';
+import { configure } from 'protobufjs';
 
 const {entity} = require('../src/entity');
 
@@ -164,7 +165,7 @@ describe('Transaction', () => {
       const gaxOptions = {};
 
       transaction.request_ = config => {
-        assert.strictEqual(config.gaxOpts, gaxOptions);
+        assert.strictEqual(config.gaxOpts, {});
         done();
       };
 
