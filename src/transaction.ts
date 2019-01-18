@@ -657,8 +657,6 @@ export interface RunOptions{
   gaxOptions?: CallOptions;
 }
 
-
-
 /*! Developer Documentation
  *
  * All async methods (except for streams) will return a Promise in the event

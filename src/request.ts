@@ -57,7 +57,7 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
  *
  * @class
  */
-class DatastoreRequest{
+class DatastoreRequest {
   id: string | number | undefined;
   requests_: Entity | { mutations: Array<{}>; };
   requestCallbacks_: Array<(err: Error|null, resp: Entity|null) => void> | Entity;
