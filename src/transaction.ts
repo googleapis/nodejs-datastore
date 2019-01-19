@@ -47,7 +47,7 @@ class Transaction extends DatastoreRequest {
   namespace?: string;
   readOnly: boolean;
   request: Function;
-  modifiedEntities_: ModifiedEntities_;
+  modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
   constructor(datastore: Datastore, options?: TransactionOptions) {
     super();
@@ -128,17 +128,15 @@ class Transaction extends DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  //! Failing test: Should accept gaxOptions. AssertionError [ERR_ASSERTION] {} === {}
-  commit(): void;
+  commit(gaxOptions?: CallOptions): Promise<google.datastore.v1.CommitResponse>;
   commit(callback: google.datastore.v1.Datastore.CommitCallback): void;
-  commit(gaxOptions: CallOptions): Promise<google.datastore.v1.CommitResponse>;
-  commit(gaxOptions: CallOptions, callback: google.datastore.v1.Datastore.CommitCallback): Promise<google.datastore.v1.CommitResponse>;
+  commit(gaxOptions: CallOptions, callback: google.datastore.v1.Datastore.CommitCallback): void;
   commit(gaxOptionsOrCallback?: CallOptions|google.datastore.v1.Datastore.CommitCallback, cb?: google.datastore.v1.Datastore.CommitCallback): void|Promise<google.datastore.v1.CommitResponse> {
     if (typeof gaxOptionsOrCallback === 'function' && typeof gaxOptionsOrCallback !== 'object') {
       cb = gaxOptionsOrCallback;
       gaxOptionsOrCallback = {};
-    } 
-    else if (typeof gaxOptionsOrCallback === 'object') {}
+    }
+    else if (typeof gaxOptionsOrCallback === 'object' && typeof gaxOptionsOrCallback !== null) {}
     else gaxOptionsOrCallback = {};
 
     const gaxOptions: CallOptions = gaxOptionsOrCallback;
@@ -189,7 +187,7 @@ class Transaction extends DatastoreRequest {
         // callback, having all the keys together is necessary to maintain
         // order.
         .reduce(
-            (acc: Entity, entityObject) => {
+            (acc: Entities, entityObject) => {
               const lastEntityObject = acc[acc.length - 1];
               const sameMethod = lastEntityObject &&
                   entityObject.method === lastEntityObject.method;
@@ -289,8 +287,6 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  createQuery(namespace: string): Query;
-  createQuery(namespace: string, kind: string): Query;
   createQuery(namespace: string, kind?: string): Query {
     return this.datastore.createQuery.call(this, namespace, kind);
   }
@@ -327,7 +323,6 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  delete(entities: Entities): void;
   delete(entities: Entities): void {
     arrify(entities).forEach(ent => {
       this.modifiedEntities_.push({
@@ -632,7 +627,6 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  save(entities: Entities): void;
   save(entities: Entities): void {
     arrify(entities).forEach(ent => {
       this.modifiedEntities_.push({
@@ -647,7 +641,7 @@ class Transaction extends DatastoreRequest {
 }
 
 export type Entities = Entity|Entity[];
-export type ModifiedEntities_ = Array<{entity: { key: Entity; }; method: string; args: Entity[];}>;
+export type ModifiedEntities = Array<{entity: { key: Entity; }; method: string; args: Entity[];}>;
 
 export type RunCallback = (error: (Error|null), transaction: (Transaction|null), response: google.datastore.v1.BeginTransactionResponse) => void;
 export interface RunOptions{

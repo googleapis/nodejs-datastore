@@ -163,7 +163,7 @@ describe('Transaction', () => {
 
     it('should accept gaxOptions', done => {
       const gaxOptions = {};
-
+      
       transaction.request_ = config => {
         assert.strictEqual(config.gaxOpts, {});
         done();

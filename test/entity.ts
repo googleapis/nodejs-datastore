@@ -19,7 +19,7 @@ import * as extend from 'extend';
 import {Datastore} from '../src';
 
 describe('entity', () => {
-  let entity; //Going to have to assign it to entity interface
+  let entity;
 
   beforeEach(() => {
     delete require.cache[require.resolve('../src/entity.js')];

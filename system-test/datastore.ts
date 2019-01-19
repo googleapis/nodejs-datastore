@@ -52,8 +52,6 @@ describe('Datastore', () => {
         assert.strictEqual(keys.length, 10);
         assert.strictEqual(entity.isKeyComplete(keys[0]), true);
       }
-      // assert.strictEqual(keys.length, 10);
-      // assert.strictEqual(entity.isKeyComplete(keys[0]), true);
       done();
     });
   });
