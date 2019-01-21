@@ -113,9 +113,9 @@ declare namespace DatastoreClient {
   }
 
   const enum CommitRequestMode {
-    MODE_UNSPECIFIED = 0,
-    TRANSACTIONAL,
-    NON_TRANSACTIONAL
+    MODE_UNSPECIFIED = 'MODE_UNSPECIFIED',
+    TRANSACTIONAL = 'TRANSACTIONAL',
+    NON_TRANSACTIONAL = 'NON_TRANSACTIONAL'
   }
 
   interface CommitRequest {
@@ -188,9 +188,9 @@ declare namespace DatastoreClient {
   }
 
   const enum ReadConsistency {
-    READ_CONSISTENCY_UNSPECIFIED = 0,
-    STRONG,
-    EVENTUAL
+    READ_CONSISTENCY_UNSPECIFIED = 'READ_CONSISTENCY_UNSPECIFIED',
+    STRONG = 'STRONG',
+    EVENTUAL = 'EVENTUAL'
   }
 
   interface ReadOptions {
@@ -255,10 +255,10 @@ declare namespace DatastoreClient {
   }
 
   const enum ResultType {
-    RESULT_TYPE_UNSPECIFIED = 0,
-    FULL,
-    PROJECTION,
-    KEY_ONLY
+    RESULT_TYPE_UNSPECIFIED = 'RESULT_TYPE_UNSPECIFIED',
+    FULL = 'FULL',
+    PROJECTION = 'PROJECTION',
+    KEY_ONLY = 'KEY_ONLY'
   }
 
   interface EntityResult {
@@ -292,9 +292,9 @@ declare namespace DatastoreClient {
   }
 
   const enum Direction {
-    DIRECTION_UNSPECIFIED = 0,
-    ASCENDING,
-    DESCENDING
+    DIRECTION_UNSPECIFIED = 'DIRECTION_UNSPECIFIED',
+    ASCENDING = 'ASCENDING',
+    DESCENDING = 'DESCENDING'
   }
 
   interface PropertyOrder {
@@ -309,8 +309,8 @@ declare namespace DatastoreClient {
   }
 
   const enum CompositeFilterOperator {
-    OPERATOR_UNSPECIFIED = 0,
-    AND
+    OPERATOR_UNSPECIFIED = 'OPERATOR_UNSPECIFIED',
+    AND = 'AND'
   }
 
   interface CompositeFilter {
@@ -319,13 +319,13 @@ declare namespace DatastoreClient {
   }
 
   const enum PropertyFilterOperator {
-    OPERATOR_UNSPECIFIED = 0,
-    LESS_THAN,
-    LESS_THAN_OR_EQUAL,
-    GREATER_THAN,
-    GREATER_THAN_OR_EQUAL,
-    EQUAL,
-    HAS_ANCESTOR = 11
+    OPERATOR_UNSPECIFIED = 'OPERATOR_UNSPECIFIED',
+    LESS_THAN = 'LESS_THAN',
+    LESS_THAN_OR_EQUAL = 'LESS_THAN_OR_EQUAL',
+    GREATER_THAN = 'GREATER_THAN',
+    GREATER_THAN_OR_EQUAL = 'GREATER_THAN_OR_EQUAL',
+    EQUAL = 'EQUAL',
+    HAS_ANCESTOR = 'HAS_ANCESTOR'
   }
 
   interface PropertyFilter {
@@ -348,11 +348,11 @@ declare namespace DatastoreClient {
   }
 
   const enum MoreResultsType {
-    MORE_RESULTS_TYPE_UNSPECIFIED = 0,
-    NOT_FINISHED,
-    MORE_RESULTS_AFTER_LIMIT,
-    NO_MORE_RESULTS,
-    MORE_RESULTS_AFTER_CURSOR
+    MORE_RESULTS_TYPE_UNSPECIFIED = 'MORE_RESULTS_TYPE_UNSPECIFIED',
+    NOT_FINISHED = 'NOT_FINISHED',
+    MORE_RESULTS_AFTER_LIMIT = 'MORE_RESULTS_AFTER_LIMIT',
+    NO_MORE_RESULTS = 'NO_MORE_RESULTS',
+    MORE_RESULTS_AFTER_CURSOR = 'MORE_RESULTS_AFTER_CURSOR'
   }
 
   interface QueryResultBatch {
