@@ -23,7 +23,7 @@ declare class DatastoreClient {
   static port: number;
   static scopes: string[];
 
-  constructor(opts: GrpcClientOptions);
+  constructor(opts?: GrpcClientOptions);
 
   getProjectId(callback: DatastoreClient.GetProjectIdCallback): void;
 
@@ -111,7 +111,7 @@ declare namespace DatastoreClient {
     (err: null|ServiceError, response: BeginTransactionResponse): void;
   }
 
-  enum CommitRequestMode {
+  const enum CommitRequestMode {
     MODE_UNSPECIFIED = 0,
     TRANSACTIONAL,
     NON_TRANSACTIONAL
@@ -121,7 +121,7 @@ declare namespace DatastoreClient {
     projectId: string;
     mode: CommitRequestMode;
     transaction?: string|Buffer;
-    mutations: Mutation;
+    mutations: Mutation[];
   }
 
   interface CommitResponse {
@@ -183,7 +183,7 @@ declare namespace DatastoreClient {
     conflictDetected: boolean;
   }
 
-  enum ReadConsistency {
+  const enum ReadConsistency {
     READ_CONSISTENCY_UNSPECIFIED = 0,
     STRONG,
     EVENTUAL
@@ -246,7 +246,7 @@ declare namespace DatastoreClient {
     properties: {[name: string]: Value};
   }
 
-  enum ResultType {
+  const enum ResultType {
     RESULT_TYPE_UNSPECIFIED = 0,
     FULL,
     PROJECTION,
@@ -283,7 +283,7 @@ declare namespace DatastoreClient {
     property: PropertyReference;
   }
 
-  enum Direction {
+  const enum Direction {
     DIRECTION_UNSPECIFIED = 0,
     ASCENDING,
     DESCENDING
@@ -299,7 +299,7 @@ declare namespace DatastoreClient {
     propertyFilter?: PropertyFilter;
   }
 
-  enum CompositeFilterOperator {
+  const enum CompositeFilterOperator {
     OPERATOR_UNSPECIFIED = 0,
     AND
   }
@@ -309,7 +309,7 @@ declare namespace DatastoreClient {
     filters: Filter[];
   }
 
-  enum PropertyFilterOperator {
+  const enum PropertyFilterOperator {
     OPERATOR_UNSPECIFIED = 0,
     LESS_THAN,
     LESS_THAN_OR_EQUAL,
@@ -337,7 +337,7 @@ declare namespace DatastoreClient {
     cursor?: string|Buffer;
   }
 
-  enum MoreResultsType {
+  const enum MoreResultsType {
     MORE_RESULTS_TYPE_UNSPECIFIED = 0,
     NOT_FINISHED,
     MORE_RESULTS_AFTER_LIMIT,
