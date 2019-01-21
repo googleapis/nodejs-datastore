@@ -336,7 +336,7 @@ declare namespace DatastoreClient {
 
   interface GqlQuery {
     queryString: string;
-    allowLiterals: boolean;
+    allowLiterals?: boolean;
     namedBindings?: {[name: string]: GqlQueryParameter};
     positionalBindings?: GqlQueryParameter[];
   }
