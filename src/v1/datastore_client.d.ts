@@ -182,7 +182,7 @@ declare namespace DatastoreClient {
   }
 
   interface MutationResult {
-    key: Key;
+    key: null|Key;
     version: number;
     conflictDetected: boolean;
   }
