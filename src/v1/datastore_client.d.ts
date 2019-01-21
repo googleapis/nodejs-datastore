@@ -85,6 +85,7 @@ declare namespace DatastoreClient {
     projectId: string;
     partitionId?: PartitionId;
     readOptions?: ReadOptions;
+    queryType?: string;
     query?: Query;
     gqlQuery?: GqlQuery;
   }
@@ -120,6 +121,7 @@ declare namespace DatastoreClient {
   interface CommitRequest {
     projectId: string;
     mode: CommitRequestMode;
+    transactionSelector?: string;
     transaction?: string|Buffer;
     mutations: Mutation[];
   }
@@ -174,6 +176,8 @@ declare namespace DatastoreClient {
     update?: Entity;
     upsert?: Entity;
     delete?: Key;
+    operation?: string;
+    conflictDetectionStrategy?: string;
     baseVersion?: number;
   }
 
@@ -190,6 +194,7 @@ declare namespace DatastoreClient {
   }
 
   interface ReadOptions {
+    consistencyType?: string;
     readConsistency?: ReadConsistency;
     transaction?: string|Buffer;
   }
@@ -201,6 +206,7 @@ declare namespace DatastoreClient {
   interface ReadOnly {}
 
   interface TransactionOptions {
+    mode?: string;
     readWrite?: ReadWrite;
     readOnly?: ReadOnly;
   }
@@ -214,6 +220,7 @@ declare namespace DatastoreClient {
     kind: string;
     id?: number;
     name?: string;
+    idType?: string;
   }
 
   interface Key {
@@ -237,6 +244,7 @@ declare namespace DatastoreClient {
     geoPointValue?: LatLng;
     entityValue?: Entity;
     arrayValue?: ArrayValue;
+    valueType?: string;
     meaning?: number;
     excludeFromIndexes?: boolean;
   }
@@ -295,6 +303,7 @@ declare namespace DatastoreClient {
   }
 
   interface Filter {
+    filterType?: string;
     compositeFilter?: CompositeFilter;
     propertyFilter?: PropertyFilter;
   }
@@ -333,6 +342,7 @@ declare namespace DatastoreClient {
   }
 
   interface GqlQueryParameter {
+    parameterType?: string;
     value?: Value;
     cursor?: string|Buffer;
   }
