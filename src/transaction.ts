@@ -374,12 +374,19 @@ class Transaction extends DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
+<<<<<<< HEAD
   rollback(gaxOptions: CallOptions): Promise<google.datastore.v1.RollbackResponse>;
   rollback(callback: google.datastore.v1.Datastore.RollbackCallback): void;
   rollback(gaxOptionsOrCallback: CallOptions|google.datastore.v1.Datastore.RollbackCallback, cb?: google.datastore.v1.Datastore.RollbackCallback): void|Promise<google.datastore.v1.RollbackResponse> {
     if (typeof gaxOptionsOrCallback === 'function' && typeof gaxOptionsOrCallback !== 'object') {
       cb = gaxOptionsOrCallback;
       gaxOptionsOrCallback = {};
+=======
+  rollback(gaxOptions?, callback?) {
+    if (is.fn(gaxOptions)) {
+      callback = gaxOptions;
+      gaxOptions = {};
+>>>>>>> 860e209bb42c0c89ac451440646867fb597f1902
     }
     else if (typeof gaxOptionsOrCallback === 'object' && gaxOptionsOrCallback !== null) {}
     else gaxOptionsOrCallback = {};
