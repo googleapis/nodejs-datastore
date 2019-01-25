@@ -132,9 +132,9 @@ class Transaction extends DatastoreRequest {
   commit(callback: google.datastore.v1.Datastore.CommitCallback): void;
   commit(gaxOptions: CallOptions, callback: google.datastore.v1.Datastore.CommitCallback): void;
   commit(
-    gaxOptionsOrCallback?: (CallOptions|google.datastore.v1.Datastore.CommitCallback),
+    gaxOptionsOrCallback?: CallOptions|google.datastore.v1.Datastore.CommitCallback,
     cb?: google.datastore.v1.Datastore.CommitCallback
-  ): void | Promise<google.datastore.v1.CommitResponse> {
+  ): void|Promise<google.datastore.v1.CommitResponse> {
     const callback = typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
     const gaxOptions = typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
 
@@ -443,7 +443,6 @@ class Transaction extends DatastoreRequest {
   run(
     optionsOrCallback?: RunOptions|RunCallback|Entity,
     cb?: RunCallback): void|Promise<google.datastore.v1.BeginTransactionResponse> {
-    
     const options = typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback = typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
