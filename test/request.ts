@@ -117,8 +117,8 @@ describe('Request', () => {
       const key = {};
       const entityObject = {data: true};
       entityObject[entity.KEY_SYMBOL] = key;
-      // tslint:disable-next-line no-any
       const preparedEntityObject =
+          // tslint:disable-next-line no-any
           Request.prepareEntityObject_(entityObject) as any;
       assert.strictEqual(preparedEntityObject.key, key);
       assert.strictEqual(preparedEntityObject.data.data, entityObject.data);
