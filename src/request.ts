@@ -474,7 +474,7 @@ class DatastoreRequest {
   get(keys: Entities, optionsOrCallback?: CreateReadStreamOptions|GetCallback,
       cb?: GetCallback): void|Promise<Entity|Transform> {
     const options =
-        typeof optionsOrCallback === 'object' && optionsOrCallback !== null ?
+        typeof optionsOrCallback === 'object' && optionsOrCallback ?
         optionsOrCallback :
         {};
     const callback =
@@ -667,8 +667,7 @@ class DatastoreRequest {
     query = extend(true, new Query(), query);
 
     const makeRequest = (query: Query) => {
-      // tslint:disable-next-line no-any
-      const reqOpts: any = {
+      const reqOpts: Any = {
         query: entity.queryToQueryProto(query),
       };
 
@@ -701,8 +700,7 @@ class DatastoreRequest {
         return;
       }
 
-      // tslint:disable-next-line no-any
-      const info: any = {
+      const info: Any = {
         moreResults: resp.batch.moreResults,
       };
 
@@ -710,8 +708,7 @@ class DatastoreRequest {
         info.endCursor = resp.batch.endCursor.toString('base64');
       }
 
-      // tslint:disable-next-line no-any
-      let entities: any[] = [];
+      let entities: Any[] = [];
 
       if (resp.batch.entityResults) {
         entities = entity.formatArray(resp.batch.entityResults);
@@ -1051,7 +1048,7 @@ class DatastoreRequest {
       }
 
       arrify(resp.mutationResults)
-          .forEach((result: Entity, index: number) => {  //! Entity malo
+          .forEach((result: Entity, index: number) => {
             if (!result.key) {
               return;
             }
@@ -1208,6 +1205,8 @@ class DatastoreRequest {
   }
 }
 
+//tslint:disable-next-line no-any
+type Any = any;
 export interface BooleanObject {
   [key: string]: boolean;
 }
@@ -1254,7 +1253,7 @@ export interface Mutation extends google.datastore.v1.IMutation {
 }
 export interface PrepareEntityObject {
   [key: string]: google.datastore.v1.Key|
-      undefined;  // TODO: Fix "Symbol cannot be key" TS error
+      undefined;
 }
 export interface PrepareEntityObjectResponse {
   key?: google.datastore.v1.Key;
@@ -1269,22 +1268,22 @@ export interface RequestCallback {
 }
 export interface RequestConfig {
   client: string;
-  gaxOpts?: number|CallOptions|KeyProto|undefined;
+  gaxOpts?: number|CallOptions|KeyProto;
   method: string;
   prepared?: boolean;
-  reqOpts?: RequestOptions;
+  reqOpts?: Entity|RequestOptions;
 }
 export interface RequestOptions {
   mutations?: []|Array<{delete: KeyProto;}>|Array<{}>;
   keys?: Entity;
-  readOptions?: {readConsistency?: number
+  readOptions?: {
+    readConsistency?: number
     transaction?: string|number;
   };
-    transaction?: string|number;
-    mode?: string;
-    projectId?: string;
+  transaction?: string|number;
+  mode?: string;
+  projectId?: string;
 }
-export interface RequestResponse extends google.datastore.v1.ICommitResponse {}
 export interface RunQueryStreamOptions {
   gaxOptions?: CallOptions;
   consistency?: 'strong'|'eventual';
