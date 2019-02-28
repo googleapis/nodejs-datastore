@@ -18,13 +18,14 @@ import * as assert from 'assert';
 const {Query} = require('../src/query');
 import {Datastore} from '../src';
 
+
 describe('Query', () => {
   const SCOPE = {} as Datastore;
   const NAMESPACE = 'Namespace';
   const KINDS = ['Kind'];
 
-
-  let query;
+//tslint:disable-next-line no-any
+  let query: any;
 
   beforeEach(() => {
     query = new Query(SCOPE, NAMESPACE, KINDS);
