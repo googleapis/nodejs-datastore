@@ -1277,12 +1277,19 @@ export interface RequestConfig {
 export interface RequestOptions {
   mutations?: []|Array<{delete: KeyProto;}>|Array<{}>;
   keys?: Entity;
-  readOptions?: {readConsistency?: number
+  readOptions?: {
+    readConsistency?: number
     transaction?: string|number;
   };
-    transaction?: string|number;
-    mode?: string;
-    projectId?: string;
+  transactionOptions?: {
+    readOnly?: {};
+    readWrite?: {
+      previousTransaction?: string;
+    };
+  };
+  transaction?: string|number;
+  mode?: string;
+  projectId?: string;
 }
 export interface RequestResponse extends google.datastore.v1.ICommitResponse {}
 export interface RunQueryStreamOptions {

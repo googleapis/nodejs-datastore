@@ -18,12 +18,21 @@ import * as pfy from '@google-cloud/promisify';
 import * as arrify from 'arrify';
 import * as assert from 'assert';
 import * as proxyquire from 'proxyquire';
+import { google } from '../proto/datastore';
+import { RequestConfig } from '../src/request';
+import { Entity } from '../src/entity';
+import { Transaction } from '../src';
+
+//tslint:disable-next-line no-any
+type Any = any;
+type Fn = (...args: Any) => void;
+type Path = string|[string]|[string, number];
 
 const {entity} = require('../src/entity');
 
 let promisified = false;
 const fakePfy = Object.assign({}, pfy, {
-  promisifyAll(klass, options) {
+  promisifyAll(klass: Fn, options: pfy.PromisifyAllOptions) {
     if (klass.name !== 'Transaction') {
       return;
     }
@@ -32,8 +41,8 @@ const fakePfy = Object.assign({}, pfy, {
   },
 });
 
-// tslint:disable-next-line no-any variable-name
-const DatastoreRequestOverride: any = {
+// tslint:disable-next-line variable-name
+const DatastoreRequestOverride: Any = {
   delete () {},
   save() {},
 };
@@ -56,8 +65,8 @@ class FakeDatastoreRequest {
 
 describe('Transaction', () => {
   // tslint:disable-next-line variable-name
-  let Transaction;
-  let transaction;
+  let Transaction: Any;
+  let transaction: Any;
   const TRANSACTION_ID = 'transaction-id';
   const PROJECT_ID = 'project-id';
   const NAMESPACE = 'a-namespace';
@@ -68,7 +77,7 @@ describe('Transaction', () => {
     namespace: NAMESPACE,
   };
 
-  function key(path) {
+  function key(path: Path) {
     return new entity.Key({path: arrify(path)});
   }
 
@@ -119,10 +128,9 @@ describe('Transaction', () => {
     });
 
     it('should localize request function', done => {
-      // tslint:disable-next-line no-any
-      const fakeDataset: any = {
+      const fakeDataset: Any = {
         request_: {
-          bind(context) {
+          bind(context: {}) {
             assert.strictEqual(context, fakeDataset);
 
             setImmediate(() => {
@@ -151,7 +159,7 @@ describe('Transaction', () => {
     });
 
     it('should commit', done => {
-      transaction.request_ = config => {
+      transaction.request_ = (config: RequestConfig & {gaxOptions: unknown}) => {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'commit');
         assert.strictEqual(config.gaxOptions, undefined);
@@ -163,7 +171,7 @@ describe('Transaction', () => {
     it('should accept gaxOptions', done => {
       const gaxOptions = {};
 
-      transaction.request_ = config => {
+      transaction.request_ = (config: RequestConfig) => {
         assert.deepEqual(config.gaxOpts, {});
         done();
       };
@@ -188,17 +196,17 @@ describe('Transaction', () => {
       const rollbackApiResponse = {};
 
       beforeEach(() => {
-        transaction.rollback = (callback) => {
+        transaction.rollback = (callback: Fn) => {
           callback(rollbackError, rollbackApiResponse);
         };
 
-        transaction.request_ = (config, callback) => {
+        transaction.request_ = (config: RequestConfig, callback: Fn) => {
           callback(error, apiResponse);
         };
       });
 
       it('should pass the commit error to the callback', done => {
-        transaction.commit((err, resp) => {
+        transaction.commit((err: Error, resp: google.datastore.v1.CommitResponse) => {
           assert.strictEqual(err, error);
           assert.strictEqual(resp, apiResponse);
           done();
@@ -208,10 +216,10 @@ describe('Transaction', () => {
 
     it('should pass apiResponse to callback', done => {
       const resp = {success: true};
-      transaction.request_ = (config, callback) => {
+      transaction.request_ = (config: RequestConfig, callback: Fn) => {
         callback(null, resp);
       };
-      transaction.commit((err, apiResponse) => {
+      transaction.commit((err: Error, apiResponse: google.datastore.v1.CommitResponse) => {
         assert.ifError(err);
         assert.deepStrictEqual(resp, apiResponse);
         done();
@@ -234,13 +242,13 @@ describe('Transaction', () => {
       const args: Array<{}> = [];
 
       let deleteCalled = 0;
-      DatastoreRequestOverride.delete = (a) => {
+      DatastoreRequestOverride.delete = (a: {}) => {
         args.push(a);
         deleteCalled++;
       };
 
       let saveCalled = 0;
-      DatastoreRequestOverride.save = (a) => {
+      DatastoreRequestOverride.save = (a: {}) => {
         args.push(a);
         saveCalled++;
       };
@@ -287,7 +295,7 @@ describe('Transaction', () => {
       transaction.save({key: key(['Product']), data: ''});
       transaction.save({key: key(['Product']), data: ''});
 
-      DatastoreRequestOverride.save = (entities) => {
+      DatastoreRequestOverride.save = (entities: Entity[]) => {
         assert.strictEqual(entities.length, 2);
         done();
       };
@@ -307,7 +315,7 @@ describe('Transaction', () => {
         },
       ];
 
-      transaction.request_ = config => {
+      transaction.request_ = (config: RequestConfig) => {
         assert.deepStrictEqual(config.reqOpts, {
           mutations: [{a: 'b'}, {c: 'd'}, {e: 'f'}, {g: 'h'}],
         });
@@ -330,7 +338,7 @@ describe('Transaction', () => {
         },
       ];
 
-      transaction.request_ = (config, cb) => {
+      transaction.request_ = (config: RequestConfig, cb: Fn) => {
         cb();
       };
 
@@ -346,7 +354,7 @@ describe('Transaction', () => {
       const args = [0, 1];
       const createQueryReturnValue = {};
 
-      transaction.datastore.createQuery = function(...ags) {
+      transaction.datastore.createQuery = function(...ags: Any) {
         assert.strictEqual(this, transaction);
         assert.strictEqual(ags[0], args[0]);
         assert.strictEqual(ags[1], args[1]);
@@ -370,7 +378,7 @@ describe('Transaction', () => {
 
       assert.strictEqual(transaction.modifiedEntities_.length, keys.length);
 
-      transaction.modifiedEntities_.forEach((queuedEntity) => {
+      transaction.modifiedEntities_.forEach((queuedEntity: Entity) => {
         assert.strictEqual(queuedEntity.method, 'delete');
         assert(keys.indexOf(queuedEntity.entity.key) > -1);
         assert.deepStrictEqual(queuedEntity.args, [queuedEntity.entity.key]);
@@ -384,7 +392,7 @@ describe('Transaction', () => {
     });
 
     it('should rollback', done => {
-      transaction.request_ = config => {
+      transaction.request_ = (config: RequestConfig & {gaxOptions: unknown}) => {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'rollback');
         assert.strictEqual(config.gaxOptions, undefined);
@@ -396,7 +404,7 @@ describe('Transaction', () => {
     it('should allow setting gaxOptions', done => {
       const gaxOptions = {};
 
-      transaction.request_ = config => {
+      transaction.request_ = (config: RequestConfig) => {
         assert.strictEqual(config.gaxOpts, gaxOptions);
         done();
       };
@@ -406,10 +414,10 @@ describe('Transaction', () => {
 
     it('should pass error to callback', done => {
       const error = new Error('Error.');
-      transaction.request_ = (config, callback) => {
+      transaction.request_ = (config: RequestConfig, callback: Fn) => {
         callback(error);
       };
-      transaction.rollback((err) => {
+      transaction.rollback((err: Error) => {
         assert.deepStrictEqual(err, error);
         done();
       });
@@ -417,10 +425,10 @@ describe('Transaction', () => {
 
     it('should pass apiResponse to callback', done => {
       const resp = {success: true};
-      transaction.request_ = (config, callback) => {
+      transaction.request_ = (config: RequestConfig, callback: Fn) => {
         callback(null, resp);
       };
-      transaction.rollback((err, apiResponse) => {
+      transaction.rollback((err: Error, apiResponse: google.datastore.v1.RollbackResponse) => {
         assert.ifError(err);
         assert.deepStrictEqual(resp, apiResponse);
         done();
@@ -428,7 +436,7 @@ describe('Transaction', () => {
     });
 
     it('should set skipCommit', done => {
-      transaction.request_ = (config, callback) => {
+      transaction.request_ = (config: RequestConfig, callback: Fn) => {
         callback();
       };
       transaction.rollback(() => {
@@ -438,7 +446,7 @@ describe('Transaction', () => {
     });
 
     it('should set skipCommit when rollback errors', done => {
-      transaction.request_ = (config, callback) => {
+      transaction.request_ = (config: RequestConfig, callback: Fn) => {
         callback(new Error('Error.'));
       };
       transaction.rollback(() => {
@@ -450,7 +458,7 @@ describe('Transaction', () => {
 
   describe('run', () => {
     it('should make the correct API request', done => {
-      transaction.request_ = config => {
+      transaction.request_ = (config: RequestConfig) => {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'beginTransaction');
         assert.deepStrictEqual(config.reqOpts, {transactionOptions: {}});
@@ -464,7 +472,7 @@ describe('Transaction', () => {
     it('should allow setting gaxOptions', done => {
       const gaxOptions = {};
 
-      transaction.request_ = config => {
+      transaction.request_ = (config: RequestConfig) => {
         assert.strictEqual(config.gaxOpts, gaxOptions);
         done();
       };
@@ -478,7 +486,7 @@ describe('Transaction', () => {
           readOnly: true,
         };
 
-        transaction.request_ = config => {
+        transaction.request_ = (config: Any) => {
           assert.deepStrictEqual(
               config.reqOpts.transactionOptions.readOnly, {});
           done();
@@ -490,9 +498,9 @@ describe('Transaction', () => {
       it('should respect the global readOnly option', done => {
         transaction.readOnly = true;
 
-        transaction.request_ = config => {
+        transaction.request_ = (config: RequestConfig) => {
           assert.deepStrictEqual(
-              config.reqOpts.transactionOptions.readOnly, {});
+              config.reqOpts!.transactionOptions!.readOnly, {});
           done();
         };
 
@@ -506,8 +514,8 @@ describe('Transaction', () => {
           transactionId: 'transaction-id',
         };
 
-        transaction.request_ = config => {
-          assert.deepStrictEqual(config.reqOpts.transactionOptions.readWrite, {
+        transaction.request_ = (config: RequestConfig) => {
+          assert.deepStrictEqual(config.reqOpts!.transactionOptions!.readWrite, {
             previousTransaction: options.transactionId,
           });
           done();
@@ -519,8 +527,8 @@ describe('Transaction', () => {
       it('should respect the global transactionId option', done => {
         transaction.id = 'transaction-id';
 
-        transaction.request_ = config => {
-          assert.deepStrictEqual(config.reqOpts.transactionOptions.readWrite, {
+        transaction.request_ = (config: RequestConfig) => {
+          assert.deepStrictEqual(config.reqOpts!.transactionOptions!.readWrite, {
             previousTransaction: transaction.id,
           });
           done();
@@ -542,7 +550,7 @@ describe('Transaction', () => {
           },
         };
 
-        transaction.request_ = config => {
+        transaction.request_ = (config: RequestConfig) => {
           assert.deepStrictEqual(config.reqOpts, options);
           done();
         };
@@ -556,13 +564,13 @@ describe('Transaction', () => {
       const apiResponse = {};
 
       beforeEach(() => {
-        transaction.request_ = (config, callback) => {
+        transaction.request_ = (config: RequestConfig, callback: Fn) => {
           callback(error, apiResponse);
         };
       });
 
       it('should pass error & API response to callback', done => {
-        transaction.run((err, transaction, apiResponse_) => {
+        transaction.run((err: Error, transaction: null, apiResponse_: google.datastore.v1.BeginTransactionResponse) => {
           assert.strictEqual(err, error);
           assert.strictEqual(transaction, null);
           assert.strictEqual(apiResponse_, apiResponse);
@@ -577,14 +585,14 @@ describe('Transaction', () => {
       };
 
       beforeEach(() => {
-        transaction.request_ = (config, callback) => {
+        transaction.request_ = (config: RequestConfig, callback: Fn) => {
           callback(null, apiResponse);
         };
       });
 
       it('should set transaction id', done => {
         delete transaction.id;
-        transaction.run((err) => {
+        transaction.run((err: Error) => {
           assert.ifError(err);
           assert.strictEqual(transaction.id, TRANSACTION_ID);
           done();
@@ -592,7 +600,7 @@ describe('Transaction', () => {
       });
 
       it('should exec callback with Transaction & apiResponse', done => {
-        transaction.run((err, transaction_, apiResponse_) => {
+        transaction.run((err: Error|null, transaction_: Transaction, apiResponse_: google.datastore.v1.Datastore.BeginTransactionCallback) => {
           assert.ifError(err);
           assert.strictEqual(transaction_, transaction);
           assert.deepStrictEqual(apiResponse_, apiResponse);
@@ -611,7 +619,7 @@ describe('Transaction', () => {
       ];
       transaction.save(entities);
       assert.strictEqual(transaction.modifiedEntities_.length, entities.length);
-      transaction.modifiedEntities_.forEach((queuedEntity) => {
+      transaction.modifiedEntities_.forEach((queuedEntity: Entity) => {
         assert.strictEqual(queuedEntity.method, 'save');
         const match = entities.filter((ent) => {
           return ent.key === queuedEntity.entity.key;
