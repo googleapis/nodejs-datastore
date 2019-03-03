@@ -24,7 +24,7 @@ describe('Query', () => {
   const NAMESPACE = 'Namespace';
   const KINDS = ['Kind'];
 
-//tslint:disable-next-line no-any
+  //tslint:disable-next-line no-any
   let query: any;
 
   beforeEach(() => {
