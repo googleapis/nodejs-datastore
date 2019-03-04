@@ -258,7 +258,7 @@ class DatastoreRequest {
             reqOpts,
             gaxOpts: options.gaxOptions,
           },
-          (err?: Error|null, resp?: Entity) => {
+          (err, resp) => {
             if (err) {
               stream.destroy(err);
               return;
@@ -953,15 +953,14 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  save(entities: Entities): void;
-  save(entities: Entities, gaxOptions?: CallOptions):
-      Promise<google.datastore.v1.ICommitResponse>;
+  save(entities: Entities): Promise<CommitResponse>;
+  save(entities: Entities, gaxOptions?: CallOptions): Promise<CommitResponse>;
   save(entities: Entities, gaxOptions: CallOptions, callback: SaveCallback):
       void;
   save(entities: Entities, callback: SaveCallback): void;
   save(
       entities: Entities, gaxOptionsOrCallback?: CallOptions|SaveCallback,
-      cb?: SaveCallback): void|Promise<google.datastore.v1.ICommitResponse> {
+      cb?: SaveCallback): void|Promise<CommitResponse> {
     entities = arrify(entities);
     const gaxOptions =
         typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
@@ -1089,10 +1088,10 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
-  update(entities: Entities): Promise<google.datastore.v1.ICommitResponse>;
+  update(entities: Entities): Promise<CommitResponse>;
   update(entities: Entities, callback: CallOptions): void;
   update(entities: Entities, callback?: CallOptions):
-      void|Promise<google.datastore.v1.ICommitResponse> {
+      void|Promise<CommitResponse> {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
           x.method = 'update';
@@ -1116,10 +1115,10 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
-  upsert(entities: Entities): Promise<google.datastore.v1.ICommitResponse>;
+  upsert(entities: Entities): Promise<CommitResponse>;
   upsert(entities: Entities, callback: CallOptions): void;
   upsert(entities: Entities, callback?: CallOptions):
-      void|Promise<google.datastore.v1.ICommitResponse> {
+      void|Promise<CommitResponse> {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
           x.method = 'upsert';
@@ -1208,6 +1207,7 @@ export interface BooleanObject {
 export interface ConsistencyProtoCode {
   [key: string]: number;
 }
+export type CommitResponse = [google.datastore.v1.ICommitResponse];
 export type Entities = Entity|Entity[];
 export interface EntityProtoObject {
   method?: string;
