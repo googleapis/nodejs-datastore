@@ -342,12 +342,11 @@ class DatastoreRequest {
   delete(): Promise<google.datastore.v1.CommitResponse>;
   delete(keys: Entities): void;
   delete(keys: Entities, callback: CommitCallback): void;
-  delete(keys: Entities, gaxOptions: CallOptions, callback: CommitCallback): void;
+  delete(keys: Entities, gaxOptions: CallOptions, callback: CommitCallback):
+      void;
   delete(
-      keys?: Entities,
-      gaxOptionsOrCallback?: CallOptions|CommitCallback,
-      cb?: CommitCallback):
-    void|Promise<google.datastore.v1.CommitResponse> {
+      keys?: Entities, gaxOptionsOrCallback?: CallOptions|CommitCallback,
+      cb?: CommitCallback): void|Promise<google.datastore.v1.CommitResponse> {
     const gaxOptions =
         typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
@@ -955,8 +954,10 @@ class DatastoreRequest {
    * });
    */
   save(entities: Entities): void;
-  save(entities: Entities, gaxOptions?: CallOptions): Promise<google.datastore.v1.ICommitResponse>;
-  save(entities: Entities, gaxOptions: CallOptions, callback: SaveCallback): void;
+  save(entities: Entities, gaxOptions?: CallOptions):
+      Promise<google.datastore.v1.ICommitResponse>;
+  save(entities: Entities, gaxOptions: CallOptions, callback: SaveCallback):
+      void;
   save(entities: Entities, callback: SaveCallback): void;
   save(
       entities: Entities, gaxOptionsOrCallback?: CallOptions|SaveCallback,
@@ -1044,17 +1045,16 @@ class DatastoreRequest {
         return;
       }
 
-      arrify(resp.mutationResults)
-          .forEach((result: Entity, index: number) => {
-            if (!result.key) {
-              return;
-            }
+      arrify(resp.mutationResults).forEach((result: Entity, index: number) => {
+        if (!result.key) {
+          return;
+        }
 
-            if (insertIndexes[index]) {
-              const id = entity.keyFromKeyProto(result.key).id;
-              entities[index].key.id = id;
-            }
-          });
+        if (insertIndexes[index]) {
+          const id = entity.keyFromKeyProto(result.key).id;
+          entities[index].key.id = id;
+        }
+      });
 
       callback(null, resp);
     }
@@ -1239,7 +1239,7 @@ export interface CreateReadStreamOptions {
   gaxOptions?: CallOptions;
 }
 export interface CommitCallback {
-  (err?: Error | null, resp?: google.datastore.v1.CommitResponse): void;
+  (err?: Error|null, resp?: google.datastore.v1.CommitResponse): void;
 }
 export interface GetCallback {
   (...args: Entity[]): void;
@@ -1275,19 +1275,14 @@ export interface RequestConfig {
 export interface RequestOptions {
   mutations?: []|Array<{delete: KeyProto;}>|Array<{}>;
   keys?: Entity;
-  readOptions?: {
-    readConsistency?: number
+  readOptions?: {readConsistency?: number
     transaction?: string|number;
   };
-  transactionOptions?: {
-    readOnly?: {};
-    readWrite?: {
-      previousTransaction?: string;
-    };
-  };
-  transaction?: string|number;
-  mode?: string;
-  projectId?: string;
+    transactionOptions?:
+        {readOnly?: {}; readWrite?: {previousTransaction?: string;};};
+    transaction?: string|number;
+    mode?: string;
+    projectId?: string;
 }
 export interface RequestResponse extends google.datastore.v1.ICommitResponse {}
 export interface RunQueryStreamOptions {
