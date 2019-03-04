@@ -21,7 +21,7 @@ import {google} from '../proto/datastore';
 import {Datastore, TransactionOptions} from '.';
 import {entity, Entity} from './entity';
 import {Query} from './query';
-import {DatastoreRequest} from './request';
+import {DatastoreRequest, RequestOptions} from './request';
 
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
@@ -329,7 +329,9 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  delete(entities: Entity): void {
+  delete(): Promise<google.datastore.v1.CommitResponse>;
+  delete(entities: Entities): void;
+  delete(entities?: Entities): void|Promise<google.datastore.v1.CommitResponse> {
     arrify(entities).forEach((ent: Entity) => {
       this.modifiedEntities_.push({
         entity: {
@@ -375,10 +377,11 @@ class Transaction extends DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  rollback(gaxOptions?: CallOptions): Promise<google.datastore.v1.RollbackResponse>;
+  rollback(): void;
   rollback(callback: google.datastore.v1.Datastore.RollbackCallback): void;
+  rollback(gaxOptions: CallOptions): Promise<google.datastore.v1.RollbackResponse>;
   rollback(gaxOptions: CallOptions, callback: google.datastore.v1.Datastore.RollbackCallback): void;
-  rollback(gaxOptionsOrCallback?: CallOptions|google.datastore.v1.Datastore.RollbackCallback, cb?: google.datastore.v1.Datastore.RollbackCallback): void|Promise<google.datastore.v1.RollbackResponse> {
+  rollback(gaxOptionsOrCallback?: CallOptions | google.datastore.v1.Datastore.RollbackCallback, cb?: Function): void|Promise<google.datastore.v1.RollbackResponse> {
     const gaxOptions = typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback = typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
 
@@ -453,16 +456,16 @@ class Transaction extends DatastoreRequest {
     const options = typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback = typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
-    const reqOpts: Any = {
+    const reqOpts = {
       transactionOptions: {},
-    };
+    } as RequestOptions;
 
     if (options.readOnly || this.readOnly) {
-      reqOpts.transactionOptions.readOnly = {};
+      reqOpts.transactionOptions!.readOnly = {};
     }
 
     if (options.transactionId || this.id) {
-      reqOpts.transactionOptions.readWrite = {
+      reqOpts.transactionOptions!.readWrite = {
         previousTransaction: options.transactionId || this.id
       };
     }
@@ -617,7 +620,8 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  save(entities: Entities): Any {
+  //tslint:disable-next-line no-any
+  save(entities: Entities): any {
     arrify(entities).forEach(ent => {
       this.modifiedEntities_.push({
         entity: {
@@ -630,12 +634,10 @@ class Transaction extends DatastoreRequest {
   }
 }
 
-//tslint:disable-next-line no-any
-type Any = any;
 export type Entities = Entity|Entity[];
 export type ModifiedEntities = Array<{entity: {key: Entity}; method: string; args: Entity[];}>;
 export interface RunCallback {
-  (error: Error|null, trasnsaction: Transaction|null, response?: google.datastore.v1.BeginTransactionResponse): void;
+  (error: Error|null, transaction: Transaction|null, response?: google.datastore.v1.BeginTransactionResponse): void;
 
 }
 export interface RunOptions {

@@ -258,7 +258,7 @@ class DatastoreRequest {
             reqOpts,
             gaxOpts: options.gaxOptions,
           },
-          (err: Error, resp: Entity) => {
+          (err?: Error|null, resp?: Entity) => {
             if (err) {
               stream.destroy(err);
               return;
@@ -339,20 +339,15 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  delete(keys: Entities):
-      void|Promise<google.datastore.v1.Datastore.CommitCallback>;
+  delete(): Promise<google.datastore.v1.CommitResponse>;
+  delete(keys: Entities): void;
+  delete(keys: Entities, callback: CommitCallback): void;
+  delete(keys: Entities, gaxOptions: CallOptions, callback: CommitCallback): void;
   delete(
-      keys: Entities,
-      callback: google.datastore.v1.Datastore.CommitCallback): void;
-  delete(
-      keys: Entities, gaxOptions: CallOptions,
-      callback: google.datastore.v1.Datastore.CommitCallback): void;
-  delete(
-      keys: Entities,
-      gaxOptionsOrCallback?: CallOptions|
-      google.datastore.v1.Datastore.CommitCallback,
-      cb?: google.datastore.v1.Datastore.CommitCallback):
-      void|Promise<google.datastore.v1.Datastore.CommitCallback> {
+      keys?: Entities,
+      gaxOptionsOrCallback?: CallOptions|CommitCallback,
+      cb?: CommitCallback):
+    void|Promise<google.datastore.v1.CommitResponse> {
     const gaxOptions =
         typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
@@ -695,7 +690,7 @@ class DatastoreRequest {
           onResultSet);
     };
 
-    function onResultSet(err: Error, resp: Entity) {
+    function onResultSet(err?: Error|null, resp?: Entity) {
       if (err) {
         stream.destroy(err);
         return;
@@ -959,10 +954,9 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  save(entities: Entities, gaxOptions?: CallOptions):
-      Promise<google.datastore.v1.ICommitResponse>;
-  save(entities: Entities, gaxOptions: CallOptions, callback: SaveCallback):
-      void;
+  save(entities: Entities): void;
+  save(entities: Entities, gaxOptions?: CallOptions): Promise<google.datastore.v1.ICommitResponse>;
+  save(entities: Entities, gaxOptions: CallOptions, callback: SaveCallback): void;
   save(entities: Entities, callback: SaveCallback): void;
   save(
       entities: Entities, gaxOptionsOrCallback?: CallOptions|SaveCallback,
@@ -1044,14 +1038,14 @@ class DatastoreRequest {
       mutations,
     };
 
-    function onCommit(err: Error|null, resp: {mutationResults: Entity;}) {
+    function onCommit(err?: Error|null, resp?: {mutationResults: Entity;}) {
       if (err || !resp) {
         callback(err, resp);
         return;
       }
 
       arrify(resp.mutationResults)
-          .forEach((result: Entity, index: number) => {  //! Entity malo
+          .forEach((result: Entity, index: number) => {
             if (!result.key) {
               return;
             }
@@ -1244,6 +1238,9 @@ export interface CreateReadStreamOptions {
   consistency?: string;
   gaxOptions?: CallOptions;
 }
+export interface CommitCallback {
+  (err?: Error | null, resp?: google.datastore.v1.CommitResponse): void;
+}
 export interface GetCallback {
   (...args: Entity[]): void;
 }
@@ -1263,7 +1260,7 @@ export interface PrepareEntityObjectResponse {
 }
 export type ProjectId = string|null|undefined;
 export interface RequestCallback {
-  (a: Error,
+  (a?: Error|null,
    b?: AllocateIdsRequestResponse&google.datastore.v1.ILookupResponse&
    Entities): void;
 }
@@ -1273,6 +1270,7 @@ export interface RequestConfig {
   method: string;
   prepared?: boolean;
   reqOpts?: RequestOptions;
+  gaxOptions?: never;
 }
 export interface RequestOptions {
   mutations?: []|Array<{delete: KeyProto;}>|Array<{}>;
