@@ -20,10 +20,10 @@ import * as assert from 'assert';
 import * as proxyquire from 'proxyquire';
 import * as sinon from 'sinon';
 
-import {google} from '../proto/datastore';
+// import {google} from '../proto/datastore';
 import {Datastore, Query, TransactionOptions} from '../src';
 import {Entity} from '../src/entity';
-import {DatastoreRequest, SaveCallback} from '../src/request';
+import {DatastoreRequest, CommitResponse} from '../src/request';
 import * as tsTypes from '../src/transaction';
 
 // tslint:disable-next-line no-any
@@ -209,7 +209,7 @@ describe('Transaction', () => {
 
       it('should pass the commit error to the callback', done => {
         transaction.commit(
-            (err: Error|null, resp?: google.datastore.v1.CommitResponse) => {
+            (err, resp) => {
               assert.strictEqual(err, error);
               assert.strictEqual(resp, apiResponse);
               done();
@@ -223,8 +223,7 @@ describe('Transaction', () => {
         callback(null, resp);
       };
       transaction.commit(
-          (err: Error|null,
-           apiResponse?: google.datastore.v1.CommitResponse) => {
+          (err, apiResponse) => {
             assert.ifError(err);
             assert.deepStrictEqual(resp, apiResponse);
             done();
@@ -424,7 +423,7 @@ describe('Transaction', () => {
       transaction.request_ = (config, callback) => {
         callback(error);
       };
-      transaction.rollback((err: Error|null) => {
+      transaction.rollback((err) => {
         assert.deepStrictEqual(err, error);
         done();
       });
@@ -436,8 +435,7 @@ describe('Transaction', () => {
         callback(null, resp);
       };
       transaction.rollback(
-          (err: Error|null,
-           apiResponse?: google.datastore.v1.RollbackResponse) => {
+          (err, apiResponse) => {
             assert.ifError(err);
             assert.deepStrictEqual(resp, apiResponse);
             done();
@@ -582,8 +580,7 @@ describe('Transaction', () => {
 
       it('should pass error & API response to callback', done => {
         transaction.run(
-            (err: Error|null, transaction: tsTypes.Transaction|null,
-             apiResponse_?: google.datastore.v1.BeginTransactionResponse) => {
+            (err, transaction, apiResponse_) => {
               assert.strictEqual(err, error);
               assert.strictEqual(transaction, null);
               assert.strictEqual(apiResponse_, apiResponse);
@@ -614,8 +611,7 @@ describe('Transaction', () => {
 
       it('should exec callback with Transaction & apiResponse', done => {
         transaction.run(
-            (err: Error|null, transaction_: tsTypes.Transaction|null,
-             apiResponse_?: google.datastore.v1.BeginTransactionResponse) => {
+            (err, transaction_, apiResponse_) => {
               assert.ifError(err);
               assert.strictEqual(transaction_, transaction);
               assert.deepStrictEqual(apiResponse_, apiResponse);

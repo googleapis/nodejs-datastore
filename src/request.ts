@@ -174,14 +174,14 @@ class DatastoreRequest {
    * });
    */
   allocateIds(key: entity.Key, options: AllocateIdsOptions|number):
-      Promise<google.datastore.v1.AllocateIdsResponse>;
+      Promise<AllocateIdsResponse>;
   allocateIds(
       key: entity.Key, options: AllocateIdsOptions|number,
       callback: AllocateIdsCallback): void;
   allocateIds(
       key: entity.Key, options: AllocateIdsOptions|number,
       callback?: AllocateIdsCallback):
-      void|Promise<google.datastore.v1.AllocateIdsResponse> {
+      void|Promise<AllocateIdsResponse> {
     if (entity.isKeyComplete(key)) {
       throw new Error('An incomplete key should be provided.');
     }
@@ -339,14 +339,14 @@ class DatastoreRequest {
    *   const apiResponse = data[0];
    * });
    */
-  delete(): Promise<google.datastore.v1.CommitResponse>;
+  delete(): Promise<CommitResponse>;
   delete(keys: Entities): void;
   delete(keys: Entities, callback: CommitCallback): void;
   delete(keys: Entities, gaxOptions: CallOptions, callback: CommitCallback):
       void;
   delete(
       keys?: Entities, gaxOptionsOrCallback?: CallOptions|CommitCallback,
-      cb?: CommitCallback): void|Promise<google.datastore.v1.CommitResponse> {
+      cb?: CommitCallback): void|Promise<CommitResponse> {
     const gaxOptions =
         typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
@@ -496,10 +496,10 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
-  insert(entities: Entities): Promise<google.datastore.v1.ICommitResponse>;
+  insert(entities: Entities): Promise<CommitResponse>;
   insert(entities: Entities, callback: CallOptions): void;
   insert(entities: Entities, callback?: CallOptions):
-      void|Promise<google.datastore.v1.ICommitResponse> {
+      void|Promise<CommitResponse> {
     entities =
         arrify(entities).map(DatastoreRequest.prepareEntityObject_).map(x => {
           x.method = 'insert';
@@ -1044,7 +1044,7 @@ class DatastoreRequest {
         return;
       }
 
-      arrify(resp.mutationResults).forEach((result: Entity, index: number) => {
+      arrify(resp.mutationResults).forEach((result: Entity, index) => {
         if (!result.key) {
           return;
         }
@@ -1227,6 +1227,7 @@ export interface AllocateIdsRequestResponse {
   keys: KeyProto[];
   mutationResults?: Entities;
 }
+export type AllocateIdsResponse = [google.datastore.v1.AllocateIdsResponse];
 export interface AllocateIdsCallback {
   (a: Error|null, b: entity.Key[]|null, c: AllocateIdsRequestResponse): void;
 }
