@@ -1043,7 +1043,7 @@ class DatastoreRequest {
         return;
       }
 
-      arrify(resp.mutationResults).forEach((result: Entity, index) => {
+      arrify(resp.mutationResults).forEach((result, index) => {
         if (!result.key) {
           return;
         }
