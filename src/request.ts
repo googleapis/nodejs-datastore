@@ -473,8 +473,7 @@ class DatastoreRequest {
       callback: GetCallback): void;
   get(keys: Entities, optionsOrCallback?: CreateReadStreamOptions|GetCallback,
       cb?: GetCallback): void|Promise<Entity|Transform> {
-    const options =
-        typeof optionsOrCallback === 'object' && optionsOrCallback ?
+    const options = typeof optionsOrCallback === 'object' && optionsOrCallback ?
         optionsOrCallback :
         {};
     const callback =
@@ -1047,17 +1046,16 @@ class DatastoreRequest {
         return;
       }
 
-      arrify(resp.mutationResults)
-          .forEach((result: Entity, index) => {
-            if (!result.key) {
-              return;
-            }
+      arrify(resp.mutationResults).forEach((result, index) => {
+        if (!result.key) {
+          return;
+        }
 
-            if (insertIndexes[index]) {
-              const id = entity.keyFromKeyProto(result.key).id;
-              entities[index].key.id = id;
-            }
-          });
+        if (insertIndexes[index]) {
+          const id = entity.keyFromKeyProto(result.key).id;
+          entities[index].key.id = id;
+        }
+      });
 
       callback(null, resp);
     }
@@ -1205,7 +1203,7 @@ class DatastoreRequest {
   }
 }
 
-//tslint:disable-next-line no-any
+// tslint:disable-next-line no-any
 type Any = any;
 export interface BooleanObject {
   [key: string]: boolean;
@@ -1252,8 +1250,7 @@ export interface Mutation extends google.datastore.v1.IMutation {
   [key: string]: Entity;
 }
 export interface PrepareEntityObject {
-  [key: string]: google.datastore.v1.Key|
-      undefined;
+  [key: string]: google.datastore.v1.Key|undefined;
 }
 export interface PrepareEntityObjectResponse {
   key?: google.datastore.v1.Key;
@@ -1276,13 +1273,12 @@ export interface RequestConfig {
 export interface RequestOptions {
   mutations?: []|Array<{delete: KeyProto;}>|Array<{}>;
   keys?: Entity;
-  readOptions?: {
-    readConsistency?: number
+  readOptions?: {readConsistency?: number
     transaction?: string|number;
   };
-  transaction?: string|number;
-  mode?: string;
-  projectId?: string;
+    transaction?: string|number;
+    mode?: string;
+    projectId?: string;
 }
 export interface RunQueryStreamOptions {
   gaxOptions?: CallOptions;
