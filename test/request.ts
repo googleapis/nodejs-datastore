@@ -24,11 +24,11 @@ import * as proxyquire from 'proxyquire';
 import * as sinon from 'sinon';
 import * as through from 'through2';
 
+import {google} from '../proto/datastore';
 import * as ds from '../src';
 import {entity, Entity, KeyProto} from '../src/entity.js';
 import {Query, QueryProto} from '../src/query.js';
 import {AllocateIdsRequestResponse, RequestConfig, RequestOptions} from '../src/request';
-import {google} from '../proto/datastore';
 
 // tslint:disable-next-line no-any
 type Any = any;
@@ -526,11 +526,13 @@ describe('Request', () => {
       request.request_ = (config: RequestConfig, callback: Function) => {
         callback(null!, resp);
       };
-      request.delete(key, (err: Error, apiResponse: [google.datastore.v1.CommitResponse]) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(resp, apiResponse);
-        done();
-      });
+      request.delete(
+          key,
+          (err: Error, apiResponse: [google.datastore.v1.CommitResponse]) => {
+            assert.ifError(err);
+            assert.deepStrictEqual(resp, apiResponse);
+            done();
+          });
     });
 
     it('should multi delete by keys', done => {
