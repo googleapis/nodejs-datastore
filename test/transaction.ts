@@ -23,7 +23,7 @@ import * as sinon from 'sinon';
 // import {google} from '../proto/datastore';
 import {Datastore, Query, TransactionOptions} from '../src';
 import {Entity} from '../src/entity';
-import {DatastoreRequest, CommitResponse} from '../src/request';
+import {CommitResponse, DatastoreRequest} from '../src/request';
 import * as tsTypes from '../src/transaction';
 
 // tslint:disable-next-line no-any
@@ -208,12 +208,11 @@ describe('Transaction', () => {
       });
 
       it('should pass the commit error to the callback', done => {
-        transaction.commit(
-            (err, resp) => {
-              assert.strictEqual(err, error);
-              assert.strictEqual(resp, apiResponse);
-              done();
-            });
+        transaction.commit((err, resp) => {
+          assert.strictEqual(err, error);
+          assert.strictEqual(resp, apiResponse);
+          done();
+        });
       });
     });
 
@@ -222,12 +221,11 @@ describe('Transaction', () => {
       transaction.request_ = (config, callback) => {
         callback(null, resp);
       };
-      transaction.commit(
-          (err, apiResponse) => {
-            assert.ifError(err);
-            assert.deepStrictEqual(resp, apiResponse);
-            done();
-          });
+      transaction.commit((err, apiResponse) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(resp, apiResponse);
+        done();
+      });
     });
 
     it('should group mutations & execute original methods', () => {
@@ -434,12 +432,11 @@ describe('Transaction', () => {
       transaction.request_ = (config, callback) => {
         callback(null, resp);
       };
-      transaction.rollback(
-          (err, apiResponse) => {
-            assert.ifError(err);
-            assert.deepStrictEqual(resp, apiResponse);
-            done();
-          });
+      transaction.rollback((err, apiResponse) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(resp, apiResponse);
+        done();
+      });
     });
 
     it('should set skipCommit', done => {
@@ -579,13 +576,12 @@ describe('Transaction', () => {
       });
 
       it('should pass error & API response to callback', done => {
-        transaction.run(
-            (err, transaction, apiResponse_) => {
-              assert.strictEqual(err, error);
-              assert.strictEqual(transaction, null);
-              assert.strictEqual(apiResponse_, apiResponse);
-              done();
-            });
+        transaction.run((err, transaction, apiResponse_) => {
+          assert.strictEqual(err, error);
+          assert.strictEqual(transaction, null);
+          assert.strictEqual(apiResponse_, apiResponse);
+          done();
+        });
       });
     });
 
@@ -610,13 +606,12 @@ describe('Transaction', () => {
       });
 
       it('should exec callback with Transaction & apiResponse', done => {
-        transaction.run(
-            (err, transaction_, apiResponse_) => {
-              assert.ifError(err);
-              assert.strictEqual(transaction_, transaction);
-              assert.deepStrictEqual(apiResponse_, apiResponse);
-              done();
-            });
+        transaction.run((err, transaction_, apiResponse_) => {
+          assert.ifError(err);
+          assert.strictEqual(transaction_, transaction);
+          assert.deepStrictEqual(apiResponse_, apiResponse);
+          done();
+        });
       });
     });
   });

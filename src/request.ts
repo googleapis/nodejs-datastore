@@ -180,8 +180,7 @@ class DatastoreRequest {
       callback: AllocateIdsCallback): void;
   allocateIds(
       key: entity.Key, options: AllocateIdsOptions|number,
-      callback?: AllocateIdsCallback):
-      void|Promise<AllocateIdsResponse> {
+      callback?: AllocateIdsCallback): void|Promise<AllocateIdsResponse> {
     if (entity.isKeyComplete(key)) {
       throw new Error('An incomplete key should be provided.');
     }
