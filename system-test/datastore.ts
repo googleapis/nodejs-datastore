@@ -20,7 +20,9 @@ const assertRejects = require('assert-rejects');
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
-  const datastore = new Datastore();
+  const datastore = new Datastore({
+    namespace: `${Date.now()}`,
+  });
   // Override the Key method so we can track what keys are created during the
   // tests. They are then deleted in the `after` hook.
   const key = datastore.key;
