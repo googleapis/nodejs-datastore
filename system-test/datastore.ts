@@ -121,8 +121,8 @@ describe('Datastore', () => {
         ],
       });
       const [entity] = await datastore.get(postKey);
-      assert.deepStrictEqual(entity, data);
-      assert.deepStrictEqual(entity[datastore.KEY], postKey);
+      assert.deepEqual(entity, data);
+      assert.deepEqual(entity[datastore.KEY], postKey);
       await datastore.delete(postKey);
     });
 
@@ -130,8 +130,8 @@ describe('Datastore', () => {
       const postKey = datastore.key(['Post', 'post1']);
       await datastore.save({key: postKey, data: post});
       const [entity] = await datastore.get(postKey);
-      assert.deepStrictEqual(entity, post);
-      assert.deepStrictEqual(entity[datastore.KEY], postKey);
+      assert.deepEqual(entity, post);
+      assert.deepEqual(entity[datastore.KEY], postKey);
       await datastore.delete(postKey);
     });
 
@@ -139,7 +139,7 @@ describe('Datastore', () => {
       const postKey = datastore.key(['Post', 123456789]);
       await datastore.save({key: postKey, data: post});
       const [entity] = await datastore.get(postKey);
-      assert.deepStrictEqual(entity, post);
+      assert.deepEqual(entity, post);
       await datastore.delete(postKey);
     });
 
@@ -152,7 +152,7 @@ describe('Datastore', () => {
       const assignedId = postKey.id;
       assert(assignedId);
       const [entity] = await datastore.get(postKey);
-      assert.deepStrictEqual(entity, data);
+      assert.deepEqual(entity, data);
       await datastore.delete(datastore.key(['Post', assignedId]));
     });
 
@@ -164,7 +164,7 @@ describe('Datastore', () => {
       assert(postKey.id);
 
       const [entity] = await datastore.get(postKey);
-      assert.deepStrictEqual(entity, post);
+      assert.deepEqual(entity, post);
       await datastore.delete(postKey);
     });
 
@@ -207,7 +207,7 @@ describe('Datastore', () => {
         data: post,
       }));
       const [entity] = await datastore.get(postKey);
-      assert.deepStrictEqual(entity, post);
+      assert.deepEqual(entity, post);
       await datastore.delete(postKey);
     });
 
@@ -275,7 +275,7 @@ describe('Datastore', () => {
                         .filter('linkedTo', personKey);
       const [results] = await datastore.runQuery(query);
       assert.strictEqual(results![0].fullName, 'Full name');
-      assert.deepStrictEqual(results![0].linkedTo, personKey);
+      assert.deepEqual(results![0].linkedTo, personKey);
       await datastore.delete(personKey);
     });
 
@@ -322,7 +322,7 @@ describe('Datastore', () => {
           },
         });
         const [entity] = await datastore.get(key);
-        assert.deepStrictEqual(entity.location, geoPointValue);
+        assert.deepEqual(entity.location, geoPointValue);
       });
     });
   });
@@ -577,7 +577,7 @@ describe('Datastore', () => {
       transaction.save({key, data: obj});
       await transaction.commit();
       const [entity] = await datastore.get(key);
-      assert.deepStrictEqual(entity, obj);
+      assert.deepEqual(entity, obj);
     });
 
     it('should commit all saves and deletes at the end', async () => {
