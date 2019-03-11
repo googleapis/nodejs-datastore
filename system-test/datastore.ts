@@ -504,11 +504,11 @@ describe('Datastore', () => {
           ]);
 
       const [entities] = await datastore.runQuery(q);
-      assert.deepStrictEqual(entities![0], {
+      assert.deepEqual(entities![0], {
         name: 'Arya',
         family: 'Stark',
       });
-      assert.deepStrictEqual(entities![8], {
+      assert.deepEqual(entities![8], {
         name: 'Sansa',
         family: 'Stark',
       });
