@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-import * as execa from 'execa';
+import * as cp from 'child_process';
 import * as mv from 'mv';
 import {ncp} from 'ncp';
 import * as tmp from 'tmp';
 import {promisify} from 'util';
+
+const execSync = (cmd) => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const keep = false;
 const mvp = promisify(mv) as {} as (...args: string[]) => Promise<void>;
