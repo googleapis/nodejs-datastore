@@ -20,7 +20,8 @@ import {ncp} from 'ncp';
 import * as tmp from 'tmp';
 import {promisify} from 'util';
 
-const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = (cmd: string, opts?: object) =>
+    cp.execSync(cmd, {encoding: 'utf-8', ...opts});
 
 const keep = false;
 const mvp = promisify(mv) as {} as (...args: string[]) => Promise<void>;
@@ -35,15 +36,15 @@ describe('📦 pack and install', () => {
    * application.
    */
   it('should be able to use the d.ts', async () => {
-    await execa('npm', ['pack', '--unsafe-perm']);
+    execSync('npm pack --unsafe-perm');
     const tarball = `google-cloud-datastore-${pkg.version}.tgz`;
     await mvp(tarball, `${stagingPath}/datastore.tgz`);
     await ncpp('system-test/fixtures/sample', `${stagingPath}/`);
-    await execa(
-        'npm', ['install', '--unsafe-perm'],
+    execSync(
+        'npm install --unsafe-perm',
         {cwd: `${stagingPath}/`, stdio: 'inherit'});
-    await execa(
-        'node', ['--throw-deprecation', 'build/src/index.js'],
+    execSync(
+        'node --throw-deprecation build/src/index.js',
         {cwd: `${stagingPath}/`, stdio: 'inherit'});
   });
 
