@@ -20,7 +20,7 @@ import {ncp} from 'ncp';
 import * as tmp from 'tmp';
 import {promisify} from 'util';
 
-const execSync = (cmd) => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const keep = false;
 const mvp = promisify(mv) as {} as (...args: string[]) => Promise<void>;
