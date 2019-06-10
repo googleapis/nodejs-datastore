@@ -1186,6 +1186,21 @@ class DatastoreRequest {
     this.save(entities, callback);
   }
 
+  merge(
+    entities: Entities,
+    callback?: CallOptions
+  ): void | Promise<CommitResponse> {
+    entities = arrify(entities).map(async (x: Entities) => {
+      x.method = 'upsert';
+      const [data] = await this.get(x.key);
+      x.data = Object.assign({}, data, x.data);
+      return x;
+    });
+    Promise.all(entities).then(x => {
+      this.save(x, callback);
+    });
+  }
+
   request_(config: RequestConfig, callback: RequestCallback): void;
   /**
    * Make a request to the API endpoint. Properties to indicate a transactional
