@@ -1549,6 +1549,35 @@ describe('Request', () => {
     });
   });
 
+  describe('merge', () => {
+    it('should return merge objects', done => {
+      const key = {
+        namespace: 'ns',
+        kind: 'Company',
+        path: ['Company', null],
+      };
+      const entityObject = {};
+      const updatedEntityObject = {
+        status: 'merged',
+      };
+      sinon
+        .stub(request, 'get')
+        .callsFake((keys: Entity, callback: Function) => {
+          callback(null, entityObject);
+        });
+      sinon
+        .stub(request, 'save')
+        .callsFake((entities: Entity[], callback: Function) => {
+          assert.deepEqual(
+            entities[0].data,
+            Object.assign({}, entityObject, updatedEntityObject)
+          );
+          callback();
+        });
+      request.merge({key, data: updatedEntityObject}, done);
+    });
+  });
+
   describe('request_', () => {
     const CONFIG = {
       client: 'FakeClient', // name set at top of file

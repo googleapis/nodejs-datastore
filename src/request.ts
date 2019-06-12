@@ -41,6 +41,7 @@ import {
   RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
+import {ServiceError} from '@grpc/grpc-js';
 
 /**
  * A map of read consistency values to proto codes.
@@ -1186,18 +1187,35 @@ class DatastoreRequest {
     this.save(entities, callback);
   }
 
+  merge(entities: Entities): Promise<CommitResponse>;
+  merge(entities: Entities, callback: CallOptions): void;
+  /**
+   * Maps to {@link Datastore#save}, forcing the method to be `merge`.
+   *
+   * @param {object|object[]} entities Datastore key object(s).
+   * @param {Key} entities.key Datastore key object.
+   * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
+   *     indexing using a simple JSON path notation. See the examples in
+   *     {@link Datastore#save} to see how to target properties at different
+   *     levels of nesting within your entity.
+   * @param {object} entities.data Data to merge to the same for provided key.
+   * @param {function} callback The callback function.
+   * @param {?error} callback.err An error returned while making this request
+   * @param {object} callback.apiResponse The full API response.
+   */
   merge(
     entities: Entities,
     callback?: CallOptions
   ): void | Promise<CommitResponse> {
-    entities = arrify(entities).map(async (x: Entities) => {
-      x.method = 'upsert';
-      const [data] = await this.get(x.key);
-      x.data = Object.assign({}, data, x.data);
-      return x;
-    });
-    Promise.all(entities).then(x => {
-      this.save(x, callback);
+    arrify(entities).map((x: Entity, index: number, array: Entity[]) => {
+      this.get(x.key, (err: ServiceError, data: Entity) => {
+        x.method = 'upsert';
+        x.data = Object.assign({}, data, x.data);
+        array[index] = x;
+        if (index === array.length - 1) {
+          this.save(array, callback);
+        }
+      });
     });
   }
 
