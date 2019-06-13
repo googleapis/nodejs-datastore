@@ -1207,7 +1207,9 @@ class DatastoreRequest {
     entities: Entities,
     callback?: CallOptions
   ): void | Promise<CommitResponse> {
-    arrify(entities).map((x: Entity, index: number, array: Entity[]) => {
+    arrify(entities)
+    .map(DatastoreRequest.prepareEntityObject_)
+    .map((x: PrepareEntityObjectResponse, index: number, array: PrepareEntityObjectResponse[]) => {
       this.get(x.key, (err: ServiceError, data: Entity) => {
         x.method = 'upsert';
         x.data = Object.assign({}, data, x.data);

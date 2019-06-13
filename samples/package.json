@@ -18,7 +18,8 @@
     "sinon": "^7.3.2"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "@google-cloud/nodejs-repo-tools": "^3.0.0",    
+    "proxyquire": "^2.0.1"
   }
 }
