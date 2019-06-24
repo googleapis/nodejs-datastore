@@ -1568,7 +1568,7 @@ describe('Request', () => {
       sinon
         .stub(request, 'save')
         .callsFake((entities: Entity[], callback: Function) => {
-          assert.deepEqual(
+          assert.deepStrictEqual(
             entities[0].data,
             Object.assign({}, entityObject, updatedEntityObject)
           );

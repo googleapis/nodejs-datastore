@@ -1208,17 +1208,23 @@ class DatastoreRequest {
     callback?: CallOptions
   ): void | Promise<CommitResponse> {
     arrify(entities)
-    .map(DatastoreRequest.prepareEntityObject_)
-    .map((x: PrepareEntityObjectResponse, index: number, array: PrepareEntityObjectResponse[]) => {
-      this.get(x.key, (err: ServiceError, data: Entity) => {
-        x.method = 'upsert';
-        x.data = Object.assign({}, data, x.data);
-        array[index] = x;
-        if (index === array.length - 1) {
-          this.save(array, callback);
+      .map(DatastoreRequest.prepareEntityObject_)
+      .map(
+        (
+          x: PrepareEntityObjectResponse,
+          index: number,
+          array: PrepareEntityObjectResponse[]
+        ) => {
+          this.get(x.key, (err: ServiceError, data: Entity) => {
+            x.method = 'upsert';
+            x.data = Object.assign({}, data, x.data);
+            array[index] = x;
+            if (index === array.length - 1) {
+              this.save(array, callback);
+            }
+          });
         }
-      });
-    });
+      );
   }
 
   request_(config: RequestConfig, callback: RequestCallback): void;

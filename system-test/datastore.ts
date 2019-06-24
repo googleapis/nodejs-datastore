@@ -187,6 +187,21 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
+    it('should save/merge', async () => {
+      const postKey = datastore.key('Post');
+      await datastore.save({key: postKey, data: post});
+      const entity = {
+        key: postKey,
+        data: {
+          title: 'Updated',
+        },
+      };
+      await datastore.merge(entity);
+      const [entity2] = await datastore.get(postKey);
+      assert.strictEqual(entity2.title, 'Updated');
+      await datastore.delete(postKey);
+    });
+
     it('should save and get with a string ID', async () => {
       const longIdKey = datastore.key([
         'Post',
