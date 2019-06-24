@@ -41,6 +41,7 @@ import {
   RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
+import { ServiceError } from '@grpc/grpc-js';
 
 /**
  * A map of read consistency values to proto codes.
@@ -1040,6 +1041,12 @@ class DatastoreRequest {
           }
         }
 
+        if (entityObject.autoUnIndex) {
+          entityObject.excludeFromIndexes = this._findLargeProperties(
+            entityObject.data
+          );
+        }
+
         if (!entity.isKeyComplete(entityObject.key)) {
           insertIndexes[index] = true;
         }
@@ -1125,6 +1132,51 @@ class DatastoreRequest {
       onCommit
     );
   }
+  /**
+   * Find the properties which value size is large than 1500 bytes, 
+   * with autoUnIndex enable, automatically exclude properties from indexing.
+   * This will allow storing string values larger than 1500 bytes
+   * @param entities Datastore key object(s).
+   * @param path namespace of provided entity properties
+   * @param properties properties which value size is large than 1500 bytes
+   */
+  private _findLargeProperties(
+    entities: Entities,
+    path = '',
+    properties: string[] = []
+  ) {
+    const MAX_DATASTORE_VALUE_LENGTH = 1500;
+    if (Array.isArray(entities)) {
+      for (const entry of entities) {
+        if (entry.hasOwnProperty('name') && entry.hasOwnProperty('value')) {
+          if (
+            typeof entry.value === 'string' &&
+            Buffer.from(entry.value).length > MAX_DATASTORE_VALUE_LENGTH
+          ) {
+            entry.excludeFromIndexes = true;
+          }
+
+          continue;
+        }
+        this._findLargeProperties(entry, path.concat('[]'), properties);
+      }
+    } else if (typeof entities === 'object') {
+      const keys = Object.keys(entities);
+      for (const key of keys) {
+        this._findLargeProperties(
+          entities[key],
+          path.concat(`${path ? '.' : ''}${key}`),
+          properties
+        );
+      }
+    } else if (
+      typeof entities === 'string' &&
+      Buffer.from(entities).length > MAX_DATASTORE_VALUE_LENGTH
+    ) {
+      properties.push(path);
+    }
+    return properties;
+  }
 
   update(entities: Entities): Promise<CommitResponse>;
   update(entities: Entities, callback: CallOptions): void;
@@ -1185,7 +1237,7 @@ class DatastoreRequest {
 
     this.save(entities, callback);
   }
-
+  
   request_(config: RequestConfig, callback: RequestCallback): void;
   /**
    * Make a request to the API endpoint. Properties to indicate a transactional
