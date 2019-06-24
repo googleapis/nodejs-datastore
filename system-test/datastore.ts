@@ -175,7 +175,7 @@ describe('Datastore', () => {
       await datastore.save({
         key: postKey,
         data,
-        autoUnIndex:true
+        autoUnIndex: true,
       });
       const [entity] = await datastore.get(postKey);
       assert.deepStrictEqual(entity[datastore.KEY], postKey);

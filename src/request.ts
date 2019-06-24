@@ -41,7 +41,6 @@ import {
   RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
-import { ServiceError } from '@grpc/grpc-js';
 
 /**
  * A map of read consistency values to proto codes.
@@ -1043,7 +1042,9 @@ class DatastoreRequest {
 
         if (entityObject.autoUnIndex) {
           entityObject.excludeFromIndexes = this._findLargeProperties(
-            entityObject.data
+            entityObject.data,
+            '',
+            entityObject.excludeFromIndexes
           );
         }
 
@@ -1106,7 +1107,6 @@ class DatastoreRequest {
         if (!result.key) {
           return;
         }
-
         if (insertIndexes[index]) {
           const id = entity.keyFromKeyProto(result.key).id;
           entities[index].key.id = id;
@@ -1127,22 +1127,23 @@ class DatastoreRequest {
         client: 'DatastoreClient',
         method: 'commit',
         reqOpts,
-        gaxOpts: gaxOptions || {},
+        gaxOpts: gaxOptions,
       },
       onCommit
     );
   }
   /**
-   * Find the properties which value size is large than 1500 bytes, 
+   * Find the properties which value size is large than 1500 bytes,
    * with autoUnIndex enable, automatically exclude properties from indexing.
    * This will allow storing string values larger than 1500 bytes
+   *
    * @param entities Datastore key object(s).
    * @param path namespace of provided entity properties
    * @param properties properties which value size is large than 1500 bytes
    */
   private _findLargeProperties(
     entities: Entities,
-    path = '',
+    path: string,
     properties: string[] = []
   ) {
     const MAX_DATASTORE_VALUE_LENGTH = 1500;
@@ -1154,9 +1155,9 @@ class DatastoreRequest {
             Buffer.from(entry.value).length > MAX_DATASTORE_VALUE_LENGTH
           ) {
             entry.excludeFromIndexes = true;
+          } else {
+            continue;
           }
-
-          continue;
         }
         this._findLargeProperties(entry, path.concat('[]'), properties);
       }
@@ -1173,7 +1174,9 @@ class DatastoreRequest {
       typeof entities === 'string' &&
       Buffer.from(entities).length > MAX_DATASTORE_VALUE_LENGTH
     ) {
-      properties.push(path);
+      if (properties.indexOf(path) < 0) {
+        properties.push(path);
+      }
     }
     return properties;
   }
@@ -1237,7 +1240,7 @@ class DatastoreRequest {
 
     this.save(entities, callback);
   }
-  
+
   request_(config: RequestConfig, callback: RequestCallback): void;
   /**
    * Make a request to the API endpoint. Properties to indicate a transactional
