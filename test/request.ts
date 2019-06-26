@@ -1392,6 +1392,158 @@ describe('Request', () => {
       );
     });
 
+    it('should prepare excludeFromIndexes array with "*" wildcard from root', done => {
+      const longString = Buffer.alloc(1501, '.').toString();
+      const data = {
+        longString,
+        notMetadata: true,
+        longStringArray: [longString],
+        metadata: {
+          longString,
+          otherProperty: 'value',
+          obj: {
+            longStringArray: [
+              {
+                longString,
+                nestedLongStringArray: [
+                  {
+                    longString,
+                    nestedProperty: true,
+                  },
+                  {
+                    longString,
+                  },
+                ],
+              },
+            ],
+          },
+          longStringArray: [
+            {
+              longString,
+              nestedLongStringArray: [
+                {
+                  longString,
+                  nestedProperty: true,
+                },
+                {
+                  longString,
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      const excludeFromIndexes = [
+        'longString',
+        'notMetadata',
+        'longStringArray[]',
+        'metadata.longString',
+        'metadata.otherProperty',
+        'metadata.obj.longStringArray[].longString',
+        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+        'metadata.obj.longStringArray[].nestedLongStringArray[].nestedProperty',
+        'metadata.longStringArray[].longString',
+        'metadata.longStringArray[].nestedLongStringArray[].longString',
+        'metadata.longStringArray[].nestedLongStringArray[].nestedProperty',
+      ];
+
+      entity.entityToEntityProto = entity => {
+        return entity;
+      };
+      request.request_ = (config: RequestConfig) => {
+        assert.deepEqual(
+          config.reqOpts.mutations[0].upsert.excludeFromIndexes,
+          excludeFromIndexes
+        );
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data,
+          excludeFromIndexes: ['.*'],
+        },
+        assert.ifError
+      );
+    });
+
+    it('should prepare excludeFromIndexes array with "*" wildcard for object and array', done => {
+      const longString = Buffer.alloc(1501, '.').toString();
+      const data = {
+        longString,
+        notMetadata: true,
+        longStringArray: [longString],
+        metadata: {
+          longString,
+          otherProperty: 'value',
+          obj: {
+            longStringArray: [
+              {
+                longString,
+                nestedLongStringArray: [
+                  {
+                    longString,
+                    nestedProperty: true,
+                  },
+                  {
+                    longString,
+                  },
+                ],
+              },
+            ],
+          },
+          longStringArray: [
+            {
+              longString,
+              nestedLongStringArray: [
+                {
+                  longString,
+                  nestedProperty: true,
+                },
+                {
+                  longString,
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      const excludeFromIndexes = [
+        'metadata.obj.longStringArray[].longString',
+        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+        'metadata.obj.longStringArray[].nestedLongStringArray[].nestedProperty',
+        'metadata.longStringArray[].longString',
+        'metadata.longStringArray[].nestedLongStringArray[].longString',
+        'metadata.longStringArray[].nestedLongStringArray[].nestedProperty',
+      ];
+
+      entity.entityToEntityProto = entity => {
+        return entity;
+      };
+      request.request_ = (config: RequestConfig) => {
+        assert.deepEqual(
+          config.reqOpts.mutations[0].upsert.excludeFromIndexes,
+          excludeFromIndexes
+        );
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data,
+          excludeFromIndexes: [
+            'metadata.obj.*',
+            'metadata.longStringArray[].*',
+          ],
+        },
+        assert.ifError
+      );
+    });
+
     it('should assign ID on keys without them', done => {
       const incompleteKey = new entity.Key({path: ['Incomplete']});
       const incompleteKey2 = new entity.Key({path: ['Incomplete']});
