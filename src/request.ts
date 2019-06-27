@@ -1133,10 +1133,10 @@ class DatastoreRequest {
     );
   }
   /**
-   * Find the value of property bases of path sperated by ".",
+   * Find the value of property bases of path separated by ".",
    *
    * @param {object} entity Datastore key object(s).
-   * @param {string} path property reference seprated by "." .
+   * @param {string} path property reference separated by "." .
    */
   private findEntityByPath(entity: Entity, path: string) {
     const pathCollection = path.split('.');
