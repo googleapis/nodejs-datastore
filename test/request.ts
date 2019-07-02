@@ -26,7 +26,7 @@ import * as through from 'through2';
 
 import {google} from '../proto/datastore';
 import * as ds from '../src';
-import {entity, Entity, KeyProto} from '../src/entity.js';
+import {entity, Entity, KeyProto, EntityProto} from '../src/entity.js';
 import {Query, QueryProto} from '../src/query.js';
 import {
   AllocateIdsRequestResponse,
@@ -1392,7 +1392,7 @@ describe('Request', () => {
       );
     });
 
-    it('should prepare excludeFromIndexes array with "*" wildcard from root', done => {
+    it('should allow exclude property indexed with "*" wildcard from root', done => {
       const longString = Buffer.alloc(1501, '.').toString();
       const data = {
         longString,
@@ -1434,28 +1434,25 @@ describe('Request', () => {
         },
       };
 
-      const excludeFromIndexes = [
-        'longString',
-        'notMetadata',
-        'longStringArray[]',
-        'metadata.longString',
-        'metadata.otherProperty',
-        'metadata.obj.longStringArray[].longString',
-        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-        'metadata.obj.longStringArray[].nestedLongStringArray[].nestedProperty',
-        'metadata.longStringArray[].longString',
-        'metadata.longStringArray[].nestedLongStringArray[].longString',
-        'metadata.longStringArray[].nestedLongStringArray[].nestedProperty',
-      ];
-
-      entity.entityToEntityProto = entity => {
-        return entity;
+      const validateIndex = (data: Any) => {
+        if (data.arrayValue) {
+          data.arrayValue.values.forEach((value: Any) => {
+            validateIndex(value);
+          });
+        } else if (data.entityValue) {
+          Object.keys(data.entityValue.properties).forEach(path => {
+            validateIndex(data.entityValue.properties[path]);
+          });
+        } else {
+          assert.strictEqual(data.excludeFromIndexes, true);
+        }
       };
+
       request.request_ = (config: RequestConfig) => {
-        assert.deepEqual(
-          config.reqOpts.mutations[0].upsert.excludeFromIndexes,
-          excludeFromIndexes
-        );
+        const properties = config.reqOpts.mutations[0].upsert.properties;
+        Object.keys(properties).forEach(path => {
+          validateIndex(properties[path]);
+        });
         done();
       };
 
@@ -1469,7 +1466,7 @@ describe('Request', () => {
       );
     });
 
-    it('should prepare excludeFromIndexes array with "*" wildcard for object and array', done => {
+    it('should allow exclude property indexed with "*" wildcard for object and array', done => {
       const longString = Buffer.alloc(1501, '.').toString();
       const data = {
         longString,
@@ -1511,23 +1508,25 @@ describe('Request', () => {
         },
       };
 
-      const excludeFromIndexes = [
-        'metadata.obj.longStringArray[].longString',
-        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-        'metadata.obj.longStringArray[].nestedLongStringArray[].nestedProperty',
-        'metadata.longStringArray[].longString',
-        'metadata.longStringArray[].nestedLongStringArray[].longString',
-        'metadata.longStringArray[].nestedLongStringArray[].nestedProperty',
-      ];
-
-      entity.entityToEntityProto = entity => {
-        return entity;
+      const validateIndex = (data: Any) => {
+        if (data.arrayValue) {
+          data.arrayValue.values.forEach((value: Any) => {
+            validateIndex(value);
+          });
+        } else if (data.entityValue) {
+          Object.keys(data.entityValue.properties).forEach(path => {
+            validateIndex(data.entityValue.properties[path]);
+          });
+        } else {
+          assert.strictEqual(data.excludeFromIndexes, true);
+        }
       };
+
       request.request_ = (config: RequestConfig) => {
-        assert.deepEqual(
-          config.reqOpts.mutations[0].upsert.excludeFromIndexes,
-          excludeFromIndexes
-        );
+        const properties = config.reqOpts.mutations[0].upsert.properties;
+        Object.keys(properties).forEach(path => {
+          validateIndex(properties[path]);
+        });
         done();
       };
 
@@ -1536,6 +1535,11 @@ describe('Request', () => {
           key,
           data,
           excludeFromIndexes: [
+            'longString',
+            'notMetadata',
+            'longStringArray[]',
+            'metadata.longString',
+            'metadata.otherProperty',
             'metadata.obj.*',
             'metadata.longStringArray[].*',
           ],

@@ -1040,13 +1040,6 @@ class DatastoreRequest {
           }
         }
 
-        if (entityObject.excludeFromIndexes) {
-          entityObject.excludeFromIndexes = this.getExcludeFromIndex(
-            entityObject.data,
-            entityObject.excludeFromIndexes
-          );
-        }
-
         if (!entity.isKeyComplete(entityObject.key)) {
           insertIndexes[index] = true;
         }
@@ -1131,77 +1124,6 @@ class DatastoreRequest {
       },
       onCommit
     );
-  }
-  /**
-   * Find the value of property bases of path separated by ".",
-   *
-   * @param {object} entity Datastore key object(s).
-   * @param {string} path property reference separated by "." .
-   */
-  private findEntityByPath(entity: Entity, path: string) {
-    const pathCollection = path.split('.');
-    for (let i = 0; i < pathCollection.length; i++) {
-      if (entity.hasOwnProperty(pathCollection[i])) {
-        entity = entity[pathCollection[i]];
-      }
-    }
-    return entity;
-  }
-
-  /**
-   * Create new string array of indexed properties, based on * wildcard.
-   *
-   * @param {object}  entity Datastore key object(s).
-   * @param {string[]} excludeFromIndex list of indexed properties to be exclude.
-   * @param {string[]} properties list of new indexed properties to be exclude.
-   */
-  private getExcludeFromIndex(
-    entity: Entity,
-    excludeFromIndex: string[],
-    properties: string[] = []
-  ) {
-    excludeFromIndex.forEach((path: string) => {
-      if (path.includes('.*')) {
-        path = path.replace('.*', '');
-        const objEntity = this.findEntityByPath(entity, path.replace('[]', ''));
-        if (typeof objEntity === 'string') {
-          if (properties.indexOf(path) < 0) {
-            properties.push(path);
-          }
-          return;
-        }
-        for (const key in objEntity) {
-          if (Array.isArray(objEntity)) {
-            const newPath = path === '' ? key.concat('[].*') : path + '[].*';
-            this.getExcludeFromIndex(
-              objEntity[+key],
-              [newPath.replace('[][]', '[]')],
-              properties
-            );
-          } else if (typeof objEntity[key] === 'object') {
-            const newPath =
-              path === ''
-                ? key.concat('.*')
-                : path
-                    .concat('.')
-                    .concat(key)
-                    .concat('.*');
-            this.getExcludeFromIndex(objEntity[key], [newPath], properties);
-          } else {
-            const newPath = path === '' ? key : path.concat('.').concat(key);
-            if (properties.indexOf(newPath) < 0) {
-              properties.push(newPath);
-            }
-          }
-        }
-      } else {
-        if (properties.indexOf(path) < 0) {
-          properties.push(path);
-        }
-      }
-    });
-
-    return properties;
   }
 
   update(entities: Entities): Promise<CommitResponse>;
@@ -1447,9 +1369,7 @@ export interface SaveCallback {
  * All async methods (except for streams) will return a Promise in the event
  * that a callback is omitted.
  */
-promisifyAll(DatastoreRequest, {
-  exclude: ['findEntityByPath', 'getExcludeFromIndex'],
-});
+promisifyAll(DatastoreRequest);
 
 /**
  * Reference to the {@link DatastoreRequest} class.
