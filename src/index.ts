@@ -34,6 +34,7 @@ import {entity} from './entity';
 import {Query} from './query';
 import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
+import {URLSafeKey} from './utils';
 
 const {grpc} = new GrpcClient();
 
@@ -43,6 +44,8 @@ export type PathType = string | number | entity.Int;
 const gapic = Object.freeze({
   v1: require('./v1'),
 });
+
+const urlSafeKey = new URLSafeKey();
 
 /**
  * Idiomatic class for interacting with Cloud Datastore. Uses the lower-level
@@ -726,6 +729,68 @@ class Datastore extends DatastoreRequest {
   }
   isKey(value?: {}) {
     return Datastore.isKey(value);
+  }
+
+  /**
+   * Helper to create a URL safe key.
+   *
+   * This is intended to work with the "legacy" representation of a
+   * datastore "Key" used within Google App Engine (a so-called "Reference").
+   * The returned string can be used as the "urlsafe"
+   * The base64 encoded values will have padding removed.
+   *
+   *
+   * @param {entity.Key} key Entity key object.
+   * @param {string} locationPrefix Optional .
+   *  The location prefix of an App Engine project ID.
+   *  Often this value is 's~', but may also be 'e~', or other location prefixes
+   *  currently unknown.
+   * @returns {string} base64 endocded urlsafe key.
+   *
+   * @example
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const key = datastore.key(['Company', 'Google']);
+   *
+   * datastore.keyToLegacyUrlsafe(key) //ag9ncmFzcy1jbHVtcC00NzlyEwsSB0NvbXBhbnkiBkdvb2dsZQw
+   *
+   * @example
+   * <caption>Create a complete url safe key using location prefix </caption>
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const key = datastore.key(['Task', 123]);
+   * const locationPrefix = 's~';
+   *
+   * datastore.keyToLegacyUrlsafe(key, locationPrefix) //ahFzfmdyYXNzLWNsdW1wLTQ3OXIKCxIEVGFzaxh7DA
+   */
+  keyToLegacyUrlsafe(key: entity.Key, locationPrefix?: string): string {
+    return urlSafeKey.legacyEncode(this.projectId, key, locationPrefix);
+  }
+
+  /**
+   * Helper to convert URL safe key string to entity key object
+   *
+   * This is intended to work with the "legacy" representation of a
+   * datastore "Key" used within Google App Engine (a so-called "Reference").
+   *
+   * @param {entity.Key} key Entity key object.
+   * @param {string} locationPrefix Optional .
+   *  The location prefix of an App Engine project ID.
+   *  Often this value is 's~', but may also be 'e~', or other location prefixes
+   *  currently unknown.
+   * @returns {string} Created urlsafe key.
+   *
+   * @example
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const urlSafeKey = 'ag9ncmFzcy1jbHVtcC00NzlyEwsSB0NvbXBhbnkiBkdvb2dsZQw';
+   *
+   * datastore.keyFromLegacyUrlsafe(key);
+   *
+   */
+
+  keyFromLegacyUrlsafe(key: string): entity.Key {
+    return urlSafeKey.legacyDecode(key);
   }
 
   /**
