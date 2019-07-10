@@ -10,7 +10,7 @@ describe('utils', () => {
     const PROJECT_ID = 'grass-clump-479';
     const LOCATION_PREFIX = 's~';
 
-    describe('convertToBase64', () => {
+    describe('convertToBase64_', () => {
       it('should convert buffer to base64 and cleanup', () => {
         const buffer = Buffer.from('Hello World');
 
@@ -21,7 +21,7 @@ describe('utils', () => {
       });
     });
 
-    describe('convertToBuffer', () => {
+    describe('convertToBuffer_', () => {
       it('should convert encoded url safe key to buffer', () => {
         assert.deepStrictEqual(
           urlSafeKey.convertToBuffer_('aGVsbG8gd29ybGQgZnJvbSBkYXRhc3RvcmU'),

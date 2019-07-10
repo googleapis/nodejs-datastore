@@ -788,7 +788,6 @@ class Datastore extends DatastoreRequest {
    * datastore.keyFromLegacyUrlsafe(key);
    *
    */
-
   keyFromLegacyUrlsafe(key: string): entity.Key {
     return urlSafeKey.legacyDecode(key);
   }

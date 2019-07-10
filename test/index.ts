@@ -623,4 +623,25 @@ describe('Datastore', () => {
       });
     });
   });
+
+  describe('keyToLegacyUrlsafe', () => {
+    it('should convert key to url safe base64 string', () => {
+      const key = new entity.Key({
+        path: ['Task', 'Test'],
+      });
+      assert.strictEqual(
+        datastore.keyToLegacyUrlsafe(key),
+        'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA'
+      );
+    });
+  });
+
+  describe('keyFromLegacyUrlsafe', () => {
+    it('should convert key to url safe base64 string', () => {
+      const encodedKey = 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA';
+      const key = datastore.keyFromLegacyUrlsafe(encodedKey);
+      assert.strictEqual(key.kind, 'Task');
+      assert.strictEqual(key.name, 'Test');
+    });
+  });
 });
