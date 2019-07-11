@@ -34,7 +34,6 @@ import {entity} from './entity';
 import {Query} from './query';
 import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
-import {URLSafeKey} from './utils';
 
 const {grpc} = new GrpcClient();
 
@@ -45,7 +44,7 @@ const gapic = Object.freeze({
   v1: require('./v1'),
 });
 
-const urlSafeKey = new URLSafeKey();
+const urlSafeKey = new entity.URLSafeKey();
 
 /**
  * Idiomatic class for interacting with Cloud Datastore. Uses the lower-level

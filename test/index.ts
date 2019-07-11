@@ -63,6 +63,7 @@ const fakeEntity: any = {
   isDsKey() {
     this.calledWith_ = arguments;
   },
+  URLSafeKey: entity.URLSafeKey,
 };
 
 let googleAuthOverride: Function | null;
