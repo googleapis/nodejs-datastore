@@ -1121,7 +1121,7 @@ class DatastoreRequest {
         client: 'DatastoreClient',
         method: 'commit',
         reqOpts,
-        gaxOpts: gaxOptions || {},
+        gaxOpts: gaxOptions,
       },
       onCommit
     );
@@ -1221,6 +1221,8 @@ class DatastoreRequest {
             array[index] = x;
             if (index === array.length - 1) {
               this.save(array, callback);
+            } else {
+              return;
             }
           });
         }

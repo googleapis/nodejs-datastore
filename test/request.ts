@@ -1550,7 +1550,7 @@ describe('Request', () => {
   });
 
   describe('merge', () => {
-    it('should return merge objects', done => {
+    it('should return merge object for entity', done => {
       const key = {
         namespace: 'ns',
         kind: 'Company',
@@ -1575,6 +1575,50 @@ describe('Request', () => {
           callback();
         });
       request.merge({key, data: updatedEntityObject}, done);
+    });
+
+    it('should return merge objects for entities', done => {
+      const key = {
+        namespace: 'ns',
+        kind: 'Company',
+        path: ['Company', null],
+      };
+      const entityObject = {};
+      const updatedEntityObject = [
+        {
+          id: 1,
+          status: 'merged',
+        },
+        {
+          id: 2,
+          status: 'merged',
+        },
+      ];
+      sinon
+        .stub(request, 'get')
+        .callsFake((keys: Entity, callback: Function) => {
+          callback(null, entityObject);
+        });
+      sinon
+        .stub(request, 'save')
+        .callsFake((entities: Entity[], callback: Function) => {
+          assert.deepStrictEqual(
+            entities[0].data,
+            Object.assign({}, entityObject, updatedEntityObject[0])
+          );
+          assert.deepStrictEqual(
+            entities[1].data,
+            Object.assign({}, entityObject, updatedEntityObject[1])
+          );
+          callback();
+        });
+      request.merge(
+        [
+          {key, data: updatedEntityObject[0]},
+          {key, data: updatedEntityObject[1]},
+        ],
+        done
+      );
     });
   });
 
