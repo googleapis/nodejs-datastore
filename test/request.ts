@@ -1449,7 +1449,7 @@ describe('Request', () => {
       };
       request.request_ = (config: RequestConfig) => {
         assert.strictEqual(
-          config.reqOpts.mutations[0].upsert.autoUnIndex,
+          config.reqOpts.mutations[0].upsert.excludeLargeProperties,
           true
         );
         assert.deepStrictEqual(
@@ -1463,13 +1463,13 @@ describe('Request', () => {
         {
           key,
           data,
-          autoUnIndex: true,
+          excludeLargeProperties: true,
         },
         assert.ifError
       );
     });
 
-    it('should allow auto setting the indexed value of a property with autoUnIndex', done => {
+    it('should allow auto setting the indexed value of a property with excludeLargeProperties', done => {
       const longString = Buffer.alloc(1501, '.').toString();
       const data = [
         {
@@ -1494,7 +1494,7 @@ describe('Request', () => {
         {
           key,
           data,
-          autoUnIndex: true,
+          excludeLargeProperties: true,
         },
         assert.ifError
       );

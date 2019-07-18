@@ -1040,8 +1040,8 @@ class DatastoreRequest {
           }
         }
 
-        if (entityObject.autoUnIndex) {
-          entityObject.excludeFromIndexes = this.excludeLargeProperties(
+        if (entityObject.excludeLargeProperties) {
+          entityObject.excludeFromIndexes = this.findLargeProperties_(
             entityObject.data,
             '',
             entityObject.excludeFromIndexes
@@ -1141,7 +1141,7 @@ class DatastoreRequest {
    * @param path namespace of provided entity properties
    * @param properties properties which value size is large than 1500 bytes
    */
-  private excludeLargeProperties(
+  private findLargeProperties_(
     entities: Entities,
     path: string,
     properties: string[] = []
@@ -1159,12 +1159,12 @@ class DatastoreRequest {
             continue;
           }
         }
-        this.excludeLargeProperties(entry, path.concat('[]'), properties);
+        this.findLargeProperties_(entry, path.concat('[]'), properties);
       }
     } else if (typeof entities === 'object') {
       const keys = Object.keys(entities);
       for (const key of keys) {
-        this.excludeLargeProperties(
+        this.findLargeProperties_(
           entities[key],
           path.concat(`${path ? '.' : ''}${key}`),
           properties
@@ -1424,9 +1424,7 @@ export interface SaveCallback {
  * All async methods (except for streams) will return a Promise in the event
  * that a callback is omitted.
  */
-promisifyAll(DatastoreRequest, {
-  exclude: ['excludeLargeProperties'],
-});
+promisifyAll(DatastoreRequest);
 
 /**
  * Reference to the {@link DatastoreRequest} class.
