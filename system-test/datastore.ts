@@ -129,7 +129,7 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
-    it('should remove index with using wildcrad in excludeFromIndexes', async () => {
+    it('should remove index with using wildcard in excludeFromIndexes', async () => {
       const longString = Buffer.alloc(1501, '.').toString();
       const postKey = datastore.key(['Post', 'post3']);
       const data = {
