@@ -21,7 +21,7 @@ import * as extend from 'extend';
 import * as is from 'is';
 import * as proxyquire from 'proxyquire';
 import * as sinon from 'sinon';
-import { Transform } from 'stream';
+import {Transform} from 'stream';
 
 import {google} from '../proto/datastore';
 import * as ds from '../src';
