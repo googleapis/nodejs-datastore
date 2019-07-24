@@ -187,8 +187,8 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
-    it('should save/merge', async () => {
-      const postKey = datastore.key('Post');
+    it('should save/get/merge', async () => {
+      const postKey = datastore.key(['Post', 1]);
       await datastore.save({key: postKey, data: post});
       const entity = {
         key: postKey,

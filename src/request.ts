@@ -1188,8 +1188,17 @@ class DatastoreRequest {
   }
 
   merge(entities: Entities): Promise<CommitResponse>;
-  merge(entities: Entities, callback: CallOptions): void;
+  merge(entities: Entities, callback: SaveCallback): void;
   /**
+   * Merge the specified object(s). If a key is incomplete, its associated object
+   * is inserted and the original Key object is updated to contain the generated ID.
+   * For example, if you provide an incomplete key (one without an ID),
+   * the request will create a new entity and have its ID automatically assigned.
+   * If you provide a complete key, the entity will be get the data from datastore
+   * and merge with the data specified.
+   * By default, all properties are indexed. To prevent a property from being
+   * included in *all* indexes, you must supply an `excludeFromIndexes` array.
+   *
    * Maps to {@link Datastore#save}, forcing the method to be `merge`.
    *
    * @param {object|object[]} entities Datastore key object(s).
@@ -1205,28 +1214,47 @@ class DatastoreRequest {
    */
   merge(
     entities: Entities,
-    callback?: CallOptions
+    callback?: SaveCallback
   ): void | Promise<CommitResponse> {
-    arrify(entities)
-      .map(DatastoreRequest.prepareEntityObject_)
-      .map(
-        (
-          x: PrepareEntityObjectResponse,
-          index: number,
-          array: PrepareEntityObjectResponse[]
-        ) => {
-          this.get(x.key, (err: ServiceError, data: Entity) => {
-            x.method = 'upsert';
-            x.data = Object.assign({}, data, x.data);
-            array[index] = x;
-            if (index === array.length - 1) {
-              this.save(array, callback);
-            } else {
-              return;
-            }
-          });
-        }
-      );
+    const transaction = this.datastore.transaction();
+    transaction.run(err => {
+      if (err) {
+        transaction.rollback();
+        callback!(err);
+        return;
+      }
+      arrify(entities)
+        .map(DatastoreRequest.prepareEntityObject_)
+        .forEach(
+          (
+            x: PrepareEntityObjectResponse,
+            index: number,
+            array: PrepareEntityObjectResponse[]
+          ) => {
+            transaction.get(x.key, (err: Error, data: Entity) => {
+              if (err) {
+                transaction.rollback();
+                callback!(err);
+                return;
+              }
+              x.method = 'upsert';
+              x.data = Object.assign({}, data, x.data);
+              array[index] = x;
+              if (index === array.length - 1) {
+                transaction.save(array);
+                transaction.commit((err, response) => {
+                  if (err) {
+                    transaction.rollback();
+                    callback!(err);
+                    return;
+                  }
+                  callback!(null, response);
+                });
+              }
+            });
+          }
+        );
+    });
   }
 
   request_(config: RequestConfig, callback: RequestCallback): void;

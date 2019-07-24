@@ -32,6 +32,8 @@ import {
   AllocateIdsRequestResponse,
   RequestConfig,
   RequestOptions,
+  PrepareEntityObjectResponse,
+  Entities,
 } from '../src/request';
 
 // tslint:disable-next-line no-any
@@ -1550,40 +1552,80 @@ describe('Request', () => {
   });
 
   describe('merge', () => {
-    it('should return merge object for entity', done => {
-      const key = {
-        namespace: 'ns',
-        kind: 'Company',
-        path: ['Company', null],
+    // tslint:disable-next-line: variable-name
+    let Transaction: typeof ds.Transaction;
+    let transaction: ds.Transaction;
+    const PROJECT_ID = 'project-id';
+    const NAMESPACE = 'a-namespace';
+
+    const DATASTORE = ({
+      request_() {},
+      projectId: PROJECT_ID,
+      namespace: NAMESPACE,
+    } as {}) as ds.Datastore;
+
+    const key = {
+      namespace: 'ns',
+      kind: 'Company',
+      path: ['Company', null],
+    };
+    const entityObject = {};
+
+    before(() => {
+      Transaction = proxyquire('../src/transaction.js', {
+        '@google-cloud/promisify': fakePfy,
+      }).Transaction;
+    });
+
+    beforeEach(() => {
+      transaction = new Transaction(DATASTORE);
+
+      transaction.request_ = () => {};
+
+      request.datastore = {
+        transaction: () => transaction,
       };
-      const entityObject = {};
+    });
+
+    afterEach(() => sandbox.restore());
+
+    it('should return merge object for entity', done => {
       const updatedEntityObject = {
         status: 'merged',
       };
-      sinon
-        .stub(request, 'get')
-        .callsFake((keys: Entity, callback: Function) => {
+
+      sandbox
+        .stub(transaction, 'run')
+        .callsFake((options, callback?: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
+          callback!(null);
+        });
+
+      sandbox
+        .stub(transaction, 'get')
+        .callsFake((keys, options, callback: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
           callback(null, entityObject);
         });
-      sinon
-        .stub(request, 'save')
-        .callsFake((entities: Entity[], callback: Function) => {
-          assert.deepStrictEqual(
-            entities[0].data,
-            Object.assign({}, entityObject, updatedEntityObject)
-          );
+
+      sandbox
+        .stub(transaction, 'commit')
+        .callsFake((gaxOption, callback: Function) => {
+          callback = typeof gaxOption === 'function' ? gaxOption : callback!;
           callback();
         });
+
+      transaction.save = (modifiedData: PrepareEntityObjectResponse[]) => {
+        assert.deepStrictEqual(
+          modifiedData[0].data,
+          Object.assign({}, entityObject, updatedEntityObject)
+        );
+      };
+
       request.merge({key, data: updatedEntityObject}, done);
     });
 
     it('should return merge objects for entities', done => {
-      const key = {
-        namespace: 'ns',
-        kind: 'Company',
-        path: ['Company', null],
-      };
-      const entityObject = {};
       const updatedEntityObject = [
         {
           id: 1,
@@ -1594,24 +1636,39 @@ describe('Request', () => {
           status: 'merged',
         },
       ];
-      sinon
-        .stub(request, 'get')
-        .callsFake((keys: Entity, callback: Function) => {
+
+      sandbox
+        .stub(transaction, 'run')
+        .callsFake((options, callback?: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
+          callback!(null);
+        });
+
+      sandbox
+        .stub(transaction, 'get')
+        .callsFake((keys, options, callback: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
           callback(null, entityObject);
         });
-      sinon
-        .stub(request, 'save')
-        .callsFake((entities: Entity[], callback: Function) => {
-          assert.deepStrictEqual(
-            entities[0].data,
-            Object.assign({}, entityObject, updatedEntityObject[0])
-          );
-          assert.deepStrictEqual(
-            entities[1].data,
-            Object.assign({}, entityObject, updatedEntityObject[1])
-          );
+
+      sandbox
+        .stub(transaction, 'commit')
+        .callsFake((gaxOption, callback: Function) => {
+          callback = typeof gaxOption === 'function' ? gaxOption : callback!;
           callback();
         });
+
+      transaction.save = (modifiedEntities: PrepareEntityObjectResponse[]) => {
+        assert.deepStrictEqual(
+          modifiedEntities[0].data,
+          Object.assign({}, entityObject, updatedEntityObject[0])
+        );
+        assert.deepStrictEqual(
+          modifiedEntities[1].data,
+          Object.assign({}, entityObject, updatedEntityObject[1])
+        );
+      };
+
       request.merge(
         [
           {key, data: updatedEntityObject[0]},
@@ -1619,6 +1676,69 @@ describe('Request', () => {
         ],
         done
       );
+    });
+
+    it('transaction should rollback if error on transaction run!', done => {
+      sandbox
+        .stub(transaction, 'run')
+        .callsFake((gaxOption, callback?: Function) => {
+          callback = typeof gaxOption === 'function' ? gaxOption : callback!;
+          callback(new Error('Error'));
+        });
+
+      request.merge({key, data: null}, (err: Error) => {
+        assert.strictEqual(err.message, 'Error');
+        done();
+      });
+    });
+
+    it('transaction should rollback if error for for transaction get!', done => {
+      sandbox
+        .stub(transaction, 'run')
+        .callsFake((options, callback?: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
+          callback!(null);
+        });
+
+      sandbox
+        .stub(transaction, 'get')
+        .callsFake((keys, options, callback: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
+          callback(new Error('Error'));
+        });
+
+      request.merge({key, data: null}, (err: Error) => {
+        assert.strictEqual(err.message, 'Error');
+        done();
+      });
+    });
+
+    it('transaction should rollback if error for for transaction get!', done => {
+      sandbox
+        .stub(transaction, 'run')
+        .callsFake((options, callback?: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
+          callback!(null);
+        });
+
+      sandbox
+        .stub(transaction, 'get')
+        .callsFake((keys, options, callback: Function) => {
+          callback = typeof options === 'function' ? options : callback!;
+          callback(null, entityObject);
+        });
+
+      sandbox
+        .stub(transaction, 'commit')
+        .callsFake((gaxOption, callback: Function) => {
+          callback = typeof gaxOption === 'function' ? gaxOption : callback!;
+          callback(new Error('Error'));
+        });
+
+      request.merge({key, data: null}, (err: Error) => {
+        assert.strictEqual(err.message, 'Error');
+        done();
+      });
     });
   });
 
