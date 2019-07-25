@@ -1041,7 +1041,7 @@ class DatastoreRequest {
         }
 
         if (entityObject.excludeLargeProperties) {
-          entityObject.excludeFromIndexes = this.findLargeProperties_(
+          entityObject.excludeFromIndexes = entity.findLargeProperties_(
             entityObject.data,
             '',
             entityObject.excludeFromIndexes
@@ -1131,54 +1131,6 @@ class DatastoreRequest {
       },
       onCommit
     );
-  }
-  /**
-   * Find the properties which value size is large than 1500 bytes,
-   * with autoUnIndex enable, automatically exclude properties from indexing.
-   * This will allow storing string values larger than 1500 bytes
-   *
-   * @param entities Datastore key object(s).
-   * @param path namespace of provided entity properties
-   * @param properties properties which value size is large than 1500 bytes
-   */
-  private findLargeProperties_(
-    entities: Entities,
-    path: string,
-    properties: string[] = []
-  ) {
-    const MAX_DATASTORE_VALUE_LENGTH = 1500;
-    if (Array.isArray(entities)) {
-      for (const entry of entities) {
-        if (entry.hasOwnProperty('name') && entry.hasOwnProperty('value')) {
-          if (
-            typeof entry.value === 'string' &&
-            Buffer.from(entry.value).length > MAX_DATASTORE_VALUE_LENGTH
-          ) {
-            entry.excludeFromIndexes = true;
-          } else {
-            continue;
-          }
-        }
-        this.findLargeProperties_(entry, path.concat('[]'), properties);
-      }
-    } else if (typeof entities === 'object') {
-      const keys = Object.keys(entities);
-      for (const key of keys) {
-        this.findLargeProperties_(
-          entities[key],
-          path.concat(`${path ? '.' : ''}${key}`),
-          properties
-        );
-      }
-    } else if (
-      typeof entities === 'string' &&
-      Buffer.from(entities).length > MAX_DATASTORE_VALUE_LENGTH
-    ) {
-      if (properties.indexOf(path) < 0) {
-        properties.push(path);
-      }
-    }
-    return properties;
   }
 
   update(entities: Entities): Promise<CommitResponse>;

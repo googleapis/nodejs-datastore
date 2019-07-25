@@ -129,7 +129,7 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
-    it('should auto remove index with autoUnIndex enable', async () => {
+    it('should auto remove index with excludeLargeProperties enabled', async () => {
       const longString = Buffer.alloc(1501, '.').toString();
       const postKey = datastore.key(['Post', 'post2']);
       const data = {
@@ -175,7 +175,7 @@ describe('Datastore', () => {
       await datastore.save({
         key: postKey,
         data,
-        autoUnIndex: true,
+        excludeLargeProperties: true,
       });
       const [entity] = await datastore.get(postKey);
       assert.deepStrictEqual(entity[datastore.KEY], postKey);
