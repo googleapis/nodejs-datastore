@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+### [4.1.5](https://www.github.com/googleapis/nodejs-datastore/compare/v4.1.4...v4.1.5) (2019-07-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @grpc/grpc-js to ^0.5.0 ([#461](https://www.github.com/googleapis/nodejs-datastore/issues/461)) ([1850f25](https://www.github.com/googleapis/nodejs-datastore/commit/1850f25))
+* **deps:** update dependency google-auth-library to v5 ([#462](https://www.github.com/googleapis/nodejs-datastore/issues/462)) ([1f97053](https://www.github.com/googleapis/nodejs-datastore/commit/1f97053))
+
 ### [4.1.4](https://www.github.com/googleapis/nodejs-datastore/compare/v4.1.3...v4.1.4) (2019-07-23)
 
 
