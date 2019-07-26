@@ -1465,6 +1465,20 @@ describe('entity', () => {
         );
       });
 
+      it('should encode key with single path element entity int type', () => {
+        const kind = 'Task';
+        const id = new entity.Int('5754248394440704');
+        const key = new entity.Key({
+          path: [kind, id],
+        });
+
+        const encodedKey = 'ag9ncmFzcy1jbHVtcC00NzlyEQsSBFRhc2sYgICA3NWunAoM';
+        assert.strictEqual(
+          urlSafeKey.legacyEncode(PROJECT_ID, key),
+          encodedKey
+        );
+      });
+
       it('should encode key with parent', () => {
         const key = new entity.Key({
           path: ['Task', 'sampletask1', 'Task', 'sampletask2'],

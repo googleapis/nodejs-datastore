@@ -1035,7 +1035,9 @@ export namespace entity {
 
         if (is.defined(element.name)) {
           pathElements.push(element.name);
-        } else if (is.defined(element.id)) {
+        }
+
+        if (is.defined(element.id)) {
           pathElements.push(new entity.Int(element.id as number));
         }
       });
