@@ -18,15 +18,14 @@ import * as pjy from '@google-cloud/projectify';
 import * as pfy from '@google-cloud/promisify';
 import * as assert from 'assert';
 import * as extend from 'extend';
-import {CallOptions} from '@grpc/grpc-js';
 import * as is from 'is';
 import * as proxyquire from 'proxyquire';
 import * as sinon from 'sinon';
-import * as through from 'through2';
+import {Transform} from 'stream';
 
 import {google} from '../proto/datastore';
 import * as ds from '../src';
-import {entity, Entity, KeyProto} from '../src/entity.js';
+import {entity, Entity, KeyProto, EntityProto} from '../src/entity.js';
 import {Query, QueryProto} from '../src/query.js';
 import {
   AllocateIdsRequestResponse,
@@ -367,12 +366,11 @@ describe('Request', () => {
 
       it('should end stream', done => {
         const stream = request.createReadStream(key);
-
         stream
           .on('data', () => {})
           .on('error', () => {
             setImmediate(() => {
-              assert.strictEqual((stream as Any)._destroyed, true);
+              assert.strictEqual(stream.destroyed, true);
               done();
             });
           });
@@ -604,7 +602,7 @@ describe('Request', () => {
 
       beforeEach(() => {
         request.createReadStream = sandbox.spy(() => {
-          const stream = through.obj();
+          const stream = new Transform({objectMode: true});
           setImmediate(() => {
             fakeEntities.forEach(entity => stream.push(entity));
             stream.push(null);
@@ -656,7 +654,7 @@ describe('Request', () => {
 
       beforeEach(() => {
         request.createReadStream = sandbox.spy(() => {
-          const stream = through.obj();
+          const stream = new Transform({objectMode: true});
           setImmediate(() => {
             stream.emit('error', error);
           });
@@ -1081,7 +1079,7 @@ describe('Request', () => {
 
       beforeEach(() => {
         request.runQueryStream = sandbox.spy(() => {
-          const stream = through.obj();
+          const stream = new Transform({objectMode: true});
 
           setImmediate(() => {
             stream.emit('info', fakeInfo);
@@ -1139,7 +1137,7 @@ describe('Request', () => {
 
       beforeEach(() => {
         request.runQueryStream = sandbox.spy(() => {
-          const stream = through.obj();
+          const stream = new Transform({objectMode: true});
 
           setImmediate(() => {
             stream.emit('error', error);
@@ -1386,6 +1384,162 @@ describe('Request', () => {
               value: ['one', 'two', 'three'],
               excludeFromIndexes: true,
             },
+          ],
+        },
+        assert.ifError
+      );
+    });
+
+    it('should allow exclude property indexed with "*" wildcard from root', done => {
+      const longString = Buffer.alloc(1501, '.').toString();
+      const data = {
+        longString,
+        notMetadata: true,
+        longStringArray: [longString],
+        metadata: {
+          longString,
+          otherProperty: 'value',
+          obj: {
+            longStringArray: [
+              {
+                longString,
+                nestedLongStringArray: [
+                  {
+                    longString,
+                    nestedProperty: true,
+                  },
+                  {
+                    longString,
+                  },
+                ],
+              },
+            ],
+          },
+          longStringArray: [
+            {
+              longString,
+              nestedLongStringArray: [
+                {
+                  longString,
+                  nestedProperty: true,
+                },
+                {
+                  longString,
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      const validateIndex = (data: Any) => {
+        if (data.arrayValue) {
+          data.arrayValue.values.forEach((value: Any) => {
+            validateIndex(value);
+          });
+        } else if (data.entityValue) {
+          Object.keys(data.entityValue.properties).forEach(path => {
+            validateIndex(data.entityValue.properties[path]);
+          });
+        } else {
+          assert.strictEqual(data.excludeFromIndexes, true);
+        }
+      };
+
+      request.request_ = (config: RequestConfig) => {
+        const properties = config.reqOpts.mutations[0].upsert.properties;
+        Object.keys(properties).forEach(path => {
+          validateIndex(properties[path]);
+        });
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data,
+          excludeFromIndexes: ['.*'],
+        },
+        assert.ifError
+      );
+    });
+
+    it('should allow exclude property indexed with "*" wildcard for object and array', done => {
+      const longString = Buffer.alloc(1501, '.').toString();
+      const data = {
+        longString,
+        notMetadata: true,
+        longStringArray: [longString],
+        metadata: {
+          longString,
+          otherProperty: 'value',
+          obj: {
+            longStringArray: [
+              {
+                longString,
+                nestedLongStringArray: [
+                  {
+                    longString,
+                    nestedProperty: true,
+                  },
+                  {
+                    longString,
+                  },
+                ],
+              },
+            ],
+          },
+          longStringArray: [
+            {
+              longString,
+              nestedLongStringArray: [
+                {
+                  longString,
+                  nestedProperty: true,
+                },
+                {
+                  longString,
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      const validateIndex = (data: Any) => {
+        if (data.arrayValue) {
+          data.arrayValue.values.forEach((value: Any) => {
+            validateIndex(value);
+          });
+        } else if (data.entityValue) {
+          Object.keys(data.entityValue.properties).forEach(path => {
+            validateIndex(data.entityValue.properties[path]);
+          });
+        } else {
+          assert.strictEqual(data.excludeFromIndexes, true);
+        }
+      };
+
+      request.request_ = (config: RequestConfig) => {
+        const properties = config.reqOpts.mutations[0].upsert.properties;
+        Object.keys(properties).forEach(path => {
+          validateIndex(properties[path]);
+        });
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data,
+          excludeFromIndexes: [
+            'longString',
+            'notMetadata',
+            'longStringArray[]',
+            'metadata.longString',
+            'metadata.otherProperty',
+            'metadata.obj.*',
+            'metadata.longStringArray[].*',
           ],
         },
         assert.ifError
