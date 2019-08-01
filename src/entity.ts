@@ -714,9 +714,9 @@ export namespace entity {
     const MAX_DATASTORE_VALUE_LENGTH = 1500;
     if (Array.isArray(entities)) {
       for (const entry of entities) {
-        if (entry.hasOwnProperty('name') && entry.hasOwnProperty('value')) {
+        if (entry.name && entry.value) {
           if (
-            typeof entry.value === 'string' &&
+            is.string(entry.value) &&
             Buffer.from(entry.value).length > MAX_DATASTORE_VALUE_LENGTH
           ) {
             entry.excludeFromIndexes = true;
@@ -726,7 +726,7 @@ export namespace entity {
         }
         findLargeProperties_(entry, path.concat('[]'), properties);
       }
-    } else if (typeof entities === 'object') {
+    } else if (is.object(entities)) {
       const keys = Object.keys(entities);
       for (const key of keys) {
         findLargeProperties_(
@@ -736,7 +736,7 @@ export namespace entity {
         );
       }
     } else if (
-      typeof entities === 'string' &&
+      is.string(entities) &&
       Buffer.from(entities).length > MAX_DATASTORE_VALUE_LENGTH
     ) {
       if (properties.indexOf(path) < 0) {

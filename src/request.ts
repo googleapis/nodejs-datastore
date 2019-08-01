@@ -957,6 +957,28 @@ class DatastoreRequest {
    * };
    *
    * datastore.save(entity, (err, apiResponse) => {});
+   * //-
+   * // Use boolean `excludeLargeProperties`, to auto exclude Large properties from indexing.
+   * // This will allow storing string values larger than 1500 bytes.
+   * //-
+   * const entity = {
+   *   key: datastore.key('Company'),
+   *   data: {
+   *     description: 'Long string (...)',
+   *     embeddedEntity: {
+   *       description: 'Long string (...)'
+   *     },
+   *     arrayValue: [
+   *       'Long string (...)',
+   *       {
+   *         description: 'Long string (...)'
+   *       }
+   *     ]
+   *   },
+   *   excludeLargeProperties:true
+   * };
+   *
+   * datastore.save(entity, (err, apiResponse) => {});
    *
    * //-
    * // Save multiple entities at once.
