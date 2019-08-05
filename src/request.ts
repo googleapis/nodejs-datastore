@@ -807,6 +807,9 @@ class DatastoreRequest {
    * included in *all* indexes, you must supply an `excludeFromIndexes` array.
    * See below for an example.
    *
+   * To avoid automatically large properties to indexed, you can supply an `excludeLargeProperties`
+   * as true or false. By default it is *false*.
+   *
    * @borrows {@link Transaction#save} as save
    *
    * @throws {Error} If an unrecognized method is provided.
@@ -816,6 +819,8 @@ class DatastoreRequest {
    * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
    *     indexing using a simple JSON path notation. See the example below to
    * see how to target properties at different levels of nesting within your
+   * @param {boolean} [entities.excludeLargeProperties] Automatically exclude
+   *  large properties from indexing. It help in storing large values.
    * @param {string} [entities.method] Explicit method to use, either 'insert',
    *     'update', or 'upsert'.
    * @param {object} entities.data Data to save with the provided key.
