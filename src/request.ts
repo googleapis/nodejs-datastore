@@ -805,10 +805,10 @@ class DatastoreRequest {
    *
    * By default, all properties are indexed. To prevent a property from being
    * included in *all* indexes, you must supply an `excludeFromIndexes` array.
-   * See below for an example.
    *
-   * To avoid automatically large properties to indexed, you can supply an `excludeLargeProperties`
-   * as true or false. By default it is *false*.
+   * To prevent large properties from being included in *all* indexes, you must supply
+   * `excludeLargeProperties: true`.
+   *  See below for an example.
    *
    * @borrows {@link Transaction#save} as save
    *
@@ -980,7 +980,7 @@ class DatastoreRequest {
    *       }
    *     ]
    *   },
-   *   excludeLargeProperties:true
+   *   excludeLargeProperties: true
    * };
    *
    * datastore.save(entity, (err, apiResponse) => {});
