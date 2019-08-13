@@ -529,6 +529,8 @@ export type RunQueryResponse = [Entity[], RunQueryInfo];
 export interface RunQueryInfo {
   endCursor?: string;
   moreResults?:
+    | 'MORE_RESULTS_TYPE_UNSPECIFIED'
+    | 'NOT_FINISHED'
     | 'MORE_RESULTS_AFTER_LIMIT'
     | 'MORE_RESULTS_AFTER_CURSOR'
     | 'NO_MORE_RESULTS';
