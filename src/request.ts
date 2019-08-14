@@ -39,9 +39,9 @@ import {
   ValueProto,
   ResponseResult,
 } from './entity';
-import {QueryProto} from './query';
 import {
   Query,
+  QueryProto,
   RunQueryInfo,
   RunQueryOptions,
   RunQueryResponse,
@@ -1354,10 +1354,7 @@ export interface RequestOptions {
   projectId?: ProjectId;
   query?: QueryProto;
 }
-export interface RunQueryStreamOptions {
-  gaxOptions?: CallOptions;
-  consistency?: 'strong' | 'eventual';
-}
+export interface RunQueryStreamOptions extends RunQueryOptions {}
 export interface CommitCallback {
   (err?: Error | null, resp?: google.datastore.v1.ICommitResponse): void;
 }
