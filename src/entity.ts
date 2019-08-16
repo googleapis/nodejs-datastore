@@ -300,7 +300,9 @@ export namespace entity {
           };
 
           if (this.parent) {
-            serializedKey.path = this.parent.serialized.path.concat(serializedKey.path);
+            serializedKey.path = this.parent.serialized.path.concat(
+              serializedKey.path
+            );
           }
 
           return serializedKey;

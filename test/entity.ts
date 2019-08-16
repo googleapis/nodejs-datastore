@@ -167,12 +167,16 @@ describe('entity', () => {
         namespace: 'namespace',
         path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new entity.Int('1')],
       });
-      assert.deepStrictEqual(key.serialized,
-        {
-          namespace: 'namespace',
-          path: [
-            'ParentKind', 'name', 'Kind', new entity.Int(1).valueOf(), 'SubKind', new entity.Int('1').valueOf()
-          ],
+      assert.deepStrictEqual(key.serialized, {
+        namespace: 'namespace',
+        path: [
+          'ParentKind',
+          'name',
+          'Kind',
+          new entity.Int(1).valueOf(),
+          'SubKind',
+          new entity.Int('1').valueOf(),
+        ],
       });
     });
 
