@@ -316,12 +316,12 @@ class DatastoreRequest {
     return stream;
   }
 
-  delete(keys: Entities, gaxOptions?: CallOptions): Promise<CommitResponse>;
-  delete(keys: Entities, callback: CommitCallback): void;
+  delete(keys: Entities, gaxOptions?: CallOptions): Promise<DeleteResponse>;
+  delete(keys: Entities, callback: DeleteCallback): void;
   delete(
     keys: Entities,
     gaxOptions: CallOptions,
-    callback: CommitCallback
+    callback: DeleteCallback
   ): void;
   /**
    * Delete all entities identified with the specified key(s).
@@ -373,9 +373,9 @@ class DatastoreRequest {
    */
   delete(
     keys: entity.Key | entity.Key[],
-    gaxOptionsOrCallback?: CallOptions | CommitCallback,
-    cb?: CommitCallback
-  ): void | Promise<CommitResponse> {
+    gaxOptionsOrCallback?: CallOptions | DeleteCallback,
+    cb?: DeleteCallback
+  ): void | Promise<DeleteResponse> {
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
@@ -522,8 +522,8 @@ class DatastoreRequest {
       );
   }
 
-  insert(entities: Entities): Promise<CommitResponse>;
-  insert(entities: Entities, callback: CommitCallback): void;
+  insert(entities: Entities): Promise<InsertResponse>;
+  insert(entities: Entities, callback: InsertCallback): void;
   /**
    * Maps to {@link Datastore#save}, forcing the method to be `insert`.
    *
@@ -540,8 +540,8 @@ class DatastoreRequest {
    */
   insert(
     entities: Entities,
-    callback?: CommitCallback
-  ): void | Promise<CommitResponse> {
+    callback?: InsertCallback
+  ): void | Promise<InsertResponse> {
     entities = arrify(entities)
       .map(DatastoreRequest.prepareEntityObject_)
       .map((x: PrepareEntityObjectResponse) => {
@@ -1365,13 +1365,17 @@ export interface UpdateCallback extends CommitCallback {}
 export type UpdateResponse = CommitResponse;
 export interface UpsertCallback extends CommitCallback {}
 export type UpsertResponse = CommitResponse;
+export interface DeleteCallback extends CommitCallback {}
+export type DeleteResponse = CommitResponse;
+export interface InsertCallback extends CommitCallback {}
+export type InsertResponse = CommitResponse;
 
 /*! Developer Documentation
  *
  * All async methods (except for streams) will return a Promise in the event
  * that a callback is omitted.
  */
-promisifyAll(DatastoreRequest, {exclude: ['request_']});
+promisifyAll(DatastoreRequest);
 
 /**
  * Reference to the {@link DatastoreRequest} class.
