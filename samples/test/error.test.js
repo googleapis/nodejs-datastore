@@ -1,11 +1,10 @@
 /**
- * Copyright 2019 Google LLC
- *
+ * Copyright 2018, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +16,7 @@
 'use strict';
 
 const assert = require('assert');
-const { execSync } = require('child_process');
+const {execSync} = require('child_process');
 const exec = cmd =>
   execSync(cmd, {
     encoding: 'utf8',
