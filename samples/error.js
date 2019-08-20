@@ -18,47 +18,56 @@
 
 'use strict';
 
+// sample-metadata
+//  title: error sample
+//  description: sample show how to handle and process error
+//  usage: node error.js
+
 const {Datastore} = require('@google-cloud/datastore');
 
 // [START error]
-function runQuery() {
+function main() {
   // Creates a client
   const datastore = new Datastore();
 
   const query = datastore.createQuery(['Company']).start('badrequest');
 
-  return datastore
-    .runQuery(query)
-    .then(results => {
-      const entities = results[0];
-      console.log('Entities:');
-      entities.forEach(entity => console.log(entity));
-      return entities;
-    })
-    .catch(err => {
-      console.log(err.code); //400
-      console.log(err.message); //"Key path is incomplete: [Person: null]"
-      console.log(err.status); //"INVALID_ARGUMENT"
-      /**
-       *  @see [For more information on error codes refer] https://cloud.google.com/datastore/docs/concepts/errors#error_codes
-       */
+  async function runQuery() {
+    return await datastore
+      .runQuery(query)
+      .then(results => {
+        const entities = results[0];
+        console.log('Entities:');
+        entities.forEach(entity => console.log(entity));
+        return entities;
+      })
+      .catch(err => {
+        // Get the error information
+        const code = err.code;
+        const message = err.message;
+        /**
+         *  @see [For more information on error codes refer] https://cloud.google.com/datastore/docs/concepts/errors#error_codes
+         */
 
-      // Process error
+        // Process error
 
-      // For example, treat permission error like no entities were found
-      // eslint-disable-next-line no-constant-condition
-      if (/* some condition */ false) {
-        return [];
-      }
+        // For example, return a custom message to user
+        // based on the error code and or error message
+        // eslint-disable-next-line no-constant-condition
+        if (code === 4 && message === 'some message') {
+          err.message = 'Oops, something went wrong';
+        }
 
-      //Forward the error to caller
-      return Promise.reject(err);
-    });
+        //Forward the error to caller
+        throw err;
+      });
+  }
+
+  runQuery().catch(err => {
+    console.log(err.code); // 3
+    console.log(err.message); // "Error parsing protocol message"
+  });
+  // [END error]
 }
-// [END error]
 
-exports.runQuery = runQuery;
-
-if (module === require.main) {
-  exports.runQuery();
-}
+main(...process.argv.slice(2));
