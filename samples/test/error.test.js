@@ -11,22 +11,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 'use strict';
 
-const error = require('../error');
 const assert = require('assert');
+const {execSync} = require('child_process');
+const exec = cmd =>
+  execSync(cmd, {
+    encoding: 'utf8',
+  });
 
 describe('error', () => {
   it('should have an error', done => {
     const errorCode = 3;
-    error.runQuery().then(
-      () => {},
-      err => {
-        assert.strictEqual(err.code, errorCode);
-        done();
-      }
-    );
+    const output = exec(`node error.js`);
+    assert.strictEqual(parseInt(output[0]), errorCode);
+    done();
   });
 });
