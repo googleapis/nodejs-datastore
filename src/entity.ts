@@ -224,9 +224,7 @@ export namespace entity {
    * });
    *
    * @example
-   * //-
-   * // Serialize the key for later re-use.
-   * //-
+   * <caption>Serialize the key for later re-use.</caption>
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key({
@@ -243,7 +241,6 @@ export namespace entity {
     kind: string;
     parent?: Key;
     path!: Array<string | number>;
-    serialized!: object;
 
     constructor(options: KeyOptions) {
       /**
@@ -285,29 +282,36 @@ export namespace entity {
           ]);
         },
       });
+    }
 
-      // `serialized` is computed on demand to consider any changes that may
-      // have been made to the key.
-      /**
-       * @name Key#serialized
-       * @type {array}
-       */
-      Object.defineProperty(this, 'serialized', {
-        get() {
-          const serializedKey = {
-            namespace: this.namespace,
-            path: [this.kind, this.name || new Int(this.id)],
-          };
+    /**
+     * Access the `serialized` property for a library-compatible way to re-use a
+     * key.
+     *
+     * @returns {object}
+     *
+     * @example
+     * const key = datastore.key({
+     *   namespace: 'My-NS',
+     *   path: ['Company', 123]
+     * });
+     *
+     * // Later...
+     * const key = datastore.key(key.serialized);
+     */
+    get serialized() {
+      const serializedKey = {
+        namespace: this.namespace,
+        path: [this.kind, this.name || new Int(this.id!)],
+      };
 
-          if (this.parent) {
-            serializedKey.path = this.parent.serialized.path.concat(
-              serializedKey.path
-            );
-          }
+      if (this.parent) {
+        serializedKey.path = this.parent.serialized.path.concat(
+          serializedKey.path
+        );
+      }
 
-          return serializedKey;
-        },
-      });
+      return serializedKey;
     }
   }
 
