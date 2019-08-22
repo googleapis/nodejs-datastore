@@ -411,7 +411,7 @@ class DatastoreRequest {
   ): Promise<GetResponse>;
   get(keys: entity.Key | entity.Key[], callback: GetCallback): void;
   get(
-    keys: Entities,
+    keys: entity.Key | entity.Key[],
     options: CreateReadStreamOptions,
     callback: GetCallback
   ): void;
@@ -1256,9 +1256,7 @@ class DatastoreRequest {
             new gapic.v1[clientName](datastore.options)
           );
         }
-        const gaxClient: Entities | undefined = datastore.clients_.get(
-          clientName
-        );
+        const gaxClient = datastore.clients_.get(clientName);
         reqOpts = replaceProjectIdToken(reqOpts, projectId!);
         const gaxOpts = extend(true, {}, config.gaxOpts, {
           headers: {

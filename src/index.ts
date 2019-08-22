@@ -374,7 +374,7 @@ const urlSafeKey = new entity.URLSafeKey();
  * });
  */
 class Datastore extends DatastoreRequest {
-  clients_: Map<string, {}>;
+  clients_: Map<string, {[k: string]: Function}>;
   namespace?: string;
   projectId: string;
   defaultBaseUrl_: string;
