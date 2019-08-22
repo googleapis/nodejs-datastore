@@ -31,38 +31,19 @@ function main() {
   const query = datastore.createQuery(['Company']).start('badrequest');
 
   async function runQuery() {
-    return await datastore
-      .runQuery(query)
-      .then(results => {
-        const entities = results[0];
-        console.log('Entities:');
-        entities.forEach(entity => console.log(entity));
-        return entities;
-      })
-      .catch(err => {
-        // Get the error information
-        const code = err.code;
-        const message = err.message;
-        /**
-         *  @see [For more information on error codes refer] https://cloud.google.com/datastore/docs/concepts/errors#error_codes
-         */
-
-        // Process error
-
-        // For example, return a custom message to user
-        // based on the error code and or error message
-        // eslint-disable-next-line no-constant-condition
-        if (code === 4 && message === 'some message') {
-          err.message = 'Oops, something went wrong';
-        }
-
-        //Forward the error to caller
-        throw err;
-      });
+    try {
+      const [result] = await datastore.runQuery(query);
+      // etc., etc.
+      return result;
+    } catch (error) {
+      // do something with error.
+      console.log(error.code); // 3
+      //Forward the error to caller
+      throw error;
+    }
   }
 
   runQuery().catch(err => {
-    console.log(err.code); // 3
     console.log(err.message); // "Error parsing protocol message"
   });
   // [END error]
