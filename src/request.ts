@@ -1323,12 +1323,8 @@ export type ProjectId = string | null | undefined;
 export interface RequestCallback {
   (
     a?: Error | null,
-    b?: google.datastore.v1.IAllocateIdsResponse &
-      google.datastore.v1.ILookupResponse &
-      google.datastore.v1.ICommitResponse &
-      google.datastore.v1.IRollbackResponse & {
-        transaction?: string;
-      }
+    // tslint:disable-next-line no-any
+    b?: any
   ): void;
 }
 export interface RequestConfig {
