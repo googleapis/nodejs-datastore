@@ -223,8 +223,7 @@ export namespace entity {
    *   path: ['Company', 123]
    * });
    *
-   * @example
-   * <caption>Serialize the key for later re-use.</caption>
+   * @example <caption>Serialize the key for later re-use.</caption>
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key({
