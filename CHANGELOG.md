@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+### [4.2.1](https://www.github.com/googleapis/nodejs-datastore/compare/v4.2.0...v4.2.1) (2019-08-25)
+
+
+### Bug Fixes
+
+* **types:** fix and clean up types for request.ts ([#472](https://www.github.com/googleapis/nodejs-datastore/issues/472)) ([928f237](https://www.github.com/googleapis/nodejs-datastore/commit/928f237))
+
 ## [4.2.0](https://www.github.com/googleapis/nodejs-datastore/compare/v4.1.4...v4.2.0) (2019-08-09)
 
 
