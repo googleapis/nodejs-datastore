@@ -187,6 +187,15 @@ describe('entity', () => {
       const key2 = new entity.Key(key.serialized);
       assert.deepStrictEqual(key.serialized, key2.serialized);
     });
+
+    it('should allow re-creating a Key from the JSON serialized path', () => {
+      const key = new entity.Key({
+        path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new entity.Int('1')],
+      });
+      const jsonRoundtrip = (v: object) => JSON.parse(JSON.stringify(v));
+      const key2 = new entity.Key(jsonRoundtrip(key.serialized));
+      assert.deepStrictEqual(key.serialized, key2.serialized);
+    });
   });
 
   describe('isDsKey', () => {

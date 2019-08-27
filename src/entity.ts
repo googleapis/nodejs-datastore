@@ -117,6 +117,17 @@ export namespace entity {
     return value instanceof entity.Int;
   }
 
+  /**
+   * Check if something is a Datastore Int object converted from JSON.
+   *
+   * @private
+   * @param {*} value
+   * @returns {boolean}
+   */
+  export function isJsonDsInt(value?: {}) {
+    return value && typeof value === "object" && value.hasOwnProperty("value");
+  }
+
   export interface Coordinates {
     latitude: number;
     longitude: number;
@@ -255,7 +266,7 @@ export namespace entity {
       if (options.path.length % 2 === 0) {
         const identifier = options.path.pop();
 
-        if (is.number(identifier) || isDsInt(identifier)) {
+        if (is.number(identifier) || isDsInt(identifier) || isJsonDsInt(identifier)) {
           this.id = (((identifier as {}) as Int).value || identifier) as string;
         } else if (is.string(identifier)) {
           this.name = identifier as string;
