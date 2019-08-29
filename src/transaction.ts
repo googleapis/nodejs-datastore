@@ -654,7 +654,6 @@ export type ModifiedEntities = Array<{
   method: string;
   args: Entity[];
 }>;
-export type CommitCallback = google.datastore.v1.Datastore.CommitCallback;
 export type RunResponse = [
   Transaction,
   google.datastore.v1.IBeginTransactionResponse
