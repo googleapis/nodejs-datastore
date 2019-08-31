@@ -744,14 +744,14 @@ class Datastore extends DatastoreRequest {
    *  The location prefix of an App Engine project ID.
    *  Often this value is 's~', but may also be 'e~', or other location prefixes
    *  currently unknown.
-   * @returns {string} base64 endocded urlsafe key.
+   * @returns {Promise} base64 endocded urlsafe key.
    *
    * @example
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key(['Company', 'Google']);
    *
-   * datastore.keyToLegacyUrlsafe(key) //ag9ncmFzcy1jbHVtcC00NzlyEwsSB0NvbXBhbnkiBkdvb2dsZQw
+   * await datastore.keyToLegacyUrlsafe(key) //ag9ncmFzcy1jbHVtcC00NzlyEwsSB0NvbXBhbnkiBkdvb2dsZQw
    *
    * @example
    * <caption>Create a complete url safe key using location prefix </caption>
@@ -762,8 +762,16 @@ class Datastore extends DatastoreRequest {
    *
    * datastore.keyToLegacyUrlsafe(key, locationPrefix) //ahFzfmdyYXNzLWNsdW1wLTQ3OXIKCxIEVGFzaxh7DA
    */
-  keyToLegacyUrlsafe(key: entity.Key, locationPrefix?: string): string {
-    return urlSafeKey.legacyEncode(this.projectId, key, locationPrefix);
+  async keyToLegacyUrlsafe(
+    key: entity.Key,
+    locationPrefix?: string
+  ): Promise<string> {
+    if (this.projectId === '{{projectId}}') {
+      const projectId = await this.auth.getProjectId();
+      return urlSafeKey.legacyEncode(projectId, key, locationPrefix);
+    } else {
+      return urlSafeKey.legacyEncode(this.projectId, key, locationPrefix);
+    }
   }
 
   /**

@@ -626,12 +626,12 @@ describe('Datastore', () => {
   });
 
   describe('keyToLegacyUrlsafe', () => {
-    it('should convert key to url safe base64 string', () => {
+    it('should convert key to url safe base64 string', async () => {
       const key = new entity.Key({
         path: ['Task', 'Test'],
       });
       assert.strictEqual(
-        datastore.keyToLegacyUrlsafe(key),
+        await datastore.keyToLegacyUrlsafe(key),
         'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA'
       );
     });
