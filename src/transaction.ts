@@ -262,6 +262,10 @@ class Transaction extends DatastoreRequest {
     );
   }
 
+  createQuery(kind?: string): Query;
+  createQuery(kind?: string[]): Query;
+  createQuery(namespace: string, kind: string): Query;
+  createQuery(namespace: string, kind: string[]): Query;
   /**
    * Create a query for the specified kind. See {module:datastore/query} for all
    * of the available methods.
@@ -300,7 +304,15 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  createQuery(namespace: string, kind?: string | string[]): Query {
+  createQuery(
+    namespaceOrKind?: string | string[],
+    kind?: string | string[]
+  ): Query {
+    let namespace = namespaceOrKind as string;
+    if (arguments.length < 2) {
+      kind = namespaceOrKind;
+      namespace = this.namespace!;
+    }
     return this.datastore.createQuery.call(this, namespace, kind as string[]);
   }
 
