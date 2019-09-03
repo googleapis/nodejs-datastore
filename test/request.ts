@@ -28,7 +28,7 @@ import * as ds from '../src';
 import {entity, Entity, KeyProto, EntityProto} from '../src/entity.js';
 import {Query, QueryProto} from '../src/query.js';
 import {
-  AllocateIdsRequestResponse,
+  AllocateIdsResponse,
   RequestConfig,
   RequestOptions,
 } from '../src/request';
@@ -252,11 +252,7 @@ describe('Request', () => {
         request.allocateIds(
           INCOMPLETE_KEY,
           OPTIONS,
-          (
-            err: Error,
-            keys: entity.Key[],
-            resp: AllocateIdsRequestResponse
-          ) => {
+          (err: Error, keys: entity.Key[], resp: AllocateIdsResponse) => {
             assert.ifError(err);
             assert.deepStrictEqual(keys, [key]);
             assert.strictEqual(resp, API_RESPONSE);
@@ -745,9 +741,9 @@ describe('Request', () => {
         assert.strictEqual(config.client, 'DatastoreClient');
         assert.strictEqual(config.method, 'runQuery');
         assert(is.empty(config.reqOpts!.readOptions));
-        assert.strictEqual(config.reqOpts.query, queryProto);
+        assert.strictEqual(config.reqOpts!.query, queryProto);
         assert.strictEqual(
-          config.reqOpts.partitionId.namespaceId,
+          config.reqOpts!.partitionId!.namespaceId,
           query.namespace
         );
         assert.strictEqual(config.gaxOpts, undefined);
@@ -781,7 +777,7 @@ describe('Request', () => {
     it('should allow setting strong read consistency', done => {
       sandbox.stub(entity, 'queryToQueryProto');
       request.request_ = (config: RequestConfig) => {
-        assert.strictEqual(config.reqOpts.readOptions.readConsistency, 1);
+        assert.strictEqual(config.reqOpts!.readOptions!.readConsistency, 1);
         done();
       };
 
@@ -794,7 +790,7 @@ describe('Request', () => {
     it('should allow setting strong eventual consistency', done => {
       sandbox.stub(entity, 'queryToQueryProto');
       request.request_ = (config: RequestConfig) => {
-        assert.strictEqual(config.reqOpts.readOptions.readConsistency, 2);
+        assert.strictEqual(config.reqOpts!.readOptions!.readConsistency, 2);
         done();
       };
 
@@ -912,7 +908,7 @@ describe('Request', () => {
           } else {
             assert.strictEqual(startCalled, true);
             assert.strictEqual(offsetCalled, true);
-            assert.strictEqual(config.reqOpts.query, queryProto);
+            assert.strictEqual(config.reqOpts!.query, queryProto);
             resp.batch.moreResults = 'MORE_RESULTS_AFTER_LIMIT';
             callback(null, resp);
           }
@@ -1257,19 +1253,19 @@ describe('Request', () => {
 
     it('should save with specific method', done => {
       request.request_ = (config: RequestConfig, callback: Function) => {
-        assert.strictEqual(config.reqOpts.mutations.length, 3);
-        assert(is.object(config.reqOpts.mutations[0].insert));
-        assert(is.object(config.reqOpts.mutations[1].update));
-        assert(is.object(config.reqOpts.mutations[2].upsert));
+        assert.strictEqual(config.reqOpts!.mutations!.length, 3);
+        assert(is.object(config.reqOpts!.mutations![0].insert));
+        assert(is.object(config.reqOpts!.mutations![1].update));
+        assert(is.object(config.reqOpts!.mutations![2].upsert));
 
-        const insert = config.reqOpts.mutations[0].insert;
-        assert.deepStrictEqual(insert.properties.k, {stringValue: 'v'});
+        const insert = config.reqOpts!.mutations![0].insert!;
+        assert.deepStrictEqual(insert.properties!.k, {stringValue: 'v'});
 
-        const update = config.reqOpts.mutations[1].update;
-        assert.deepStrictEqual(update.properties.k2, {stringValue: 'v2'});
+        const update = config.reqOpts!.mutations![1].update!;
+        assert.deepStrictEqual(update.properties!.k2, {stringValue: 'v2'});
 
-        const upsert = config.reqOpts.mutations[2].upsert;
-        assert.deepStrictEqual(upsert.properties.k3, {stringValue: 'v3'});
+        const upsert = config.reqOpts!.mutations![2].upsert!;
+        assert.deepStrictEqual(upsert.properties!.k3, {stringValue: 'v3'});
 
         callback();
       };
@@ -1343,7 +1339,7 @@ describe('Request', () => {
 
     it('should allow setting the indexed value of a property', done => {
       request.request_ = (config: RequestConfig) => {
-        const property = config.reqOpts.mutations[0].upsert.properties.name;
+        const property = config.reqOpts!.mutations![0].upsert!.properties!.name;
         assert.strictEqual(property.stringValue, 'value');
         assert.strictEqual(property.excludeFromIndexes, true);
         done();
@@ -1356,6 +1352,32 @@ describe('Request', () => {
             {
               name: 'name',
               value: 'value',
+              excludeFromIndexes: true,
+            },
+          ],
+        },
+        assert.ifError
+      );
+    });
+
+    it('should allow setting the indexed value on arrays', done => {
+      request.request_ = (config: RequestConfig) => {
+        const property = config.reqOpts!.mutations![0].upsert!.properties!.name;
+
+        property.arrayValue!.values!.forEach((value: Any) => {
+          assert.strictEqual(value.excludeFromIndexes, true);
+        });
+
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data: [
+            {
+              name: 'name',
+              value: ['one', 'two', 'three'],
               excludeFromIndexes: true,
             },
           ],
@@ -1421,9 +1443,9 @@ describe('Request', () => {
       };
 
       request.request_ = (config: RequestConfig) => {
-        const properties = config.reqOpts.mutations[0].upsert.properties;
-        Object.keys(properties).forEach(path => {
-          validateIndex(properties[path]);
+        const properties = config.reqOpts!.mutations![0].upsert!.properties;
+        Object.keys(properties!).forEach(path => {
+          validateIndex(properties![path]);
         });
         done();
       };
@@ -1495,9 +1517,9 @@ describe('Request', () => {
       };
 
       request.request_ = (config: RequestConfig) => {
-        const properties = config.reqOpts.mutations[0].upsert.properties;
-        Object.keys(properties).forEach(path => {
-          validateIndex(properties[path]);
+        const properties = config.reqOpts!.mutations![0].upsert!.properties;
+        Object.keys(properties!).forEach(path => {
+          validateIndex(properties![path]);
         });
         done();
       };
@@ -1522,9 +1544,9 @@ describe('Request', () => {
 
     it('should allow setting the indexed value on arrays', done => {
       request.request_ = (config: RequestConfig) => {
-        const property = config.reqOpts.mutations[0].upsert.properties.name;
+        const property = config.reqOpts!.mutations![0].upsert!.properties!.name;
 
-        property.arrayValue.values.forEach((value: Any) => {
+        property.arrayValue!.values!.forEach((value: Any) => {
           assert.strictEqual(value.excludeFromIndexes, true);
         });
 
@@ -1599,15 +1621,16 @@ describe('Request', () => {
       ];
 
       entity.entityToEntityProto = entity => {
-        return entity;
+        return (entity as unknown) as EntityProto;
       };
       request.request_ = (config: RequestConfig) => {
         assert.strictEqual(
-          config.reqOpts.mutations[0].upsert.excludeLargeProperties,
+          (config.reqOpts!.mutations![0].upsert! as Entity)
+            .excludeLargeProperties,
           true
         );
         assert.deepStrictEqual(
-          config.reqOpts.mutations[0].upsert.excludeFromIndexes,
+          (config.reqOpts!.mutations![0].upsert! as Entity).excludeFromIndexes,
           excludeFromIndexes
         );
         done();
@@ -1638,7 +1661,8 @@ describe('Request', () => {
 
       request.request_ = (config: RequestConfig) => {
         assert.deepStrictEqual(
-          config.reqOpts.mutations[0].upsert.properties.name.excludeFromIndexes,
+          config.reqOpts!.mutations![0].upsert!.properties!.name
+            .excludeFromIndexes,
           true
         );
         done();
