@@ -371,7 +371,7 @@ describe('Transaction', () => {
       const kind = 'kind';
       const createQueryReturnValue = {};
 
-      transaction.datastore.createQuery = function (...ags: Any) {
+      transaction.datastore.createQuery = function(...ags: Any) {
         assert.strictEqual(this, transaction);
         assert.strictEqual(ags[0], transaction.datastore.namespace);
         assert.strictEqual(ags[1], kind);

@@ -304,7 +304,7 @@ class Transaction extends DatastoreRequest {
    *     });
    *   });
    * });
-   * 
+   *
    * //Run the query inside the transaction.with namespace
    * transaction.run((err) => {
    *   if (err) {
