@@ -517,9 +517,15 @@ export interface QueryProto {
  */
 export {Query};
 
+export interface TypeCastConfig {
+  typeCastFunction: Function;
+  names?: string | string[];
+}
+
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   gaxOptions?: CallOptions;
+  typeCastConfig?: TypeCastConfig;
 }
 
 export interface RunQueryCallback {
