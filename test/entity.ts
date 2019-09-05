@@ -282,15 +282,25 @@ describe('entity', () => {
 
     it('should throw if integer value outside of bounds', () => {
       const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
+      const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
 
       const valueProto = {
         valueType: 'integerValue',
         integerValue: largeIntegerValue,
       };
 
+      const valueProto2 = {
+        valueType: 'integerValue',
+        integerValue: smallIntegerValue,
+      };
+
       assert.throws(() => {
         entity.decodeValueProto(valueProto);
       }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
+
+      assert.throws(() => {
+        entity.decodeValueProto(valueProto2);
+      }, new RegExp(`Integer value ${smallIntegerValue} is out of bounds.`));
     });
 
     it('should custom-cast integerValue when typeCastFunction is provided', () => {
