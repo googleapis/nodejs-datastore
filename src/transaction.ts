@@ -331,12 +331,11 @@ class Transaction extends DatastoreRequest {
     namespaceOrKind?: string | string[],
     kind?: string | string[]
   ): Query {
-    let namespace = namespaceOrKind as string;
-    if (arguments.length < 2) {
-      kind = namespaceOrKind;
-      namespace = this.namespace!;
-    }
-    return this.datastore.createQuery.call(this, namespace, kind as string[]);
+    return this.datastore.createQuery.call(
+      this,
+      namespaceOrKind as string,
+      kind as string[]
+    );
   }
 
   delete(): Promise<CommitResponse>;

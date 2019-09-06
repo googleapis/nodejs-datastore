@@ -366,20 +366,6 @@ describe('Transaction', () => {
       const query = transaction.createQuery(args[0], args[1]); // verbose de-structure
       assert.strictEqual(query, createQueryReturnValue);
     });
-
-    it('should include the default namespace', () => {
-      const kind = 'kind';
-      const createQueryReturnValue = {};
-
-      transaction.datastore.createQuery = function(...ags: Any) {
-        assert.strictEqual(this, transaction);
-        assert.strictEqual(ags[0], transaction.datastore.namespace);
-        assert.strictEqual(ags[1], kind);
-        return createQueryReturnValue as Query;
-      };
-      const query = transaction.createQuery(kind);
-      assert.strictEqual(query, createQueryReturnValue);
-    });
   });
 
   describe('delete', () => {
