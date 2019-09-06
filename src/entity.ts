@@ -343,10 +343,7 @@ export namespace entity {
   ) {
     let customCast = false;
     if (typeCastConfig) {
-      if (
-        !typeCastConfig.typeCastFunction ||
-        typeof typeCastConfig.typeCastFunction !== 'function'
-      ) {
+      if (typeof typeCastConfig.typeCastFunction !== 'function') {
         throw new Error(
           `typeCastFunction is not a function or was not provided.`
         );
