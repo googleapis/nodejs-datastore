@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,6 +160,32 @@ describe('entity', () => {
       key.kind = 'ParentKind';
 
       assert.deepStrictEqual(key.path, ['GrandParentKind', 1, 'ParentKind', 1]);
+    });
+
+    it('should always compute the correct serialized path', () => {
+      const key = new entity.Key({
+        namespace: 'namespace',
+        path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new entity.Int('1')],
+      });
+      assert.deepStrictEqual(key.serialized, {
+        namespace: 'namespace',
+        path: [
+          'ParentKind',
+          'name',
+          'Kind',
+          new entity.Int(1).valueOf(),
+          'SubKind',
+          new entity.Int('1').valueOf(),
+        ],
+      });
+    });
+
+    it('should allow re-creating a Key from the serialized path', () => {
+      const key = new entity.Key({
+        path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new entity.Int('1')],
+      });
+      const key2 = new entity.Key(key.serialized);
+      assert.deepStrictEqual(key.serialized, key2.serialized);
     });
   });
 

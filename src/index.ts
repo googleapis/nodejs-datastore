@@ -1,5 +1,5 @@
 /*!
- * Copyright 2018 Google LLC. All Rights Reserved.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 
 import arrify = require('arrify');
 import {GoogleAuth, GoogleAuthOptions} from 'google-auth-library';
-import {GrpcClient} from 'google-gax';
+import {GrpcClient, ClientStub} from 'google-gax';
 import {ChannelCredentials} from '@grpc/grpc-js';
 import * as is from 'is';
 
@@ -374,7 +374,7 @@ const urlSafeKey = new entity.URLSafeKey();
  * });
  */
 class Datastore extends DatastoreRequest {
-  clients_: Map<string, {}>;
+  clients_: Map<string, ClientStub>;
   namespace?: string;
   projectId: string;
   defaultBaseUrl_: string;

@@ -96,6 +96,7 @@ has instructions for running the samples.
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
 | Concepts | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/concepts.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/concepts.js,samples/README.md) |
+| Error | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/error.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/error.js,samples/README.md) |
 | Quickstart | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/quickstart.js,samples/README.md) |
 | Add Task | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/tasks.add.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/tasks.add.js,samples/README.md) |
 | Delete Task | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/tasks.delete.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/tasks.delete.js,samples/README.md) |
@@ -137,12 +138,10 @@ Apache Version 2.0
 
 See [LICENSE](https://github.com/googleapis/nodejs-datastore/blob/master/LICENSE)
 
-[client-docs]: https://googleapis.dev/nodejs/datastore/latest#reference
+[client-docs]: https://googleapis.dev/nodejs/datastore/latest
 [product-docs]: https://cloud.google.com/datastore
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 [enable_api]: https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com
 [auth]: https://cloud.google.com/docs/authentication/getting-started
-
-<a name="reference"></a>

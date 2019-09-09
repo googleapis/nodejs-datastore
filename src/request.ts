@@ -1,5 +1,5 @@
 /*!
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,17 @@ const gapic = Object.freeze({
   v1: require('./v1'),
 });
 
-import {entity, Entity, KeyProto, ValueProto} from './entity';
+import {
+  entity,
+  Entity,
+  EntityProto,
+  KeyProto,
+  ValueProto,
+  ResponseResult,
+} from './entity';
 import {
   Query,
+  QueryProto,
   RunQueryInfo,
   RunQueryOptions,
   RunQueryResponse,
@@ -63,7 +71,7 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
  * @class
  */
 class DatastoreRequest {
-  id: string | number | undefined;
+  id: string | undefined;
   requests_:
     | Entity
     | {
@@ -213,11 +221,11 @@ class DatastoreRequest {
       },
       (err, resp) => {
         if (err) {
-          callback!(err, null, resp);
+          callback!(err, null, resp!);
           return;
         }
-        const keys = arrify(resp.keys).map(entity.keyFromKeyProto);
-        callback!(null, keys, resp);
+        const keys = arrify(resp!.keys!).map(entity.keyFromKeyProto);
+        callback!(null, keys, resp!);
       }
     );
   }
@@ -281,8 +289,8 @@ class DatastoreRequest {
             return;
           }
 
-          const entities = entity.formatArray(resp.found);
-          const nextKeys = (resp.deferred || [])
+          const entities = entity.formatArray(resp!.found! as ResponseResult[]);
+          const nextKeys = (resp!.deferred || [])
             .map(entity.keyFromKeyProto)
             .map(entity.keyToKeyProto);
 
@@ -309,13 +317,12 @@ class DatastoreRequest {
     return stream;
   }
 
-  delete(): Promise<CommitResponse>;
-  delete(keys: Entities): void;
-  delete(keys: Entities, callback: CommitCallback): void;
+  delete(keys: Entities, gaxOptions?: CallOptions): Promise<DeleteResponse>;
+  delete(keys: Entities, callback: DeleteCallback): void;
   delete(
     keys: Entities,
     gaxOptions: CallOptions,
-    callback: CommitCallback
+    callback: DeleteCallback
   ): void;
   /**
    * Delete all entities identified with the specified key(s).
@@ -366,17 +373,17 @@ class DatastoreRequest {
    * });
    */
   delete(
-    keys?: Entities,
-    gaxOptionsOrCallback?: CallOptions | CommitCallback,
-    cb?: CommitCallback
-  ): void | Promise<CommitResponse> {
+    keys: entity.Key | entity.Key[],
+    gaxOptionsOrCallback?: CallOptions | DeleteCallback,
+    cb?: DeleteCallback
+  ): void | Promise<DeleteResponse> {
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
       typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
 
     const reqOpts = {
-      mutations: arrify(keys).map((key: entity.Key) => {
+      mutations: arrify(keys).map(key => {
         return {
           delete: entity.keyToKeyProto(key),
         };
@@ -400,12 +407,12 @@ class DatastoreRequest {
   }
 
   get(
-    keys: Entities,
+    keys: entity.Key | entity.Key[],
     options?: CreateReadStreamOptions
-  ): Promise<Entity | Transform>;
-  get(keys: Entities, callback: GetCallback): void;
+  ): Promise<GetResponse>;
+  get(keys: entity.Key | entity.Key[], callback: GetCallback): void;
   get(
-    keys: Entities,
+    keys: entity.Key | entity.Key[],
     options: CreateReadStreamOptions,
     callback: GetCallback
   ): void;
@@ -495,10 +502,10 @@ class DatastoreRequest {
    * });
    */
   get(
-    keys: Entities,
+    keys: entity.Key | entity.Key[],
     optionsOrCallback?: CreateReadStreamOptions | GetCallback,
     cb?: GetCallback
-  ): void | Promise<Entity | Transform> {
+  ): void | Promise<GetResponse> {
     const options =
       typeof optionsOrCallback === 'object' && optionsOrCallback
         ? optionsOrCallback
@@ -516,8 +523,8 @@ class DatastoreRequest {
       );
   }
 
-  insert(entities: Entities): Promise<CommitResponse>;
-  insert(entities: Entities, callback: CallOptions): void;
+  insert(entities: Entities): Promise<InsertResponse>;
+  insert(entities: Entities, callback: InsertCallback): void;
   /**
    * Maps to {@link Datastore#save}, forcing the method to be `insert`.
    *
@@ -534,8 +541,8 @@ class DatastoreRequest {
    */
   insert(
     entities: Entities,
-    callback?: CallOptions
-  ): void | Promise<CommitResponse> {
+    callback?: InsertCallback
+  ): void | Promise<InsertResponse> {
     entities = arrify(entities)
       .map(DatastoreRequest.prepareEntityObject_)
       .map((x: PrepareEntityObjectResponse) => {
@@ -543,7 +550,7 @@ class DatastoreRequest {
         return x;
       });
 
-    this.save(entities, callback);
+    this.save(entities, callback!);
   }
 
   runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
@@ -704,7 +711,7 @@ class DatastoreRequest {
     query = extend(true, new Query(), query);
 
     const makeRequest = (query: Query) => {
-      const reqOpts: Any = {
+      const reqOpts: RequestOptions = {
         query: entity.queryToQueryProto(query),
       };
 
@@ -738,7 +745,7 @@ class DatastoreRequest {
         return;
       }
 
-      const info: Any = {
+      const info: RunQueryInfo = {
         moreResults: resp.batch.moreResults,
       };
 
@@ -746,7 +753,7 @@ class DatastoreRequest {
         info.endCursor = resp.batch.endCursor.toString('base64');
       }
 
-      let entities: Any[] = [];
+      let entities: Entity[] = [];
 
       if (resp.batch.entityResults) {
         entities = entity.formatArray(resp.batch.entityResults);
@@ -767,7 +774,7 @@ class DatastoreRequest {
         // The query is "NOT_FINISHED". Get the rest of the results.
         const offset = query.offsetVal === -1 ? 0 : query.offsetVal;
 
-        query.start(info.endCursor).offset(offset - resp.batch.skippedResults);
+        query.start(info.endCursor!).offset(offset - resp.batch.skippedResults);
 
         const limit = query.limitVal;
         if (limit && limit > -1) {
@@ -785,8 +792,7 @@ class DatastoreRequest {
     return stream;
   }
 
-  save(entities: Entities): Promise<CommitResponse>;
-  save(entities: Entities, gaxOptions?: CallOptions): Promise<CommitResponse>;
+  save(entities: Entities, gaxOptions?: CallOptions): Promise<SaveResponse>;
   save(
     entities: Entities,
     gaxOptions: CallOptions,
@@ -1006,7 +1012,7 @@ class DatastoreRequest {
     entities: Entities,
     gaxOptionsOrCallback?: CallOptions | SaveCallback,
     cb?: SaveCallback
-  ): void | Promise<CommitResponse> {
+  ): void | Promise<SaveResponse> {
     entities = arrify(entities);
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
@@ -1027,7 +1033,7 @@ class DatastoreRequest {
       .map(DatastoreRequest.prepareEntityObject_)
       .forEach((entityObject: Entity, index: number) => {
         const mutation: Mutation = {};
-        let entityProto: EntityProtoObject = {};
+        let entityProto: EntityProto = {};
         let method = 'upsert';
 
         if (entityObject.method) {
@@ -1089,7 +1095,10 @@ class DatastoreRequest {
       mutations,
     };
 
-    function onCommit(err?: Error | null, resp?: {mutationResults: [Entity]}) {
+    function onCommit(
+      err?: Error | null,
+      resp?: google.datastore.v1.ICommitResponse
+    ) {
       if (err || !resp) {
         callback(err, resp);
         return;
@@ -1126,8 +1135,8 @@ class DatastoreRequest {
     );
   }
 
-  update(entities: Entities): Promise<CommitResponse>;
-  update(entities: Entities, callback: CallOptions): void;
+  update(entities: Entities): Promise<UpdateResponse>;
+  update(entities: Entities, callback: UpdateCallback): void;
   /**
    * Maps to {@link Datastore#save}, forcing the method to be `update`.
    *
@@ -1144,8 +1153,8 @@ class DatastoreRequest {
    */
   update(
     entities: Entities,
-    callback?: CallOptions
-  ): void | Promise<CommitResponse> {
+    callback?: UpdateCallback
+  ): void | Promise<UpdateResponse> {
     entities = arrify(entities)
       .map(DatastoreRequest.prepareEntityObject_)
       .map((x: PrepareEntityObjectResponse) => {
@@ -1153,11 +1162,11 @@ class DatastoreRequest {
         return x;
       });
 
-    this.save(entities, callback);
+    this.save(entities, callback!);
   }
 
-  upsert(entities: Entities): Promise<CommitResponse>;
-  upsert(entities: Entities, callback: CallOptions): void;
+  upsert(entities: Entities): Promise<UpsertResponse>;
+  upsert(entities: Entities, callback: UpsertCallback): void;
   /**
    * Maps to {@link Datastore#save}, forcing the method to be `upsert`.
    *
@@ -1174,8 +1183,8 @@ class DatastoreRequest {
    */
   upsert(
     entities: Entities,
-    callback?: CallOptions
-  ): void | Promise<CommitResponse> {
+    callback?: UpsertCallback
+  ): void | Promise<UpsertResponse> {
     entities = arrify(entities)
       .map(DatastoreRequest.prepareEntityObject_)
       .map((x: PrepareEntityObjectResponse) => {
@@ -1183,7 +1192,7 @@ class DatastoreRequest {
         return x;
       });
 
-    this.save(entities, callback);
+    this.save(entities, callback!);
   }
 
   merge(entities: Entities): Promise<CommitResponse>;
@@ -1225,12 +1234,8 @@ class DatastoreRequest {
       arrify(entities)
         .map(DatastoreRequest.prepareEntityObject_)
         .forEach(
-          (
-            x: PrepareEntityObjectResponse,
-            index: number,
-            array: PrepareEntityObjectResponse[]
-          ) => {
-            transaction.get(x.key, (err: Error, data: Entity) => {
+          (x: Entity, index: number, array: PrepareEntityObjectResponse[]) => {
+            transaction.get(x.key, (err?: Error | null, data?: Entity) => {
               if (err) {
                 transaction.rollback();
                 callback!(err);
@@ -1269,7 +1274,7 @@ class DatastoreRequest {
    *
    * @private
    */
-  request_(config: RequestConfig, callback?: RequestCallback): void {
+  request_(config: RequestConfig, callback: RequestCallback): void {
     const datastore = this.datastore;
 
     const isTransaction = this.id ? true : false;
@@ -1319,9 +1324,7 @@ class DatastoreRequest {
             new gapic.v1[clientName](datastore.options)
           );
         }
-        const gaxClient: Entities | undefined = datastore.clients_.get(
-          clientName
-        );
+        const gaxClient = datastore.clients_.get(clientName);
         reqOpts = replaceProjectIdToken(reqOpts, projectId!);
         const gaxOpts = extend(true, {}, config.gaxOpts, {
           headers: {
@@ -1334,21 +1337,13 @@ class DatastoreRequest {
   }
 }
 
-// tslint:disable-next-line no-any
-type Any = any;
 export interface BooleanObject {
   [key: string]: boolean;
 }
 export interface ConsistencyProtoCode {
   [key: string]: number;
 }
-export type CommitResponse = [google.datastore.v1.ICommitResponse];
 export type Entities = Entity | Entity[];
-export interface EntityProtoObject {
-  method?: string;
-  properties?: {[key: string]: ValueProto};
-  key?: Keys;
-}
 export interface EntityProtoReduceAccumulator {
   [key: string]: ValueProto;
 }
@@ -1357,17 +1352,15 @@ export interface EntityProtoReduceData {
   excludeFromIndexes: ValueProto;
   name: string | number;
 }
-
-export interface AllocateIdsRequestResponse {
-  keys: KeyProto[];
-  mutationResults?: Entities;
-}
-export type AllocateIdsResponse = [google.datastore.v1.AllocateIdsResponse];
+export type AllocateIdsResponse = [
+  entity.Key[],
+  google.datastore.v1.IAllocateIdsResponse
+];
 export interface AllocateIdsCallback {
   (
     a: Error | null,
     b: entity.Key[] | null,
-    c: AllocateIdsRequestResponse
+    c: google.datastore.v1.IAllocateIdsResponse
   ): void;
 }
 export interface AllocateIdsOptions {
@@ -1378,16 +1371,13 @@ export interface CreateReadStreamOptions {
   consistency?: string;
   gaxOptions?: CallOptions;
 }
-export interface CommitCallback {
-  (err?: Error | null, resp?: google.datastore.v1.CommitResponse): void;
-}
 export interface GetCallback {
-  (...args: Entity[]): void;
+  (err?: Error | null, entity?: Entities): void;
 }
+export type GetResponse = [Entities];
 export type GetProjectIdErr = Error | null | undefined;
-export type Keys = Entity | Entity[];
-export interface Mutation extends google.datastore.v1.IMutation {
-  [key: string]: Entity;
+export interface Mutation {
+  [key: string]: EntityProto;
 }
 export interface PrepareEntityObject {
   [key: string]: google.datastore.v1.Key | undefined;
@@ -1401,38 +1391,46 @@ export type ProjectId = string | null | undefined;
 export interface RequestCallback {
   (
     a?: Error | null,
-    b?: AllocateIdsRequestResponse &
-      google.datastore.v1.ILookupResponse &
-      Entities
+    // tslint:disable-next-line no-any
+    b?: any
   ): void;
 }
 export interface RequestConfig {
   client: string;
-  gaxOpts?: number | CallOptions | KeyProto;
+  gaxOpts?: CallOptions;
   method: string;
   prepared?: boolean;
-  reqOpts?: Entity | RequestOptions;
-  gaxOptions?: never;
+  reqOpts?: RequestOptions;
 }
 export interface RequestOptions {
-  mutations?: [] | Array<{delete: KeyProto}> | Array<{}>;
+  mutations?: google.datastore.v1.IMutation[];
   keys?: Entity;
-  readOptions?: {readConsistency?: number; transaction?: string | number};
+  readOptions?: {readConsistency?: number; transaction?: string};
+  partitionId?: google.datastore.v1.IPartitionId | null;
   transactionOptions?: {
     readOnly?: {};
     readWrite?: {previousTransaction?: string};
-  };
-  transaction?: string | number;
+  } | null;
+  transaction?: string | null;
   mode?: string;
-  projectId?: string;
+  projectId?: ProjectId;
+  query?: QueryProto;
 }
-export interface RunQueryStreamOptions {
-  gaxOptions?: CallOptions;
-  consistency?: 'strong' | 'eventual';
+export interface RunQueryStreamOptions extends RunQueryOptions {}
+export interface CommitCallback {
+  (err?: Error | null, resp?: google.datastore.v1.ICommitResponse): void;
 }
-export interface SaveCallback {
-  (a?: Error | null, b?: Entity): void;
-}
+export type CommitResponse = [google.datastore.v1.ICommitResponse];
+export interface SaveCallback extends CommitCallback {}
+export type SaveResponse = CommitResponse;
+export interface UpdateCallback extends CommitCallback {}
+export type UpdateResponse = CommitResponse;
+export interface UpsertCallback extends CommitCallback {}
+export type UpsertResponse = CommitResponse;
+export interface DeleteCallback extends CommitCallback {}
+export type DeleteResponse = CommitResponse;
+export interface InsertCallback extends CommitCallback {}
+export type InsertResponse = CommitResponse;
 
 /*! Developer Documentation
  *
