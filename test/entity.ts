@@ -303,7 +303,7 @@ describe('entity', () => {
       }, new RegExp(`Integer value ${smallIntegerValue} is out of bounds.`));
     });
 
-    it('should custom-cast integerValue when typeCastFunction is provided', () => {
+    it('should custom-cast integerValue when integerTypeCastFunction is provided', () => {
       const stub = sinon.stub();
       const expectedValue = 8;
 
@@ -312,7 +312,7 @@ describe('entity', () => {
         integerValue: expectedValue,
       };
 
-      entity.decodeValueProto(valueProto, {typeCastFunction: stub});
+      entity.decodeValueProto(valueProto, {integerTypeCastFunction: stub});
       assert.ok(stub.calledOnce);
     });
 
@@ -327,7 +327,7 @@ describe('entity', () => {
       };
 
       entity.decodeValueProto(valueProto, {
-        typeCastFunction: stub,
+        integerTypeCastFunction: stub,
         names: 'thisValue',
       });
       assert.ok(stub.calledOnce);
@@ -346,32 +346,33 @@ describe('entity', () => {
       assert.ok(stub.notCalled);
       assert.strictEqual(
         entity.decodeValueProto(valueProto, {
-          typeCastFunction: stub,
+          integerTypeCastFunction: stub,
           names: 'thatValue',
         }),
         expectedValue
       );
     });
 
-    it('should throw if typeCastFunction is not provided', () => {
+    it('should throw if integerTypeCastFunction is not provided', () => {
       const valueProto = {
         valueType: 'integerValue',
       };
 
       assert.throws(
         () => entity.decodeValueProto(valueProto, {}),
-        /typeCastFunction is not a function or was not provided\./
+        /integerTypeCastFunction is not a function or was not provided\./
       );
     });
 
-    it('should throw if typeCastFunction is not a function', () => {
+    it('should throw if integerTypeCastFunction is not a function', () => {
       const valueProto = {
         valueType: 'integerValue',
       };
 
       assert.throws(
-        () => entity.decodeValueProto(valueProto, {typeCastFunction: {}}),
-        /typeCastFunction is not a function or was not provided\./
+        () =>
+          entity.decodeValueProto(valueProto, {integerTypeCastFunction: {}}),
+        /integerTypeCastFunction is not a function or was not provided\./
       );
     });
 
@@ -383,10 +384,11 @@ describe('entity', () => {
       const errorMessage = 'some error';
       const stub = sinon.stub().throws(errorMessage);
       assert.throws(
-        () => entity.decodeValueProto(valueProto, {typeCastFunction: stub}),
+        () =>
+          entity.decodeValueProto(valueProto, {integerTypeCastFunction: stub}),
         (err: Error) => {
           return new RegExp(
-            `typeCastFunction threw an error:\n${errorMessage}`
+            `integerTypeCastFunction threw an error:\n${errorMessage}`
           ).test(err.message);
         }
       );
@@ -726,7 +728,7 @@ describe('entity', () => {
       );
     });
 
-    describe('covert integerValues using custon typeCastFunction', () => {
+    describe('covert integerValues using custon integerTypeCastFunction', () => {
       const entityProto = {
         properties: {
           number1: {
@@ -744,16 +746,18 @@ describe('entity', () => {
         },
       };
 
-      it('should call typeCastFunction on all entity properties', () => {
+      it('should call integerTypeCastFunction on all entity properties', () => {
         const stub = sinon.stub();
-        entity.entityFromEntityProto(entityProto, {typeCastFunction: stub});
+        entity.entityFromEntityProto(entityProto, {
+          integerTypeCastFunction: stub,
+        });
         assert.ok(stub.calledThrice);
       });
 
-      it('should call typeCastFunction only for user specified entity properties', () => {
+      it('should call integerTypeCastFunction only for user specified entity properties', () => {
         const stub = sinon.stub();
         entity.entityFromEntityProto(entityProto, {
-          typeCastFunction: stub,
+          integerTypeCastFunction: stub,
           names: ['number1', 'number2'],
         });
         assert.ok(stub.calledTwice);

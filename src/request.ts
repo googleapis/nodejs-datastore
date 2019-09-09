@@ -290,7 +290,7 @@ class DatastoreRequest {
 
           const entities = entity.formatArray(
             resp!.found! as ResponseResult[],
-            options.typeCastConfig
+            options.integerTypeCastOptions
           );
           const nextKeys = (resp!.deferred || [])
             .map(entity.keyFromKeyProto)
@@ -433,11 +433,11 @@ class DatastoreRequest {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {object} [options.typeCastConfig] Config for custom `integerValue` cast.
-   * @property {function} {typeCastConfig.typeCastFunction} A custom user
+   * @param {object} [options.integerTypeCastOptions] Config for custom `integerValue` cast.
+   * @property {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
    *     provided function to convert `integerValue`.
-   * @property {sting|string[]} [typeCastConfig.names] `Entity` property
-   *     names to be converted using `typeCastFunction`.
+   * @property {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   *     names to be converted using `integerTypeCastFunction`.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request
    * @param {object|object[]} callback.entity The entity object(s) which match
@@ -692,11 +692,11 @@ class DatastoreRequest {
    * @param {object} [options] Optional configuration.
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {object} [options.typeCastConfig] Config for custom `integerValue` cast.
-   * @property {function} {typeCastConfig.typeCastFunction} A custom user
+   * @param {object} [options.integerTypeCastOptions] Config for custom `integerValue` cast.
+   * @property {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
    *     provided function to convert `integerValue`.
-   * @property {sting|string[]} [typeCastConfig.names] `Entity` property
-   *     names to be converted using `typeCastFunction`.
+   * @property {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   *     names to be converted using `integerTypeCastFunction`.
    *
    * @example
    * datastore.runQueryStream(query)
@@ -770,7 +770,7 @@ class DatastoreRequest {
       if (resp.batch.entityResults) {
         entities = entity.formatArray(
           resp.batch.entityResults,
-          options.typeCastConfig
+          options.integerTypeCastOptions
         );
       }
 
