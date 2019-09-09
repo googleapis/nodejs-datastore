@@ -290,7 +290,8 @@ class Transaction extends DatastoreRequest {
    *   }
    *   const ancestorKey = datastore.key(['ParentCompany', 'Alphabet']);
    *
-   *   const query = transaction.createQuery('Company').hasAncestor(ancestorKey);
+   *   const query = transaction.createQuery('Company')
+   *       .hasAncestor(ancestorKey);
    *
    *   query.run((err, entities) => {
    *     if (err) {
@@ -305,14 +306,15 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    *
-   * //Run the query inside the transaction.with namespace
+   * // Run the query inside the transaction.with namespace
    * transaction.run((err) => {
    *   if (err) {
    *     // Error handling omitted.
    *   }
    *   const ancestorKey = datastore.key(['ParentCompany', 'Alphabet']);
    *
-   *   const query = transaction.createQuery('CompanyNamespace','Company').hasAncestor(ancestorKey);
+   *   const query = transaction.createQuery('CompanyNamespace', 'Company')
+   *       .hasAncestor(ancestorKey);
    *
    *   query.run((err, entities) => {
    *     if (err) {
