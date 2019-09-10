@@ -34,6 +34,7 @@ import {entity} from './entity';
 import {Query} from './query';
 import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
+import { promisifyAll } from '@google-cloud/promisify';
 
 const {grpc} = new GrpcClient();
 
@@ -730,6 +731,9 @@ class Datastore extends DatastoreRequest {
     return Datastore.isKey(value);
   }
 
+  keyToLegacyUrlsafe(key: entity.Key, locationPrefix?: string): Promise<string>;
+  keyToLegacyUrlsafe(key: entity.Key, callback: KeyToLegacyUrlsafeCallback): void;
+  keyToLegacyUrlsafe(key: entity.Key, locationPrefix: string, callback: KeyToLegacyUrlsafeCallback): void;
   /**
    * Helper to create a URL safe key.
    *
@@ -744,14 +748,21 @@ class Datastore extends DatastoreRequest {
    *  The location prefix of an App Engine project ID.
    *  Often this value is 's~', but may also be 'e~', or other location prefixes
    *  currently unknown.
-   * @returns {Promise} base64 endocded urlsafe key.
+   * @param {function} callback The callback function.
+   * @param {?error} callback.err An error returned while making this request
+   * @param {string} callback.urlSafekey base64 endocded urlsafe key.
    *
    * @example
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key(['Company', 'Google']);
    *
-   * await datastore.keyToLegacyUrlsafe(key) //ag9ncmFzcy1jbHVtcC00NzlyEwsSB0NvbXBhbnkiBkdvb2dsZQw
+   * datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *   console.log(urlSafekey);
+   * })
    *
    * @example
    * <caption>Create a complete url safe key using location prefix </caption>
@@ -760,18 +771,24 @@ class Datastore extends DatastoreRequest {
    * const key = datastore.key(['Task', 123]);
    * const locationPrefix = 's~';
    *
-   * datastore.keyToLegacyUrlsafe(key, locationPrefix) //ahFzfmdyYXNzLWNsdW1wLTQ3OXIKCxIEVGFzaxh7DA
+   * datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafekey) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *   console.log(urlSafekey);
    */
-  async keyToLegacyUrlsafe(
+  keyToLegacyUrlsafe(
     key: entity.Key,
-    locationPrefix?: string
-  ): Promise<string> {
-    if (this.projectId === '{{projectId}}') {
-      const projectId = await this.auth.getProjectId();
-      return urlSafeKey.legacyEncode(projectId, key, locationPrefix);
-    } else {
-      return urlSafeKey.legacyEncode(this.projectId, key, locationPrefix);
-    }
+    locationPrefixOrCallback?: string | KeyToLegacyUrlsafeCallback,
+    callback?: KeyToLegacyUrlsafeCallback
+  ): Promise<string> | void {
+    const locationPrefix =
+      typeof locationPrefixOrCallback === 'string' ? locationPrefixOrCallback : '';
+    callback =
+      typeof locationPrefixOrCallback === 'function' ? locationPrefixOrCallback : callback;
+    this.auth.getProjectId((err, projectId) => {
+      callback!(err, urlSafeKey.legacyEncode(projectId!, key, locationPrefix));
+    });
   }
 
   /**
@@ -878,6 +895,16 @@ class Datastore extends DatastoreRequest {
   Transaction = Transaction;
 }
 
+/*! Developer Documentation
+ *
+ * All async methods (except for streams) will return a Promise in the event
+ * that a callback is omitted.
+ */
+promisifyAll(Datastore, {
+  exclude: ['double', 'isDouble', 'geoPoint', 'isGeoPoint', 'int', 'isInt',
+    'createQuery', 'key', 'isKey', 'keyFromLegacyUrlsafe', 'transaction'],
+});
+
 export {Datastore};
 
 /**
@@ -939,4 +966,8 @@ export interface DatastoreOptions extends GoogleAuthOptions {
   namespace?: string;
   apiEndpoint?: string;
   sslCreds?: ChannelCredentials;
+}
+
+export interface KeyToLegacyUrlsafeCallback {
+  (err?: Error | null, urlSafekey?: string): void;
 }

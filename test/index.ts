@@ -630,10 +630,42 @@ describe('Datastore', () => {
       const key = new entity.Key({
         path: ['Task', 'Test'],
       });
-      assert.strictEqual(
-        await datastore.keyToLegacyUrlsafe(key),
-        'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA'
-      );
+      // tslint:disable-next-line: no-any
+      (datastore.auth as any).getProjectId = (callback: Function) => {
+        callback(null, 'project-id');
+      };
+      datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
+        assert.strictEqual(urlSafekey, 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA');
+      });
+    });
+
+    it('should convert key to url safe base64 string with location prefix', async () => {
+      const key = new entity.Key({
+        path: ['Task', 'Test'],
+      });
+      const locationPrefix = 's~';
+      // tslint:disable-next-line: no-any
+      (datastore.auth as any).getProjectId = (callback: Function) => {
+        callback(null, 'project-id');
+      };
+      datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafekey) => {
+        assert.strictEqual(urlSafekey, 'agxzfnByb2plY3QtaWRyDgsSBFRhc2siBFRlc3QM');
+      });
+    });
+
+    it('should take projectId from auth if not exists', () => {
+      const projectId = "{{projectId}}";
+      const key = new entity.Key({
+        path: ['Task', 'Test'],
+      });
+      const datastore = new Datastore({ projectId });
+      // tslint:disable-next-line: no-any
+      (datastore.auth as any).getProjectId = (callback: Function) => {
+        callback(null, 'project-id');
+      };
+      datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
+        assert.strictEqual(urlSafekey, 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA');
+      });
     });
   });
 
