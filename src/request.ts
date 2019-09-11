@@ -818,7 +818,10 @@ class DatastoreRequest {
    *
    * By default, all properties are indexed. To prevent a property from being
    * included in *all* indexes, you must supply an `excludeFromIndexes` array.
-   * See below for an example.
+   *
+   * To prevent large properties from being included in *all* indexes, you must supply
+   * `excludeLargeProperties: true`.
+   *  See below for an example.
    *
    * @borrows {@link Transaction#save} as save
    *
@@ -829,6 +832,8 @@ class DatastoreRequest {
    * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
    *     indexing using a simple JSON path notation. See the example below to
    * see how to target properties at different levels of nesting within your
+   * @param {boolean} [entities.excludeLargeProperties] Automatically exclude
+   *  large properties from indexing. It help in storing large values.
    * @param {string} [entities.method] Explicit method to use, either 'insert',
    *     'update', or 'upsert'.
    * @param {object} entities.data Data to save with the provided key.
@@ -970,6 +975,28 @@ class DatastoreRequest {
    * };
    *
    * datastore.save(entity, (err, apiResponse) => {});
+   * //-
+   * // Use boolean `excludeLargeProperties`, to auto exclude Large properties from indexing.
+   * // This will allow storing string values larger than 1500 bytes.
+   * //-
+   * const entity = {
+   *   key: datastore.key('Company'),
+   *   data: {
+   *     description: 'Long string (...)',
+   *     embeddedEntity: {
+   *       description: 'Long string (...)'
+   *     },
+   *     arrayValue: [
+   *       'Long string (...)',
+   *       {
+   *         description: 'Long string (...)'
+   *       }
+   *     ]
+   *   },
+   *   excludeLargeProperties: true
+   * };
+   *
+   * datastore.save(entity, (err, apiResponse) => {});
    *
    * //-
    * // Save multiple entities at once.
@@ -1052,6 +1079,14 @@ class DatastoreRequest {
           }
         }
 
+        if (entityObject.excludeLargeProperties) {
+          entityObject.excludeFromIndexes = entity.findLargeProperties_(
+            entityObject.data,
+            '',
+            entityObject.excludeFromIndexes
+          );
+        }
+
         if (!entity.isKeyComplete(entityObject.key)) {
           insertIndexes[index] = true;
         }
@@ -1114,7 +1149,6 @@ class DatastoreRequest {
         if (!result.key) {
           return;
         }
-
         if (insertIndexes[index]) {
           const id = entity.keyFromKeyProto(result.key).id;
           entities[index].key.id = id;
@@ -1135,7 +1169,7 @@ class DatastoreRequest {
         client: 'DatastoreClient',
         method: 'commit',
         reqOpts,
-        gaxOpts: gaxOptions || {},
+        gaxOpts: gaxOptions,
       },
       onCommit
     );

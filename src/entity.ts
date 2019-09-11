@@ -19,6 +19,7 @@ import * as extend from 'extend';
 import * as is from 'is';
 import {Query, QueryProto} from './query';
 import {PathType} from '.';
+import {Entities} from './request';
 import * as Protobuf from 'protobufjs';
 import * as path from 'path';
 import * as appengine from '../proto/app_engine_key';
@@ -741,6 +742,55 @@ export namespace entity {
   }
 
   /**
+   * Find the properties which value size is large than 1500 bytes,
+   * with excludeLargeProperties enabled, automatically exclude properties from indexing.
+   * This will allow storing string values larger than 1500 bytes
+   *
+   * @param entities Datastore key object(s).
+   * @param path namespace of provided entity properties
+   * @param properties properties which value size is large than 1500 bytes
+   */
+  export function findLargeProperties_(
+    entities: Entities,
+    path: string,
+    properties: string[] = []
+  ) {
+    const MAX_DATASTORE_VALUE_LENGTH = 1500;
+    if (Array.isArray(entities)) {
+      for (const entry of entities) {
+        if (entry.name && entry.value) {
+          if (
+            is.string(entry.value) &&
+            Buffer.from(entry.value).length > MAX_DATASTORE_VALUE_LENGTH
+          ) {
+            entry.excludeFromIndexes = true;
+          } else {
+            continue;
+          }
+        }
+        findLargeProperties_(entry, path.concat('[]'), properties);
+      }
+    } else if (is.object(entities)) {
+      const keys = Object.keys(entities);
+      for (const key of keys) {
+        findLargeProperties_(
+          entities[key],
+          path.concat(`${path ? '.' : ''}${key}`),
+          properties
+        );
+      }
+    } else if (
+      is.string(entities) &&
+      Buffer.from(entities).length > MAX_DATASTORE_VALUE_LENGTH
+    ) {
+      if (properties.indexOf(path) < 0) {
+        properties.push(path);
+      }
+    }
+    return properties;
+  }
+
+  /**
    * Check if a key is complete.
    *
    * @private
@@ -1185,6 +1235,7 @@ export interface EntityProto {
 
 // tslint:disable-next-line no-any
 export type Entity = any;
+export type Entities = Entity | Entity[];
 
 interface KeyProtoPathElement extends google.datastore.v1.Key.IPathElement {
   // tslint:disable-next-line no-any
