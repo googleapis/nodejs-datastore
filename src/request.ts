@@ -715,6 +715,8 @@ class DatastoreRequest {
       try {
         reqOpts.query = entity.queryToQueryProto(query);
       } catch (e) {
+        // using setImmediate here to make sure this doesn't throw a
+        // synchronous error
         setImmediate(onResultSet, e);
         return;
       }
