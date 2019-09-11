@@ -710,9 +710,14 @@ class DatastoreRequest {
     query = extend(true, new Query(), query);
 
     const makeRequest = (query: Query) => {
-      const reqOpts: RequestOptions = {
-        query: entity.queryToQueryProto(query),
-      };
+      const reqOpts = {} as RequestOptions;
+
+      try {
+        reqOpts.query = entity.queryToQueryProto(query);
+      } catch (e) {
+        setImmediate(onResultSet, e);
+        return;
+      }
 
       if (options.consistency) {
         const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
