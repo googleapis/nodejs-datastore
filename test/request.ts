@@ -821,6 +821,18 @@ describe('Request', () => {
           })
           .emit('reading');
       });
+
+      it('should emit an error when encoding fails', done => {
+        const error = new Error('Encoding error.');
+        sandbox.stub(entity, 'queryToQueryProto').throws(error);
+        request
+          .runQueryStream({})
+          .on('error', (err: Error) => {
+            assert.strictEqual(err, error);
+            done();
+          })
+          .emit('reading');
+      });
     });
 
     describe('success', () => {
@@ -1539,6 +1551,142 @@ describe('Request', () => {
             'metadata.obj.*',
             'metadata.longStringArray[].*',
           ],
+        },
+        assert.ifError
+      );
+    });
+
+    it('should allow setting the indexed value on arrays', done => {
+      request.request_ = (config: RequestConfig) => {
+        const property = config.reqOpts!.mutations![0].upsert!.properties!.name;
+
+        property.arrayValue!.values!.forEach((value: Any) => {
+          assert.strictEqual(value.excludeFromIndexes, true);
+        });
+
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data: [
+            {
+              name: 'name',
+              value: ['one', 'two', 'three'],
+              excludeFromIndexes: true,
+            },
+          ],
+        },
+        assert.ifError
+      );
+    });
+
+    it('should prepare excludeFromIndexes array for large values', done => {
+      const longString = Buffer.alloc(1501, '.').toString();
+      const data = {
+        longString,
+        notMetadata: true,
+        longStringArray: [longString],
+        metadata: {
+          longString,
+          otherProperty: 'value',
+          obj: {
+            longStringArray: [
+              {
+                longString,
+                nestedLongStringArray: [
+                  {
+                    longString,
+                    nestedProperty: true,
+                  },
+                  {
+                    longString,
+                  },
+                ],
+              },
+            ],
+          },
+          longStringArray: [
+            {
+              longString,
+              nestedLongStringArray: [
+                {
+                  longString,
+                  nestedProperty: true,
+                },
+                {
+                  longString,
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      const excludeFromIndexes = [
+        'longString',
+        'longStringArray[]',
+        'metadata.longString',
+        'metadata.obj.longStringArray[].longString',
+        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+        'metadata.longStringArray[].longString',
+        'metadata.longStringArray[].nestedLongStringArray[].longString',
+      ];
+
+      entity.entityToEntityProto = entity => {
+        return (entity as unknown) as EntityProto;
+      };
+      request.request_ = (config: RequestConfig) => {
+        assert.strictEqual(
+          (config.reqOpts!.mutations![0].upsert! as Entity)
+            .excludeLargeProperties,
+          true
+        );
+        assert.deepStrictEqual(
+          (config.reqOpts!.mutations![0].upsert! as Entity).excludeFromIndexes,
+          excludeFromIndexes
+        );
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data,
+          excludeLargeProperties: true,
+        },
+        assert.ifError
+      );
+    });
+
+    it('should allow auto setting the indexed value of a property with excludeLargeProperties', done => {
+      const longString = Buffer.alloc(1501, '.').toString();
+      const data = [
+        {
+          name: 'name',
+          value: longString,
+        },
+        {
+          name: 'description',
+          value: 'value',
+        },
+      ];
+
+      request.request_ = (config: RequestConfig) => {
+        assert.deepStrictEqual(
+          config.reqOpts!.mutations![0].upsert!.properties!.name
+            .excludeFromIndexes,
+          true
+        );
+        done();
+      };
+
+      request.save(
+        {
+          key,
+          data,
+          excludeLargeProperties: true,
         },
         assert.ifError
       );
