@@ -34,7 +34,7 @@ import {entity} from './entity';
 import {Query} from './query';
 import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
-import { promisifyAll } from '@google-cloud/promisify';
+import {promisifyAll} from '@google-cloud/promisify';
 
 const {grpc} = new GrpcClient();
 
@@ -732,8 +732,15 @@ class Datastore extends DatastoreRequest {
   }
 
   keyToLegacyUrlsafe(key: entity.Key, locationPrefix?: string): Promise<string>;
-  keyToLegacyUrlsafe(key: entity.Key, callback: KeyToLegacyUrlsafeCallback): void;
-  keyToLegacyUrlsafe(key: entity.Key, locationPrefix: string, callback: KeyToLegacyUrlsafeCallback): void;
+  keyToLegacyUrlsafe(
+    key: entity.Key,
+    callback: KeyToLegacyUrlsafeCallback
+  ): void;
+  keyToLegacyUrlsafe(
+    key: entity.Key,
+    locationPrefix: string,
+    callback: KeyToLegacyUrlsafeCallback
+  ): void;
   /**
    * Helper to create a URL safe key.
    *
@@ -764,8 +771,9 @@ class Datastore extends DatastoreRequest {
    *   console.log(urlSafekey);
    * })
    *
-   * @example
-   * <caption>Create a complete url safe key using location prefix </caption>
+   * //-
+   * // Create a complete url safe key using location prefix
+   * //-
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key(['Task', 123]);
@@ -776,6 +784,17 @@ class Datastore extends DatastoreRequest {
    *     // Error handling omitted.
    *   }
    *   console.log(urlSafekey);
+   *
+   * //-
+   * // If the callback is omitted, we'll return a Promise.
+   * //-
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const key = datastore.key(['Task', 123]);
+   * const locationPrefix = 's~';
+   *
+   * const urlSafekey = await datastore.keyToLegacyUrlsafe(key, locationPrefix);
+   * console.log(urlSafekey);
    */
   keyToLegacyUrlsafe(
     key: entity.Key,
@@ -783,9 +802,13 @@ class Datastore extends DatastoreRequest {
     callback?: KeyToLegacyUrlsafeCallback
   ): Promise<string> | void {
     const locationPrefix =
-      typeof locationPrefixOrCallback === 'string' ? locationPrefixOrCallback : '';
+      typeof locationPrefixOrCallback === 'string'
+        ? locationPrefixOrCallback
+        : '';
     callback =
-      typeof locationPrefixOrCallback === 'function' ? locationPrefixOrCallback : callback;
+      typeof locationPrefixOrCallback === 'function'
+        ? locationPrefixOrCallback
+        : callback;
     this.auth.getProjectId((err, projectId) => {
       callback!(err, urlSafeKey.legacyEncode(projectId!, key, locationPrefix));
     });
@@ -901,8 +924,19 @@ class Datastore extends DatastoreRequest {
  * that a callback is omitted.
  */
 promisifyAll(Datastore, {
-  exclude: ['double', 'isDouble', 'geoPoint', 'isGeoPoint', 'int', 'isInt',
-    'createQuery', 'key', 'isKey', 'keyFromLegacyUrlsafe', 'transaction'],
+  exclude: [
+    'double',
+    'isDouble',
+    'geoPoint',
+    'isGeoPoint',
+    'int',
+    'isInt',
+    'createQuery',
+    'key',
+    'isKey',
+    'keyFromLegacyUrlsafe',
+    'transaction',
+  ],
 });
 
 export {Datastore};

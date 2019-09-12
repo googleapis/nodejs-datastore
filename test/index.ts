@@ -626,45 +626,49 @@ describe('Datastore', () => {
   });
 
   describe('keyToLegacyUrlsafe', () => {
-    it('should convert key to url safe base64 string', async () => {
+    it('should convert key to url safe base64 string', () => {
       const key = new entity.Key({
         path: ['Task', 'Test'],
       });
+      const base64EndocdedUrlsafeKey = 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA';
       // tslint:disable-next-line: no-any
       (datastore.auth as any).getProjectId = (callback: Function) => {
         callback(null, 'project-id');
       };
       datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
-        assert.strictEqual(urlSafekey, 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA');
+        assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
     });
 
-    it('should convert key to url safe base64 string with location prefix', async () => {
+    it('should convert key to url safe base64 string with location prefix', () => {
       const key = new entity.Key({
         path: ['Task', 'Test'],
       });
       const locationPrefix = 's~';
+      const base64EndocdedUrlsafeKey =
+        'agxzfnByb2plY3QtaWRyDgsSBFRhc2siBFRlc3QM';
       // tslint:disable-next-line: no-any
       (datastore.auth as any).getProjectId = (callback: Function) => {
         callback(null, 'project-id');
       };
       datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafekey) => {
-        assert.strictEqual(urlSafekey, 'agxzfnByb2plY3QtaWRyDgsSBFRhc2siBFRlc3QM');
+        assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
     });
 
     it('should take projectId from auth if not exists', () => {
-      const projectId = "{{projectId}}";
+      const projectId = '{{projectId}}';
+      const base64EndocdedUrlsafeKey = 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA';
       const key = new entity.Key({
         path: ['Task', 'Test'],
       });
-      const datastore = new Datastore({ projectId });
+      const datastore = new Datastore({projectId});
       // tslint:disable-next-line: no-any
       (datastore.auth as any).getProjectId = (callback: Function) => {
         callback(null, 'project-id');
       };
       datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
-        assert.strictEqual(urlSafekey, 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA');
+        assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
     });
   });
