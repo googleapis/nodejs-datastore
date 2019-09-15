@@ -370,7 +370,7 @@ export namespace entity {
       }
     } else {
       const num = Number(valueProto[`integerValue`]);
-      if (num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
+      if (!Number.isSafeInteger(num)) {
         throw new Error(
           `Integer value ${valueProto[`integerValue`]} is out of bounds.`
         );
