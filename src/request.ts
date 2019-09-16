@@ -434,9 +434,9 @@ class DatastoreRequest {
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {object} [options.integerTypeCastOptions] Config for custom `integerValue` cast.
-   * @property {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
+   * @param {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
    *     provided function to convert `integerValue`.
-   * @property {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request
@@ -693,9 +693,9 @@ class DatastoreRequest {
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {object} [options.integerTypeCastOptions] Config for custom `integerValue` cast.
-   * @property {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
+   * @param {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
    *     provided function to convert `integerValue`.
-   * @property {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
    *
    * @example
