@@ -333,7 +333,7 @@ export namespace entity {
    * @private
    * @param {object} valueProto The protobuf `integerValue` to convert.
    * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
+   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
@@ -385,7 +385,7 @@ export namespace entity {
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
    * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
+   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
@@ -569,7 +569,7 @@ export namespace entity {
    * @private
    * @param {object} entityProto The protocol entity object to convert.
    * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
+   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
@@ -795,7 +795,7 @@ export namespace entity {
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
    * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} {integerTypeCastOptions.integerTypeCastFunction} A custom user
+   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
