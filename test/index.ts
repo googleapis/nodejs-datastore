@@ -655,22 +655,6 @@ describe('Datastore', () => {
         assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
     });
-
-    it('should take projectId from auth if not exists', () => {
-      const projectId = '{{projectId}}';
-      const base64EndocdedUrlsafeKey = 'agpwcm9qZWN0LWlkcg4LEgRUYXNrIgRUZXN0DA';
-      const key = new entity.Key({
-        path: ['Task', 'Test'],
-      });
-      const datastore = new Datastore({projectId});
-      // tslint:disable-next-line: no-any
-      (datastore.auth as any).getProjectId = (callback: Function) => {
-        callback(null, 'project-id');
-      };
-      datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
-        assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
-      });
-    });
   });
 
   describe('keyFromLegacyUrlsafe', () => {
