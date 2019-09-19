@@ -655,6 +655,18 @@ describe('Datastore', () => {
         assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
     });
+
+    it('should not return urlSafeKey to user if auth.getProjectId erros', () => {
+      const error = new Error('Error.');
+      // tslint:disable-next-line: no-any
+      (datastore.auth as any).getProjectId = (callback: Function) => {
+        callback(error);
+      };
+      datastore.keyToLegacyUrlsafe({} as entity.Key, (err, urlSafekey) => {
+        assert.strictEqual(err, error);
+        assert.strictEqual(urlSafekey, undefined);
+      });
+    });
   });
 
   describe('keyFromLegacyUrlsafe', () => {

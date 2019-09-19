@@ -810,7 +810,11 @@ class Datastore extends DatastoreRequest {
         ? locationPrefixOrCallback
         : callback;
     this.auth.getProjectId((err, projectId) => {
-      callback!(err, urlSafeKey.legacyEncode(projectId!, key, locationPrefix));
+      if (err) {
+        callback!(err);
+        return;
+      }
+      callback!(null, urlSafeKey.legacyEncode(projectId!, key, locationPrefix));
     });
   }
 
