@@ -1266,39 +1266,31 @@ class DatastoreRequest {
     callback?: SaveCallback
   ): void | Promise<CommitResponse> {
     const transaction = this.datastore.transaction();
-    transaction.run(err => {
+    transaction.run(async err => {
       if (err) {
         transaction.rollback();
         callback!(err);
         return;
       }
-      arrify(entities)
-        .map(DatastoreRequest.prepareEntityObject_)
-        .forEach(
-          (x: Entity, index: number, array: PrepareEntityObjectResponse[]) => {
-            transaction.get(x.key, (err?: Error | null, data?: Entity) => {
-              if (err) {
-                transaction.rollback();
-                callback!(err);
-                return;
-              }
-              x.method = 'upsert';
-              x.data = Object.assign({}, data, x.data);
-              array[index] = x;
-              if (index === array.length - 1) {
-                transaction.save(array);
-                transaction.commit((err, response) => {
-                  if (err) {
-                    transaction.rollback();
-                    callback!(err);
-                    return;
-                  }
-                  callback!(null, response);
-                });
-              }
-            });
-          }
+      try {
+        await Promise.all(
+          arrify(entities).map(async (objEntity: Entity) => {
+            const obj: Entity = DatastoreRequest.prepareEntityObject_(
+              objEntity
+            );
+            const [data] = await transaction.get(obj.key);
+            obj.method = 'upsert';
+            obj.data = Object.assign({}, data, obj.data);
+            transaction.save(obj);
+          })
         );
+
+        const [response] = await transaction.commit();
+        callback!(null, response);
+      } catch (err) {
+        transaction.rollback();
+        callback!(err);
+      }
     });
   }
 
