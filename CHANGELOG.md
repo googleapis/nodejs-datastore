@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+### [4.3.1](https://www.github.com/googleapis/nodejs-datastore/compare/v4.3.0...v4.3.1) (2019-09-25)
+
+
+### Bug Fixes
+
+* transaction#run overloads' param types correction ([#501](https://www.github.com/googleapis/nodejs-datastore/issues/501)) ([c88e66e](https://www.github.com/googleapis/nodejs-datastore/commit/c88e66e))
+* **deps:** update dependency @grpc/grpc-js to ^0.6.0 ([#503](https://www.github.com/googleapis/nodejs-datastore/issues/503)) ([7c3c213](https://www.github.com/googleapis/nodejs-datastore/commit/7c3c213))
+
 ## [4.3.0](https://www.github.com/googleapis/nodejs-datastore/compare/v4.2.0...v4.3.0) (2019-09-12)
 
 
