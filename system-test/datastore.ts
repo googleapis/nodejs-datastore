@@ -307,16 +307,24 @@ describe('Datastore', () => {
 
     it('should save/get/merge', async () => {
       const postKey = datastore.key(['Post', 1]);
-      await datastore.save({key: postKey, data: post});
-      const entity = {
+      const originalData = {
+        key: postKey,
+        data: {
+          title: 'Original',
+          status: 'neat',
+        },
+      };
+      await datastore.save(originalData);
+      const updatedData = {
         key: postKey,
         data: {
           title: 'Updated',
         },
       };
-      await datastore.merge(entity);
-      const [entity2] = await datastore.get(postKey);
-      assert.strictEqual(entity2.title, 'Updated');
+      await datastore.merge(updatedData);
+      const [entity] = await datastore.get(postKey);
+      assert.strictEqual(entity.title, updatedData.data.title);
+      assert.strictEqual(entity.status, originalData.data.status);
       await datastore.delete(postKey);
     });
 
