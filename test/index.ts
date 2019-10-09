@@ -636,6 +636,7 @@ describe('Datastore', () => {
         callback(null, 'project-id');
       };
       datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
+        assert.ifError(err);
         assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
     });
@@ -652,6 +653,7 @@ describe('Datastore', () => {
         callback(null, 'project-id');
       };
       datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafekey) => {
+        assert.ifError(err);
         assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
     });

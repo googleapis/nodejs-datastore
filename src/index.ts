@@ -734,12 +734,12 @@ class Datastore extends DatastoreRequest {
   keyToLegacyUrlsafe(key: entity.Key, locationPrefix?: string): Promise<string>;
   keyToLegacyUrlsafe(
     key: entity.Key,
-    callback: KeyToLegacyUrlsafeCallback
+    callback: KeyToLegacyUrlSafeCallback
   ): void;
   keyToLegacyUrlsafe(
     key: entity.Key,
     locationPrefix: string,
-    callback: KeyToLegacyUrlsafeCallback
+    callback: KeyToLegacyUrlSafeCallback
   ): void;
   /**
    * Helper to create a URL safe key.
@@ -757,18 +757,18 @@ class Datastore extends DatastoreRequest {
    *  currently unknown.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request
-   * @param {string} callback.urlSafekey base64 endocded urlsafe key.
+   * @param {string} callback.urlSafeKey base64 endocded urlsafe key.
    *
    * @example
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key(['Company', 'Google']);
    *
-   * datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
+   * datastore.keyToLegacyUrlsafe(key, (err, urlSafeKey) => {
    *   if (err) {
    *     // Error handling omitted.
    *   }
-   *   console.log(urlSafekey);
+   *   console.log(urlSafeKey);
    * })
    *
    * //-
@@ -779,11 +779,11 @@ class Datastore extends DatastoreRequest {
    * const key = datastore.key(['Task', 123]);
    * const locationPrefix = 's~';
    *
-   * datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafekey) => {
+   * datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafeKey) => {
    *   if (err) {
    *     // Error handling omitted.
    *   }
-   *   console.log(urlSafekey);
+   *   console.log(urlSafeKey);
    *
    * //-
    * // If the callback is omitted, we'll return a Promise.
@@ -793,13 +793,13 @@ class Datastore extends DatastoreRequest {
    * const key = datastore.key(['Task', 123]);
    * const locationPrefix = 's~';
    *
-   * const urlSafekey = await datastore.keyToLegacyUrlsafe(key, locationPrefix);
-   * console.log(urlSafekey);
+   * const urlSafeKey = await datastore.keyToLegacyUrlsafe(key, locationPrefix);
+   * console.log(urlSafeKey);
    */
   keyToLegacyUrlsafe(
     key: entity.Key,
-    locationPrefixOrCallback?: string | KeyToLegacyUrlsafeCallback,
-    callback?: KeyToLegacyUrlsafeCallback
+    locationPrefixOrCallback?: string | KeyToLegacyUrlSafeCallback,
+    callback?: KeyToLegacyUrlSafeCallback
   ): Promise<string> | void {
     const locationPrefix =
       typeof locationPrefixOrCallback === 'string'
@@ -1006,6 +1006,6 @@ export interface DatastoreOptions extends GoogleAuthOptions {
   sslCreds?: ChannelCredentials;
 }
 
-export interface KeyToLegacyUrlsafeCallback {
-  (err?: Error | null, urlSafekey?: string): void;
+export interface KeyToLegacyUrlSafeCallback {
+  (err?: Error | null, urlSafeKey?: string): void;
 }
