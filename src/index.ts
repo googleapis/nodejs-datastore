@@ -769,14 +769,11 @@ class Datastore extends DatastoreRequest {
    *     // Error handling omitted.
    *   }
    *   console.log(urlSafeKey);
-   * })
+   * });
    *
    * //-
-   * // Create a complete url safe key using location prefix
+   * // Create a complete URL-safe key using a location prefix.
    * //-
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const key = datastore.key(['Task', 123]);
    * const locationPrefix = 's~';
    *
    * datastore.keyToLegacyUrlSafe(key, locationPrefix, (err, urlSafeKey) => {
@@ -784,17 +781,15 @@ class Datastore extends DatastoreRequest {
    *     // Error handling omitted.
    *   }
    *   console.log(urlSafeKey);
+   * });
    *
    * //-
    * // If the callback is omitted, we'll return a Promise.
    * //-
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const key = datastore.key(['Task', 123]);
-   * const locationPrefix = 's~';
-   *
-   * const urlSafeKey = await datastore.keyToLegacyUrlSafe(key, locationPrefix);
-   * console.log(urlSafeKey);
+   * datastore.keyToLegacyUrlSafe(key).then((data) => {
+   *   const urlSafeKey = data[0];
+   *   console.log(urlSafeKey);
+   * });
    */
   keyToLegacyUrlSafe(
     key: entity.Key,
