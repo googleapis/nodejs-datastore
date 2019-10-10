@@ -757,7 +757,7 @@ class Datastore extends DatastoreRequest {
    *  currently unknown.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request
-   * @param {string} callback.urlSafeKey base64 endocded urlsafe key.
+   * @param {string} callback.urlSafeKey A Base64-encoded URL-safe key.
    *
    * @example
    * const {Datastore} = require('@google-cloud/datastore');
