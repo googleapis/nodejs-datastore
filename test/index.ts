@@ -625,7 +625,7 @@ describe('Datastore', () => {
     });
   });
 
-  describe('keyToLegacyUrlsafe', () => {
+  describe('keyToLegacyUrlSafe', () => {
     it('should convert key to url safe base64 string', () => {
       const key = new entity.Key({
         path: ['Task', 'Test'],
@@ -635,7 +635,7 @@ describe('Datastore', () => {
       (datastore.auth as any).getProjectId = (callback: Function) => {
         callback(null, 'project-id');
       };
-      datastore.keyToLegacyUrlsafe(key, (err, urlSafekey) => {
+      datastore.keyToLegacyUrlSafe(key, (err, urlSafekey) => {
         assert.ifError(err);
         assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
@@ -652,7 +652,7 @@ describe('Datastore', () => {
       (datastore.auth as any).getProjectId = (callback: Function) => {
         callback(null, 'project-id');
       };
-      datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafekey) => {
+      datastore.keyToLegacyUrlSafe(key, locationPrefix, (err, urlSafekey) => {
         assert.ifError(err);
         assert.strictEqual(urlSafekey, base64EndocdedUrlsafeKey);
       });
@@ -664,7 +664,7 @@ describe('Datastore', () => {
       (datastore.auth as any).getProjectId = (callback: Function) => {
         callback(error);
       };
-      datastore.keyToLegacyUrlsafe({} as entity.Key, (err, urlSafekey) => {
+      datastore.keyToLegacyUrlSafe({} as entity.Key, (err, urlSafekey) => {
         assert.strictEqual(err, error);
         assert.strictEqual(urlSafekey, undefined);
       });

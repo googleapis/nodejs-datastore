@@ -731,12 +731,12 @@ class Datastore extends DatastoreRequest {
     return Datastore.isKey(value);
   }
 
-  keyToLegacyUrlsafe(key: entity.Key, locationPrefix?: string): Promise<string>;
-  keyToLegacyUrlsafe(
+  keyToLegacyUrlSafe(key: entity.Key, locationPrefix?: string): Promise<string>;
+  keyToLegacyUrlSafe(
     key: entity.Key,
     callback: KeyToLegacyUrlSafeCallback
   ): void;
-  keyToLegacyUrlsafe(
+  keyToLegacyUrlSafe(
     key: entity.Key,
     locationPrefix: string,
     callback: KeyToLegacyUrlSafeCallback
@@ -764,7 +764,7 @@ class Datastore extends DatastoreRequest {
    * const datastore = new Datastore();
    * const key = datastore.key(['Company', 'Google']);
    *
-   * datastore.keyToLegacyUrlsafe(key, (err, urlSafeKey) => {
+   * datastore.keyToLegacyUrlSafe(key, (err, urlSafeKey) => {
    *   if (err) {
    *     // Error handling omitted.
    *   }
@@ -779,7 +779,7 @@ class Datastore extends DatastoreRequest {
    * const key = datastore.key(['Task', 123]);
    * const locationPrefix = 's~';
    *
-   * datastore.keyToLegacyUrlsafe(key, locationPrefix, (err, urlSafeKey) => {
+   * datastore.keyToLegacyUrlSafe(key, locationPrefix, (err, urlSafeKey) => {
    *   if (err) {
    *     // Error handling omitted.
    *   }
@@ -793,10 +793,10 @@ class Datastore extends DatastoreRequest {
    * const key = datastore.key(['Task', 123]);
    * const locationPrefix = 's~';
    *
-   * const urlSafeKey = await datastore.keyToLegacyUrlsafe(key, locationPrefix);
+   * const urlSafeKey = await datastore.keyToLegacyUrlSafe(key, locationPrefix);
    * console.log(urlSafeKey);
    */
-  keyToLegacyUrlsafe(
+  keyToLegacyUrlSafe(
     key: entity.Key,
     locationPrefixOrCallback?: string | KeyToLegacyUrlSafeCallback,
     callback?: KeyToLegacyUrlSafeCallback
