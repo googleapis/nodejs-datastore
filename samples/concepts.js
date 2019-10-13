@@ -731,8 +731,8 @@ class Query extends TestHelper {
       const percentCompletes = [];
       const [tasks] = await datastore.runQuery(query);
       tasks.forEach(task => {
-        priorities.push(task.priority);
-        percentCompletes.push(task.percent_complete);
+        priorities.push(task.priority.valueOf());
+        percentCompletes.push(task.percent_complete.valueOf());
       });
 
       return {
@@ -1018,11 +1018,11 @@ class Transaction extends TestHelper {
       // Restore `datastore` to the mock API.
       datastore = datastoreMock;
       assert.strictEqual(
-        accounts[0].balance,
+        accounts[0].balance.valueOf(),
         originalBalance - amountToTransfer
       );
       assert.strictEqual(
-        accounts[1].balance,
+        accounts[1].balance.valueOf(),
         originalBalance + amountToTransfer
       );
     } catch (err) {
