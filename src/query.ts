@@ -517,9 +517,15 @@ export interface QueryProto {
  */
 export {Query};
 
+export interface IntegerTypeCastOptions {
+  integerTypeCastFunction: Function;
+  names?: string | string[];
+}
+
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   gaxOptions?: CallOptions;
+  integerTypeCastOptions?: IntegerTypeCastOptions;
 }
 
 export interface RunQueryCallback {
