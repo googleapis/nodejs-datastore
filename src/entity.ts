@@ -89,10 +89,10 @@ export namespace entity {
    *
    * @class
    * @param {number|string} value The integer value.
-   * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
+   * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
    *
    * @example
@@ -100,17 +100,18 @@ export namespace entity {
    * const datastore = new Datastore();
    * const anInt = datastore.int(7);
    */
-  export class Int {
+  export class Int extends Number {
     value: string;
-    integerTypeCastOptions?: IntegerTypeCastOptions;
-    // private _numericValue: number | string;
+    typeCastFunction?: Function;
+    typeCastProperties?: string[];
     private _entityPropertyName: string | undefined;
     constructor(
       value: number | string | ValueProto,
-      integerTypeCastOptions?: IntegerTypeCastOptions
+      typeCastOptions?: IntegerTypeCastOptions
     ) {
+      super();
       this._entityPropertyName =
-        typeof value === 'object' ? value.name : undefined;
+        typeof value === 'object' ? value.propertyName : undefined;
       this.value =
         typeof value === 'object'
           ? value.integerValue.toString()
@@ -119,40 +120,31 @@ export namespace entity {
        * @name Int#value
        * @type {string}
        */
-      this.integerTypeCastOptions = integerTypeCastOptions;
-    }
-    // tslint:disable-next-line no-any
-    valueOf(): number | any {
-      let customCast = false;
-      if (this.integerTypeCastOptions) {
-        if (
-          typeof this.integerTypeCastOptions!.integerTypeCastFunction !==
-          'function'
-        ) {
+      if (typeCastOptions) {
+        if (typeof typeCastOptions.integerTypeCastFunction !== 'function') {
           throw new Error(
             `integerTypeCastFunction is not a function or was not provided.`
           );
         }
-        customCast = true;
-        if (this.integerTypeCastOptions.names) {
-          this.integerTypeCastOptions.names = arrify(
-            this.integerTypeCastOptions.names
-          );
-          if (
-            !this.integerTypeCastOptions.names.includes(
-              this._entityPropertyName!
-            )
-          ) {
-            customCast = false;
-          }
-        }
+        this.typeCastFunction = typeCastOptions.integerTypeCastFunction;
+        this.typeCastProperties = typeCastOptions.properties
+          ? arrify(typeCastOptions.properties)
+          : undefined;
+      }
+    }
+    // tslint:disable-next-line no-any
+    valueOf(): any {
+      let customCast = this.typeCastFunction ? true : false;
+      if (
+        this.typeCastProperties &&
+        !this.typeCastProperties.includes(this._entityPropertyName!)
+      ) {
+        customCast = false;
       }
 
       if (customCast) {
         try {
-          return this.integerTypeCastOptions!.integerTypeCastFunction(
-            this.value
-          );
+          return this.typeCastFunction!(this.value);
         } catch (error) {
           error.message = `integerTypeCastFunction threw an error - ${error.message}`;
           throw error;
@@ -393,10 +385,10 @@ export namespace entity {
    *
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
-   * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
+   * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   * @param {sting|string[]} [typeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
    * @returns {*}
    *
@@ -418,7 +410,7 @@ export namespace entity {
    */
   export function decodeValueProto(
     valueProto: ValueProto,
-    integerTypeCastOptions?: IntegerTypeCastOptions
+    typeCastOptions?: IntegerTypeCastOptions
   ) {
     const valueType = valueProto.valueType!;
     const value = valueProto[valueType];
@@ -427,7 +419,7 @@ export namespace entity {
       case 'arrayValue': {
         // tslint:disable-next-line no-any
         return value.values.map((val: any) =>
-          entity.decodeValueProto(val, integerTypeCastOptions)
+          entity.decodeValueProto(val, typeCastOptions)
         );
       }
 
@@ -444,7 +436,7 @@ export namespace entity {
       }
 
       case 'integerValue': {
-        return new entity.Int(valueProto, integerTypeCastOptions);
+        return new entity.Int(valueProto, typeCastOptions);
       }
 
       case 'entityValue': {
@@ -577,11 +569,12 @@ export namespace entity {
    *
    * @private
    * @param {object} entityProto The protocol entity object to convert.
-   * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
+   * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
-   *     names to be converted using `integerTypeCastFunction`.* @returns {object}
+   * @param {sting|string[]} [typeCastOptions.names] `Entity` property
+   *     names to be converted using `integerTypeCastFunction`.
+   * @returns {object}
    *
    * @example
    * entityFromEntityProto({
@@ -603,7 +596,7 @@ export namespace entity {
   // tslint:disable-next-line no-any
   export function entityFromEntityProto(
     entityProto: EntityProto,
-    integerTypeCastOptions?: IntegerTypeCastOptions
+    typeCastOptions?: IntegerTypeCastOptions
   ) {
     // tslint:disable-next-line no-any
     const entityObject: any = {};
@@ -612,10 +605,7 @@ export namespace entity {
     // tslint:disable-next-line forin
     for (const property in properties) {
       const value = properties[property];
-      entityObject[property] = entity.decodeValueProto(
-        value,
-        integerTypeCastOptions
-      );
+      entityObject[property] = entity.decodeValueProto(value, typeCastOptions);
     }
 
     return entityObject;
@@ -801,10 +791,10 @@ export namespace entity {
    * @param {object[]} results The response array.
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
-   * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
+   * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   * @param {sting|string[]} [typeCastOptions.names] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.* @returns {object[]}
    *
    * @example
@@ -821,13 +811,10 @@ export namespace entity {
    */
   export function formatArray(
     results: ResponseResult[],
-    integerTypeCastOptions?: IntegerTypeCastOptions
+    typeCastOptions?: IntegerTypeCastOptions
   ) {
     return results.map(result => {
-      const ent = entity.entityFromEntityProto(
-        result.entity!,
-        integerTypeCastOptions
-      );
+      const ent = entity.entityFromEntityProto(result.entity!, typeCastOptions);
       ent[entity.KEY_SYMBOL] = entity.keyFromKeyProto(result.entity!.key!);
       return ent;
     });
@@ -1317,7 +1304,7 @@ export interface ValueProto {
   values?: ValueProto[];
   // tslint:disable-next-line no-any
   value?: any;
-  name?: string;
+  propertyName?: string;
 }
 
 export interface EntityProto {

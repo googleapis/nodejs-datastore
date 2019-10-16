@@ -131,24 +131,24 @@ describe('entity', () => {
         assert.ok(stub.calledOnce);
       });
 
-      it('should custom-cast integerValue if valueProto.name is specified by user', () => {
+      it('should custom-cast integerValue if `properties` specified by user', () => {
         const stub = sinon.stub();
         Object.assign(valueProto, {
-          name: 'thisValue',
+          propertyName: 'thisValue',
         });
 
         new entity.Int(valueProto, {
           integerTypeCastFunction: stub,
-          names: 'thisValue',
+          properties: 'thisValue',
         }).valueOf();
         assert.ok(stub.calledOnce);
       });
 
-      it('should not custom-cast integerValue if valueProto.name is not specified by user', () => {
+      it('should not custom-cast integerValue if `properties` not specified by user', () => {
         const stub = sinon.stub();
 
         Object.assign(valueProto, {
-          name: 'thisValue',
+          propertyName: 'thisValue',
         });
 
         assert.ok(stub.notCalled);
@@ -156,7 +156,7 @@ describe('entity', () => {
           entity
             .decodeValueProto(valueProto, {
               integerTypeCastFunction: stub,
-              names: 'thatValue',
+              properties: 'thatValue',
             })
             .valueOf(),
           (valueProto as ValueProto).integerValue

@@ -519,7 +519,7 @@ export {Query};
 
 export interface IntegerTypeCastOptions {
   integerTypeCastFunction: Function;
-  names?: string | string[];
+  properties?: string | string[];
 }
 
 export interface RunQueryOptions {
