@@ -1025,6 +1025,10 @@ class Transaction extends TestHelper {
         accounts[0].balance.valueOf(),
         originalBalance - amountToTransfer
       );
+      assert.equal(
+        accounts[1].balance,
+        originalBalance + amountToTransfer
+      );
       assert.strictEqual(
         accounts[1].balance.valueOf(),
         originalBalance + amountToTransfer
