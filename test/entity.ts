@@ -264,8 +264,6 @@ describe('entity', () => {
         namespace: 'namespace',
         path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new entity.Int('1')],
       });
-      const num = new entity.Int(1).valueOf();
-      const str = new entity.Int('1').valueOf();
       assert.deepStrictEqual(key.serialized, {
         namespace: 'namespace',
         path: [
