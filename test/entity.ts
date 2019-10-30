@@ -135,7 +135,7 @@ describe('entity', () => {
           assert.doesNotThrow(() => {
             const a = new entity.Int(valueProto);
           }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
-        })
+        });
       });
 
       describe('integerTypeCastFunction is provided', () => {
