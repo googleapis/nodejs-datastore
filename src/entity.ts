@@ -133,7 +133,7 @@ export namespace entity {
       value: number | string | ValueProto,
       typeCastOptions?: IntegerTypeCastOptions
     ) {
-      super();
+      super(typeof value === 'object' ? value.integerValue : value);
       this._entityPropertyName =
         typeof value === 'object' ? value.propertyName : undefined;
       this.value =
@@ -150,7 +150,10 @@ export namespace entity {
        * @type {string}
        */
       if (typeCastOptions) {
-        if (typeof typeCastOptions.integerTypeCastFunction !== 'function') {
+        if (
+          typeCastOptions.integerTypeCastFunction &&
+          typeof typeCastOptions.integerTypeCastFunction !== 'function'
+        ) {
           throw new Error(
             `integerTypeCastFunction is not a function or was not provided.`
           );
@@ -179,12 +182,12 @@ export namespace entity {
           throw error;
         }
       } else {
-        const num = Number(this.value);
-        if (!Number.isSafeInteger(num)) {
-          throw new Error(`Integer value ${this.value} is out of bounds.`);
-        }
-        return num;
+        return decodeIntegerValue(this.value);
       }
+    }
+
+    toJSON(): Json {
+      return {type: this.type, value: this.value};
     }
   }
 
@@ -431,6 +434,25 @@ export namespace entity {
   }
 
   /**
+   * Convert a protobuf `integerValue`.
+   *
+   * @private
+   * @param {object} valueProto The protobuf `integerValue` to convert.
+   * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
+   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
+   *     provided function to convert `integerValue`.
+   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
+   *     names to be converted using `integerTypeCastFunction`.
+   */
+  function decodeIntegerValue(value: string) {
+    const num = Number(value);
+    if (!Number.isSafeInteger(num)) {
+      throw new Error(`Integer value ${value} is out of bounds.`);
+    }
+    return num;
+  }
+
+  /**
    * Convert a protobuf Value message to its native value.
    *
    * @private
@@ -486,11 +508,13 @@ export namespace entity {
       }
 
       case 'integerValue': {
-        return new entity.Int(valueProto, typeCastOptions);
+        return typeCastOptions && typeCastOptions!.wrapNumbers
+          ? new entity.Int(valueProto, typeCastOptions)
+          : decodeIntegerValue(valueProto.integerValue);
       }
 
       case 'entityValue': {
-        return entity.entityFromEntityProto(value);
+        return entity.entityFromEntityProto(value, typeCastOptions);
       }
 
       case 'keyValue': {
@@ -1385,4 +1409,8 @@ export interface ResponseResult {
 export interface EntityObject {
   data: {[k: string]: Entity};
   excludeFromIndexes: string[];
+}
+
+export interface Json {
+  [field: string]: string;
 }

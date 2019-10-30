@@ -19,6 +19,7 @@ import * as extend from 'extend';
 import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity, entity, ValueProto} from '../src/entity';
+import {IntegerTypeCastOptions} from '../src/query';
 
 describe('entity', () => {
   let entity: Entity;
@@ -99,81 +100,98 @@ describe('entity', () => {
         };
       });
 
-      it('should throw if integerTypeCastFunction is not provided', () => {
-        assert.throws(
-          () => new entity.Int(valueProto, {}).valueOf(),
-          /integerTypeCastFunction is not a function or was not provided\./
-        );
-      });
+      describe('integerTypeCastFunction is not provided', () => {
+        it('should throw if integer value is outside of bounds', () => {
+          const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
+          const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
 
-      it('should throw if integerTypeCastFunction is not a function', () => {
-        assert.throws(
-          () =>
-            new entity.Int(valueProto, {integerTypeCastFunction: {}}).valueOf(),
-          /integerTypeCastFunction is not a function or was not provided\./
-        );
-      });
+          const valueProto = {
+            valueType: 'integerValue',
+            integerValue: largeIntegerValue,
+          };
 
-      it('should throw if integer value outside of bounds', () => {
-        const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
-        const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
+          const valueProto2 = {
+            valueType: 'integerValue',
+            integerValue: smallIntegerValue,
+          };
 
-        const valueProto = {
-          valueType: 'integerValue',
-          integerValue: largeIntegerValue,
-        };
+          assert.throws(() => {
+            new entity.Int(valueProto).valueOf();
+          }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
 
-        const valueProto2 = {
-          valueType: 'integerValue',
-          integerValue: smallIntegerValue,
-        };
-
-        assert.throws(() => {
-          new entity.Int(valueProto).valueOf();
-        }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
-
-        assert.throws(() => {
-          new entity.Int(valueProto2).valueOf();
-        }, new RegExp(`Integer value ${smallIntegerValue} is out of bounds.`));
-      });
-
-      it('should custom-cast integerValue when integerTypeCastFunction is provided', () => {
-        const stub = sinon.stub();
-
-        new entity.Int(valueProto, {integerTypeCastFunction: stub}).valueOf();
-        assert.ok(stub.calledOnce);
-      });
-
-      it('should custom-cast integerValue if `properties` specified by user', () => {
-        const stub = sinon.stub();
-        Object.assign(valueProto, {
-          propertyName: 'thisValue',
+          assert.throws(() => {
+            new entity.Int(valueProto2).valueOf();
+          }, new RegExp(`Integer value ${smallIntegerValue} is out of bounds.`));
         });
 
-        new entity.Int(valueProto, {
-          integerTypeCastFunction: stub,
-          properties: 'thisValue',
-        }).valueOf();
-        assert.ok(stub.calledOnce);
+        it('should not auto throw on initialization', () => {
+          const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
+
+          const valueProto = {
+            valueType: 'integerValue',
+            integerValue: largeIntegerValue,
+          };
+
+          assert.doesNotThrow(() => {
+            const a = new entity.Int(valueProto);
+          }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
+        })
       });
 
-      it('should not custom-cast integerValue if `properties` not specified by user', () => {
-        const stub = sinon.stub();
-
-        Object.assign(valueProto, {
-          propertyName: 'thisValue',
+      describe('integerTypeCastFunction is provided', () => {
+        it('should throw if integerTypeCastFunction is not a function', () => {
+          assert.throws(
+            () =>
+              new entity.Int(valueProto, {
+                integerTypeCastFunction: {},
+              }).valueOf(),
+            /integerTypeCastFunction is not a function or was not provided\./
+          );
         });
 
-        assert.ok(stub.notCalled);
-        assert.strictEqual(
-          entity
-            .decodeValueProto(valueProto, {
-              integerTypeCastFunction: stub,
-              properties: 'thatValue',
-            })
-            .valueOf(),
-          (valueProto as ValueProto).integerValue
-        );
+        it('should custom-cast integerValue when integerTypeCastFunction is provided', () => {
+          const stub = sinon.stub();
+
+          new entity.Int(valueProto, {
+            wrapNumbers: true,
+            integerTypeCastFunction: stub,
+          }).valueOf();
+          assert.ok(stub.calledOnce);
+        });
+
+        it('should custom-cast integerValue if `properties` specified by user', () => {
+          const stub = sinon.stub();
+          Object.assign(valueProto, {
+            propertyName: 'thisValue',
+          });
+
+          new entity.Int(valueProto, {
+            wrapNumber: true,
+            integerTypeCastFunction: stub,
+            properties: 'thisValue',
+          }).valueOf();
+          assert.ok(stub.calledOnce);
+        });
+
+        it('should not custom-cast integerValue if `properties` not specified by user', () => {
+          const stub = sinon.stub();
+
+          Object.assign(valueProto, {
+            propertyName: 'thisValue',
+          });
+
+          assert.ok(stub.notCalled);
+          assert.strictEqual(
+            entity
+              .decodeValueProto(valueProto, {
+                wrapNumbers: true,
+                integerTypeCastFunction: stub,
+                properties: 'thatValue',
+              })
+              .valueOf(),
+            (valueProto as ValueProto).integerValue
+          );
+        });
       });
     });
   });
@@ -334,9 +352,14 @@ describe('entity', () => {
   });
 
   describe('decodeValueProto', () => {
-    it('should decode arrays', () => {
-      const expectedValue = [{}];
-
+    describe('arrays', () => {
+      const intValue = 8;
+      const expectedValue = [
+        {
+          valueType: 'integerValue',
+          integerValue: intValue,
+        },
+      ];
       const valueProto = {
         valueType: 'arrayValue',
         arrayValue: {
@@ -344,23 +367,226 @@ describe('entity', () => {
         },
       };
 
-      let run = false;
+      it('should decode arrays', () => {
+        const expectedValue = [{}];
 
-      const decodeValueProto = entity.decodeValueProto;
-      entity.decodeValueProto = (valueProto: {}) => {
-        if (!run) {
-          run = true;
-          return decodeValueProto(valueProto);
-        }
+        const valueProto = {
+          valueType: 'arrayValue',
+          arrayValue: {
+            values: expectedValue,
+          },
+        };
 
-        assert.strictEqual(valueProto, expectedValue[0]);
-        return valueProto;
+        let run = false;
+
+        const decodeValueProto = entity.decodeValueProto;
+        entity.decodeValueProto = (valueProto: {}) => {
+          if (!run) {
+            run = true;
+            return decodeValueProto(valueProto);
+          }
+
+          assert.strictEqual(valueProto, expectedValue[0]);
+          return valueProto;
+        };
+
+        assert.deepStrictEqual(
+          entity.decodeValueProto(valueProto),
+          expectedValue
+        );
+      });
+
+      it('should not wrap numbers by default', () => {
+        const decodeValueProto = entity.decodeValueProto;
+        entity.decodeValueProto = (
+          valueProto: {},
+          typeCastOptions?: IntegerTypeCastOptions
+        ) => {
+          assert.strictEqual(
+            typeCastOptions ? !typeCastOptions.wrapNumbers : !typeCastOptions,
+            true
+          );
+
+          return decodeValueProto(valueProto, typeCastOptions);
+        };
+
+        assert.deepStrictEqual(entity.decodeValueProto(valueProto), [intValue]);
+        assert.deepStrictEqual(entity.decodeValueProto(valueProto, {}), [
+          intValue,
+        ]);
+      });
+
+      it('should recursively pass `typeCastOptions`', () => {
+        let run = false;
+        const typeCastOpts: IntegerTypeCastOptions = {
+          wrapNumbers: true,
+          integerTypeCastFunction: () => {},
+          properties: 'accountA',
+        };
+        const decodeValueProto = entity.decodeValueProto;
+        entity.decodeValueProto = (valueProto: {}, typeCastOptions?: {}) => {
+          if (!run) {
+            run = true;
+            return decodeValueProto(valueProto, typeCastOptions);
+          }
+          assert.strictEqual(valueProto, expectedValue[0]);
+          assert.strictEqual(typeCastOptions, typeCastOpts);
+          assert.deepStrictEqual(typeCastOptions, typeCastOpts);
+          return valueProto;
+        };
+
+        assert.deepStrictEqual(
+          entity.decodeValueProto(valueProto, typeCastOpts),
+          expectedValue
+        );
+      });
+    });
+
+    describe('entities', () => {
+      it('should decode entities', () => {
+        const expectedValue = {};
+
+        const valueProto = {
+          valueType: 'entityValue',
+          entityValue: expectedValue,
+        };
+
+        entity.entityFromEntityProto = (entityProto: {}) => {
+          assert.strictEqual(entityProto, expectedValue);
+          return expectedValue;
+        };
+
+        assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
+      });
+
+      it('should not wrap nubers by default', () => {
+        const expectedValue = {};
+
+        const valueProto = {
+          valueType: 'entityValue',
+          entityValue: expectedValue,
+        };
+
+        entity.entityFromEntityProto = (
+          entityProto: {},
+          typeCastOptions?: IntegerTypeCastOptions
+        ) => {
+          assert.strictEqual(
+            typeCastOptions ? !typeCastOptions.wrapNumbers : !typeCastOptions,
+            true
+          );
+          assert.strictEqual(entityProto, expectedValue);
+          return expectedValue;
+        };
+
+        assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
+        assert.strictEqual(
+          entity.decodeValueProto(valueProto, {}),
+          expectedValue
+        );
+      });
+
+      it('should recursively pass `typeCastOptions`', () => {
+        const typeCastOpts: IntegerTypeCastOptions = {
+          wrapNumbers: true,
+          integerTypeCastFunction: () => {},
+          properties: 'accountA',
+        };
+
+        const expectedValue = {};
+
+        const valueProto = {
+          valueType: 'entityValue',
+          entityValue: expectedValue,
+        };
+
+        entity.entityFromEntityProto = (
+          entityProto: {},
+          typeCastOptions?: IntegerTypeCastOptions
+        ) => {
+          assert.strictEqual(entityProto, expectedValue);
+          assert.strictEqual(typeCastOptions, typeCastOpts);
+          assert.deepStrictEqual(typeCastOptions, typeCastOpts);
+          return expectedValue;
+        };
+
+        assert.strictEqual(
+          entity.decodeValueProto(valueProto, typeCastOpts),
+          expectedValue
+        );
+      });
+    });
+
+    describe('integerValues', () => {
+      const valueProto = {
+        valueType: 'integerValue',
+        integerValue: 8,
       };
 
-      assert.deepStrictEqual(
-        entity.decodeValueProto(valueProto),
-        expectedValue
-      );
+      describe('default `wrapNumbers: false`', () => {
+        it('should not wrap ints by default', () => {
+          assert.strictEqual(
+            typeof entity.decodeValueProto(valueProto),
+            'number'
+          );
+          assert.strictEqual(
+            typeof entity.decodeValueProto(valueProto, {}),
+            'number'
+          );
+        });
+
+        it('should throw is integer value is outside of bounds', () => {
+          const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
+          const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
+
+          const valueProto = {
+            valueType: 'integerValue',
+            integerValue: largeIntegerValue,
+          };
+
+          const valueProto2 = {
+            valueType: 'integerValue',
+            integerValue: smallIntegerValue,
+          };
+
+          assert.throws(() => {
+            entity.decodeValueProto(valueProto);
+          }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
+
+          assert.throws(() => {
+            entity.decodeValueProto(valueProto2);
+          }, new RegExp(`Integer value ${smallIntegerValue} is out of bounds.`));
+        });
+      });
+
+      it('should wrap ints with option', () => {
+        const typeCastOptions = {wrapNumbers: true};
+
+        assert.ok(
+          entity.decodeValueProto(valueProto, typeCastOptions) instanceof
+            entity.Int
+        );
+      });
+
+      it('should propagate error from typeCastfunction', () => {
+        const errorMessage = 'some error from type casting function';
+        const error = new Error(errorMessage);
+        const stub = sinon.stub().throws(error);
+        assert.throws(
+          () =>
+            entity
+              .decodeValueProto(valueProto, {
+                wrapNumbers: true,
+                integerTypeCastFunction: stub,
+              })
+              .valueOf(),
+          (err: Error) => {
+            return new RegExp(
+              `integerTypeCastFunction threw an error - ${errorMessage}`
+            ).test(err.message);
+          }
+        );
+      });
     });
 
     it('should decode blobs', () => {
@@ -395,52 +621,6 @@ describe('entity', () => {
       const valueProto = {
         valueType: 'doubleValue',
         doubleValue: expectedValue,
-      };
-
-      assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
-    });
-
-    it('should decode ints with entity.Int object', () => {
-      const valueProto = {
-        valueType: 'integerValue',
-        integerValue: 8,
-      };
-
-      assert.ok(entity.decodeValueProto(valueProto) instanceof entity.Int);
-    });
-
-    it('should propagate error from typeCastfunction', () => {
-      const valueProto = {
-        valueType: 'integerValue',
-        integerValue: 111111,
-      };
-      const errorMessage = 'some error from type casting function';
-      const error = new Error(errorMessage);
-      const stub = sinon.stub().throws(error);
-      assert.throws(
-        () =>
-          entity
-            .decodeValueProto(valueProto, {integerTypeCastFunction: stub})
-            .valueOf(),
-        (err: Error) => {
-          return new RegExp(
-            `integerTypeCastFunction threw an error - ${errorMessage}`
-          ).test(err.message);
-        }
-      );
-    });
-
-    it('should decode entities', () => {
-      const expectedValue = {};
-
-      const valueProto = {
-        valueType: 'entityValue',
-        entityValue: expectedValue,
-      };
-
-      entity.entityFromEntityProto = (entityProto: {}) => {
-        assert.strictEqual(entityProto, expectedValue);
-        return expectedValue;
       };
 
       assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);

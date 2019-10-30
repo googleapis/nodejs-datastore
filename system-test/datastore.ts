@@ -57,11 +57,11 @@ describe('Datastore', () => {
       publishedAt: new Date(),
       author: 'Silvano',
       isDraft: false,
-      wordCount: datastore.int(400),
-      rating: datastore.int(5.0),
+      wordCount: 400,
+      rating: 5.0,
       likes: null,
       metadata: {
-        views: datastore.int(100),
+        views: 100,
       },
     };
 
@@ -447,7 +447,7 @@ describe('Datastore', () => {
           },
         });
         const [entity] = await datastore.get(key);
-        assert.strictEqual(entity.year.valueOf(), integerValue);
+        assert.strictEqual(entity.year, integerValue);
       });
 
       it('should save and decode a double', async () => {
@@ -794,7 +794,7 @@ describe('Datastore', () => {
         datastore.get(key),
       ]);
       assert.strictEqual(typeof deletedEntity, 'undefined');
-      assert.strictEqual(fetchedEntity.rating.valueOf(), 10);
+      assert.strictEqual(fetchedEntity.rating, 10);
     });
 
     it('should use the last modification to a key', async () => {

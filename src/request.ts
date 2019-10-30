@@ -289,7 +289,10 @@ class DatastoreRequest {
             return;
           }
 
-          const entities = entity.formatArray(resp!.found! as ResponseResult[]);
+          const entities = entity.formatArray(
+            resp!.found! as ResponseResult[],
+            options.integerTypeCastOptions
+          );
           const nextKeys = (resp!.deferred || [])
             .map(entity.keyFromKeyProto)
             .map(entity.keyToKeyProto);
@@ -763,7 +766,10 @@ class DatastoreRequest {
       let entities: Entity[] = [];
 
       if (resp.batch.entityResults) {
-        entities = entity.formatArray(resp.batch.entityResults);
+        entities = entity.formatArray(
+          resp.batch.entityResults,
+          options.integerTypeCastOptions
+        );
       }
 
       // Emit each result right away, then get the rest if necessary.
@@ -1400,10 +1406,7 @@ export interface AllocateIdsOptions {
   allocations?: number;
   gaxOptions?: CallOptions;
 }
-export interface CreateReadStreamOptions {
-  consistency?: string;
-  gaxOptions?: CallOptions;
-}
+export interface CreateReadStreamOptions extends RunQueryOptions {}
 export interface GetCallback {
   (err?: Error | null, entity?: Entities): void;
 }
