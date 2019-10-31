@@ -436,10 +436,10 @@ class DatastoreRequest {
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {object} [options.integerTypeCastOptions] Configurations to
    *     optionally wrap `integerValue` in Datastore Int object and optionally
-   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion  
-   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false] 
+   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion
+   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false]
    *     Indicates if the numbers should be wrapped in Int wrapper.
-   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction] 
+   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction]
    *     A custom user provided function to convert `integerValue`.
    * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
    *     property names to be converted using `integerTypeCastFunction`.
@@ -592,10 +592,10 @@ class DatastoreRequest {
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {object} [options.integerTypeCastOptions] Configurations to
    *     optionally wrap `integerValue` in Datastore Int object and optionally
-   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion  
-   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false] 
+   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion
+   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false]
    *     Indicates if the numbers should be wrapped in Int wrapper.
-   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction] 
+   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction]
    *     A custom user provided function to convert `integerValue`.
    * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
    *     property names to be converted using `integerTypeCastFunction`.
