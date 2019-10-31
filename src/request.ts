@@ -434,6 +434,15 @@ class DatastoreRequest {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {object} [options.integerTypeCastOptions] Configurations to
+   *     optionally wrap `integerValue` in Datastore Int object and optionally
+   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion  
+   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false] 
+   *     Indicates if the numbers should be wrapped in Int wrapper.
+   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction] 
+   *     A custom user provided function to convert `integerValue`.
+   * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
+   *     property names to be converted using `integerTypeCastFunction`.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request
    * @param {object|object[]} callback.entity The entity object(s) which match
@@ -573,7 +582,6 @@ class DatastoreRequest {
    * that uses the end cursor from the previous query as the starting cursor for
    * the next query. You can pass that object back to this method to see if more
    * results exist.
-   *
    * @param {Query} query Query object.
    * @param {object} [options] Optional configuration.
    * @param {string} [options.consistency] Specify either `strong` or `eventual`.
@@ -582,6 +590,15 @@ class DatastoreRequest {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {object} [options.integerTypeCastOptions] Configurations to
+   *     optionally wrap `integerValue` in Datastore Int object and optionally
+   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion  
+   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false] 
+   *     Indicates if the numbers should be wrapped in Int wrapper.
+   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction] 
+   *     A custom user provided function to convert `integerValue`.
+   * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
+   *     property names to be converted using `integerTypeCastFunction`.
    * @param {function} [callback] The callback function. If omitted, a readable
    *     stream instance is returned.
    * @param {?error} callback.err An error returned while making this request

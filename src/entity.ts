@@ -113,6 +113,8 @@ export namespace entity {
    * @class
    * @param {number|string} value The integer value.
    * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
+   *     wrapped in Int wrapper.
    * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
@@ -437,12 +439,7 @@ export namespace entity {
    * Convert a protobuf `integerValue`.
    *
    * @private
-   * @param {object} valueProto The protobuf `integerValue` to convert.
-   * @param {object} integerTypeCastOptions Config for custom `integerValue` cast.
-   * @param {function} [integerTypeCastOptions.integerTypeCastFunction] A custom user
-   *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [integerTypeCastOptions.names] `Entity` property
-   *     names to be converted using `integerTypeCastFunction`.
+   * @param {object} value The `integerValue` to convert.
    */
   function decodeIntegerValue(value: string) {
     const num = Number(value);
@@ -458,9 +455,11 @@ export namespace entity {
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
    * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
+   *     wrapped in Int wrapper.
    * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [typeCastOptions.names] `Entity` property
+   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
    * @returns {*}
    *
@@ -644,9 +643,11 @@ export namespace entity {
    * @private
    * @param {object} entityProto The protocol entity object to convert.
    * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
+   *     wrapped in Int wrapper.
    * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [typeCastOptions.names] `Entity` property
+   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
    * @returns {object}
    *
@@ -866,10 +867,12 @@ export namespace entity {
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
    * @param {object} typeCastOptions Config for custom `integerValue` cast.
+   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
+   *     wrapped in Int wrapper.
    * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [typeCastOptions.names] `Entity` property
-   *     names to be converted using `integerTypeCastFunction`.* @returns {object[]}
+   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
+   *     names to be converted using `integerTypeCastFunction`.
    *
    * @example
    * request_('runQuery', {}, (err, response) => {

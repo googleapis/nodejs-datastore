@@ -397,6 +397,17 @@ class Query {
    *     If not specified, default values are chosen by Datastore for the
    *     operation. Learn more about strong and eventual consistency
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
+   * @param {object} [options.gaxOptions] Request configuration options, outlined
+   *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {object} [options.integerTypeCastOptions] Configurations to
+   *     optionally wrap `integerValue` in Datastore Int object and optionally
+   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion  
+   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false] 
+   *     Indicates if the numbers should be wrapped in Int wrapper.
+   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction] 
+   *     A custom user provided function to convert `integerValue`.
+   * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
+   *     property names to be converted using `integerTypeCastFunction`.
    * @param {function} [callback] The callback function. If omitted, a readable
    *     stream instance is returned.
    * @param {?error} callback.err An error returned while making this request
