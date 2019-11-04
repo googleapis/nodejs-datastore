@@ -110,7 +110,7 @@ describe('entity', () => {
               (opts.propertyName ? opts.propertyName + ' ' : '') +
               'value ' +
               opts.integerValue +
-              ' is out of bounds of Number safe integer.\n' +
+              " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
               "Please consider passing 'options.integerTypeCastOptions' as\n" +
               '{\n' +
               'wrapNumbers: true,\n' +
@@ -578,7 +578,7 @@ describe('entity', () => {
                 (opts.propertyName ? opts.propertyName + ' ' : '') +
                 'value ' +
                 opts.integerValue +
-                ' is out of bounds of Number safe integer.\n' +
+                " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
                 "Please consider passing 'options.integerTypeCastOptions' as\n" +
                 '{\n' +
                 'wrapNumbers: true,\n' +
