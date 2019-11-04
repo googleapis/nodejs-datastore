@@ -530,7 +530,7 @@ export {Query};
 
 export interface IntegerTypeCastOptions {
   wrapNumbers?: boolean;
-  integerTypeCastFunction: Function;
+  integerTypeCastFunction?: Function;
   properties?: string | string[];
 }
 
