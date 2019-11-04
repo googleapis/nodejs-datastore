@@ -402,7 +402,7 @@ class Query {
    * @param {object} [options.integerTypeCastOptions] Configurations to
    *     optionally wrap `integerValue` in Datastore Int object and optionally
    *     provide an `integerTypeCastFunction` to handle `integerValue` conversion
-   * @param {boolean} [options.integerTypeCastOptions.wrapnumbers=false]
+   * @param {boolean} [options.integerTypeCastOptions.wrapNumbers=false]
    *     Indicates if the numbers should be wrapped in Int wrapper.
    * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction]
    *     A custom user provided function to convert `integerValue`.
