@@ -101,27 +101,60 @@ describe('entity', () => {
       });
 
       describe('integerTypeCastFunction is not provided', () => {
-        it('should throw if integer value is outside of bounds', () => {
+        const expectedError = (opts: {
+          integerValue?: number;
+          propertyName?: string;
+        }) => {
+          return new Error(
+            'We attempted to return all of the numeric values, but ' +
+              (opts.propertyName ? opts.propertyName + ' ' : '') +
+              'value ' +
+              opts.integerValue +
+              ' is out of bounds of Number safe integer.\n' +
+              "Please consider passing 'options.integerTypeCastOptions' as\n" +
+              '{\n' +
+              'wrapNumbers: true,\n' +
+              'integerTypeCastFunction: <your_custom_function>\n' +
+              '}\n' +
+              'to prevent this error.'
+          );
+        };
+        it('should throw if integer value is outside of bounds passing objects', () => {
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
 
           const valueProto = {
-            valueType: 'integerValue',
             integerValue: largeIntegerValue,
+            propertyName: 'phoneNumber',
           };
 
           const valueProto2 = {
-            valueType: 'integerValue',
             integerValue: smallIntegerValue,
+            propertyName: 'phoneNumber',
           };
 
           assert.throws(() => {
             new entity.Int(valueProto).valueOf();
-          }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
+          }, expectedError(valueProto));
 
           assert.throws(() => {
             new entity.Int(valueProto2).valueOf();
-          }, new RegExp(`Integer value ${smallIntegerValue} is out of bounds.`));
+          }, expectedError(valueProto2));
+        });
+
+        it('should throw if integer value is outside of bounds passing strings or Numbers', () => {
+          const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
+          const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
+
+          // should throw when Number is passed
+          assert.throws(() => {
+            new entity.Int(largeIntegerValue).valueOf();
+          }, expectedError({integerValue: largeIntegerValue}));
+
+          // should throw when string is passed
+          assert.throws(() => {
+            new entity.Int(smallIntegerValue.toString()).valueOf();
+          }, expectedError({integerValue: smallIntegerValue}));
         });
 
         it('should not auto throw on initialization', () => {
@@ -535,27 +568,47 @@ describe('entity', () => {
           );
         });
 
-        it('should throw is integer value is outside of bounds', () => {
+        it('should throw if integer value is outside of bounds', () => {
+          const expectedError = (opts: {
+            integerValue: number;
+            propertyName: string;
+          }) => {
+            return new Error(
+              'We attempted to return all of the numeric values, but ' +
+                (opts.propertyName ? opts.propertyName + ' ' : '') +
+                'value ' +
+                opts.integerValue +
+                ' is out of bounds of Number safe integer.\n' +
+                "Please consider passing 'options.integerTypeCastOptions' as\n" +
+                '{\n' +
+                'wrapNumbers: true,\n' +
+                'integerTypeCastFunction: <your_custom_function>\n' +
+                '}\n' +
+                'to prevent this error.'
+            );
+          };
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
 
           const valueProto = {
             valueType: 'integerValue',
             integerValue: largeIntegerValue,
+            propertyName: 'phoneNumber',
           };
 
           const valueProto2 = {
             valueType: 'integerValue',
             integerValue: smallIntegerValue,
+            propertyName: 'phoneNumber',
           };
 
           assert.throws(() => {
             entity.decodeValueProto(valueProto);
-          }, new RegExp(`Integer value ${largeIntegerValue} is out of bounds.`));
+          }, expectedError(valueProto));
 
           assert.throws(() => {
             entity.decodeValueProto(valueProto2);
-          }, new RegExp(`Integer value ${smallIntegerValue} is out of bounds.`));
+          }, expectedError(valueProto2));
         });
       });
 

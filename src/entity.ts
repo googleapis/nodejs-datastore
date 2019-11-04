@@ -184,7 +184,10 @@ export namespace entity {
           throw error;
         }
       } else {
-        return decodeIntegerValue(this.value);
+        return decodeIntegerValue({
+          integerValue: this.value,
+          propertyName: this._entityPropertyName,
+        });
       }
     }
 
@@ -441,10 +444,22 @@ export namespace entity {
    * @private
    * @param {object} value The `integerValue` to convert.
    */
-  function decodeIntegerValue(value: string) {
-    const num = Number(value);
+  function decodeIntegerValue(value: ValueProto) {
+    const num = Number(value.integerValue);
     if (!Number.isSafeInteger(num)) {
-      throw new Error(`Integer value ${value} is out of bounds.`);
+      throw new Error(
+        'We attempted to return all of the numeric values, but ' +
+          (value.propertyName ? value.propertyName + ' ' : '') +
+          'value ' +
+          value.integerValue +
+          ' is out of bounds of Number safe integer.\n' +
+          "Please consider passing 'options.integerTypeCastOptions' as\n" +
+          '{\n' +
+          'wrapNumbers: true,\n' +
+          'integerTypeCastFunction: <your_custom_function>\n' +
+          '}\n' +
+          'to prevent this error.'
+      );
     }
     return num;
   }
@@ -509,7 +524,7 @@ export namespace entity {
       case 'integerValue': {
         return typeCastOptions && typeCastOptions!.wrapNumbers
           ? new entity.Int(valueProto, typeCastOptions)
-          : decodeIntegerValue(valueProto.integerValue);
+          : decodeIntegerValue(valueProto);
       }
 
       case 'entityValue': {
