@@ -186,7 +186,6 @@ describe('entity', () => {
           const stub = sinon.stub();
 
           new entity.Int(valueProto, {
-            wrapNumbers: true,
             integerTypeCastFunction: stub,
           }).valueOf();
           assert.ok(stub.calledOnce);
@@ -207,6 +206,7 @@ describe('entity', () => {
         });
 
         it('should not custom-cast integerValue if `properties` not specified by user', () => {
+          const wrapNumbers = true;
           const stub = sinon.stub();
 
           Object.assign(valueProto, {
@@ -216,8 +216,7 @@ describe('entity', () => {
           assert.ok(stub.notCalled);
           assert.strictEqual(
             entity
-              .decodeValueProto(valueProto, {
-                wrapNumbers: true,
+              .decodeValueProto(valueProto, wrapNumbers, {
                 integerTypeCastFunction: stub,
                 properties: 'thatValue',
               })
@@ -431,45 +430,61 @@ describe('entity', () => {
 
       it('should not wrap numbers by default', () => {
         const decodeValueProto = entity.decodeValueProto;
-        entity.decodeValueProto = (
-          valueProto: {},
-          typeCastOptions?: IntegerTypeCastOptions
-        ) => {
-          assert.strictEqual(
-            typeCastOptions ? !typeCastOptions.wrapNumbers : !typeCastOptions,
-            true
-          );
+        entity.decodeValueProto = (valueProto: {}, wrapNumbers?: boolean) => {
+          assert.strictEqual(!wrapNumbers, true);
 
-          return decodeValueProto(valueProto, typeCastOptions);
+          return decodeValueProto(valueProto);
         };
 
         assert.deepStrictEqual(entity.decodeValueProto(valueProto), [intValue]);
-        assert.deepStrictEqual(entity.decodeValueProto(valueProto, {}), [
-          intValue,
-        ]);
+      });
+
+      it('should wrap numbers with an option', () => {
+        const wrapNumbers = true;
+        const decodeValueProto = entity.decodeValueProto;
+        let run = false;
+        entity.decodeValueProto = (valueProto: {}, wrapNumbers?: boolean) => {
+          if (!run) {
+            run = true;
+            return decodeValueProto(valueProto, wrapNumbers);
+          }
+
+          assert.strictEqual(wrapNumbers, true);
+          return valueProto;
+        };
+
+        assert.deepStrictEqual(
+          entity.decodeValueProto(valueProto, wrapNumbers),
+          expectedValue
+        );
       });
 
       it('should recursively pass `typeCastOptions`', () => {
         let run = false;
+        const wrapNumbers = true;
         const typeCastOpts: IntegerTypeCastOptions = {
-          wrapNumbers: true,
           integerTypeCastFunction: () => {},
           properties: 'accountA',
         };
         const decodeValueProto = entity.decodeValueProto;
-        entity.decodeValueProto = (valueProto: {}, typeCastOptions?: {}) => {
+        entity.decodeValueProto = (
+          valueProto: {},
+          wrapNumbers: boolean,
+          typeCastOptions?: {}
+        ) => {
           if (!run) {
             run = true;
-            return decodeValueProto(valueProto, typeCastOptions);
+            return decodeValueProto(valueProto, wrapNumbers, typeCastOptions);
           }
           assert.strictEqual(valueProto, expectedValue[0]);
+          assert.strictEqual(wrapNumbers, true);
           assert.strictEqual(typeCastOptions, typeCastOpts);
           assert.deepStrictEqual(typeCastOptions, typeCastOpts);
           return valueProto;
         };
 
         assert.deepStrictEqual(
-          entity.decodeValueProto(valueProto, typeCastOpts),
+          entity.decodeValueProto(valueProto, wrapNumbers, typeCastOpts),
           expectedValue
         );
       });
@@ -502,26 +517,43 @@ describe('entity', () => {
 
         entity.entityFromEntityProto = (
           entityProto: {},
-          typeCastOptions?: IntegerTypeCastOptions
+          wrapNumbers?: boolean
         ) => {
-          assert.strictEqual(
-            typeCastOptions ? !typeCastOptions.wrapNumbers : !typeCastOptions,
-            true
-          );
+          assert.strictEqual(!wrapNumbers, true);
           assert.strictEqual(entityProto, expectedValue);
           return expectedValue;
         };
 
         assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
+      });
+
+      it('should wrap nubers with an option', () => {
+        const expectedValue = {};
+        const wrapNumbers = true;
+
+        const valueProto = {
+          valueType: 'entityValue',
+          entityValue: expectedValue,
+        };
+
+        entity.entityFromEntityProto = (
+          entityProto: {},
+          wrapNumbers?: boolean
+        ) => {
+          assert.strictEqual(wrapNumbers, true);
+          assert.strictEqual(entityProto, expectedValue);
+          return expectedValue;
+        };
+
         assert.strictEqual(
-          entity.decodeValueProto(valueProto, {}),
+          entity.decodeValueProto(valueProto, wrapNumbers),
           expectedValue
         );
       });
 
       it('should recursively pass `typeCastOptions`', () => {
+        const wrapNumbers = true;
         const typeCastOpts: IntegerTypeCastOptions = {
-          wrapNumbers: true,
           integerTypeCastFunction: () => {},
           properties: 'accountA',
         };
@@ -535,16 +567,18 @@ describe('entity', () => {
 
         entity.entityFromEntityProto = (
           entityProto: {},
+          wrapNumbers: boolean,
           typeCastOptions?: IntegerTypeCastOptions
         ) => {
           assert.strictEqual(entityProto, expectedValue);
+          assert.strictEqual(wrapNumbers, true);
           assert.strictEqual(typeCastOptions, typeCastOpts);
           assert.deepStrictEqual(typeCastOptions, typeCastOpts);
           return expectedValue;
         };
 
         assert.strictEqual(
-          entity.decodeValueProto(valueProto, typeCastOpts),
+          entity.decodeValueProto(valueProto, wrapNumbers, typeCastOpts),
           expectedValue
         );
       });
@@ -560,10 +594,6 @@ describe('entity', () => {
         it('should not wrap ints by default', () => {
           assert.strictEqual(
             typeof entity.decodeValueProto(valueProto),
-            'number'
-          );
-          assert.strictEqual(
-            typeof entity.decodeValueProto(valueProto, {}),
             'number'
           );
         });
@@ -613,23 +643,22 @@ describe('entity', () => {
       });
 
       it('should wrap ints with option', () => {
-        const typeCastOptions = {wrapNumbers: true};
+        const wrapNumbers = true;
 
         assert.ok(
-          entity.decodeValueProto(valueProto, typeCastOptions) instanceof
-            entity.Int
+          entity.decodeValueProto(valueProto, wrapNumbers) instanceof entity.Int
         );
       });
 
       it('should propagate error from typeCastfunction', () => {
+        const wrapNumbers = true;
         const errorMessage = 'some error from type casting function';
         const error = new Error(errorMessage);
         const stub = sinon.stub().throws(error);
         assert.throws(
           () =>
             entity
-              .decodeValueProto(valueProto, {
-                wrapNumbers: true,
+              .decodeValueProto(valueProto, wrapNumbers, {
                 integerTypeCastFunction: stub,
               })
               .valueOf(),

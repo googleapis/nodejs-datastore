@@ -292,6 +292,7 @@ class DatastoreRequest {
 
           const entities = entity.formatArray(
             resp!.found! as ResponseResult[],
+            options.wrapNumbers,
             options.integerTypeCastOptions
           );
           const nextKeys = (resp!.deferred || [])
@@ -786,6 +787,7 @@ class DatastoreRequest {
       if (resp.batch.entityResults) {
         entities = entity.formatArray(
           resp.batch.entityResults,
+          options.wrapNumbers,
           options.integerTypeCastOptions
         );
       }

@@ -529,7 +529,6 @@ export interface QueryProto {
 export {Query};
 
 export interface IntegerTypeCastOptions {
-  wrapNumbers?: boolean;
   integerTypeCastFunction?: Function;
   properties?: string | string[];
 }
@@ -537,6 +536,7 @@ export interface IntegerTypeCastOptions {
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   gaxOptions?: CallOptions;
+  wrapNumbers?: boolean;
   integerTypeCastOptions?: IntegerTypeCastOptions;
 }
 

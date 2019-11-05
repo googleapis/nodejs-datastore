@@ -495,6 +495,7 @@ export namespace entity {
    */
   export function decodeValueProto(
     valueProto: ValueProto,
+    wrapNumbers?: boolean,
     typeCastOptions?: IntegerTypeCastOptions
   ) {
     const valueType = valueProto.valueType!;
@@ -504,7 +505,7 @@ export namespace entity {
       case 'arrayValue': {
         // tslint:disable-next-line no-any
         return value.values.map((val: any) =>
-          entity.decodeValueProto(val, typeCastOptions)
+          entity.decodeValueProto(val, wrapNumbers, typeCastOptions)
         );
       }
 
@@ -521,13 +522,17 @@ export namespace entity {
       }
 
       case 'integerValue': {
-        return typeCastOptions && typeCastOptions!.wrapNumbers
+        return wrapNumbers
           ? new entity.Int(valueProto, typeCastOptions)
           : decodeIntegerValue(valueProto);
       }
 
       case 'entityValue': {
-        return entity.entityFromEntityProto(value, typeCastOptions);
+        return entity.entityFromEntityProto(
+          value,
+          wrapNumbers,
+          typeCastOptions
+        );
       }
 
       case 'keyValue': {
@@ -685,6 +690,7 @@ export namespace entity {
   // tslint:disable-next-line no-any
   export function entityFromEntityProto(
     entityProto: EntityProto,
+    wrapNumbers?: boolean,
     typeCastOptions?: IntegerTypeCastOptions
   ) {
     // tslint:disable-next-line no-any
@@ -694,7 +700,11 @@ export namespace entity {
     // tslint:disable-next-line forin
     for (const property in properties) {
       const value = properties[property];
-      entityObject[property] = entity.decodeValueProto(value, typeCastOptions);
+      entityObject[property] = entity.decodeValueProto(
+        value,
+        wrapNumbers,
+        typeCastOptions
+      );
     }
 
     return entityObject;
@@ -902,10 +912,15 @@ export namespace entity {
    */
   export function formatArray(
     results: ResponseResult[],
+    wrapNumbers?: boolean,
     typeCastOptions?: IntegerTypeCastOptions
   ) {
     return results.map(result => {
-      const ent = entity.entityFromEntityProto(result.entity!, typeCastOptions);
+      const ent = entity.entityFromEntityProto(
+        result.entity!,
+        wrapNumbers,
+        typeCastOptions
+      );
       ent[entity.KEY_SYMBOL] = entity.keyFromKeyProto(result.entity!.key!);
       return ent;
     });
