@@ -1,7 +1,7 @@
 {
   "name": "@google-cloud/datastore",
   "description": "Cloud Datastore Client Library for Node.js",
-  "version": "4.4.1",
+  "version": "4.5.0",
   "license": "Apache-2.0",
   "author": "Google LLC.",
   "engines": {
@@ -48,7 +48,7 @@
   "dependencies": {
     "@google-cloud/projectify": "^1.0.0",
     "@google-cloud/promisify": "^1.0.0",
-    "@grpc/grpc-js": "^0.6.0",
+    "@grpc/grpc-js": "0.6.9",
     "@types/duplexify": "^3.6.0",
     "@types/long": "^4.0.0",
     "arrify": "^2.0.1",
