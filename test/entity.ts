@@ -111,10 +111,11 @@ describe('entity', () => {
               'value ' +
               opts.integerValue +
               " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-              "Please consider passing 'options.integerTypeCastOptions' as\n" +
+              "Please consider passing 'options.wrapNumbers=true' and\n" +
+              "'options.integerTypeCastOptions' as\n" +
               '{\n' +
-              'wrapNumbers: true,\n' +
-              'integerTypeCastFunction: <your_custom_function>\n' +
+              '  integerTypeCastFunction: optionally provide <your_custom_function>\n' +
+              '  properties: optionally specify property name(s) to be cutom casted' +
               '}\n' +
               'to prevent this error.'
           );
@@ -609,10 +610,11 @@ describe('entity', () => {
                 'value ' +
                 opts.integerValue +
                 " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-                "Please consider passing 'options.integerTypeCastOptions' as\n" +
+                "Please consider passing 'options.wrapNumbers=true' and\n" +
+                "'options.integerTypeCastOptions' as\n" +
                 '{\n' +
-                'wrapNumbers: true,\n' +
-                'integerTypeCastFunction: <your_custom_function>\n' +
+                '  integerTypeCastFunction: optionally provide <your_custom_function>\n' +
+                '  properties: optionally specify property name(s) to be cutom casted' +
                 '}\n' +
                 'to prevent this error.'
             );
