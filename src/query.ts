@@ -399,11 +399,13 @@ class Query {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {boolean} [options.wrapNumbers=false]
+   *     Indicates if the numbers should be wrapped in Int wrapper.
    * @param {object} [options.integerTypeCastOptions] Configurations to
    *     optionally wrap `integerValue` in Datastore Int object and optionally
-   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion
-   * @param {boolean} [options.integerTypeCastOptions.wrapNumbers=false]
-   *     Indicates if the numbers should be wrapped in Int wrapper.
+   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion.
+   *     Note: `integerTypeCastingOptions` values will be ingnored
+   *     if not passed tgether `wrapNumbers=true` option.
    * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction]
    *     A custom user provided function to convert `integerValue`.
    * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
