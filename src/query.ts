@@ -400,7 +400,7 @@ class Query {
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {boolean} [options.wrapNumbers=false]
-   *     Wrap values of integerValue type in @see {@link Datastore#Int} object.
+   *     Wrap values of integerValue type in {@link Datastore#Int} object.
    * @param {object} [options.integerTypeCastOptions] Configuration to convert
    *     values of `integerValue` type to a custom value. Must provide an
    *     `integerTypeCastFunction` to handle `integerValue` conversion.
