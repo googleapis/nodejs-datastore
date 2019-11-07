@@ -114,12 +114,19 @@ describe('entity', () => {
               "Please consider passing 'options.wrapNumbers=true' and\n" +
               "'options.integerTypeCastOptions' as\n" +
               '{\n' +
-              '  integerTypeCastFunction: optionally provide <your_custom_function>\n' +
+              '  integerTypeCastFunction: provide <your_custom_function>\n' +
               '  properties: optionally specify property name(s) to be cutom casted' +
               '}\n' +
               'to prevent this error.'
           );
         };
+        it('should throw if integerTypeCastOptions is provided but integerTypeCastFunction is not', () => {
+          assert.throws(
+            () => new entity.Int(valueProto, {}).valueOf(),
+            /integerTypeCastFunction is not a function or is not provided\./
+          );
+        });
+        
         it('should throw if integer value is outside of bounds passing objects', () => {
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
@@ -179,7 +186,7 @@ describe('entity', () => {
               new entity.Int(valueProto, {
                 integerTypeCastFunction: {},
               }).valueOf(),
-            /integerTypeCastFunction is not a function or was not provided\./
+            /integerTypeCastFunction is not a function or is not provided\./
           );
         });
 
@@ -612,7 +619,7 @@ describe('entity', () => {
                 "Please consider passing 'options.wrapNumbers=true' and\n" +
                 "'options.integerTypeCastOptions' as\n" +
                 '{\n' +
-                '  integerTypeCastFunction: optionally provide <your_custom_function>\n' +
+                '  integerTypeCastFunction: provide <your_custom_function>\n' +
                 '  properties: optionally specify property name(s) to be cutom casted' +
                 '}\n' +
                 'to prevent this error.'
@@ -678,7 +685,7 @@ describe('entity', () => {
               .valueOf(),
           (err: Error) => {
             return new RegExp(
-              `integerTypeCastFunction threw an error - ${errorMessage}`
+              `integerTypeCastFunction threw an error:\n\n - ${errorMessage}`
             ).test(err.message);
           }
         );

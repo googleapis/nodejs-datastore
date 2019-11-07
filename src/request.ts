@@ -437,13 +437,13 @@ class DatastoreRequest {
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {boolean} [options.wrapNumbers=false]
-   *     Indicates if the numbers should be wrapped in Int wrapper.
-   * @param {object} [options.integerTypeCastOptions] Configurations to
-   *     optionally wrap `integerValue` in Datastore Int object and optionally
-   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion.
-   *     Note: `integerTypeCastingOptions` values will be ingnored
-   *     if not passed tgether `wrapNumbers=true` option.
-   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction]
+   *     Wrap values of integerValue type in {@link Datastore#Int} object.
+   * @param {object} [options.integerTypeCastOptions] Configuration to convert
+   *     values of `integerValue` type to a custom value. Must provide an
+   *     `integerTypeCastFunction` to handle `integerValue` conversion.
+   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
+   *     not set to `true`.
+   * @param {function} options.integerTypeCastOptions.integerTypeCastFunction
    *     A custom user provided function to convert `integerValue`.
    * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
    *     property names to be converted using `integerTypeCastFunction`.
@@ -595,13 +595,13 @@ class DatastoreRequest {
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {boolean} [options.wrapNumbers=false]
-   *     Indicates if the numbers should be wrapped in Int wrapper.
-   * @param {object} [options.integerTypeCastOptions] Configurations to
-   *     optionally wrap `integerValue` in Datastore Int object and optionally
-   *     provide an `integerTypeCastFunction` to handle `integerValue` conversion.
-   *     Note: `integerTypeCastingOptions` values will be ingnored
-   *     if not passed tgether `wrapNumbers=true` option.
-   * @param {function} [options.integerTypeCastOptions.integerTypeCastFunction]
+   *     Wrap values of integerValue type in {@link Datastore#Int} object.
+   * @param {object} [options.integerTypeCastOptions] Configuration to convert
+   *     values of `integerValue` type to a custom value. Must provide an
+   *     `integerTypeCastFunction` to handle `integerValue` conversion.
+   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
+   *     not set to `true`.
+   * @param {function} options.integerTypeCastOptions.integerTypeCastFunction
    *     A custom user provided function to convert `integerValue`.
    * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
    *     property names to be converted using `integerTypeCastFunction`.

@@ -111,10 +111,10 @@ export namespace entity {
    *
    * @class
    * @param {number|string} value The integer value.
-   * @param {object} typeCastOptions Config for custom `integerValue` cast.
-   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
-   *     wrapped in Int wrapper.
-   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
+   * @param {object} [typeCastOptions] Configuration to convert
+   *     values of `integerValue` type to a custom value. Must provide an
+   *     `integerTypeCastFunction` to handle `integerValue` conversion.
+   * @param {function} typeCastOptions.integerTypeCastFunction A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
@@ -151,15 +151,13 @@ export namespace entity {
        * @type {string}
        */
       if (typeCastOptions) {
-        if (
-          typeCastOptions.integerTypeCastFunction &&
-          typeof typeCastOptions.integerTypeCastFunction !== 'function'
-        ) {
+        this.typeCastFunction = typeCastOptions.integerTypeCastFunction;
+        if (typeof typeCastOptions.integerTypeCastFunction !== 'function') {
           throw new Error(
-            `integerTypeCastFunction is not a function or was not provided.`
+            `integerTypeCastFunction is not a function or is not provided.`
           );
         }
-        this.typeCastFunction = typeCastOptions.integerTypeCastFunction;
+
         this.typeCastProperties = typeCastOptions.properties
           ? arrify(typeCastOptions.properties)
           : undefined;
@@ -167,19 +165,19 @@ export namespace entity {
     }
     // tslint:disable-next-line no-any
     valueOf(): any {
-      let customCast = this.typeCastFunction ? true : false;
+      let shouldCustomCast = this.typeCastFunction ? true : false;
       if (
         this.typeCastProperties &&
         !this.typeCastProperties.includes(this._entityPropertyName!)
       ) {
-        customCast = false;
+        shouldCustomCast = false;
       }
 
-      if (customCast) {
+      if (shouldCustomCast) {
         try {
           return this.typeCastFunction!(this.value);
         } catch (error) {
-          error.message = `integerTypeCastFunction threw an error - ${error.message}`;
+          error.message = `integerTypeCastFunction threw an error:\n\n - ${error.message}`;
           throw error;
         }
       } else {
@@ -455,7 +453,7 @@ export namespace entity {
           "Please consider passing 'options.wrapNumbers=true' and\n" +
           "'options.integerTypeCastOptions' as\n" +
           '{\n' +
-          '  integerTypeCastFunction: optionally provide <your_custom_function>\n' +
+          '  integerTypeCastFunction: provide <your_custom_function>\n' +
           '  properties: optionally specify property name(s) to be cutom casted' +
           '}\n' +
           'to prevent this error.'
@@ -469,10 +467,14 @@ export namespace entity {
    *
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
-   * @param {object} typeCastOptions Config for custom `integerValue` cast.
-   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
-   *     wrapped in Int wrapper.
-   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
+   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in 
+   *     {@link Datastore#Int} object.
+   * @param {object} [typeCastOptions] Configuration to convert
+   *     values of `integerValue` type to a custom value. Must provide an
+   *     `integerTypeCastFunction` to handle `integerValue` conversion.
+   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
+   *     not set to `true`.
+   * @param {function} typeCastOptions.integerTypeCastFunction A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
@@ -662,10 +664,14 @@ export namespace entity {
    *
    * @private
    * @param {object} entityProto The protocol entity object to convert.
-   * @param {object} typeCastOptions Config for custom `integerValue` cast.
-   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
-   *     wrapped in Int wrapper.
-   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
+   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in 
+   *     {@link Datastore#Int} object.
+   * @param {object} [typeCastOptions] Configuration to convert
+   *     values of `integerValue` type to a custom value. Must provide an
+   *     `integerTypeCastFunction` to handle `integerValue` conversion.
+   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
+   *     not set to `true`.
+   * @param {function} typeCastOptions.integerTypeCastFunction A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
@@ -891,10 +897,14 @@ export namespace entity {
    * @param {object[]} results The response array.
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
-   * @param {object} typeCastOptions Config for custom `integerValue` cast.
-   * @param {boolean} [wrapNumbers=false] Indicates if the numbers should be
-   *     wrapped in Int wrapper.
-   * @param {function} [typeCastOptions.integerTypeCastFunction] A custom user
+   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in 
+   *     {@link Datastore#Int} object.
+   * @param {object} [typeCastOptions] Configuration to convert
+   *     values of `integerValue` type to a custom value. Must provide an
+   *     `integerTypeCastFunction` to handle `integerValue` conversion.
+   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
+   *     not set to `true`.
+   * @param {function} typeCastOptions.integerTypeCastFunction A custom user
    *     provided function to convert `integerValue`.
    * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
