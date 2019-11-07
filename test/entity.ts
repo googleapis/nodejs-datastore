@@ -199,7 +199,6 @@ describe('entity', () => {
           });
 
           new entity.Int(valueProto, {
-            wrapNumber: true,
             integerTypeCastFunction: stub,
             properties: 'thisValue',
           }).valueOf();
@@ -214,7 +213,6 @@ describe('entity', () => {
             propertyName: 'thisValue',
           });
 
-          assert.ok(stub.notCalled);
           assert.strictEqual(
             entity
               .decodeValueProto(valueProto, wrapNumbers, {
@@ -224,6 +222,7 @@ describe('entity', () => {
               .valueOf(),
             (valueProto as ValueProto).integerValue
           );
+          assert.ok(stub.notCalled);
         });
       });
     });
@@ -591,7 +590,7 @@ describe('entity', () => {
         integerValue: 8,
       };
 
-      describe('default `wrapNumbers: false`', () => {
+      describe('default `wrapNumbers: undefined`', () => {
         it('should not wrap ints by default', () => {
           assert.strictEqual(
             typeof entity.decodeValueProto(valueProto),
@@ -641,6 +640,19 @@ describe('entity', () => {
           assert.throws(() => {
             entity.decodeValueProto(valueProto2);
           }, expectedError(valueProto2));
+        });
+
+        it('should not wrap and should ignore `typeCastOptions`', () => {
+          const stub = sinon.stub();
+          const wrapNumbers = undefined;
+
+          assert.strictEqual(
+            typeof entity.decodeValueProto(valueProto, wrapNumbers, {
+              typeCastOptions: {integerTypeCastFunction: stub},
+            }),
+            'number'
+          );
+          assert.ok(stub.notCalled);
         });
       });
 
@@ -1001,6 +1013,28 @@ describe('entity', () => {
       assert.deepStrictEqual(
         entity.entityFromEntityProto(entityProto),
         expectedEntity
+      );
+    });
+
+    it('should pass `wrapNumbers=undefined`, `integerTypeCastOptions` if set, to decodeValueProto', done => {
+      const entityProto = {properties: {number: {}}};
+      const integerTypeCastOptions = {
+        integerTypeCastFunction: () => {},
+      };
+      entity.decodeValueProto = (
+        value: ValueProto,
+        wrapNumbers?: boolean,
+        typeCastOptions?: IntegerTypeCastOptions
+      ) => {
+        assert.strictEqual(wrapNumbers, undefined);
+        assert.deepStrictEqual(typeCastOptions, integerTypeCastOptions);
+        assert.strictEqual(typeCastOptions, integerTypeCastOptions);
+        done();
+      };
+      entity.entityFromEntityProto(
+        entityProto,
+        undefined,
+        integerTypeCastOptions
       );
     });
   });
@@ -1489,6 +1523,25 @@ describe('entity', () => {
 
       assert.deepStrictEqual(ent, expectedResults);
       assert.strictEqual(ent[entity.KEY_SYMBOL], key);
+    });
+
+    it('should pass `wrapNumbers=undefined`, `integerTypeCastOptions` if set, to entityFromEntityProto', done => {
+      const results = [{}];
+      const integerTypeCastOptions = {
+        integerTypeCastFunction: () => {},
+      };
+
+      entity.entityFromEntityProto = (
+        entityProto_: {},
+        wrapNumbers?: boolean,
+        typeCastOptions?: IntegerTypeCastOptions
+      ) => {
+        assert.strictEqual(wrapNumbers, undefined);
+        assert.deepStrictEqual(typeCastOptions, integerTypeCastOptions);
+        assert.strictEqual(typeCastOptions, integerTypeCastOptions);
+        done();
+      };
+      entity.formatArray(results, undefined, integerTypeCastOptions);
     });
   });
 

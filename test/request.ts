@@ -884,6 +884,28 @@ describe('Request', () => {
           });
       });
 
+      it('should pass `wrapNumbers=undefined` if not set, `integerTypeCastOptions` if set, to formatArray', done => {
+        const integerTypeCastOptions = {
+          integerTypeCastFunction: () => {},
+        };
+        sandbox.stub(entity, 'queryToQueryProto');
+        formatArrayStub.restore();
+        sandbox
+          .stub(entity, 'formatArray')
+          .callsFake((array, wrapNumbers, typeCastOptions) => {
+            assert.strictEqual(wrapNumbers, undefined);
+            assert.strictEqual(typeCastOptions, integerTypeCastOptions);
+            assert.deepStrictEqual(typeCastOptions, integerTypeCastOptions);
+            return array;
+          });
+
+        request
+          .runQueryStream({}, {integerTypeCastOptions})
+          .on('error', assert.ifError)
+          .on('data', () => {})
+          .on('end', done);
+      });
+
       it('should re-run query if not finished', done => {
         const query = {
           limitVal: 1,
@@ -1123,6 +1145,24 @@ describe('Request', () => {
             done();
           }
         );
+      });
+
+      it('should pass `wrapNumbers=undefined` if not set, `integerTypeCastOptions` if set, to runQueryStream', done => {
+        const integerTypeCastOptions = {
+          integerTypeCastFunction: () => {},
+        };
+        const options = {integerTypeCastOptions};
+        request.runQuery(query, options, (err: Error) => {
+          assert.ifError(err);
+
+          const spy = request.runQueryStream.getCall(0);
+          assert.strictEqual(
+            spy.args[1].integerTypeCastOptions,
+            integerTypeCastOptions
+          );
+          assert.strictEqual(spy.args[1].wrapNumbers, undefined);
+          done();
+        });
       });
 
       it('should allow options to be omitted', done => {
