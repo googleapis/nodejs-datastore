@@ -467,7 +467,7 @@ export namespace entity {
    *
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
-   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in 
+   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    * @param {object} [typeCastOptions] Configuration to convert
    *     values of `integerValue` type to a custom value. Must provide an
@@ -664,7 +664,7 @@ export namespace entity {
    *
    * @private
    * @param {object} entityProto The protocol entity object to convert.
-   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in 
+   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    * @param {object} [typeCastOptions] Configuration to convert
    *     values of `integerValue` type to a custom value. Must provide an
@@ -897,7 +897,7 @@ export namespace entity {
    * @param {object[]} results The response array.
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
-   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in 
+   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    * @param {object} [typeCastOptions] Configuration to convert
    *     values of `integerValue` type to a custom value. Must provide an

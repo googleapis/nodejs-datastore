@@ -126,7 +126,7 @@ describe('entity', () => {
             /integerTypeCastFunction is not a function or is not provided\./
           );
         });
-        
+
         it('should throw if integer value is outside of bounds passing objects', () => {
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
