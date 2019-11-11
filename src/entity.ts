@@ -478,6 +478,10 @@ export namespace entity {
    * @param {object} valueProto The protobuf Value message to convert.
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
+   *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
+   *     If an `object`, this will return a value returned by 
+   *     `wrapNumbers.integerTypeCastFunction`.
+   *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    * @returns {*}
    *
    * @example
@@ -663,6 +667,10 @@ export namespace entity {
    * @param {object} entityProto The protocol entity object to convert.
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
+   *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
+   *     If an `object`, this will return a value returned by 
+   *     `wrapNumbers.integerTypeCastFunction`.
+   *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    * @returns {object}
    *
    * @example
@@ -882,6 +890,10 @@ export namespace entity {
    * @param {object} results.entity.key The entity's key.
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
+   *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
+   *     If an `object`, this will return a value returned by 
+   *     `wrapNumbers.integerTypeCastFunction`.
+   *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    *
    * @example
    * request_('runQuery', {}, (err, response) => {

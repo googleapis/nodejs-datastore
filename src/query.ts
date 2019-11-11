@@ -401,6 +401,10 @@ class Query {
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=false]
    *     Wrap values of integerValue type in {@link Datastore#Int} object.
+   *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
+   *     If an `object`, this will return a value returned by 
+   *     `wrapNumbers.integerTypeCastFunction`.
+   *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    * @param {function} [callback] The callback function. If omitted, a readable
    *     stream instance is returned.
    * @param {?error} callback.err An error returned while making this request
