@@ -706,10 +706,7 @@ describe('Request', () => {
 
           const createReadStreamOptions = request.createReadStream.getCall(0)
             .args[1];
-          assert.strictEqual(
-            createReadStreamOptions.wrapNumbers,
-            undefined
-          );
+          assert.strictEqual(createReadStreamOptions.wrapNumbers, undefined);
         });
 
         // boolean 'wrapNumbers=true'
@@ -1293,10 +1290,7 @@ describe('Request', () => {
           assert.ifError(err);
 
           const runQueryOptions = request.runQueryStream.getCall(1).args[1];
-          assert.strictEqual(
-            typeof runQueryOptions.wrapNumbers,
-            'boolean'
-          );
+          assert.strictEqual(typeof runQueryOptions.wrapNumbers, 'boolean');
         });
 
         // object `wrapNumbers as integerTypeCastOptions`

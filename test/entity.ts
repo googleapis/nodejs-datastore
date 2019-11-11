@@ -604,42 +604,49 @@ describe('entity', () => {
         });
       });
 
-      it('should wrap ints with option', () => {
-        const wrapNumbersBoolean = true;
-        const wrapNumbersObject = {integerTypeCastFunction: () => {}};
+      describe('should wrap ints with option', () => {
+        it('should wrap ints with wrapNumbers as boolean', () => {
+          const wrapNumbers = true;
+          const stub = sinon.spy(entity, 'Int');
 
-        assert.ok(
-          entity.decodeValueProto(
-            valueProto,
-            wrapNumbersBoolean
-          ) instanceof entity.Int
-        );
+          entity.decodeValueProto(valueProto, wrapNumbers);
+          assert.strictEqual(stub.called, true);
+        });
 
-        assert.ok(
-          entity.decodeValueProto(
-            valueProto,
-            wrapNumbersObject
-          ) instanceof entity.Int
-        );
-      });
+        it('should wrap ints with wrapNumbers as object', () => {
+          const wrapNumbers = {integerTypeCastFunction: () => {}};
+          const stub = sinon.spy(entity, 'Int');
 
-      it('should propagate error from typeCastfunction', () => {
-        const errorMessage = 'some error from type casting function';
-        const error = new Error(errorMessage);
-        const stub = sinon.stub().throws(error);
-        assert.throws(
-          () =>
-            entity
-              .decodeValueProto(valueProto, {
-                integerTypeCastFunction: stub,
-              })
-              .valueOf(),
-          (err: Error) => {
-            return new RegExp(
-              `integerTypeCastFunction threw an error:\n\n - ${errorMessage}`
-            ).test(err.message);
-          }
-        );
+          entity.decodeValueProto(valueProto, wrapNumbers);
+          assert.strictEqual(stub.called, true);
+        });
+
+        it('should call #valueOf if integerTypeCastFunction is provided', () => {
+          const stub = sinon.stub();
+          const wrapNumbers = {integerTypeCastFunction: stub};
+
+          entity.decodeValueProto(valueProto, wrapNumbers);
+          assert.strictEqual(stub.called, true);
+        });
+
+        it('should propagate error from typeCastfunction', () => {
+          const errorMessage = 'some error from type casting function';
+          const error = new Error(errorMessage);
+          const stub = sinon.stub().throws(error);
+          assert.throws(
+            () =>
+              entity
+                .decodeValueProto(valueProto, {
+                  integerTypeCastFunction: stub,
+                })
+                .valueOf(),
+            (err: Error) => {
+              return new RegExp(
+                `integerTypeCastFunction threw an error:\n\n - ${errorMessage}`
+              ).test(err.message);
+            }
+          );
+        });
       });
     });
 

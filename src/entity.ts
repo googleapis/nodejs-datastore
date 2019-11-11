@@ -525,12 +525,9 @@ export namespace entity {
 
       case 'integerValue': {
         return wrapNumbers
-          ? new entity.Int(
-              valueProto,
-              typeof wrapNumbers === 'object'
-                ? (wrapNumbers as IntegerTypeCastOptions)
-                : undefined
-            )
+          ? typeof wrapNumbers === 'object'
+            ? new entity.Int(valueProto, wrapNumbers).valueOf()
+            : new entity.Int(valueProto, undefined)
           : decodeIntegerValue(valueProto);
       }
 
@@ -697,10 +694,7 @@ export namespace entity {
     // tslint:disable-next-line forin
     for (const property in properties) {
       const value = properties[property];
-      entityObject[property] = entity.decodeValueProto(
-        value,
-        wrapNumbers
-      );
+      entityObject[property] = entity.decodeValueProto(value, wrapNumbers);
     }
 
     return entityObject;
@@ -906,10 +900,7 @@ export namespace entity {
     wrapNumbers?: boolean | IntegerTypeCastOptions
   ) {
     return results.map(result => {
-      const ent = entity.entityFromEntityProto(
-        result.entity!,
-        wrapNumbers
-      );
+      const ent = entity.entityFromEntityProto(result.entity!, wrapNumbers);
       ent[entity.KEY_SYMBOL] = entity.keyFromKeyProto(result.entity!.key!);
       return ent;
     });

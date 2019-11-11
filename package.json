@@ -58,7 +58,8 @@
     "google-gax": "^1.7.5",
     "is": "^3.3.0",
     "split-array-stream": "^2.0.0",
-    "stream-events": "^1.0.5"
+    "stream-events": "^1.0.5",
+    "typescript": "~3.7.0"
   },
   "devDependencies": {
     "@types/extend": "^3.0.1",
