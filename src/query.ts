@@ -399,17 +399,8 @@ class Query {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {boolean} [options.wrapNumbers=false]
+   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbersOptions=false]
    *     Wrap values of integerValue type in {@link Datastore#Int} object.
-   * @param {object} [options.integerTypeCastOptions] Configuration to convert
-   *     values of `integerValue` type to a custom value. Must provide an
-   *     `integerTypeCastFunction` to handle `integerValue` conversion.
-   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
-   *     not set to `true`.
-   * @param {function} options.integerTypeCastOptions.integerTypeCastFunction
-   *     A custom user provided function to convert `integerValue`.
-   * @param {sting|string[]} [options.integerTypeCastOptions.properties] `Entity`
-   *     property names to be converted using `integerTypeCastFunction`.
    * @param {function} [callback] The callback function. If omitted, a readable
    *     stream instance is returned.
    * @param {?error} callback.err An error returned while making this request
@@ -538,8 +529,7 @@ export interface IntegerTypeCastOptions {
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   gaxOptions?: CallOptions;
-  wrapNumbers?: boolean;
-  integerTypeCastOptions?: IntegerTypeCastOptions;
+  wrapNumbersOptions?: boolean | IntegerTypeCastOptions;
 }
 
 export interface RunQueryCallback {

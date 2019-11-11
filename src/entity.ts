@@ -450,8 +450,8 @@ export namespace entity {
           'value ' +
           value.integerValue +
           " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-          "Please consider passing 'options.wrapNumbers=true' and\n" +
-          "'options.integerTypeCastOptions' as\n" +
+          "Please consider passing 'options.wrapNumbersOptions=true' or\n" +
+          "'options.wrapNumbersOptions' as\n" +
           '{\n' +
           '  integerTypeCastFunction: provide <your_custom_function>\n' +
           '  properties: optionally specify property name(s) to be cutom casted' +
@@ -463,21 +463,21 @@ export namespace entity {
   }
 
   /**
+   * @typedef {object} IntegerTypeCastOptions Configuration to convert
+   *     values of `integerValue` type to a custom value. Must provide an
+   *     `integerTypeCastFunction` to handle `integerValue` conversion.
+   * @property {function} integerTypeCastFunction A custom user
+   *     provided function to convert `integerValue`.
+   * @property {string | string[]} [properties] `Entity` property
+   *     names to be converted using `integerTypeCastFunction`.
+   */
+  /**
    * Convert a protobuf Value message to its native value.
    *
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
-   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbersOptions=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
-   * @param {object} [typeCastOptions] Configuration to convert
-   *     values of `integerValue` type to a custom value. Must provide an
-   *     `integerTypeCastFunction` to handle `integerValue` conversion.
-   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
-   *     not set to `true`.
-   * @param {function} typeCastOptions.integerTypeCastFunction A custom user
-   *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
-   *     names to be converted using `integerTypeCastFunction`.
    * @returns {*}
    *
    * @example
@@ -498,8 +498,7 @@ export namespace entity {
    */
   export function decodeValueProto(
     valueProto: ValueProto,
-    wrapNumbers?: boolean,
-    typeCastOptions?: IntegerTypeCastOptions
+    wrapNumbersOptions?: boolean | IntegerTypeCastOptions
   ) {
     const valueType = valueProto.valueType!;
     const value = valueProto[valueType];
@@ -508,7 +507,7 @@ export namespace entity {
       case 'arrayValue': {
         // tslint:disable-next-line no-any
         return value.values.map((val: any) =>
-          entity.decodeValueProto(val, wrapNumbers, typeCastOptions)
+          entity.decodeValueProto(val, wrapNumbersOptions)
         );
       }
 
@@ -525,17 +524,18 @@ export namespace entity {
       }
 
       case 'integerValue': {
-        return wrapNumbers
-          ? new entity.Int(valueProto, typeCastOptions)
+        return wrapNumbersOptions
+          ? new entity.Int(
+              valueProto,
+              typeof wrapNumbersOptions === 'object'
+                ? (wrapNumbersOptions as IntegerTypeCastOptions)
+                : undefined
+            )
           : decodeIntegerValue(valueProto);
       }
 
       case 'entityValue': {
-        return entity.entityFromEntityProto(
-          value,
-          wrapNumbers,
-          typeCastOptions
-        );
+        return entity.entityFromEntityProto(value, wrapNumbersOptions);
       }
 
       case 'keyValue': {
@@ -664,17 +664,8 @@ export namespace entity {
    *
    * @private
    * @param {object} entityProto The protocol entity object to convert.
-   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbersOptions=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
-   * @param {object} [typeCastOptions] Configuration to convert
-   *     values of `integerValue` type to a custom value. Must provide an
-   *     `integerTypeCastFunction` to handle `integerValue` conversion.
-   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
-   *     not set to `true`.
-   * @param {function} typeCastOptions.integerTypeCastFunction A custom user
-   *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
-   *     names to be converted using `integerTypeCastFunction`.
    * @returns {object}
    *
    * @example
@@ -697,8 +688,7 @@ export namespace entity {
   // tslint:disable-next-line no-any
   export function entityFromEntityProto(
     entityProto: EntityProto,
-    wrapNumbers?: boolean,
-    typeCastOptions?: IntegerTypeCastOptions
+    wrapNumbersOptions?: boolean | IntegerTypeCastOptions
   ) {
     // tslint:disable-next-line no-any
     const entityObject: any = {};
@@ -709,8 +699,7 @@ export namespace entity {
       const value = properties[property];
       entityObject[property] = entity.decodeValueProto(
         value,
-        wrapNumbers,
-        typeCastOptions
+        wrapNumbersOptions
       );
     }
 
@@ -897,17 +886,8 @@ export namespace entity {
    * @param {object[]} results The response array.
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
-   * @param {boolean} [wrapNumbers=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbersOptions=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
-   * @param {object} [typeCastOptions] Configuration to convert
-   *     values of `integerValue` type to a custom value. Must provide an
-   *     `integerTypeCastFunction` to handle `integerValue` conversion.
-   *     Note: integerTypeCastOptions is ignored when `options.wrapNumbers` is
-   *     not set to `true`.
-   * @param {function} typeCastOptions.integerTypeCastFunction A custom user
-   *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
-   *     names to be converted using `integerTypeCastFunction`.
    *
    * @example
    * request_('runQuery', {}, (err, response) => {
@@ -923,14 +903,12 @@ export namespace entity {
    */
   export function formatArray(
     results: ResponseResult[],
-    wrapNumbers?: boolean,
-    typeCastOptions?: IntegerTypeCastOptions
+    wrapNumbersOptions?: boolean | IntegerTypeCastOptions
   ) {
     return results.map(result => {
       const ent = entity.entityFromEntityProto(
         result.entity!,
-        wrapNumbers,
-        typeCastOptions
+        wrapNumbersOptions
       );
       ent[entity.KEY_SYMBOL] = entity.keyFromKeyProto(result.entity!.key!);
       return ent;
