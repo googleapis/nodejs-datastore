@@ -292,7 +292,7 @@ class DatastoreRequest {
 
           const entities = entity.formatArray(
             resp!.found! as ResponseResult[],
-            options.wrapNumbersOptions
+            options.wrapNumbers
           );
           const nextKeys = (resp!.deferred || [])
             .map(entity.keyFromKeyProto)
@@ -435,7 +435,7 @@ class DatastoreRequest {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbersOptions=false]
+   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=false]
    *     Wrap values of integerValue type in {@link Datastore#Int} object.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request
@@ -584,7 +584,7 @@ class DatastoreRequest {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbersOptions=false]
+   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=false]
    *     Wrap values of integerValue type in {@link Datastore#Int} object.
    * @param {function} [callback] The callback function. If omitted, a readable
    *     stream instance is returned.
@@ -772,7 +772,7 @@ class DatastoreRequest {
       if (resp.batch.entityResults) {
         entities = entity.formatArray(
           resp.batch.entityResults,
-          options.wrapNumbersOptions
+          options.wrapNumbers
         );
       }
 

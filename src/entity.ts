@@ -450,8 +450,8 @@ export namespace entity {
           'value ' +
           value.integerValue +
           " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-          "Please consider passing 'options.wrapNumbersOptions=true' or\n" +
-          "'options.wrapNumbersOptions' as\n" +
+          "Please consider passing 'options.wrapNumbers=true' or\n" +
+          "'options.wrapNumbers' as\n" +
           '{\n' +
           '  integerTypeCastFunction: provide <your_custom_function>\n' +
           '  properties: optionally specify property name(s) to be cutom casted' +
@@ -476,7 +476,7 @@ export namespace entity {
    *
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
-   * @param {boolean | IntegerTypeCastOptions} [wrapNumbersOptions=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    * @returns {*}
    *
@@ -498,7 +498,7 @@ export namespace entity {
    */
   export function decodeValueProto(
     valueProto: ValueProto,
-    wrapNumbersOptions?: boolean | IntegerTypeCastOptions
+    wrapNumbers?: boolean | IntegerTypeCastOptions
   ) {
     const valueType = valueProto.valueType!;
     const value = valueProto[valueType];
@@ -507,7 +507,7 @@ export namespace entity {
       case 'arrayValue': {
         // tslint:disable-next-line no-any
         return value.values.map((val: any) =>
-          entity.decodeValueProto(val, wrapNumbersOptions)
+          entity.decodeValueProto(val, wrapNumbers)
         );
       }
 
@@ -524,18 +524,18 @@ export namespace entity {
       }
 
       case 'integerValue': {
-        return wrapNumbersOptions
+        return wrapNumbers
           ? new entity.Int(
               valueProto,
-              typeof wrapNumbersOptions === 'object'
-                ? (wrapNumbersOptions as IntegerTypeCastOptions)
+              typeof wrapNumbers === 'object'
+                ? (wrapNumbers as IntegerTypeCastOptions)
                 : undefined
             )
           : decodeIntegerValue(valueProto);
       }
 
       case 'entityValue': {
-        return entity.entityFromEntityProto(value, wrapNumbersOptions);
+        return entity.entityFromEntityProto(value, wrapNumbers);
       }
 
       case 'keyValue': {
@@ -664,7 +664,7 @@ export namespace entity {
    *
    * @private
    * @param {object} entityProto The protocol entity object to convert.
-   * @param {boolean | IntegerTypeCastOptions} [wrapNumbersOptions=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    * @returns {object}
    *
@@ -688,7 +688,7 @@ export namespace entity {
   // tslint:disable-next-line no-any
   export function entityFromEntityProto(
     entityProto: EntityProto,
-    wrapNumbersOptions?: boolean | IntegerTypeCastOptions
+    wrapNumbers?: boolean | IntegerTypeCastOptions
   ) {
     // tslint:disable-next-line no-any
     const entityObject: any = {};
@@ -699,7 +699,7 @@ export namespace entity {
       const value = properties[property];
       entityObject[property] = entity.decodeValueProto(
         value,
-        wrapNumbersOptions
+        wrapNumbers
       );
     }
 
@@ -886,7 +886,7 @@ export namespace entity {
    * @param {object[]} results The response array.
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
-   * @param {boolean | IntegerTypeCastOptions} [wrapNumbersOptions=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    *
    * @example
@@ -903,12 +903,12 @@ export namespace entity {
    */
   export function formatArray(
     results: ResponseResult[],
-    wrapNumbersOptions?: boolean | IntegerTypeCastOptions
+    wrapNumbers?: boolean | IntegerTypeCastOptions
   ) {
     return results.map(result => {
       const ent = entity.entityFromEntityProto(
         result.entity!,
-        wrapNumbersOptions
+        wrapNumbers
       );
       ent[entity.KEY_SYMBOL] = entity.keyFromKeyProto(result.entity!.key!);
       return ent;

@@ -399,7 +399,7 @@ class Query {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbersOptions=false]
+   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=false]
    *     Wrap values of integerValue type in {@link Datastore#Int} object.
    * @param {function} [callback] The callback function. If omitted, a readable
    *     stream instance is returned.
@@ -529,7 +529,7 @@ export interface IntegerTypeCastOptions {
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   gaxOptions?: CallOptions;
-  wrapNumbersOptions?: boolean | IntegerTypeCastOptions;
+  wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
 
 export interface RunQueryCallback {

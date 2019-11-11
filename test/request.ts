@@ -467,7 +467,7 @@ describe('Request', () => {
           return arr;
         });
 
-        // default 'wrapNumbersOptions=undefined'
+        // default 'wrapNumbers=undefined'
         request
           .createReadStream(key)
           .on('error', done)
@@ -478,9 +478,9 @@ describe('Request', () => {
           assert.strictEqual(wrapNumbersOpts, undefined);
         });
 
-        // boolean 'wrapNumbersOptions=true'
+        // boolean 'wrapNumbers=true'
         request
-          .createReadStream(key, {wrapNumbersOptions: true})
+          .createReadStream(key, {wrapNumbers: true})
           .on('error', done)
           .on('data', () => {});
 
@@ -489,9 +489,9 @@ describe('Request', () => {
           assert.strictEqual(typeof wrapNumbersOpts, 'boolean');
         });
 
-        // object 'wrapNumbersOptions as IntegerTypeCastOptions'
+        // object 'wrapNumbers as IntegerTypeCastOptions'
         request
-          .createReadStream(key, {wrapNumbersOptions: integerTypeCastOptions})
+          .createReadStream(key, {wrapNumbers: integerTypeCastOptions})
           .on('error', done)
           .on('data', () => {})
           .on('end', done);
@@ -700,45 +700,45 @@ describe('Request', () => {
           properties: 'that',
         };
 
-        // default 'wrapNumbersOptions=undefined'
+        // default 'wrapNumbers=undefined'
         request.get(keys, (err: Error) => {
           assert.ifError(err);
 
           const createReadStreamOptions = request.createReadStream.getCall(0)
             .args[1];
           assert.strictEqual(
-            createReadStreamOptions.wrapNumbersOptions,
+            createReadStreamOptions.wrapNumbers,
             undefined
           );
         });
 
-        // boolean 'wrapNumbersOptions=true'
-        request.get(keys, {wrapNumbersOptions: true}, (err: Error) => {
+        // boolean 'wrapNumbers=true'
+        request.get(keys, {wrapNumbers: true}, (err: Error) => {
           assert.ifError(err);
 
           const createReadStreamOptions = request.createReadStream.getCall(1)
             .args[1];
           assert.strictEqual(
-            typeof createReadStreamOptions.wrapNumbersOptions,
+            typeof createReadStreamOptions.wrapNumbers,
             'boolean'
           );
         });
 
-        // object `wrapNumbersOptions as integerTypeCastOptions`
+        // object `wrapNumbers as integerTypeCastOptions`
         request.get(
           keys,
-          {wrapNumbersOptions: integerTypeCastOptions},
+          {wrapNumbers: integerTypeCastOptions},
           (err: Error) => {
             assert.ifError(err);
 
             const createReadStreamOptions = request.createReadStream.getCall(2)
               .args[1];
             assert.strictEqual(
-              createReadStreamOptions.wrapNumbersOptions,
+              createReadStreamOptions.wrapNumbers,
               integerTypeCastOptions
             );
             assert.deepStrictEqual(
-              createReadStreamOptions.wrapNumbersOptions,
+              createReadStreamOptions.wrapNumbers,
               integerTypeCastOptions
             );
             done();
@@ -983,7 +983,7 @@ describe('Request', () => {
           });
       });
 
-      it('should pass `wrapNumbersOptions` to formatArray', done => {
+      it('should pass `wrapNumbers` to formatArray', done => {
         const integerTypeCastOptions = {
           integerTypeCastFunction: () => {},
           properties: 'that',
@@ -993,11 +993,11 @@ describe('Request', () => {
         formatArrayStub.restore();
         const stub = sandbox
           .stub(entity, 'formatArray')
-          .callsFake((array, wrapNumbersOptions) => {
+          .callsFake((array, wrapNumbers) => {
             return array;
           });
 
-        // default 'wrapNumbersOptions=undefined'
+        // default 'wrapNumbers=undefined'
         request
           .runQueryStream({})
           .on('error', assert.ifError)
@@ -1008,9 +1008,9 @@ describe('Request', () => {
           assert.strictEqual(wrapNumbersOpts, undefined);
         });
 
-        // boolean 'wrapNumbersOptions=true'
+        // boolean 'wrapNumbers=true'
         request
-          .runQueryStream({}, {wrapNumbersOptions: true})
+          .runQueryStream({}, {wrapNumbers: true})
           .on('error', assert.ifError)
           .on('data', () => {});
 
@@ -1019,9 +1019,9 @@ describe('Request', () => {
           assert.strictEqual(typeof wrapNumbersOpts, 'boolean');
         });
 
-        // object 'wrapNumbersOptions as IntegerTypeCastOptions'
+        // object 'wrapNumbers as IntegerTypeCastOptions'
         request
-          .runQueryStream({}, {wrapNumbersOptions: integerTypeCastOptions})
+          .runQueryStream({}, {wrapNumbers: integerTypeCastOptions})
           .on('error', assert.ifError)
           .on('data', () => {})
           .on('end', done);
@@ -1274,45 +1274,45 @@ describe('Request', () => {
         );
       });
 
-      it('should pass `wrapNumbersOptions` to runQueryStream', done => {
+      it('should pass `wrapNumbers` to runQueryStream', done => {
         const integerTypeCastOptions = {
           integerTypeCastFunction: () => {},
           properties: 'that',
         };
 
-        // default 'wrapNumbersOptions=undefined'
+        // default 'wrapNumbers=undefined'
         request.runQuery(query, (err: Error) => {
           assert.ifError(err);
 
           const runQueryOptions = request.runQueryStream.getCall(0).args[1];
-          assert.strictEqual(runQueryOptions.wrapNumbersOptions, undefined);
+          assert.strictEqual(runQueryOptions.wrapNumbers, undefined);
         });
 
-        // boolean 'wrapNumbersOptions=true'
-        request.runQuery(query, {wrapNumbersOptions: true}, (err: Error) => {
+        // boolean 'wrapNumbers=true'
+        request.runQuery(query, {wrapNumbers: true}, (err: Error) => {
           assert.ifError(err);
 
           const runQueryOptions = request.runQueryStream.getCall(1).args[1];
           assert.strictEqual(
-            typeof runQueryOptions.wrapNumbersOptions,
+            typeof runQueryOptions.wrapNumbers,
             'boolean'
           );
         });
 
-        // object `wrapNumbersOptions as integerTypeCastOptions`
+        // object `wrapNumbers as integerTypeCastOptions`
         request.runQuery(
           query,
-          {wrapNumbersOptions: integerTypeCastOptions},
+          {wrapNumbers: integerTypeCastOptions},
           (err: Error) => {
             assert.ifError(err);
 
             const runQueryOptions = request.runQueryStream.getCall(2).args[1];
             assert.strictEqual(
-              runQueryOptions.wrapNumbersOptions,
+              runQueryOptions.wrapNumbers,
               integerTypeCastOptions
             );
             assert.deepStrictEqual(
-              runQueryOptions.wrapNumbersOptions,
+              runQueryOptions.wrapNumbers,
               integerTypeCastOptions
             );
             done();
