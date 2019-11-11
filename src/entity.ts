@@ -479,7 +479,7 @@ export namespace entity {
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
-   *     If an `object`, this will return a value returned by 
+   *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
    *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    * @returns {*}
@@ -668,7 +668,7 @@ export namespace entity {
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
-   *     If an `object`, this will return a value returned by 
+   *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
    *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    * @returns {object}
@@ -891,7 +891,7 @@ export namespace entity {
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
    *     {@link Datastore#Int} object.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
-   *     If an `object`, this will return a value returned by 
+   *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
    *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    *

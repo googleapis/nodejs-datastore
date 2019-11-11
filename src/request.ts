@@ -438,7 +438,7 @@ class DatastoreRequest {
    * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=false]
    *     Wrap values of integerValue type in {@link Datastore#Int} object.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
-   *     If an `object`, this will return a value returned by 
+   *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
    *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    * @param {function} callback The callback function.
@@ -591,7 +591,7 @@ class DatastoreRequest {
    * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=false]
    *     Wrap values of integerValue type in {@link Datastore#Int} object.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
-   *     If an `object`, this will return a value returned by 
+   *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
    *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
    * @param {function} [callback] The callback function. If omitted, a readable
