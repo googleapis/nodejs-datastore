@@ -620,11 +620,12 @@ describe('entity', () => {
         });
 
         it('should call #valueOf if integerTypeCastFunction is provided', () => {
-          const stub = sinon.stub();
-          const wrapNumbers = {integerTypeCastFunction: stub};
+          Object.assign(valueProto, {integerValue: Number.MAX_SAFE_INTEGER});
+          const takeFirstTen = sinon.stub().callsFake((value: string) => value.toString().substr(0, 10));
+          const wrapNumbers = {integerTypeCastFunction: takeFirstTen};
 
-          entity.decodeValueProto(valueProto, wrapNumbers);
-          assert.strictEqual(stub.called, true);
+          assert.strictEqual(entity.decodeValueProto(valueProto, wrapNumbers), takeFirstTen(Number.MAX_SAFE_INTEGER));
+          assert.strictEqual(takeFirstTen.called, true);
         });
 
         it('should propagate error from typeCastfunction', () => {
