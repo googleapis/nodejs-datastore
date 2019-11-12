@@ -111,19 +111,18 @@ describe('entity', () => {
               'value ' +
               opts.integerValue +
               " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-              "Please consider passing 'options.wrapNumbers=true' or\n" +
+              "To prevent this error, please consider passing 'options.wrapNumbers=true' or\n" +
               "'options.wrapNumbers' as\n" +
               '{\n' +
               '  integerTypeCastFunction: provide <your_custom_function>\n' +
               '  properties: optionally specify property name(s) to be cutom casted' +
-              '}\n' +
-              'to prevent this error.'
-          );
+              '}\n'
+              );
         };
         it('should throw if integerTypeCastOptions is provided but integerTypeCastFunction is not', () => {
           assert.throws(
             () => new entity.Int(valueProto, {}).valueOf(),
-            /integerTypeCastFunction is not a function or is not provided\./
+            /integerTypeCastFunction is not a function or was not provided\./
           );
         });
 
@@ -186,7 +185,7 @@ describe('entity', () => {
               new entity.Int(valueProto, {
                 integerTypeCastFunction: {},
               }).valueOf(),
-            /integerTypeCastFunction is not a function or is not provided\./
+            /integerTypeCastFunction is not a function or was not provided\./
           );
         });
 
@@ -493,7 +492,7 @@ describe('entity', () => {
         assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
       });
 
-      it('should not wrap nubers by default', () => {
+      it('should not wrap numbers by default', () => {
         const expectedValue = {};
 
         const valueProto = {
@@ -513,7 +512,7 @@ describe('entity', () => {
         assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
       });
 
-      it('should wrap nubers with an option', () => {
+      it('should wrap numbers with an option', () => {
         const expectedValue = {};
         const wrapNumbersBoolean = true;
         const wrapNumbersObject = {};
@@ -570,14 +569,13 @@ describe('entity', () => {
                 'value ' +
                 opts.integerValue +
                 " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-                "Please consider passing 'options.wrapNumbers=true' or\n" +
+                "To prevent this error, please consider passing 'options.wrapNumbers=true' or\n" +
                 "'options.wrapNumbers' as\n" +
                 '{\n' +
                 '  integerTypeCastFunction: provide <your_custom_function>\n' +
                 '  properties: optionally specify property name(s) to be cutom casted' +
-                '}\n' +
-                'to prevent this error.'
-            );
+                '}\n'
+                );
           };
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
@@ -642,7 +640,7 @@ describe('entity', () => {
                 .valueOf(),
             (err: Error) => {
               return new RegExp(
-                `integerTypeCastFunction threw an error:\n\n - ${errorMessage}`
+                `integerTypeCastFunction threw an error:\n\n  - ${errorMessage}`
               ).test(err.message);
             }
           );

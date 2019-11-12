@@ -154,7 +154,7 @@ export namespace entity {
         this.typeCastFunction = typeCastOptions.integerTypeCastFunction;
         if (typeof typeCastOptions.integerTypeCastFunction !== 'function') {
           throw new Error(
-            `integerTypeCastFunction is not a function or is not provided.`
+            `integerTypeCastFunction is not a function or was not provided.`
           );
         }
 
@@ -177,7 +177,7 @@ export namespace entity {
         try {
           return this.typeCastFunction!(this.value);
         } catch (error) {
-          error.message = `integerTypeCastFunction threw an error:\n\n - ${error.message}`;
+          error.message = `integerTypeCastFunction threw an error:\n\n  - ${error.message}`;
           throw error;
         }
       } else {
@@ -450,13 +450,12 @@ export namespace entity {
           'value ' +
           value.integerValue +
           " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-          "Please consider passing 'options.wrapNumbers=true' or\n" +
+          "To prevent this error, please consider passing 'options.wrapNumbers=true' or\n" +
           "'options.wrapNumbers' as\n" +
           '{\n' +
           '  integerTypeCastFunction: provide <your_custom_function>\n' +
           '  properties: optionally specify property name(s) to be cutom casted' +
-          '}\n' +
-          'to prevent this error.'
+          '}\n'
       );
     }
     return num;
@@ -477,11 +476,11 @@ export namespace entity {
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
-   *     {@link Datastore#Int} object.
-   *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
+   *     {@link Datastore#Int} objects.
+   *     If a `boolean`, this will wrap values in {@link Datastore#Int} objects.
    *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
-   *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
+   *     Please see {@link IntegerTypeCastOptions} for options descriptions.
    * @returns {*}
    *
    * @example
@@ -666,11 +665,11 @@ export namespace entity {
    * @private
    * @param {object} entityProto The protocol entity object to convert.
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
-   *     {@link Datastore#Int} object.
-   *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
+   *     {@link Datastore#Int} objects.
+   *     If a `boolean`, this will wrap values in {@link Datastore#Int} objects.
    *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
-   *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
+   *     Please see {@link IntegerTypeCastOptions} for options descriptions.
    * @returns {object}
    *
    * @example
@@ -889,11 +888,11 @@ export namespace entity {
    * @param {object} results.entity An entity object.
    * @param {object} results.entity.key The entity's key.
    * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
-   *     {@link Datastore#Int} object.
-   *     If a `boolean`, this will wrap values in {@link Datastore#Int}.
+   *     {@link Datastore#Int} objects.
+   *     If a `boolean`, this will wrap values in {@link Datastore#Int} objects.
    *     If an `object`, this will return a value returned by
    *     `wrapNumbers.integerTypeCastFunction`.
-   *     Please see {@link  IntegerTypeCastOptions} for options descriptions.
+   *     Please see {@link IntegerTypeCastOptions} for options descriptions.
    *
    * @example
    * request_('runQuery', {}, (err, response) => {
