@@ -57,6 +57,7 @@
     "google-auth-library": "^5.0.0",
     "google-gax": "^1.7.5",
     "is": "^3.3.0",
+    "jsdoc-region-tag": "^1.0.2",
     "split-array-stream": "^2.0.0",
     "stream-events": "^1.0.5"
   },
