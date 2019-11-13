@@ -477,12 +477,12 @@ describe('Request', () => {
           request
             .createReadStream(key)
             .on('error', done)
-            .on('end', done)
             .resume();
 
           setImmediate(() => {
             wrapNumbersOpts = formtArrayStub.getCall(0).args[1];
             assert.strictEqual(wrapNumbersOpts, undefined);
+            done();
           });
         });
 
@@ -490,12 +490,12 @@ describe('Request', () => {
           request
             .createReadStream(key, {wrapNumbers: true})
             .on('error', done)
-            .on('end', done)
             .resume();
 
           setImmediate(() => {
             wrapNumbersOpts = formtArrayStub.getCall(0).args[1];
             assert.strictEqual(typeof wrapNumbersOpts, 'boolean');
+            done();
           });
         });
 
@@ -508,13 +508,13 @@ describe('Request', () => {
           request
             .createReadStream(key, {wrapNumbers: integerTypeCastOptions})
             .on('error', done)
-            .on('end', done)
             .resume();
 
           setImmediate(() => {
             wrapNumbersOpts = formtArrayStub.getCall(0).args[1];
             assert.strictEqual(wrapNumbersOpts, integerTypeCastOptions);
             assert.deepStrictEqual(wrapNumbersOpts, integerTypeCastOptions);
+            done();
           });
         });
       });
@@ -1019,12 +1019,12 @@ describe('Request', () => {
           request
             .runQueryStream({})
             .on('error', assert.ifError)
-            .on('end', done)
             .resume();
 
           setImmediate(() => {
             wrapNumbersOpts = formatArrayStub.getCall(0).args[1];
             assert.strictEqual(wrapNumbersOpts, undefined);
+            done();
           });
         });
 
@@ -1032,12 +1032,12 @@ describe('Request', () => {
           request
             .runQueryStream({}, {wrapNumbers: true})
             .on('error', assert.ifError)
-            .on('end', done)
             .resume();
 
           setImmediate(() => {
             wrapNumbersOpts = formatArrayStub.getCall(0).args[1];
             assert.strictEqual(typeof wrapNumbersOpts, 'boolean');
+            done();
           });
         });
 
@@ -1050,13 +1050,13 @@ describe('Request', () => {
           request
             .runQueryStream({}, {wrapNumbers: integerTypeCastOptions})
             .on('error', assert.ifError)
-            .on('end', done)
             .resume();
 
           setImmediate(() => {
             wrapNumbersOpts = formatArrayStub.getCall(0).args[1];
             assert.strictEqual(wrapNumbersOpts, integerTypeCastOptions);
             assert.deepStrictEqual(wrapNumbersOpts, integerTypeCastOptions);
+            done();
           });
         });
       });
