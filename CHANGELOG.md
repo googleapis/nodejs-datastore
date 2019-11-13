@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+### [4.5.3](https://www.github.com/googleapis/nodejs-datastore/compare/v4.5.2...v4.5.3) (2019-11-13)
+
+
+### Bug Fixes
+
+* **docs:** snippets are now replaced in jsdoc comments ([#535](https://www.github.com/googleapis/nodejs-datastore/issues/535)) ([53ddc21](https://www.github.com/googleapis/nodejs-datastore/commit/53ddc21f3b1545e660433b3805948dfc862ba792))
+
 ### [4.5.2](https://www.github.com/googleapis/nodejs-datastore/compare/v4.5.1...v4.5.2) (2019-11-08)
 
 
