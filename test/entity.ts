@@ -20,6 +20,7 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity, entity, ValueProto} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
+import {AnyARecord} from 'dns';
 
 describe('entity', () => {
   let entity: Entity;
@@ -117,7 +118,7 @@ describe('entity', () => {
               '  integerTypeCastFunction: provide <your_custom_function>\n' +
               '  properties: optionally specify property name(s) to be cutom casted' +
               '}\n'
-              );
+          );
         };
         it('should throw if integerTypeCastOptions is provided but integerTypeCastFunction is not', () => {
           assert.throws(
@@ -575,7 +576,7 @@ describe('entity', () => {
                 '  integerTypeCastFunction: provide <your_custom_function>\n' +
                 '  properties: optionally specify property name(s) to be cutom casted' +
                 '}\n'
-                );
+            );
           };
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
@@ -621,10 +622,15 @@ describe('entity', () => {
 
         it('should call #valueOf if integerTypeCastFunction is provided', () => {
           Object.assign(valueProto, {integerValue: Number.MAX_SAFE_INTEGER});
-          const takeFirstTen = sinon.stub().callsFake((value: string) => value.toString().substr(0, 10));
+          const takeFirstTen = sinon
+            .stub()
+            .callsFake((value: string) => value.toString().substr(0, 10));
           const wrapNumbers = {integerTypeCastFunction: takeFirstTen};
 
-          assert.strictEqual(entity.decodeValueProto(valueProto, wrapNumbers), takeFirstTen(Number.MAX_SAFE_INTEGER));
+          assert.strictEqual(
+            entity.decodeValueProto(valueProto, wrapNumbers),
+            takeFirstTen(Number.MAX_SAFE_INTEGER)
+          );
           assert.strictEqual(takeFirstTen.called, true);
         });
 
@@ -980,33 +986,42 @@ describe('entity', () => {
       );
     });
 
-    it('should pass `wrapNumbers`to decodeValueProto', () => {
+    describe('should pass `wrapNumbers` to decodeValueProto', () => {
       const entityProto = {properties: {number: {}}};
-      const integerTypeCastOptions = {
-        integerTypeCastFunction: () => {},
-        properties: 'that',
-      };
-      const stub = sinon.stub(entity, 'decodeValueProto');
+      let decodeValueProtoStub: sinon.SinonStub;
       let wrapNumbers: boolean | IntegerTypeCastOptions | undefined;
 
-      // default 'wrapNumbers=undefined'
-      entity.entityFromEntityProto(entityProto);
+      beforeEach(() => {
+        decodeValueProtoStub = sinon.stub(entity, 'decodeValueProto');
+      });
 
-      // boolean 'wrapNumbers=true'
-      entity.entityFromEntityProto(entityProto, true);
+      afterEach(() => {
+        decodeValueProtoStub.restore();
+      });
 
-      // object `wrapNumbers as integerTypeCastOptions`
-      entity.entityFromEntityProto(entityProto, integerTypeCastOptions);
+      it('should pass `wrapNumbers` to decodeValueProto as undefined by default', () => {
+        entity.entityFromEntityProto(entityProto);
+        wrapNumbers = decodeValueProtoStub.getCall(0).args[1];
+        assert.strictEqual(wrapNumbers, undefined);
+      });
 
-      wrapNumbers = stub.getCall(0).args[1];
-      assert.strictEqual(wrapNumbers, undefined);
+      it('should pass `wrapNumbers` to decodeValueProto as boolean', () => {
+        entity.entityFromEntityProto(entityProto, true);
+        wrapNumbers = decodeValueProtoStub.getCall(0).args[1];
+        assert.strictEqual(typeof wrapNumbers, 'boolean');
+      });
 
-      wrapNumbers = stub.getCall(1).args[1];
-      assert.strictEqual(typeof wrapNumbers, 'boolean');
+      it('should pass `wrapNumbers` to decodeValueProto as IntegerTypeCastOptions', () => {
+        const integerTypeCastOptions = {
+          integerTypeCastFunction: () => {},
+          properties: 'that',
+        };
 
-      wrapNumbers = stub.getCall(2).args[1];
-      assert.strictEqual(wrapNumbers, integerTypeCastOptions);
-      assert.deepStrictEqual(wrapNumbers, integerTypeCastOptions);
+        entity.entityFromEntityProto(entityProto, integerTypeCastOptions);
+        wrapNumbers = decodeValueProtoStub.getCall(0).args[1];
+        assert.strictEqual(wrapNumbers, integerTypeCastOptions);
+        assert.deepStrictEqual(wrapNumbers, integerTypeCastOptions);
+      });
     });
   });
 
@@ -1496,37 +1511,46 @@ describe('entity', () => {
       assert.strictEqual(ent[entity.KEY_SYMBOL], key);
     });
 
-    it('should pass `wrapNumbers` to entityFromEntityProto', () => {
+    describe('should pass `wrapNumbers` to entityFromEntityProto', () => {
       const results = [{entity: {}}];
-      const integerTypeCastOptions = {
-        integerTypeCastFunction: () => {},
-        properties: 'that',
-      };
-
-      const stub = sinon
-        .stub(entity, 'entityFromEntityProto')
-        .callsFake(() => ({}));
-      sinon.stub(entity, 'keyFromKeyProto');
+      // tslint:disable-next-line no-any
+      let entityFromEntityProtoStub: any;
       let wrapNumbers: boolean | IntegerTypeCastOptions | undefined;
 
-      // default 'wrapNumbers=undefined'
-      entity.formatArray(results);
+      beforeEach(() => {
+        entityFromEntityProtoStub = sinon
+          .stub(entity, 'entityFromEntityProto')
+          .callsFake(() => ({}));
+        sinon.stub(entity, 'keyFromKeyProto');
+      });
 
-      // boolean 'wrapNumbers=true'
-      entity.formatArray(results, true);
+      afterEach(() => {
+        entityFromEntityProtoStub.restore();
+      });
 
-      // boolean 'wrapNumbers=true'
-      entity.formatArray(results, integerTypeCastOptions);
+      it('should pass `wrapNumbers` to entityFromEntityProto as undefined by default', () => {
+        entity.formatArray(results);
+        wrapNumbers = entityFromEntityProtoStub.getCall(0).args[1];
+        assert.strictEqual(wrapNumbers, undefined);
+      });
 
-      wrapNumbers = stub.getCall(0).args[1];
-      assert.strictEqual(wrapNumbers, undefined);
+      it('should pass `wrapNumbers` to entityFromEntityProto as boolean', () => {
+        entity.formatArray(results, true);
+        wrapNumbers = entityFromEntityProtoStub.getCall(0).args[1];
+        assert.strictEqual(typeof wrapNumbers, 'boolean');
+      });
 
-      wrapNumbers = stub.getCall(1).args[1];
-      assert.strictEqual(typeof wrapNumbers, 'boolean');
+      it('should pass `wrapNumbers` to entityFromEntityProto as IntegerTypeCastOptions', () => {
+        const integerTypeCastOptions = {
+          integerTypeCastFunction: () => {},
+          properties: 'that',
+        };
 
-      wrapNumbers = stub.getCall(2).args[1];
-      assert.strictEqual(wrapNumbers, integerTypeCastOptions);
-      assert.deepStrictEqual(wrapNumbers, integerTypeCastOptions);
+        entity.formatArray(results, integerTypeCastOptions);
+        wrapNumbers = entityFromEntityProtoStub.getCall(0).args[1];
+        assert.strictEqual(wrapNumbers, integerTypeCastOptions);
+        assert.deepStrictEqual(wrapNumbers, integerTypeCastOptions);
+      });
     });
   });
 
