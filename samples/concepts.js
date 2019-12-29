@@ -16,7 +16,6 @@
 
 const sinon = require('sinon');
 const assert = require('assert');
-const {describe, it} = require('mocha');
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
