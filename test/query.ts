@@ -300,10 +300,25 @@ describe('Query', () => {
         assert.strictEqual(this, query.scope);
         assert.strictEqual(thisArgs[0], query);
         assert.strictEqual(thisArgs[1], args[0]);
+        assert.strictEqual(thisArgs[2], args[1]);
         done();
       };
 
       query.run(...args);
+    });
+
+    it('should accept defaults', done => {
+      const cb = assert.ifError;
+
+      query.scope.runQuery = function() {
+        assert.strictEqual(this, query.scope);
+        assert.strictEqual(arguments[0], query);
+        assert.deepStrictEqual(arguments[1], {});
+        assert.strictEqual(arguments[2], cb);
+        done();
+      };
+
+      query.run.call(query, cb);
     });
   });
 

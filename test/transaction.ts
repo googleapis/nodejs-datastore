@@ -38,7 +38,12 @@ const fakePfy = Object.assign({}, pfy, {
       return;
     }
     promisified = true;
-    assert.deepStrictEqual(options.exclude, ['createQuery', 'delete', 'save']);
+    assert.deepStrictEqual(options.exclude, [
+      'createQuery',
+      'delete',
+      'save',
+      'merge',
+    ]);
   },
 });
 
@@ -72,6 +77,13 @@ describe('Transaction', () => {
 
   const DATASTORE = ({
     request_() {},
+    get() {},
+    runQuery() {},
+    runQueryStream() {},
+    createReadStream() {},
+    insert: Datastore.prototype.insert,
+    update: Datastore.prototype.update,
+    upsert: Datastore.prototype.upsert,
     projectId: PROJECT_ID,
     namespace: NAMESPACE,
   } as {}) as Datastore;
@@ -126,23 +138,27 @@ describe('Transaction', () => {
       assert.strictEqual(transaction.readOnly, true);
     });
 
-    it('should localize request function', done => {
-      const fakeDataset: Any = {
-        request_: {
-          bind(context: {}) {
-            assert.strictEqual(context, fakeDataset);
+    it('should localize request function', () => {
+      assert.strictEqual(transaction.request_, DATASTORE.request_);
+    });
 
-            setImmediate(() => {
-              assert.strictEqual(transaction.request, fakeDataset.request);
-              done();
-            });
+    it('should localize get function', () => {
+      assert.strictEqual(transaction.get, DATASTORE.get);
+    });
 
-            return fakeDataset.request;
-          },
-        },
-      };
+    it('should localize runQuery function', () => {
+      assert.strictEqual(transaction.runQuery, DATASTORE.runQuery);
+    });
 
-      const transaction = new Transaction(fakeDataset);
+    it('should localize runQueryStream function', () => {
+      assert.strictEqual(transaction.runQueryStream, DATASTORE.runQueryStream);
+    });
+
+    it('should localize createReadStream function', () => {
+      assert.strictEqual(
+        transaction.createReadStream,
+        DATASTORE.createReadStream
+      );
     });
 
     it('should localize default properties', () => {
@@ -341,7 +357,7 @@ describe('Transaction', () => {
         cb();
       };
 
-      transaction.commit();
+      transaction.commit(assert.ifError);
 
       assert(cb1Called);
       assert(cb2Called);
@@ -629,6 +645,65 @@ describe('Transaction', () => {
         const match = entities.filter(ent => {
           return ent.key === queuedEntity.entity.key;
         })[0];
+        assert.deepStrictEqual(queuedEntity.args, [match]);
+      });
+    });
+  });
+
+  describe('insert, update, upsert', () => {
+    it('should push an insert into a queue', () => {
+      const entities = [
+        {key: key('Product123'), data: 123},
+        {key: key('Product234'), data: 234},
+        {key: key('Product345'), data: 345},
+      ];
+
+      transaction.insert(entities);
+      assert.strictEqual(transaction.modifiedEntities_.length, entities.length);
+      transaction.modifiedEntities_.forEach((queuedEntity: Entity) => {
+        assert.strictEqual(queuedEntity.method, 'save');
+        const match = entities.filter(ent => {
+          return ent.key === queuedEntity.entity.key;
+        })[0];
+        Object.assign(match, {method: 'insert'});
+        assert.deepStrictEqual(queuedEntity.args, [match]);
+      });
+    });
+
+    it('should push an update into a queue', () => {
+      const entities = [
+        {key: key('Product123'), data: 123},
+        {key: key('Product234'), data: 234},
+        {key: key('Product345'), data: 345},
+      ];
+
+      transaction.update(entities);
+      assert.strictEqual(transaction.modifiedEntities_.length, entities.length);
+      transaction.modifiedEntities_.forEach((queuedEntity: Entity) => {
+        assert.strictEqual(queuedEntity.method, 'save');
+        const match = entities.filter(ent => {
+          return ent.key === queuedEntity.entity.key;
+        })[0];
+        Object.assign(match, {method: 'update'});
+        assert.deepStrictEqual(queuedEntity.args, [match]);
+      });
+    });
+
+    it('should push an upsert into a queue', () => {
+      const entities = [
+        {key: key('Product123'), data: 123},
+        {key: key('Product234'), data: 234},
+        {key: key('Product345'), data: 345},
+      ];
+
+      transaction.upsert(entities);
+      assert.strictEqual(transaction.modifiedEntities_.length, entities.length);
+      transaction.modifiedEntities_.forEach((queuedEntity: Entity) => {
+        assert.strictEqual(queuedEntity.method, 'save');
+        const match = entities.filter(ent => {
+          return ent.key === queuedEntity.entity.key;
+        })[0];
+        Object.assign(match, {method: 'upsert'});
         assert.deepStrictEqual(queuedEntity.args, [match]);
       });
     });

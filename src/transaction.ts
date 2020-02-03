@@ -48,15 +48,28 @@ import {
  * const datastore = new Datastore();
  * const transaction = datastore.transaction();
  */
-class Transaction extends DatastoreRequest {
+class Transaction {
+  datastore: Datastore;
+  id?: string;
+  requestCallbacks_: Array<(err: Error | null, resp: Entity | null) => void>;
+  requests_: typeof DatastoreRequest.prototype.requests;
+
+  createReadStream: typeof Datastore.prototype.createReadStream;
+  get: typeof Datastore.prototype.get;
+  runQuery: typeof Datastore.prototype.runQuery;
+  runQueryStream: typeof Datastore.prototype.runQueryStream;
+  
+  insert: typeof Transaction.prototype.save;
+  update: typeof Transaction.prototype.save;
+  upsert: typeof Transaction.prototype.save;
+  
   projectId: string;
   namespace?: string;
   readOnly: boolean;
-  request: Function;
+  request_: typeof DatastoreRequest.prototype.request_;
   modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
   constructor(datastore: Datastore, options?: TransactionOptions) {
-    super();
     /**
      * @name Transaction#datastore
      * @type {Datastore}
@@ -79,7 +92,21 @@ class Transaction extends DatastoreRequest {
     this.id = options.id;
     this.readOnly = options.readOnly === true;
 
-    this.request = datastore.request_.bind(datastore);
+    this.request_ = datastore.request_;
+
+    this.get = datastore.get;
+
+    this.runQuery = datastore.runQuery;
+
+    this.runQueryStream = datastore.runQueryStream;
+
+    this.createReadStream = datastore.createReadStream;
+
+    this.insert = datastore.insert.bind(this);
+
+    this.update = datastore.update.bind(this);
+
+    this.upsert = datastore.upsert.bind(this);
 
     // A queue for entity modifications made during the transaction.
     this.modifiedEntities_ = [];
@@ -142,11 +169,7 @@ class Transaction extends DatastoreRequest {
     cb?: CommitCallback
   ): void | Promise<CommitResponse> {
     const callback =
-      typeof gaxOptionsOrCallback === 'function'
-        ? gaxOptionsOrCallback
-        : typeof cb === 'function'
-        ? cb
-        : () => {};
+      typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
 
@@ -235,7 +258,7 @@ class Transaction extends DatastoreRequest {
         client: 'DatastoreClient',
         method: 'commit',
         reqOpts,
-        gaxOpts: gaxOptions || {},
+        gaxOpts: gaxOptions,
       },
       (err, resp) => {
         if (err) {
@@ -435,7 +458,7 @@ class Transaction extends DatastoreRequest {
       {
         client: 'DatastoreClient',
         method: 'rollback',
-        gaxOpts: gaxOptions || {},
+        gaxOpts: gaxOptions,
       },
       (err, resp) => {
         this.skipCommit = true;
@@ -683,6 +706,51 @@ class Transaction extends DatastoreRequest {
       });
     });
   }
+  
+  /**
+   * Merge the specified objects and add the merged object to the batch to be commited.
+   *  
+   * @example
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const transaction = datastore.transaction();
+   *
+   * // Use an array, `excludeFromIndexes`, to exclude properties from indexing.
+   * // This will allow storing string values larger than 1500 bytes.
+   *
+   * const key = datastore.key(['Company', 123]);
+   * transaction.run((err) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *
+   *   transaction.get(key, (err, entity) => {
+   *     if (err) {
+   *       // Error handling omitted.
+   *     }
+   *     
+   *     transaction.merge(entity, {meaningOfLife: 42});
+   *     
+   *     transaction.commit((err) => {
+   *       if (!err) {
+   *         // Data saved successfully.
+   *       }
+   *     });
+   *   });
+   * });
+   */
+  merge(currentEntityies: Entities, entitiesToMerge: Entities): void {
+    entitiesToMerge = arrify(entitiesToMerge);
+    arrify(currentEntityies).forEach((ent: Entity, index: number) => {
+      const preparedOrig: Entity = DatastoreRequest.prepareEntityObject_(ent);
+      const preparedToMerge = DatastoreRequest.prepareEntityObject_(
+        entitiesToMerge[index]
+      );
+      Object.assign(preparedOrig.data, preparedToMerge.data, preparedOrig.data);
+      preparedOrig.method = 'upsert';
+      this.save(preparedOrig);
+    });
+  }
 }
 
 export type ModifiedEntities = Array<{
@@ -717,7 +785,7 @@ export interface RunOptions {
  * that a callback is omitted.
  */
 promisifyAll(Transaction, {
-  exclude: ['createQuery', 'delete', 'save'],
+  exclude: ['createQuery', 'delete', 'save', 'merge'],
 });
 
 /**

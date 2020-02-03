@@ -195,7 +195,7 @@ describe('Datastore', () => {
     });
 
     it('should default project ID to placeholder', () => {
-      const datastore = new Datastore({});
+      const datastore = new Datastore();
       assert.strictEqual(datastore.projectId, '{{projectId}}');
     });
 
@@ -536,13 +536,15 @@ describe('Datastore', () => {
   describe('transaction', () => {
     it('should return a Transaction object', () => {
       const transaction = datastore.transaction();
-      assert.strictEqual(transaction.calledWith_[0], datastore);
+      // tslint:disable-next-line: no-any
+      assert.strictEqual((transaction as any).calledWith_[0], datastore);
     });
 
     it('should pass options to the Transaction constructor', () => {
       const options = {};
       const transaction = datastore.transaction(options);
-      assert.strictEqual(transaction.calledWith_[1], options);
+      // tslint:disable-next-line: no-any
+      assert.strictEqual((transaction as any).calledWith_[1], options);
     });
   });
 
