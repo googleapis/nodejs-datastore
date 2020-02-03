@@ -837,11 +837,11 @@ class Datastore extends DatastoreRequest {
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
-   * 
+   *
    * @example
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
-   * 
+   *
    * const key = datastore.key(['Company', 123]);
    * datastore.merge({meaningOfLife: 42}, (err) => {
    *   if (!err) {

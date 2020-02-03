@@ -58,11 +58,11 @@ class Transaction {
   get: typeof Datastore.prototype.get;
   runQuery: typeof Datastore.prototype.runQuery;
   runQueryStream: typeof Datastore.prototype.runQueryStream;
-  
+
   insert: typeof Transaction.prototype.save;
   update: typeof Transaction.prototype.save;
   upsert: typeof Transaction.prototype.save;
-  
+
   projectId: string;
   namespace?: string;
   readOnly: boolean;
@@ -706,10 +706,10 @@ class Transaction {
       });
     });
   }
-  
+
   /**
    * Merge the specified objects and add the merged object to the batch to be commited.
-   *  
+   *
    * @example
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
@@ -728,9 +728,9 @@ class Transaction {
    *     if (err) {
    *       // Error handling omitted.
    *     }
-   *     
+   *
    *     transaction.merge(entity, {meaningOfLife: 42});
-   *     
+   *
    *     transaction.commit((err) => {
    *       if (!err) {
    *         // Data saved successfully.
