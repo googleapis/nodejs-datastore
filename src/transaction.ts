@@ -739,17 +739,16 @@ class Transaction {
    *   });
    * });
    */
-  merge(currentEntityies: Entities, entitiesToMerge: Entities): void {
-    entitiesToMerge = arrify(entitiesToMerge);
-    arrify(currentEntityies).forEach((ent: Entity, index: number) => {
-      const preparedOrig: Entity = DatastoreRequest.prepareEntityObject_(ent);
-      const preparedToMerge = DatastoreRequest.prepareEntityObject_(
-        entitiesToMerge[index]
-      );
-      Object.assign(preparedOrig.data, preparedToMerge.data, preparedOrig.data);
-      preparedOrig.method = 'upsert';
-      this.save(preparedOrig);
-    });
+  merge(currentEntity: Entity, entityToMerge: Entity): void {
+    const preparedCurrent = Datastore.prepareEntityObject_(currentEntity);
+    const preparedToMerge = Datastore.prepareEntityObject_(entityToMerge);
+    Object.assign(
+      preparedCurrent.data,
+      preparedToMerge.data,
+      preparedCurrent.data
+    );
+    preparedCurrent.method = 'upsert';
+    this.save(preparedCurrent);
   }
 }
 

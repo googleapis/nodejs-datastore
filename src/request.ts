@@ -1388,7 +1388,7 @@ export interface PrepareEntityObject {
 }
 export interface PrepareEntityObjectResponse {
   key?: google.datastore.v1.Key;
-  data?: google.datastore.v1.Entity;
+  data?: google.datastore.v1.IEntity;
   method?: string;
 }
 export type ProjectId = string | null | undefined;
