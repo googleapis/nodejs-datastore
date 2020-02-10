@@ -708,4 +708,38 @@ describe('Transaction', () => {
       });
     });
   });
+
+  describe('merge', () => {
+    function getExpectedLength(one: {} | Array<{}>, two: {} | Array<{}>) {
+      return Math.max(
+        Array.isArray(one) ? one.length : 1,
+        Array.isArray(two) ? two.length : 1
+      );
+    }
+    it('should accept single objects into a queue', () => {
+      const currentEntities = {
+        key: key('Product123'),
+        data: {meaningOf: 'life'},
+      };
+      const entitiesToMerge = {key: key('Product123'), data: {value: 42}};
+
+      transaction.merge(currentEntities, entitiesToMerge);
+      assert.strictEqual(
+        transaction.modifiedEntities_.length,
+        getExpectedLength(currentEntities, entitiesToMerge)
+      );
+
+      transaction.modifiedEntities_.forEach((queuedEntity: Entity) => {
+        assert.strictEqual(queuedEntity.method, 'save');
+      });
+
+      const actual = transaction.modifiedEntities_[0].args[0];
+      assert.strictEqual(actual.method, 'upsert');
+
+      assert.deepStrictEqual(
+        actual.data,
+        Object.assign({}, currentEntities.data, entitiesToMerge.data)
+      );
+    });
+  });
 });

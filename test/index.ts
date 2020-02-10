@@ -18,8 +18,10 @@ import * as gax from 'google-gax';
 import * as proxyquire from 'proxyquire';
 
 import * as ds from '../src';
-import {DatastoreOptions} from '../src';
-import {entity} from '../src/entity';
+import {Datastore, DatastoreOptions} from '../src';
+import {entity, Entity} from '../src/entity';
+import {DatastoreRequest, CommitResponse, GetResponse} from '../src/request';
+import * as sinon from 'sinon';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
@@ -109,8 +111,10 @@ class FakeTransaction {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   calledWith_: any[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rollback: Function;
   constructor(...args: any[]) {
     this.calledWith_ = args;
+    this.rollback = () => {};
   }
 }
 
@@ -697,6 +701,136 @@ describe('Datastore', () => {
       const key = datastore.keyFromLegacyUrlsafe(encodedKey);
       assert.strictEqual(key.kind, 'Task');
       assert.strictEqual(key.name, 'Test');
+    });
+  });
+
+  describe('save, insert, update, upsert', () => {
+    const key = new entity.Key({
+      path: ['Task', 'Test'],
+    });
+
+    it('should call the parent save', () => {
+      const stub = sinon.stub(DatastoreRequest.prototype, 'save');
+      datastore.save({key, data: {k: 'v'}});
+      assert.ok(stub.calledOnce);
+    });
+
+    it('should call the parent insert', () => {
+      const stub = sinon.stub(DatastoreRequest.prototype, 'insert');
+      datastore.insert({key, data: {k: 'v'}});
+      assert.ok(stub.calledOnce);
+    });
+
+    it('should call the parent update', () => {
+      const stub = sinon.stub(DatastoreRequest.prototype, 'update');
+      datastore.update({key, data: {k: 'v'}});
+      assert.ok(stub.calledOnce);
+    });
+
+    it('should call the parent upsert', () => {
+      const stub = sinon.stub(DatastoreRequest.prototype, 'upsert');
+      datastore.upsert({key, data: {k: 'v'}});
+      assert.ok(stub.calledOnce);
+    });
+  });
+
+  describe('merge', () => {
+    const entityObject = {};
+    const key = new entity.Key({
+      path: ['Task', 'Test'],
+    });
+    const key2 = new entity.Key({
+      path: ['Task2', 'Test2'],
+    });
+    const updatedEntityObject = {
+      key,
+      data: {
+        status: 'merged',
+      },
+    };
+    const updatedEntityObject2 = {
+      key2,
+      data: {
+        status: 'merged2',
+      },
+    };
+    const error = new Error('error');
+    let transaction: ds.Transaction;
+
+    beforeEach(() => {
+      transaction = datastore.transaction();
+      datastore.transaction = () => transaction;
+      transaction.request_ = () => {};
+      transaction.commit = async () => {
+        return [{}] as CommitResponse;
+      };
+      // tslint:disable-next-line: no-any
+      (transaction as any).run = (callback: Function) => {
+        callback(null);
+      };
+      transaction.get = async () => {
+        return [entityObject] as GetResponse;
+      };
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should accept single object ', done => {
+      transaction.merge = (current: Entity, toMerge: Entity) => {
+        assert.deepStrictEqual(current, entityObject);
+        assert.deepStrictEqual(toMerge, updatedEntityObject);
+      };
+
+      datastore.merge(updatedEntityObject, done);
+    });
+
+    it('should accept array of objects', done => {
+      const entities = [updatedEntityObject, updatedEntityObject2];
+      let count = 0;
+      transaction.merge = (current: Entity, toMerge: Entity) => {
+        assert.deepStrictEqual(current, entityObject);
+        assert.deepStrictEqual(toMerge, entities[count++]);
+      };
+      datastore.merge(entities, done);
+    });
+
+    it('should rollback if error on transaction run', done => {
+      // tslint:disable-next-line: no-any
+      (transaction.run as any) = (callback: Function) => {
+        callback(error);
+      };
+      sinon.spy(transaction, 'rollback');
+
+      datastore.merge({key, data: null}, (err?: Error | null) => {
+        assert.strictEqual(err, error);
+        assert.ok((transaction.rollback as sinon.SinonStub).calledOnce);
+        done();
+      });
+    });
+
+    it('should rollback if error on transaction get', done => {
+      sinon.stub(transaction, 'get').rejects(error);
+      sinon.spy(transaction, 'rollback');
+
+      datastore.merge({key, data: null}, (err?: Error | null) => {
+        assert.strictEqual(err, error);
+        assert.ok((transaction.rollback as sinon.SinonStub).calledOnce);
+        done();
+      });
+    });
+
+    it('should rollback if error on transaction commit', done => {
+      sinon.stub(transaction, 'commit').rejects(error);
+      sinon.spy(transaction, 'rollback');
+      transaction.merge = () => {};
+
+      datastore.merge({key, data: null}, (err?: Error | null) => {
+        assert.strictEqual(err, error);
+        assert.ok((transaction.rollback as sinon.SinonStub).calledOnce);
+        done();
+      });
     });
   });
 });
