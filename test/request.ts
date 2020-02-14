@@ -1013,7 +1013,7 @@ describe('Request', () => {
 
         const stream = request.runQueryStream({});
 
-        stream          
+        stream
           .on('error', (err: Error) => {
             assert.deepStrictEqual(
               err,
