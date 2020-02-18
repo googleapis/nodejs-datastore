@@ -580,6 +580,15 @@ export namespace entity {
 
     if (typeof value === 'number') {
       if (value % 1 === 0) {
+        if (!Number.isSafeInteger(value)) {
+          process.emitWarning(
+            'Integer value ' +
+              value +
+              ' is outside of bounds of a JavaScript Number\n' +
+              "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload.",
+            'IntegerOutOfBoundsWarning'
+          );
+        }
         value = new entity.Int(value);
       } else {
         value = new entity.Double(value);
