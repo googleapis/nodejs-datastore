@@ -579,8 +579,7 @@ export namespace entity {
     }
 
     if (typeof value === 'number') {
-      // verify that 'value' is an integer and not a float i.e. no decimals.
-      if (value % 1 === 0) {
+      if (Number.isInteger(value)) {
         if (!Number.isSafeInteger(value)) {
           process.emitWarning(
             'Integer value ' +
