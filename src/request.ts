@@ -1131,7 +1131,10 @@ class DatastoreRequest {
               acc: EntityProtoReduceAccumulator,
               data: EntityProtoReduceData
             ) => {
-              const value = entity.encodeValue(data.value);
+              const value = entity.encodeValue(
+                data.value,
+                data.name.toString()
+              );
 
               if (typeof data.excludeFromIndexes === 'boolean') {
                 const excluded = data.excludeFromIndexes;
