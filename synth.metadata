@@ -1,31 +1,3 @@
 {
-  "updateTime": "2020-03-06T19:59:12.948229Z",
-  "sources": [
-    {
-      "git": {
-        "name": "googleapis",
-        "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "30e36b4bee6749c4799f4fc1a51cc8f058ba167d",
-        "internalRef": "299399890"
-      }
-    },
-    {
-      "template": {
-        "name": "node_library",
-        "origin": "synthtool.gcp",
-        "version": "2020.2.4"
-      }
-    }
-  ],
-  "destinations": [
-    {
-      "client": {
-        "source": "googleapis",
-        "apiName": "datastore",
-        "apiVersion": "v1",
-        "language": "typescript",
-        "generator": "gapic-generator-typescript"
-      }
-    }
-  ]
+  "updateTime": "2020-03-06T20:03:38.307900Z"
 }
