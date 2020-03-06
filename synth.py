@@ -23,6 +23,9 @@ s.copy(
     library,
     excludes=['package.json', 'README.md', 'src/index.ts'])
 
+system_test_files=['system-test/fixtures/sample/src/index.ts','system-test/fixtures/sample/src/index.js']
+for file in system_test_files:
+    s.replace(file, 'DatastoreClient', 'Datastore')
 common_templates = gcp.CommonTemplates()
 templates = common_templates.node_library(source_location="build/src")
 s.copy(templates)
