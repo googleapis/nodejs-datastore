@@ -18,7 +18,7 @@
 
 
 /* eslint-disable node/no-missing-require, no-unused-vars */
-const datastore = require('datastore');
+const datastore = require('@google-cloud/datastore');
 
 function main() {
   const datastoreClient = new datastore.DatastoreClient();
