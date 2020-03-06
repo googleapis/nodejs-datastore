@@ -16,10 +16,10 @@
 // ** https://github.com/googleapis/gapic-generator-typescript **
 // ** All changes to this file may be overwritten. **
 
-import {DatastoreClient} from '@google-cloud/datastore';
+import {Datastore} from '@google-cloud/datastore';
 
 function main() {
-  const datastoreClient = new DatastoreClient();
+  const datastoreClient = new Datastore();
 }
 
 main();

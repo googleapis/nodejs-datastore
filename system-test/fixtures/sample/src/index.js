@@ -20,7 +20,7 @@
 const datastore = require('@google-cloud/datastore');
 
 function main() {
-  const datastoreClient = new datastore.DatastoreClient();
+  const datastoreClient = new datastore.Datastore();
 }
 
 main();
