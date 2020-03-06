@@ -30,7 +30,7 @@
     "test": "c8 mocha build/test",
     "samples-test": "cd samples/ && npm link ../ && npm install && npm test && cd ../",
     "lint": "gts fix && eslint samples/*.js",
-    "fix": "gts fix && eslint --fix samples/*.js",
+    "fix": "gts fix && eslint '**/*.js' --fix",
     "compile": "tsc -p . && cp -r proto* build/",
     "compile-protos": "compileProtos src",
     "prepare": "npm run compile",
