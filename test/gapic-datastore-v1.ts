@@ -18,425 +18,417 @@
 
 import * as protosTypes from '../protos/protos';
 import * as assert from 'assert';
-import {describe, it} from 'mocha';
+import { describe, it } from 'mocha';
+/* eslint-disable @typescript-eslint/no-var-requires */
 const datastoreModule = require('../src');
 
+
 const FAKE_STATUS_CODE = 1;
-class FakeError {
-  name: string;
-  message: string;
-  code: number;
-  constructor(n: number) {
-    this.name = 'fakeName';
-    this.message = 'fake message';
-    this.code = n;
-  }
+class FakeError{
+    name: string;
+    message: string;
+    code: number;
+    constructor(n: number){
+        this.name = 'fakeName';
+        this.message = 'fake message';
+        this.code = n;
+    }
 }
 const error = new FakeError(FAKE_STATUS_CODE);
 export interface Callback {
-  (err: FakeError | null, response?: {} | null): void;
+  (err: FakeError|null, response?: {} | null): void;
 }
 
-export class Operation {
-  constructor() {}
-  promise() {}
+export class Operation{
+    constructor(){};
+    promise() {};
 }
-function mockSimpleGrpcMethod(
-  expectedRequest: {},
-  response: {} | null,
-  error: FakeError | null
-) {
-  return (actualRequest: {}, options: {}, callback: Callback) => {
-    assert.deepStrictEqual(actualRequest, expectedRequest);
-    if (error) {
-      callback(error);
-    } else if (response) {
-      callback(null, response);
-    } else {
-      callback(null);
-    }
-  };
+function mockSimpleGrpcMethod(expectedRequest: {}, response: {} | null, error: FakeError | null) {
+    return (actualRequest: {}, options: {}, callback: Callback) => {
+        assert.deepStrictEqual(actualRequest, expectedRequest);
+        if (error) {
+            callback(error);
+        } else if (response) {
+            callback(null, response);
+        } else {
+            callback(null);
+        }
+    };
 }
 describe('v1.DatastoreClient', () => {
-  it('has servicePath', () => {
-    const servicePath = datastoreModule.v1.DatastoreClient.servicePath;
-    assert(servicePath);
-  });
-  it('has apiEndpoint', () => {
-    const apiEndpoint = datastoreModule.v1.DatastoreClient.apiEndpoint;
-    assert(apiEndpoint);
-  });
-  it('has port', () => {
-    const port = datastoreModule.v1.DatastoreClient.port;
-    assert(port);
-    assert(typeof port === 'number');
-  });
-  it('should create a client with no option', () => {
-    const client = new datastoreModule.v1.DatastoreClient();
-    assert(client);
-  });
-  it('should create a client with gRPC fallback', () => {
-    const client = new datastoreModule.v1.DatastoreClient({
-      fallback: true,
+    it('has servicePath', () => {
+        const servicePath = datastoreModule.v1.DatastoreClient.servicePath;
+        assert(servicePath);
     });
-    assert(client);
-  });
-  it('has initialize method and supports deferred initialization', async () => {
-    const client = new datastoreModule.v1.DatastoreClient({
-      credentials: {client_email: 'bogus', private_key: 'bogus'},
-      projectId: 'bogus',
+    it('has apiEndpoint', () => {
+        const apiEndpoint = datastoreModule.v1.DatastoreClient.apiEndpoint;
+        assert(apiEndpoint);
     });
-    assert.strictEqual(client.datastoreStub, undefined);
-    await client.initialize();
-    assert(client.datastoreStub);
-  });
-  it('has close method', () => {
-    const client = new datastoreModule.v1.DatastoreClient({
-      credentials: {client_email: 'bogus', private_key: 'bogus'},
-      projectId: 'bogus',
+    it('has port', () => {
+        const port = datastoreModule.v1.DatastoreClient.port;
+        assert(port);
+        assert(typeof port === 'number');
     });
-    client.close();
-  });
-  describe('lookup', () => {
-    it('invokes lookup without error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.ILookupRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.lookup = mockSimpleGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      client.lookup(request, (err: {}, response: {}) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
+    it('should create a client with no option', () => {
+        const client = new datastoreModule.v1.DatastoreClient();
+        assert(client);
     });
+    it('should create a client with gRPC fallback', () => {
+        const client = new datastoreModule.v1.DatastoreClient({
+            fallback: true,
+        });
+        assert(client);
+    });
+    it('has initialize method and supports deferred initialization', async () => {
+        const client = new datastoreModule.v1.DatastoreClient({
+            credentials: { client_email: 'bogus', private_key: 'bogus' },
+            projectId: 'bogus',
+        });
+        assert.strictEqual(client.datastoreStub, undefined);
+        await client.initialize();
+        assert(client.datastoreStub);
+    });
+    it('has close method', () => {
+        const client = new datastoreModule.v1.DatastoreClient({
+            credentials: { client_email: 'bogus', private_key: 'bogus' },
+            projectId: 'bogus',
+        });
+        client.close();
+    });
+    describe('lookup', () => {
+        it('invokes lookup without error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.ILookupRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.lookup = mockSimpleGrpcMethod(
+                request,
+                expectedResponse,
+                null
+            );
+            client.lookup(request, (err: {}, response: {}) => {
+                assert.ifError(err);
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            })
+        });
 
-    it('invokes lookup with error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.ILookupRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.lookup = mockSimpleGrpcMethod(request, null, error);
-      client.lookup(request, (err: FakeError, response: {}) => {
-        assert(err instanceof FakeError);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
+        it('invokes lookup with error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.ILookupRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.lookup = mockSimpleGrpcMethod(
+                request,
+                null,
+                error
+            );
+            client.lookup(request, (err: FakeError, response: {}) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                assert(typeof response === 'undefined');
+                done();
+            })
+        });
     });
-  });
-  describe('runQuery', () => {
-    it('invokes runQuery without error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IRunQueryRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.runQuery = mockSimpleGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      client.runQuery(request, (err: {}, response: {}) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
-    });
+    describe('runQuery', () => {
+        it('invokes runQuery without error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IRunQueryRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.runQuery = mockSimpleGrpcMethod(
+                request,
+                expectedResponse,
+                null
+            );
+            client.runQuery(request, (err: {}, response: {}) => {
+                assert.ifError(err);
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            })
+        });
 
-    it('invokes runQuery with error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IRunQueryRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.runQuery = mockSimpleGrpcMethod(
-        request,
-        null,
-        error
-      );
-      client.runQuery(request, (err: FakeError, response: {}) => {
-        assert(err instanceof FakeError);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
+        it('invokes runQuery with error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IRunQueryRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.runQuery = mockSimpleGrpcMethod(
+                request,
+                null,
+                error
+            );
+            client.runQuery(request, (err: FakeError, response: {}) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                assert(typeof response === 'undefined');
+                done();
+            })
+        });
     });
-  });
-  describe('beginTransaction', () => {
-    it('invokes beginTransaction without error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IBeginTransactionRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.beginTransaction = mockSimpleGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      client.beginTransaction(request, (err: {}, response: {}) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
-    });
+    describe('beginTransaction', () => {
+        it('invokes beginTransaction without error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IBeginTransactionRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.beginTransaction = mockSimpleGrpcMethod(
+                request,
+                expectedResponse,
+                null
+            );
+            client.beginTransaction(request, (err: {}, response: {}) => {
+                assert.ifError(err);
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            })
+        });
 
-    it('invokes beginTransaction with error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IBeginTransactionRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.beginTransaction = mockSimpleGrpcMethod(
-        request,
-        null,
-        error
-      );
-      client.beginTransaction(request, (err: FakeError, response: {}) => {
-        assert(err instanceof FakeError);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
+        it('invokes beginTransaction with error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IBeginTransactionRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.beginTransaction = mockSimpleGrpcMethod(
+                request,
+                null,
+                error
+            );
+            client.beginTransaction(request, (err: FakeError, response: {}) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                assert(typeof response === 'undefined');
+                done();
+            })
+        });
     });
-  });
-  describe('commit', () => {
-    it('invokes commit without error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.ICommitRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.commit = mockSimpleGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      client.commit(request, (err: {}, response: {}) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
-    });
+    describe('commit', () => {
+        it('invokes commit without error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.ICommitRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.commit = mockSimpleGrpcMethod(
+                request,
+                expectedResponse,
+                null
+            );
+            client.commit(request, (err: {}, response: {}) => {
+                assert.ifError(err);
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            })
+        });
 
-    it('invokes commit with error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.ICommitRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.commit = mockSimpleGrpcMethod(request, null, error);
-      client.commit(request, (err: FakeError, response: {}) => {
-        assert(err instanceof FakeError);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
+        it('invokes commit with error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.ICommitRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.commit = mockSimpleGrpcMethod(
+                request,
+                null,
+                error
+            );
+            client.commit(request, (err: FakeError, response: {}) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                assert(typeof response === 'undefined');
+                done();
+            })
+        });
     });
-  });
-  describe('rollback', () => {
-    it('invokes rollback without error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IRollbackRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.rollback = mockSimpleGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      client.rollback(request, (err: {}, response: {}) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
-    });
+    describe('rollback', () => {
+        it('invokes rollback without error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IRollbackRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.rollback = mockSimpleGrpcMethod(
+                request,
+                expectedResponse,
+                null
+            );
+            client.rollback(request, (err: {}, response: {}) => {
+                assert.ifError(err);
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            })
+        });
 
-    it('invokes rollback with error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IRollbackRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.rollback = mockSimpleGrpcMethod(
-        request,
-        null,
-        error
-      );
-      client.rollback(request, (err: FakeError, response: {}) => {
-        assert(err instanceof FakeError);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
+        it('invokes rollback with error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IRollbackRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.rollback = mockSimpleGrpcMethod(
+                request,
+                null,
+                error
+            );
+            client.rollback(request, (err: FakeError, response: {}) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                assert(typeof response === 'undefined');
+                done();
+            })
+        });
     });
-  });
-  describe('allocateIds', () => {
-    it('invokes allocateIds without error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IAllocateIdsRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.allocateIds = mockSimpleGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      client.allocateIds(request, (err: {}, response: {}) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
-    });
+    describe('allocateIds', () => {
+        it('invokes allocateIds without error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IAllocateIdsRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.allocateIds = mockSimpleGrpcMethod(
+                request,
+                expectedResponse,
+                null
+            );
+            client.allocateIds(request, (err: {}, response: {}) => {
+                assert.ifError(err);
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            })
+        });
 
-    it('invokes allocateIds with error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IAllocateIdsRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.allocateIds = mockSimpleGrpcMethod(
-        request,
-        null,
-        error
-      );
-      client.allocateIds(request, (err: FakeError, response: {}) => {
-        assert(err instanceof FakeError);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
+        it('invokes allocateIds with error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IAllocateIdsRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.allocateIds = mockSimpleGrpcMethod(
+                request,
+                null,
+                error
+            );
+            client.allocateIds(request, (err: FakeError, response: {}) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                assert(typeof response === 'undefined');
+                done();
+            })
+        });
     });
-  });
-  describe('reserveIds', () => {
-    it('invokes reserveIds without error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IReserveIdsRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.reserveIds = mockSimpleGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      client.reserveIds(request, (err: {}, response: {}) => {
-        assert.ifError(err);
-        assert.deepStrictEqual(response, expectedResponse);
-        done();
-      });
-    });
+    describe('reserveIds', () => {
+        it('invokes reserveIds without error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IReserveIdsRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.reserveIds = mockSimpleGrpcMethod(
+                request,
+                expectedResponse,
+                null
+            );
+            client.reserveIds(request, (err: {}, response: {}) => {
+                assert.ifError(err);
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            })
+        });
 
-    it('invokes reserveIds with error', done => {
-      const client = new datastoreModule.v1.DatastoreClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.datastore.v1.IReserveIdsRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.reserveIds = mockSimpleGrpcMethod(
-        request,
-        null,
-        error
-      );
-      client.reserveIds(request, (err: FakeError, response: {}) => {
-        assert(err instanceof FakeError);
-        assert.strictEqual(err.code, FAKE_STATUS_CODE);
-        assert(typeof response === 'undefined');
-        done();
-      });
+        it('invokes reserveIds with error', done => {
+            const client = new datastoreModule.v1.DatastoreClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.datastore.v1.IReserveIdsRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.reserveIds = mockSimpleGrpcMethod(
+                request,
+                null,
+                error
+            );
+            client.reserveIds(request, (err: FakeError, response: {}) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                assert(typeof response === 'undefined');
+                done();
+            })
+        });
     });
-  });
 });
