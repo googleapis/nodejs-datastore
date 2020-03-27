@@ -53,7 +53,7 @@
     "concat-stream": "^2.0.0",
     "extend": "^3.0.2",
     "google-auth-library": "^5.10.1",
-    "google-gax": "^1.14.2",
+    "google-gax": "^2.0.0",
     "is": "^3.3.0",
     "split-array-stream": "^2.0.0",
     "stream-events": "^1.0.5"
