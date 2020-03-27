@@ -639,7 +639,6 @@ describe('Datastore', () => {
         .on('error', done)
         .on('data', () => resultsReturned++)
         .on('end', () => {
-          console.log('total results are => ' + resultsReturned);
           assert.strictEqual(resultsReturned, characters.length);
           done();
         });
