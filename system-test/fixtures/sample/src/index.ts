@@ -19,7 +19,7 @@
 import {Datastore} from '@google-cloud/datastore';
 
 function main() {
-  const datastoreClient = new Datastore();
+  new Datastore();
 }
 
 main();

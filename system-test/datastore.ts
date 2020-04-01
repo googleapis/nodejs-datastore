@@ -257,31 +257,6 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
-    it('should wrap specified properties via IntegerTypeCastOptions.properties', async () => {
-      const postKey = datastore.key('Scores');
-      const largeIntValueAsString = '9223372036854775807';
-      const panthers = Datastore.int(largeIntValueAsString);
-      const broncos = 922337203;
-      let integerTypeCastFunctionCalled = 0;
-      await datastore.save({key: postKey, data: {panthers, broncos}});
-      const [entity] = await datastore.get(postKey, {
-        wrapNumbers: {
-          // tslint:disable-next-line no-any
-          integerTypeCastFunction: (value: any) => {
-            integerTypeCastFunctionCalled++;
-            return value.toString();
-          },
-          properties: 'panthers',
-        },
-      });
-      // verify that value of property 'panthers' was converted via 'integerTypeCastFunction'.
-      assert.strictEqual(entity.panthers, largeIntValueAsString);
-      assert.strictEqual(integerTypeCastFunctionCalled, 1);
-      // verify that value of the property broncos was converted to int by default logic.
-      assert.strictEqual(entity.broncos, broncos);
-      await datastore.delete(postKey);
-    });
-
     it('should save/get/delete with a key name', async () => {
       const postKey = datastore.key(['Post', 'post1']);
       await datastore.save({key: postKey, data: post});
@@ -636,31 +611,6 @@ describe('Datastore', () => {
       let resultsReturned = 0;
       datastore
         .runQueryStream(q)
-        .on('error', done)
-        .on('data', () => resultsReturned++)
-        .on('end', () => {
-          assert.strictEqual(resultsReturned, characters.length);
-          done();
-        });
-    });
-
-    it('should run a datastore query as a stream via query#runStream', done => {
-      const q = datastore.createQuery('Character').hasAncestor(ancestor);
-      let resultsReturned = 0;
-      q.runStream()
-        .on('error', done)
-        .on('data', () => resultsReturned++)
-        .on('end', () => {
-          assert.strictEqual(resultsReturned, characters.length);
-          done();
-        });
-    });
-
-    it('should run a transaction query as a stream via query#runStream', done => {
-      const transaction = datastore.transaction();
-      const q = transaction.createQuery('Character').hasAncestor(ancestor);
-      let resultsReturned = 0;
-      q.runStream()
         .on('error', done)
         .on('data', () => resultsReturned++)
         .on('end', () => {

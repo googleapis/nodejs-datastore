@@ -708,7 +708,6 @@ export namespace entity {
     // tslint:disable-next-line forin
     for (const property in properties) {
       const value = properties[property];
-      value.propertyName = property;
       entityObject[property] = entity.decodeValueProto(value, wrapNumbers);
     }
 
