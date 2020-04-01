@@ -152,7 +152,7 @@ export namespace entity {
         this.typeCastFunction = typeCastOptions.integerTypeCastFunction;
         if (typeof typeCastOptions.integerTypeCastFunction !== 'function') {
           throw new Error(
-            `integerTypeCastFunction is not a function or was not provided.`
+            'integerTypeCastFunction is not a function or was not provided.'
           );
         }
 

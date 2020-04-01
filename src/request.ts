@@ -1432,7 +1432,7 @@ export interface AllocateIdsOptions {
   allocations?: number;
   gaxOptions?: CallOptions;
 }
-export interface CreateReadStreamOptions extends RunQueryOptions {}
+export type CreateReadStreamOptions = RunQueryOptions;
 export interface GetCallback {
   (err?: Error | null, entity?: Entities): void;
 }
@@ -1478,20 +1478,20 @@ export interface RequestOptions {
   projectId?: ProjectId;
   query?: QueryProto;
 }
-export interface RunQueryStreamOptions extends RunQueryOptions {}
+export type RunQueryStreamOptions = RunQueryOptions;
 export interface CommitCallback {
   (err?: Error | null, resp?: google.datastore.v1.ICommitResponse): void;
 }
 export type CommitResponse = [google.datastore.v1.ICommitResponse];
-export interface SaveCallback extends CommitCallback {}
+export type SaveCallback = CommitCallback;
 export type SaveResponse = CommitResponse;
-export interface UpdateCallback extends CommitCallback {}
+export type UpdateCallback = CommitCallback;
 export type UpdateResponse = CommitResponse;
-export interface UpsertCallback extends CommitCallback {}
+export type UpsertCallback = CommitCallback;
 export type UpsertResponse = CommitResponse;
-export interface DeleteCallback extends CommitCallback {}
+export type DeleteCallback = CommitCallback;
 export type DeleteResponse = CommitResponse;
-export interface InsertCallback extends CommitCallback {}
+export type InsertCallback = CommitCallback;
 export type InsertResponse = CommitResponse;
 
 /*! Developer Documentation
