@@ -4,6 +4,20 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [5.2.0](https://www.github.com/googleapis/nodejs-datastore/compare/v5.1.0...v5.2.0) (2020-04-01)
+
+
+### Features
+
+* add options param to query#runStream ([#611](https://www.github.com/googleapis/nodejs-datastore/issues/611)) ([7429c9d](https://www.github.com/googleapis/nodejs-datastore/commit/7429c9dbbdf4ed6715f04fa87cffec9bda8a97be))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @grpc/grpc-js to v0.7.1 ([#615](https://www.github.com/googleapis/nodejs-datastore/issues/615)) ([3e83981](https://www.github.com/googleapis/nodejs-datastore/commit/3e83981f3da83143eb9b76f32e563683704f8d99))
+* identify propertyName ([#614](https://www.github.com/googleapis/nodejs-datastore/issues/614)) ([3635e13](https://www.github.com/googleapis/nodejs-datastore/commit/3635e138f3673eaff75ac30d25a2f21b3eecc5f9))
+* **deps:** update dependency @grpc/grpc-js to v0.7.4 ([#620](https://www.github.com/googleapis/nodejs-datastore/issues/620)) ([1d36be1](https://www.github.com/googleapis/nodejs-datastore/commit/1d36be1f11f4604f5c5170a06d7156e858a4748c))
+
 ## [5.1.0](https://www.github.com/googleapis/nodejs-datastore/compare/v5.0.6...v5.1.0) (2020-03-11)
 
 
