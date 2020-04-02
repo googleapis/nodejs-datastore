@@ -310,11 +310,12 @@ describe('Query', () => {
     it('should accept defaults', done => {
       const cb = assert.ifError;
 
-      query.scope.runQuery = function() {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      query.scope.runQuery = function(...thisArgs: any[]) {
         assert.strictEqual(this, query.scope);
-        assert.strictEqual(arguments[0], query);
-        assert.deepStrictEqual(arguments[1], {});
-        assert.strictEqual(arguments[2], cb);
+        assert.strictEqual(thisArgs[0], query);
+        assert.deepStrictEqual(thisArgs[1], {});
+        assert.strictEqual(thisArgs[2], cb);
         done();
       };
 
