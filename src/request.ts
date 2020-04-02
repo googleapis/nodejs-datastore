@@ -18,6 +18,7 @@ import {replaceProjectIdToken} from '@google-cloud/projectify';
 import {promisifyAll} from '@google-cloud/promisify';
 import arrify = require('arrify');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const concat = require('concat-stream');
 import * as extend from 'extend';
 import {split} from 'split-array-stream';
@@ -49,7 +50,6 @@ import {
   RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
-import {ServiceError} from '@grpc/grpc-js';
 
 /**
  * A map of read consistency values to proto codes.
@@ -1453,7 +1453,7 @@ export type ProjectId = string | null | undefined;
 export interface RequestCallback {
   (
     a?: Error | null,
-    // tslint:disable-next-line no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     b?: any
   ): void;
 }

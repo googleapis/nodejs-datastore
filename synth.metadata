@@ -1,5 +1,23 @@
 {
-  "updateTime": "2020-04-01T23:51:29.106023Z",
+  "updateTime": "2020-04-02T17:21:31.795946Z",
+  "sources": [
+    {
+      "git": {
+        "name": "googleapis",
+        "remote": "https://github.com/googleapis/googleapis.git",
+        "sha": "01f3ccbaa66cf3ae4e3b9fd140b1ecfbe54a3ed0",
+        "internalRef": "304416658",
+        "log": "01f3ccbaa66cf3ae4e3b9fd140b1ecfbe54a3ed0\nFix: Add package/namespace options for C#, Ruby and PHP in remaining protos.\n\nPiperOrigin-RevId: 304416658\n\nb89abbf12cd3c086abddcd79adb0a653349f960a\nchore(google/maps): Rename nox.py to noxfile.py\n\nupstream wip fix here: https://github.com/googleapis/gapic-generator/pull/3156\n\nPiperOrigin-RevId: 304411146\n\nbbf26d7f11fae7789b13959bf100983c496c9807\nSynchronize new proto/yaml changes.\n\nPiperOrigin-RevId: 304409906\n\n"
+      }
+    },
+    {
+      "git": {
+        "name": "synthtool",
+        "remote": "https://github.com/googleapis/synthtool.git",
+        "sha": "99820243d348191bc9c634f2b48ddf65096285ed"
+      }
+    }
+  ],
   "destinations": [
     {
       "client": {
