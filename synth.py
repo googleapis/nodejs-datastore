@@ -31,7 +31,7 @@ for file in system_test_files:
     s.replace(file, 'DatastoreClient', 'Datastore')
 common_templates = gcp.CommonTemplates()
 templates = common_templates.node_library(source_location="build/src")
-s.copy(templates, excludes=['.eslintignore'])
+s.copy(templates)
 
 # Node.js specific cleanup
 subprocess.run(['npm', 'install'])
