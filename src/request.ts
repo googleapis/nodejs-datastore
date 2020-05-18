@@ -1301,7 +1301,11 @@ class DatastoreRequest {
     const transaction = this.datastore.transaction();
     transaction.run(async err => {
       if (err) {
-        transaction.rollback();
+        try {
+          await transaction.rollback();
+        } catch (error) {
+          // rollbacks are fine as best effort.
+        }
         callback!(err);
         return;
       }
@@ -1321,7 +1325,7 @@ class DatastoreRequest {
         const [response] = await transaction.commit();
         callback!(null, response);
       } catch (err) {
-        transaction.rollback();
+        await transaction.rollback();
         callback!(err);
       }
     });
