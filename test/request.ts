@@ -2251,6 +2251,24 @@ describe('Request', () => {
         done();
       });
     });
+
+    it('should avoid the rollback exception.', done => {
+      sandbox
+        .stub(transaction, 'run')
+        .callsFake((gaxOption, callback?: Function) => {
+          callback = typeof gaxOption === 'function' ? gaxOption : callback!;
+          callback(new Error('Error.'));
+        });
+
+      sandbox
+        .stub(transaction, 'rollback')
+        .rejects(new Error('Rollback Error.'));
+
+      request.merge({key, data: null}, (err: Error) => {
+        assert.strictEqual(err.message, 'Error.');
+        done();
+      });
+    });
   });
 
   describe('request_', () => {
