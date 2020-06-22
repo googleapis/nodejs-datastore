@@ -677,6 +677,50 @@ class Transaction extends DatastoreRequest {
       });
     });
   }
+
+  /**
+   * Merge the specified objects and add the merged object to the batch to be commited.
+   *
+   * @example
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const transaction = datastore.transaction();
+   *
+   * // Use an array, `excludeFromIndexes`, to exclude properties from indexing.
+   * // This will allow storing string values larger than 1500 bytes.
+   *
+   * const key = datastore.key(['Company', 123]);
+   * transaction.run((err) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *
+   *   transaction.get(key, (err, entity) => {
+   *     if (err) {
+   *       // Error handling omitted.
+   *     }
+   *
+   *     transaction.merge(entity, {meaningOfLife: 42});
+   *
+   *     transaction.commit((err) => {
+   *       if (!err) {
+   *         // Data saved successfully.
+   *       }
+   *     });
+   *   });
+   * });
+   */
+  merge(currentEntity: Entity, entityToMerge: Entity): void {
+    const preparedCurrent = Datastore.prepareEntityObject_(currentEntity);
+    const preparedToMerge = Datastore.prepareEntityObject_(entityToMerge);
+    Object.assign(
+      preparedCurrent.data,
+      preparedToMerge.data,
+      preparedCurrent.data
+    );
+    preparedCurrent.method = 'upsert';
+    this.save(preparedCurrent);
+  }
 }
 
 export type ModifiedEntities = Array<{
@@ -711,7 +755,7 @@ export interface RunOptions {
  * that a callback is omitted.
  */
 promisifyAll(Transaction, {
-  exclude: ['createQuery', 'delete', 'save'],
+  exclude: ['createQuery', 'delete', 'save', 'merge'],
 });
 
 /**

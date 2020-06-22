@@ -34,9 +34,9 @@ import {
 } from 'google-gax';
 import * as is from 'is';
 
-import {entity} from './entity';
+import {entity, Entities, Entity} from './entity';
 import {Query} from './query';
-import {DatastoreRequest} from './request';
+import {DatastoreRequest, SaveCallback, CommitResponse} from './request';
 import {Transaction} from './transaction';
 import {promisifyAll} from '@google-cloud/promisify';
 
@@ -808,6 +808,70 @@ class Datastore extends DatastoreRequest {
         return;
       }
       callback!(null, urlSafeKey.legacyEncode(projectId!, key, locationPrefix));
+    });
+  }
+
+  merge(entities: Entities): Promise<CommitResponse>;
+  merge(entities: Entities, callback: SaveCallback): void;
+  /**
+   * Merge the specified object(s). If a key is incomplete, its associated object
+   * is inserted and the original Key object is updated to contain the generated ID.
+   * For example, if you provide an incomplete key (one without an ID),
+   * the request will create a new entity and have its ID automatically assigned.
+   * If you provide a complete key, the entity will be get the data from datastore
+   * and merge with the data specified.
+   * By default, all properties are indexed. To prevent a property from being
+   * included in *all* indexes, you must supply an `excludeFromIndexes` array.
+   *
+   * Maps to {@link Datastore#save}, forcing the method to be `merge`.
+   *
+   * @param {object|object[]} entities Datastore key object(s).
+   * @param {Key} entities.key Datastore key object.
+   * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
+   *     indexing using a simple JSON path notation. See the examples in
+   *     {@link Datastore#save} to see how to target properties at different
+   *     levels of nesting within your entity.
+   * @param {object} entities.data Data to merge to the same for provided key.
+   * @param {function} callback The callback function.
+   * @param {?error} callback.err An error returned while making this request
+   * @param {object} callback.apiResponse The full API response.
+   *
+   * @example
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   *
+   * const key = datastore.key(['Company', 123]);
+   * datastore.merge({meaningOfLife: 42}, (err) => {
+   *   if (!err) {
+   *     // Data merged successfully.
+   *   }
+   * });
+   */
+  merge(
+    entities: Entities,
+    callback?: SaveCallback
+  ): void | Promise<CommitResponse> {
+    const transaction = this.transaction();
+    transaction.run(async err => {
+      if (err) {
+        transaction.rollback();
+        callback!(err);
+        return;
+      }
+      try {
+        await Promise.all(
+          arrify(entities).map(async (entitiyToMerge: Entity) => {
+            const [currentEntity] = await transaction.get(entitiyToMerge.key);
+            transaction.merge(currentEntity, entitiyToMerge);
+          })
+        );
+
+        const [resp] = await transaction.commit();
+        callback!(null, resp);
+      } catch (err) {
+        transaction.rollback();
+        callback!(err);
+      }
     });
   }
 
