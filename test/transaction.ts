@@ -38,7 +38,14 @@ const fakePfy = Object.assign({}, pfy, {
       return;
     }
     promisified = true;
-    assert.deepStrictEqual(options.exclude, ['createQuery', 'delete', 'save']);
+    assert.deepStrictEqual(options.exclude, [
+      'createQuery',
+      'delete',
+      'insert',
+      'save',
+      'update',
+      'upsert',
+    ]);
   },
 });
 
@@ -63,7 +70,7 @@ class FakeDatastoreRequest {
   }
 }
 
-describe('Transaction', () => {
+describe.only('Transaction', () => {
   let Transaction: typeof tsTypes.Transaction;
   let transaction: tsTypes.Transaction;
   const TRANSACTION_ID = 'transaction-id';
@@ -349,7 +356,7 @@ describe('Transaction', () => {
       const args = ['0', '1']; // Query only accepts to accept string||null values
       const createQueryReturnValue = {};
 
-      transaction.datastore.createQuery = function (...ags: Any) {
+      transaction.datastore.createQuery = function(...ags: Any) {
         assert.strictEqual(this, transaction);
         assert.strictEqual(ags[0], args[0]);
         assert.strictEqual(ags[1], args[1]);
