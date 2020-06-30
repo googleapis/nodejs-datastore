@@ -883,7 +883,7 @@ class Datastore extends DatastoreRequest {
    *
    * @param {ListIndexesOptions | string | ListIndexesCallback} [optionsOrFilterOrCallback]
    * @param {ListIndexesCallback} [callback]
-   * @return {Promise<[ListIndexesPage]> | void}
+   * @return {Promise<ListIndexesPage[]> | void}
    */
   listIndexes(
     optionsOrFilterOrCallback?:
@@ -946,7 +946,7 @@ class Datastore extends DatastoreRequest {
    *
    * @param {GetIndexOptions | string | GetIndexCallback} optionsOrIndexIdOrCallback
    * @param {GetIndexCallback} callback
-   * @return {Promise<[Index]> | void}
+   * @return {Promise<Index[]> | void}
    */
   getIndex(
     optionsOrIndexIdOrCallback?: GetIndexOptions | string | GetIndexCallback,
