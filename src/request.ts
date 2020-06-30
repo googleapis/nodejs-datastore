@@ -1481,6 +1481,8 @@ export interface RequestOptions {
   mode?: string;
   projectId?: string;
   query?: QueryProto;
+  filter?: string | null;
+  indexId?: string | null;
 }
 export type RunQueryStreamOptions = RunQueryOptions;
 export interface CommitCallback {

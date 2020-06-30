@@ -16,6 +16,7 @@ import * as assert from 'assert';
 import {before, beforeEach, after, afterEach, describe, it} from 'mocha';
 import * as gax from 'google-gax';
 import * as proxyquire from 'proxyquire';
+import * as sinon from 'sinon';
 
 import * as ds from '../src';
 import {DatastoreOptions} from '../src';
@@ -685,6 +686,178 @@ describe('Datastore', () => {
       const key = datastore.keyFromLegacyUrlsafe(encodedKey);
       assert.strictEqual(key.kind, 'Task');
       assert.strictEqual(key.name, 'Test');
+    });
+  });
+
+  describe('admin', () => {
+    const sandbox = sinon.createSandbox();
+    const getProjectIdStub: sinon.SinonStub = sandbox.stub();
+    let requestStub: sinon.SinonStub;
+
+    beforeEach(() => {
+      getProjectIdStub.yields(null, 'project-id');
+      datastore.auth.getProjectId = getProjectIdStub;
+
+      requestStub = sinon.stub(datastore, 'request_').yields();
+    });
+
+    afterEach(() => {
+      sandbox.reset();
+      sandbox.restore();
+    });
+
+    describe('listIndexes', () => {
+      it('should invoke admin listIndexes RPC with defaults', async () => {
+        await datastore.listIndexes();
+        assert(requestStub.calledOnce);
+        assert(
+          requestStub.calledWithMatch({
+            client: 'DatastoreAdminClient',
+            method: 'listIndexes',
+            gaxOpts: {},
+            reqOpts: {
+              filter: undefined,
+              pageSize: 0,
+              pageToken: undefined,
+            },
+          })
+        );
+      });
+
+      it('should pass through req options', async () => {
+        await datastore.listIndexes({
+          filter: 'foo',
+          pageSize: 42,
+          pageToken: 'bar',
+        });
+        assert(requestStub.calledOnce);
+        assert(
+          requestStub.calledWithMatch({
+            reqOpts: {
+              filter: 'foo',
+              pageSize: 42,
+              pageToken: 'bar',
+            },
+          })
+        );
+      });
+
+      it('should pass through gax options', async () => {
+        await datastore.listIndexes({
+          timeout: 99,
+          pageSize: 42,
+        });
+        assert(requestStub.calledOnce);
+        assert(
+          requestStub.calledWithMatch({
+            reqOpts: {
+              pageSize: 42,
+            },
+            gaxOpts: {
+              timeout: 99,
+            },
+          })
+        );
+      });
+
+      it('should allow simple filter', async () => {
+        await datastore.listIndexes('foo');
+        assert(requestStub.calledOnce);
+        assert(
+          requestStub.calledWithMatch({
+            reqOpts: {
+              filter: 'foo',
+            },
+          })
+        );
+      });
+
+      it('should return an indexes results property', async () => {
+        requestStub.resetBehavior();
+        requestStub.yields(null, ['index']);
+        const res = await datastore.listIndexes();
+        assert(res, 'promise tuple');
+        assert(res[0], 'first is the result');
+        assert.deepStrictEqual(res[0].indexes, ['index']);
+      });
+
+      it('should reject on request error', async () => {
+        const err = new Error('test error!');
+        requestStub.resetBehavior();
+        requestStub.yields(err);
+        await assert.rejects(() => datastore.listIndexes(), err);
+      });
+    });
+
+    describe('getIndex', () => {
+      const indexId = 'the-index-id';
+
+      it('should allow simple indexId', async () => {
+        await datastore.getIndex(indexId);
+        assert(requestStub.calledOnce);
+        assert(
+          requestStub.calledWithMatch({
+            reqOpts: {
+              indexId,
+            },
+          })
+        );
+      });
+
+      it('should invoke admin getIndex RPC with defaults', async () => {
+        await datastore.getIndex({indexId});
+        assert(requestStub.calledOnce);
+        assert(
+          requestStub.calledWithMatch({
+            client: 'DatastoreAdminClient',
+            method: 'getIndex',
+            gaxOpts: {},
+            reqOpts: {
+              indexId,
+            },
+          })
+        );
+      });
+
+      it('should pass through gax options', async () => {
+        await datastore.getIndex({
+          timeout: 99,
+          pageSize: 42,
+          indexId,
+        });
+        assert(requestStub.calledOnce);
+        assert(
+          requestStub.calledWithMatch({
+            gaxOpts: {
+              pageSize: 42,
+              timeout: 99,
+            },
+            reqOpts: {
+              indexId,
+            },
+          })
+        );
+      });
+
+      it('should return the index', async () => {
+        requestStub.resetBehavior();
+        requestStub.yields(null, {the: 'index'});
+        const res = await datastore.getIndex({indexId});
+        assert(res, 'promise tuple');
+        assert(res[0], 'first is the result');
+        assert.deepStrictEqual(res[0], {the: 'index'});
+      });
+
+      it('should fail early if indexId is not provided', async () => {
+        await assert.rejects(() => datastore.getIndex(), TypeError);
+      });
+
+      it('should reject on request error', async () => {
+        const err = new Error('test error!');
+        requestStub.resetBehavior();
+        requestStub.yields(err);
+        await assert.rejects(() => datastore.getIndex({indexId}), err);
+      });
     });
   });
 });

@@ -13,8 +13,11 @@
 // limitations under the License.
 
 import * as assert from 'assert';
+import {readFileSync} from 'fs';
+import * as path from 'path';
 import {before, after, describe, it} from 'mocha';
-import {Datastore} from '../src';
+import * as yaml from 'js-yaml';
+import {Datastore, protos} from '../src';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -30,6 +33,13 @@ describe('Datastore', () => {
     testKinds.push(keyObject.kind);
     return keyObject;
   };
+
+  const {indexes: declaredIndexes} = yaml.safeLoad(
+    readFileSync(path.join(__dirname, 'data', 'index.yaml'), 'utf8')
+  ) as {indexes: protos.google.datastore.admin.v1.IIndex[]};
+
+  // TODO/DX ensure indexes before testing, and maybe? cleanup indexes after
+  //  possible implications with kokoro project
 
   after(async () => {
     async function deleteEntities(kind: string) {
@@ -921,6 +931,42 @@ describe('Datastore', () => {
       await transaction.get(key);
       transaction.save({key, data: {}});
       await assert.rejects(transaction.commit());
+    });
+  });
+
+  describe('admin', () => {
+    // TODO Until the protos support creating indexes, these tests depend
+    //  on the remote state of declared indexes. Could be flaky!
+
+    it('should list all indexes', async () => {
+      const [{indexes}] = await datastore.listIndexes();
+      assert.ok(indexes, 'got the index listing result');
+      assert.ok(
+        indexes.length >= declaredIndexes.length,
+        'has at least the number of indexes per system-test/data/index.yaml'
+      );
+
+      // Comparing index.yaml and the actual defined index in datastore requires
+      // assumptions to complete a shape transformation, so let's just see if
+      // a returned index has the right shape and not inspect the values.
+      const [index] = indexes;
+      assert.ok(index, 'first index is readable');
+      assert.ok(index.properties, 'has properties collection');
+      assert.ok(index.properties.length, 'with properties inside');
+      assert.ok(index.ancestor, 'has the ancestor property');
+    });
+
+    it('should describe a specific index', async () => {
+      const [{indexes}] = await datastore.listIndexes();
+      const [firstIndex = {}] = indexes || [];
+      assert.ok(firstIndex.indexId, 'need an indexId to test this');
+
+      const [index] = await datastore.getIndex(firstIndex.indexId);
+      assert.deepStrictEqual(
+        index,
+        firstIndex,
+        'asked index is the same as received index'
+      );
     });
   });
 });

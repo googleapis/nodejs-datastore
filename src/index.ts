@@ -27,6 +27,7 @@
 import arrify = require('arrify');
 import {
   GrpcClient,
+  CallOptions,
   ClientStub,
   ChannelCredentials,
   GoogleAuth,
@@ -39,6 +40,7 @@ import {Query} from './query';
 import {DatastoreRequest} from './request';
 import {Transaction} from './transaction';
 import {promisifyAll} from '@google-cloud/promisify';
+import * as protos from '../protos/protos';
 
 const {grpc} = new GrpcClient();
 
@@ -401,14 +403,22 @@ class Datastore extends DatastoreRequest {
 
     options.projectId = options.projectId || process.env.DATASTORE_PROJECT_ID;
 
+    // both v1 and admin.v1 use the same service name
     this.defaultBaseUrl_ = 'datastore.googleapis.com';
     this.determineBaseUrl_(options.apiEndpoint);
+
+    const scopes: string[] = Array.from(
+      new Set([
+        ...gapic.v1.DatastoreClient.scopes,
+        ...gapic.v1.DatastoreAdminClient.scopes,
+      ])
+    );
 
     this.options = Object.assign(
       {
         libName: 'gccl',
         libVersion: require('../../package.json').version,
-        scopes: gapic.v1.DatastoreClient.scopes,
+        scopes,
         servicePath: this.baseUrl_,
         port: typeof this.port_ === 'number' ? this.port_ : 443,
       },
@@ -854,6 +864,132 @@ class Datastore extends DatastoreRequest {
     return new Transaction(this, options);
   }
 
+  listIndexes(filter?: string): Promise<[ListIndexesPage]>;
+  listIndexes(options?: ListIndexesOptions): Promise<[ListIndexesPage]>;
+  listIndexes(filter: string, callback: ListIndexesCallback): void;
+  listIndexes(options: ListIndexesOptions, callback: ListIndexesCallback): void;
+  listIndexes(callback: ListIndexesCallback): void;
+  /**
+   * Get a list of indexes in this datastore.
+   *
+   * This is an administrative command and requires the necessary permissions.
+   * Will list _all_ indexes for the current project without pagination by
+   * default. Optionally supply a `filter` expression to limit the result set.
+   *
+   * @example
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const [indexes] = await datastore.listIndexes();
+   *
+   * @param {ListIndexesOptions | string | ListIndexesCallback} [optionsOrFilterOrCallback]
+   * @param {ListIndexesCallback} [callback]
+   * @return {Promise<[ListIndexesPage]> | void}
+   */
+  listIndexes(
+    optionsOrFilterOrCallback?:
+      | ListIndexesOptions
+      | string
+      | ListIndexesCallback,
+    callback?: ListIndexesCallback
+  ): Promise<[ListIndexesPage]> | void {
+    const options: ListIndexesOptions = {
+      ...(typeof optionsOrFilterOrCallback === 'string' ||
+      typeof optionsOrFilterOrCallback === 'function'
+        ? {}
+        : optionsOrFilterOrCallback),
+    };
+
+    callback =
+      typeof optionsOrFilterOrCallback === 'function'
+        ? optionsOrFilterOrCallback
+        : callback;
+
+    if (typeof optionsOrFilterOrCallback === 'string') {
+      options.filter = optionsOrFilterOrCallback;
+    }
+
+    const {filter, pageSize = 0, pageToken, ...gaxOpts} = options;
+    const reqOpts = {
+      filter,
+      pageSize, // despite being in gax callopts
+      pageToken,
+    };
+
+    this.request_(
+      {
+        client: 'DatastoreAdminClient',
+        method: 'listIndexes',
+        gaxOpts,
+        reqOpts,
+      },
+      (err, result: protos.google.datastore.admin.v1.IIndex[]) => {
+        // FIXME response from gax is one property deep, need to fake it for
+        //  future compatibility
+        callback!(err, result ? {indexes: result} : undefined);
+      }
+    );
+  }
+
+  getIndex(indexId: string): Promise<[Index]>;
+  getIndex(options: GetIndexOptions): Promise<[Index]>;
+  getIndex(indexId: string, callback: GetIndexCallback): void;
+  getIndex(options: GetIndexOptions, callback: GetIndexCallback): void;
+  /**
+   * Describe a specific index by ID.
+   *
+   * This is an administrative command and requires the necessary permissions.
+   *
+   * @example
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const [index] = await datastore.getIndex('CICAgKnr64AZ');
+   *
+   * @param {GetIndexOptions | string | GetIndexCallback} optionsOrIndexIdOrCallback
+   * @param {GetIndexCallback} callback
+   * @return {Promise<[Index]> | void}
+   */
+  getIndex(
+    optionsOrIndexIdOrCallback?: GetIndexOptions | string | GetIndexCallback,
+    callback?: GetIndexCallback
+  ): Promise<[Index]> | void {
+    const options: GetIndexOptions = {
+      indexId: '',
+      ...(typeof optionsOrIndexIdOrCallback === 'string' ||
+      typeof optionsOrIndexIdOrCallback === 'function'
+        ? {}
+        : optionsOrIndexIdOrCallback),
+    };
+
+    callback =
+      typeof optionsOrIndexIdOrCallback === 'function'
+        ? optionsOrIndexIdOrCallback
+        : callback;
+
+    if (typeof optionsOrIndexIdOrCallback === 'string') {
+      options.indexId = optionsOrIndexIdOrCallback;
+    }
+
+    const {indexId, ...gaxOpts} = options;
+    const reqOpts = {
+      indexId,
+    };
+
+    if (!indexId) {
+      callback!(new TypeError('An indexId is required.'));
+      return;
+    }
+
+    this.request_(
+      {
+        client: 'DatastoreAdminClient',
+        method: 'getIndex',
+        gaxOpts,
+        reqOpts,
+      },
+      callback!
+    );
+  }
+
   /**
    * Determine the appropriate endpoint to use for API requests. If not
    * explicitly defined, check for the "DATASTORE_EMULATOR_HOST" environment
@@ -972,17 +1108,23 @@ export {Datastore};
 /**
  * @name Datastore.v1
  * @see v1.DatastoreClient
+ * @see v1.DatastoreAdminClient
  * @type {object}
  * @property {constructor} DatastoreClient
  *     Reference to {@link v1.DatastoreClient}.
+ * @property {constructor} DatastoreAdminClient
+ *     Reference to {@link v1.DatastoreAdminClient}.
  */
 
 /**
  * @name module:@google-cloud/datastore.v1
  * @see v1.DatastoreClient
+ * @see v1.DatastoreAdminClient
  * @type {object}
  * @property {constructor} DatastoreClient
  *     Reference to {@link v1.DatastoreClient}.
+ * @property {constructor} DatastoreAdminClient
+ *     Reference to {@link v1.DatastoreAdminClient}.
  */
 module.exports.v1 = gapic.v1;
 
@@ -1002,7 +1144,22 @@ export interface DatastoreOptions extends GoogleAuthOptions {
 export interface KeyToLegacyUrlSafeCallback {
   (err?: Error | null, urlSafeKey?: string): void;
 }
+
+export type GetIndexOptions = {
+  indexId: string;
+} & CallOptions;
+export type Index = protos.google.datastore.admin.v1.IIndex;
+export interface GetIndexCallback {
+  (err?: Error | null, res?: Index): void;
+}
+
+export type ListIndexesOptions = {
+  filter?: string;
+} & CallOptions;
+export type ListIndexesPage = protos.google.datastore.admin.v1.IListIndexesResponse;
+export interface ListIndexesCallback {
+  (err?: Error | null, res?: ListIndexesPage): void;
+}
+
 const v1 = gapic.v1;
-export {v1};
-import * as protos from '../protos/protos';
-export {protos};
+export {protos, v1};
