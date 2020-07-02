@@ -23,7 +23,7 @@ import {Transform} from 'stream';
 
 import {google} from '../protos/protos';
 import * as ds from '../src';
-import {entity, Entity, KeyProto, EntityProto} from '../src/entity.js';
+import {entity, Entity, KeyProto} from '../src/entity.js';
 import {IntegerTypeCastOptions, Query, QueryProto} from '../src/query.js';
 import {outOfBoundsError} from './entity';
 import {
