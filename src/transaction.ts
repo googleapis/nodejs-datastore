@@ -688,8 +688,7 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  save(entities: Entities): any {
+  save(entities: Entities): void {
     arrify(entities).forEach((ent: Entity) => {
       this.modifiedEntities_.push({
         entity: {
