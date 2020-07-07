@@ -713,11 +713,7 @@ class Transaction extends DatastoreRequest {
   merge(currentEntity: Entity, entityToMerge: Entity): void {
     const preparedCurrent = Datastore.prepareEntityObject_(currentEntity);
     const preparedToMerge = Datastore.prepareEntityObject_(entityToMerge);
-    Object.assign(
-      preparedCurrent.data,
-      preparedToMerge.data,
-      preparedCurrent.data
-    );
+    Object.assign(preparedCurrent.data, preparedToMerge.data);
     preparedCurrent.method = 'upsert';
     this.save(preparedCurrent);
   }
