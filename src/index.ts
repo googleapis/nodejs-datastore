@@ -840,12 +840,18 @@ class Datastore extends DatastoreRequest {
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    *
-   * const key = datastore.key(['Company', 123]);
-   * datastore.merge({meaningOfLife: 42}, (err) => {
-   *   if (!err) {
-   *     // Data merged successfully.
+   * const companyKey = datastore.key(['Company', 123]);
+   * datastore.merge(
+   *   {
+   *     key: companyKey,
+   *     data: {meaningOfLife: 42}
+   *   },
+   *   err => {
+   *     if (!err) {
+   *       // Data merged successfully.
+   *     }
    *   }
-   * });
+   * );
    */
   merge(
     entities: Entities,
