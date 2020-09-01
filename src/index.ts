@@ -533,9 +533,8 @@ class Datastore extends DatastoreRequest {
    * // Save a single entity.
    * //
    * // Notice that we are providing an incomplete key. After saving, the
-   * original
-   * // Key object used to save will be updated to contain the path with its
-   * // generated ID.
+   * // original Key object used to save will be updated to contain the path
+   * // with its generated ID.
    * //-
    * const key = datastore.key('Company');
    * const entity = {
@@ -554,10 +553,8 @@ class Datastore extends DatastoreRequest {
    * // Save a single entity using a provided name instead of auto-generated ID.
    * //
    * // Here we are providing a key with name instead of an ID. After saving,
-   * the
-   * // original Key object used to save will be updated to contain the path
-   * with
-   * // the name instead of a generated ID.
+   * // the original Key object used to save will be updated to contain the
+   * // path with the name instead of a generated ID.
    * //-
    * const key = datastore.key(['Company', 'donutshack']);
    * const entity = {
@@ -603,9 +600,8 @@ class Datastore extends DatastoreRequest {
    * // blobs, and lists.
    * //
    * // Notice that we are providing an incomplete key. After saving, the
-   * original
-   * // Key object used to save will be updated to contain the path with its
-   * // generated ID.
+   * // original Key object used to save will be updated to contain the path
+   * // with its generated ID.
    * //-
    * const key = datastore.key('Company');
    * const entity = {
@@ -659,6 +655,7 @@ class Datastore extends DatastoreRequest {
    * };
    *
    * datastore.save(entity, (err, apiResponse) => {});
+   *
    * //-
    * // Use boolean `excludeLargeProperties`, to auto exclude Large properties from indexing.
    * // This will allow storing string values larger than 1500 bytes.
