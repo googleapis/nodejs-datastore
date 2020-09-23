@@ -21,7 +21,7 @@ const assert = require('assert');
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
 // https://googlecloudplatform.github.io/gcloud-node/#/docs/google-cloud/latest/guides/authentication
-const { Datastore } = require('@google-cloud/datastore');
+const {Datastore} = require('@google-cloud/datastore');
 
 function makeStub() {
   return sinon.stub().returns(Promise.resolve([]));
@@ -331,7 +331,7 @@ class Entity extends TestHelper {
       key: taskKey,
       data: {},
     });
-    return this.datastore.update({ key: taskKey, data: task });
+    return this.datastore.update({key: taskKey, data: task});
   }
 
   async testDelete() {
@@ -949,9 +949,9 @@ class Query extends TestHelper {
     const ancestorKey = datastore.key(['TaskList', 'default']);
     const query = datastore.createQuery('Task').hasAncestor(ancestorKey);
 
-    query.run({ consistency: 'eventual' });
+    query.run({consistency: 'eventual'});
     // [END datastore_eventual_consistent_query]
-    const [entities] = await query.run({ consistency: 'eventual' });
+    const [entities] = await query.run({consistency: 'eventual'});
     datastore = datastoreMock;
     return entities;
   }
@@ -1135,7 +1135,7 @@ class Transaction extends TestHelper {
 
     // [START datastore_transactional_single_entity_group_read_only]
     async function getTaskListEntities() {
-      const transaction = datastore.transaction({ readOnly: true });
+      const transaction = datastore.transaction({readOnly: true});
       try {
         const taskListKey = datastore.key(['TaskList', 'default']);
 
