@@ -15,7 +15,6 @@
 import * as assert from 'assert';
 import {readFileSync} from 'fs';
 import * as path from 'path';
-import Q from 'p-queue';
 import {before, after, describe, it} from 'mocha';
 import * as yaml from 'js-yaml';
 import {Datastore, Index} from '../src';
@@ -993,28 +992,6 @@ describe('Datastore', () => {
   describe('importing and exporting entities', () => {
     const gcs = new Storage();
     const bucket = gcs.bucket('nodejs-datastore-system-tests');
-
-    before(async () => {
-      // Remove stale exported entities.
-      const q = new Q({concurrency: 5});
-      const [files] = await bucket.getFiles();
-      await Promise.all(
-        files.filter(file => {
-          const oneHourAgo = new Date(Date.now() - 3600000);
-          const shouldDelete = file.metadata.timeCreated <= oneHourAgo;
-          if (shouldDelete) {
-            q.add(async () => {
-              try {
-                await file.delete();
-              } catch (e) {
-                console.log(`Error deleting file: ${file.name}`);
-              }
-            });
-          }
-          return shouldDelete;
-        })
-      );
-    });
 
     it('should export, then import entities', async () => {
       const [exportOperation] = await datastore.export({bucket});
