@@ -20,11 +20,12 @@ import arrify = require('arrify');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const concat = require('concat-stream');
 import * as extend from 'extend';
+import * as gax from 'google-gax';
 import {split} from 'split-array-stream';
 import * as streamEvents from 'stream-events';
 import {google} from '../protos/protos';
 import {CallOptions} from 'google-gax';
-import {Transform} from 'stream';
+import {Duplex, PassThrough, Transform} from 'stream';
 
 // Import the clients for each version supported by this package.
 const gapic = Object.freeze({
@@ -868,20 +869,10 @@ class DatastoreRequest {
     });
   }
 
-  request_(config: RequestConfig, callback: RequestCallback): void;
   /**
-   * Make a request to the API endpoint. Properties to indicate a transactional
-   * or non-transactional operation are added automatically.
-   *
-   * @param {object} config Configuration object.
-   * @param {object} config.gaxOpts GAX options.
-   * @param {function} config.method The gax method to call.
-   * @param {object} config.reqOpts Request options.
-   * @param {function} callback The callback function.
-   *
    * @private
    */
-  request_(config: RequestConfig, callback: RequestCallback): void {
+  prepareGaxRequest_(config: RequestConfig, callback: Function): void {
     const datastore = this.datastore;
 
     const isTransaction = this.id ? true : false;
@@ -933,8 +924,69 @@ class DatastoreRequest {
           'google-cloud-resource-prefix': `projects/${projectId}`,
         },
       });
-      gaxClient![method](reqOpts, gaxOpts, callback);
+      const requestFn = gaxClient![method].bind(gaxClient, reqOpts, gaxOpts);
+      callback(null, requestFn);
     });
+  }
+
+  request_(config: RequestConfig, callback: RequestCallback): void;
+  /**
+   * Make a request to the API endpoint. Properties to indicate a transactional
+   * or non-transactional operation are added automatically.
+   *
+   * @param {object} config Configuration object.
+   * @param {object} config.gaxOpts GAX options.
+   * @param {function} config.method The gax method to call.
+   * @param {object} config.reqOpts Request options.
+   * @param {function} callback The callback function.
+   *
+   * @private
+   */
+  request_(config: RequestConfig, callback: RequestCallback): void {
+    this.prepareGaxRequest_(config, (err: Error, requestFn: Function) => {
+      if (err) {
+        callback(err);
+        return;
+      }
+      requestFn(callback);
+    });
+  }
+
+  /**
+   * Make a request as a stream.
+   *
+   * @param {object} config Configuration object.
+   * @param {object} config.gaxOpts GAX options.
+   * @param {function} config.method The gax method to call.
+   * @param {object} config.reqOpts Request options.
+   */
+  requestStream_(config: RequestConfig): Duplex {
+    const stream = streamEvents(new PassThrough({objectMode: true}));
+    let gaxStream: gax.CancellableStream;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (stream as any).abort = () => {
+      if (gaxStream && gaxStream.cancel) {
+        gaxStream.cancel();
+      }
+    };
+
+    stream.once('reading', () => {
+      this.prepareGaxRequest_(config, (err: Error, requestFn: Function) => {
+        if (err) {
+          stream.destroy(err);
+          return;
+        }
+
+        gaxStream = requestFn();
+        gaxStream
+          .on('error', stream.destroy.bind(stream))
+          .on('response', stream.emit.bind(stream, 'response'))
+          .pipe(stream);
+      });
+    });
+
+    return stream;
   }
 }
 
@@ -999,6 +1051,9 @@ export interface RequestOptions {
   mode?: string;
   projectId?: string;
   query?: QueryProto;
+  filter?: string;
+  indexId?: string;
+  entityFilter?: google.datastore.admin.v1.IEntityFilter;
 }
 export type RunQueryStreamOptions = RunQueryOptions;
 export interface CommitCallback {
