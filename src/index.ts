@@ -513,7 +513,7 @@ class Datastore extends DatastoreRequest {
 
     if (!reqOpts.outputUrlPrefix) {
       if (typeof config.bucket === 'string') {
-        reqOpts.outputUrlPrefix = `gs://${config.bucket}`;
+        reqOpts.outputUrlPrefix = `gs://${config.bucket.replace('gs://', '')}`;
       } else if (typeof config.bucket === 'object') {
         reqOpts.outputUrlPrefix = `gs://${config.bucket.name}`;
       } else {
@@ -664,7 +664,7 @@ class Datastore extends DatastoreRequest {
 
     if (!reqOpts.inputUrl) {
       if (typeof config.file === 'string') {
-        reqOpts.inputUrl = `gs://${config.file}`;
+        reqOpts.inputUrl = `gs://${config.file.replace('gs://', '')}`;
       } else if (typeof config.file === 'object') {
         reqOpts.inputUrl = `gs://${config.file.bucket.name}/${config.file.name}`;
       } else {

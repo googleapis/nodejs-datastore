@@ -541,6 +541,18 @@ describe('Datastore', () => {
       datastore.export({bucket}, assert.ifError);
     });
 
+    it('should remove extraneous gs:// prefix from input', done => {
+      const bucket = 'gs://bucket';
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      datastore.request_ = (config: any) => {
+        assert.strictEqual(config.reqOpts.outputUrlPrefix, `${bucket}`);
+        done();
+      };
+
+      datastore.export({bucket}, assert.ifError);
+    });
+
     it('should accept a Bucket object destination', done => {
       const bucket = {name: 'bucket'};
 
@@ -931,6 +943,18 @@ describe('Datastore', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
         assert.strictEqual(config.reqOpts.inputUrl, `gs://${file}`);
+        done();
+      };
+
+      datastore.import({file}, assert.ifError);
+    });
+
+    it('should remove extraneous gs:// prefix from input', done => {
+      const file = 'gs://file';
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      datastore.request_ = (config: any) => {
+        assert.strictEqual(config.reqOpts.inputUrl, `${file}`);
         done();
       };
 
