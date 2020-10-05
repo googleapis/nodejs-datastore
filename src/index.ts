@@ -95,7 +95,7 @@ export interface LongRunningCallback {
 export type LongRunningResponse = [Operation, google.longrunning.IOperation];
 
 export interface ExportEntitiesConfig
-  extends google.datastore.admin.v1.IExportEntitiesRequest {
+  extends Omit<google.datastore.admin.v1.IExportEntitiesRequest, 'projectId'> {
   bucket?: string | {name: string};
   kinds?: string[];
   namespaces?: string[];
@@ -103,7 +103,7 @@ export interface ExportEntitiesConfig
 }
 
 export interface ImportEntitiesConfig
-  extends google.datastore.admin.v1.IImportEntitiesRequest {
+  extends Omit<google.datastore.admin.v1.IImportEntitiesRequest, 'projectId'> {
   file?: string | {bucket: {name: string}; name: string};
   kinds?: string[];
   namespaces?: string[];
@@ -511,21 +511,32 @@ class Datastore extends DatastoreRequest {
       ...config,
     };
 
+    if (reqOpts.bucket && reqOpts.outputUrlPrefix) {
+      throw new Error('Both `bucket` and `outputUrlPrefix` provided.');
+    }
+
     if (!reqOpts.outputUrlPrefix) {
       if (typeof config.bucket === 'string') {
         reqOpts.outputUrlPrefix = `gs://${config.bucket.replace('gs://', '')}`;
       } else if (typeof config.bucket === 'object') {
         reqOpts.outputUrlPrefix = `gs://${config.bucket.name}`;
       } else {
-        throw new Error('An output URL must be provided.');
+        throw new Error('A Bucket object or URL must be provided.');
       }
     }
 
     if (reqOpts.kinds) {
+      console.log(reqOpts.kinds, typeof config.entityFilter);
+      if (typeof config.entityFilter === 'object') {
+        throw new Error('Both `entityFilter` and `kinds` were provided.');
+      }
       reqOpts.entityFilter!.kinds = reqOpts.kinds;
     }
 
     if (reqOpts.namespaces) {
+      if (typeof config.entityFilter === 'object') {
+        throw new Error('Both `entityFilter` and `namespaces` were provided.');
+      }
       reqOpts.entityFilter!.namespaceIds = reqOpts.namespaces;
     }
 
@@ -610,7 +621,7 @@ class Datastore extends DatastoreRequest {
         const nextQuery = resp[1]! ? Object.assign(options, resp[1]) : null;
         const apiResp: google.datastore.admin.v1.IListIndexesResponse = resp[2];
 
-        callback(err, indexes, nextQuery, apiResp);
+        callback(err as ServiceError, indexes, nextQuery, apiResp);
       }
     );
   }
@@ -662,6 +673,10 @@ class Datastore extends DatastoreRequest {
       ...config,
     };
 
+    if (config.file && config.inputUrl) {
+      throw new Error('Both `file` and `inputUrl` were provided.');
+    }
+
     if (!reqOpts.inputUrl) {
       if (typeof config.file === 'string') {
         reqOpts.inputUrl = `gs://${config.file.replace('gs://', '')}`;
@@ -673,10 +688,16 @@ class Datastore extends DatastoreRequest {
     }
 
     if (reqOpts.kinds) {
+      if (typeof config.entityFilter === 'object') {
+        throw new Error('Both `entityFilter` and `kinds` were provided.');
+      }
       reqOpts.entityFilter!.kinds = reqOpts.kinds;
     }
 
     if (reqOpts.namespaces) {
+      if (typeof config.entityFilter === 'object') {
+        throw new Error('Both `entityFilter` and `namespaces` were provided.');
+      }
       reqOpts.entityFilter!.namespaceIds = reqOpts.namespaces;
     }
 

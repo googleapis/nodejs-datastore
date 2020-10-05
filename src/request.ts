@@ -20,12 +20,17 @@ import arrify = require('arrify');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const concat = require('concat-stream');
 import * as extend from 'extend';
-import * as gax from 'google-gax';
 import {split} from 'split-array-stream';
-import * as streamEvents from 'stream-events';
 import {google} from '../protos/protos';
-import {CallOptions} from 'google-gax';
+import {CallOptions, CancellableStream} from 'google-gax';
 import {Duplex, PassThrough, Transform} from 'stream';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const streamEvents = require('stream-events');
+
+export interface AbortableDuplex extends Duplex {
+  abort(): void;
+}
 
 // Import the clients for each version supported by this package.
 const gapic = Object.freeze({
@@ -936,6 +941,7 @@ class DatastoreRequest {
    *
    * @param {object} config Configuration object.
    * @param {object} config.gaxOpts GAX options.
+   * @param {string} config.client The name of the gax client.
    * @param {function} config.method The gax method to call.
    * @param {object} config.reqOpts Request options.
    * @param {function} callback The callback function.
@@ -957,15 +963,15 @@ class DatastoreRequest {
    *
    * @param {object} config Configuration object.
    * @param {object} config.gaxOpts GAX options.
-   * @param {function} config.method The gax method to call.
+   * @param {string} config.client The name of the gax client.
+   * @param {string} config.method The gax method to call.
    * @param {object} config.reqOpts Request options.
    */
-  requestStream_(config: RequestConfig): Duplex {
+  requestStream_(config: RequestConfig): AbortableDuplex {
+    let gaxStream: CancellableStream;
     const stream = streamEvents(new PassThrough({objectMode: true}));
-    let gaxStream: gax.CancellableStream;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (stream as any).abort = () => {
+    stream.abort = () => {
       if (gaxStream && gaxStream.cancel) {
         gaxStream.cancel();
       }
@@ -986,7 +992,7 @@ class DatastoreRequest {
       });
     });
 
-    return stream;
+    return stream as AbortableDuplex;
   }
 }
 

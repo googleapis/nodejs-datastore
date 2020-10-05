@@ -12,21 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {CallOptions} from 'google-gax';
+import {CallOptions, ServiceError} from 'google-gax';
 import {promisifyAll} from '@google-cloud/promisify';
 
 import {Datastore} from './';
 import {google} from '../protos/protos';
 
 export interface GenericIndexCallback<T> {
-  (err?: Error | null, index?: Index | null, apiResponse?: T | null): void;
+  (
+    err?: ServiceError | null,
+    index?: Index | null,
+    apiResponse?: T | null
+  ): void;
 }
 
 export type GetIndexCallback = GenericIndexCallback<IIndex>;
 export type GetIndexResponse = [Index, IIndex];
 
 export type IndexGetMetadataCallback = (
-  err?: Error | null,
+  err?: ServiceError | null,
   metadata?: IIndex | null
 ) => void;
 export type IndexGetMetadataResponse = [IIndex];
@@ -44,7 +48,7 @@ export type GetIndexesResponse = [
   google.datastore.admin.v1.IListIndexesResponse
 ];
 export type GetIndexesCallback = (
-  err?: Error | null,
+  err?: ServiceError | null,
   indexes?: Index[],
   nextQuery?: GetIndexesOptions,
   apiResponse?: google.datastore.admin.v1.IListIndexesResponse
@@ -67,9 +71,9 @@ export class Index {
   id: string;
   metadata?: IIndex;
 
-  constructor(datastore: Datastore, name: string) {
+  constructor(datastore: Datastore, id: string) {
     this.datastore = datastore;
-    this.id = name.split('/').pop()!;
+    this.id = id.split('/').pop()!;
   }
 
   get(gaxOptions?: CallOptions): Promise<GetIndexResponse>;
@@ -113,7 +117,6 @@ export class Index {
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request.
    * @param {object} callback.metadata The metadata.
-   * @param {object} callback.apiResponse The full API response.
    */
   getMetadata(
     gaxOptionsOrCallback?: CallOptions | IndexGetMetadataCallback,
@@ -137,7 +140,7 @@ export class Index {
         if (resp) {
           this.metadata = resp;
         }
-        callback(err, resp);
+        callback(err as ServiceError, resp);
       }
     );
   }

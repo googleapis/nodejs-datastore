@@ -571,7 +571,7 @@ describe('Datastore', () => {
     it('should throw if a destination is not provided', () => {
       assert.throws(() => {
         datastore.export({}, assert.ifError);
-      }, /An output URL must be provided\./);
+      }, /A Bucket object or URL must be provided\./);
     });
 
     it('should accept kinds', done => {
@@ -585,6 +585,19 @@ describe('Datastore', () => {
       };
 
       datastore.export(config, assert.ifError);
+    });
+
+    it('should throw if both kinds and entityFilter are provided', () => {
+      assert.throws(() => {
+        datastore.export(
+          {
+            bucket: 'bucket',
+            kinds: ['kind1', 'kind2'],
+            entityFilter: {},
+          },
+          assert.ifError
+        );
+      }, /Both `entityFilter` and `kinds` were provided\./);
     });
 
     it('should accept namespaces', done => {
@@ -601,6 +614,19 @@ describe('Datastore', () => {
       };
 
       datastore.export(config, assert.ifError);
+    });
+
+    it('should throw if both namespaces and entityFilter are provided', () => {
+      assert.throws(() => {
+        datastore.export(
+          {
+            bucket: 'bucket',
+            namespaces: ['ns1', 'ns2'],
+            entityFilter: {},
+          },
+          assert.ifError
+        );
+      }, /Both `entityFilter` and `namespaces` were provided\./);
     });
 
     it('should remove extraneous properties from request', done => {
@@ -937,6 +963,18 @@ describe('Datastore', () => {
   });
 
   describe('import', () => {
+    it('should throw if both file and inputUrl are provided', () => {
+      assert.throws(() => {
+        datastore.import(
+          {
+            file: 'file',
+            inputUrl: 'gs://file',
+          },
+          assert.ifError
+        );
+      }, /Both `file` and `inputUrl` were provided\./);
+    });
+
     it('should accept a file string source', done => {
       const file = 'file';
 
@@ -995,6 +1033,19 @@ describe('Datastore', () => {
       datastore.import(config, assert.ifError);
     });
 
+    it('should throw if both kinds and entityFilter are provided', () => {
+      assert.throws(() => {
+        datastore.import(
+          {
+            file: 'file',
+            kinds: ['kind1', 'kind2'],
+            entityFilter: {},
+          },
+          assert.ifError
+        );
+      }, /Both `entityFilter` and `kinds` were provided\./);
+    });
+
     it('should accept namespaces', done => {
       const namespaces = ['ns1', 'n2'];
       const config = {file: 'file', namespaces};
@@ -1009,6 +1060,19 @@ describe('Datastore', () => {
       };
 
       datastore.import(config, assert.ifError);
+    });
+
+    it('should throw if both namespaces and entityFilter are provided', () => {
+      assert.throws(() => {
+        datastore.import(
+          {
+            file: 'file',
+            namespaces: ['ns1', 'ns2'],
+            entityFilter: {},
+          },
+          assert.ifError
+        );
+      }, /Both `entityFilter` and `namespaces` were provided\./);
     });
 
     it('should remove extraneous properties from request', done => {
