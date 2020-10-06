@@ -526,7 +526,6 @@ class Datastore extends DatastoreRequest {
     }
 
     if (reqOpts.kinds) {
-      console.log(reqOpts.kinds, typeof config.entityFilter);
       if (typeof config.entityFilter === 'object') {
         throw new Error('Both `entityFilter` and `kinds` were provided.');
       }
