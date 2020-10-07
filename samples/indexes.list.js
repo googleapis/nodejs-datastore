@@ -25,6 +25,16 @@ async function main() {
     // Each returned Index object includes metadata about the index.
     const [firstIndex] = indexes;
     console.log('Properties:', firstIndex.metadata.properties);
+
+    // You may also get Index references as a readable object stream.
+    datastore
+      .getIndexesStream()
+      .on('data', index => {
+        console.log('Properties:', index.metadata.properties);
+      })
+      .on('end', () => {
+        // All matching Index objects have been returned.
+      });
   }
 
   await listIndexes();
