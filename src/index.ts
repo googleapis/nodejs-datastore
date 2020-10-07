@@ -512,7 +512,7 @@ class Datastore extends DatastoreRequest {
     };
 
     if (reqOpts.bucket && reqOpts.outputUrlPrefix) {
-      throw new Error('Both `bucket` and `outputUrlPrefix` provided.');
+      throw new Error('Both `bucket` and `outputUrlPrefix` were provided.');
     }
 
     if (!reqOpts.outputUrlPrefix) {

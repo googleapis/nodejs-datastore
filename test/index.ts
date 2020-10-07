@@ -574,6 +574,18 @@ describe('Datastore', () => {
       }, /A Bucket object or URL must be provided\./);
     });
 
+    it('should throw if bucket and outputUrlPrefix are provided', () => {
+      assert.throws(() => {
+        datastore.export(
+          {
+            bucket: 'bucket',
+            outputUrlPrefix: 'output-url-prefix',
+          },
+          assert.ifError
+        );
+      }, /Both `bucket` and `outputUrlPrefix` were provided\./);
+    });
+
     it('should accept kinds', done => {
       const kinds = ['kind1', 'kind2'];
       const config = {bucket: 'bucket', kinds};
