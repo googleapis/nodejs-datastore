@@ -59,7 +59,7 @@ export type IIndex = google.datastore.admin.v1.IIndex;
 /**
  * @class
  * @param {Datastore} datastore The parent instance of this index.
- * @param {string} name Name of the index.
+ * @param {string} id The index name or id.
  *
  * @example
  * const {Datastore} = require('@google-cloud/datastore');
@@ -110,7 +110,7 @@ export class Index {
     callback: IndexGetMetadataCallback
   ): void;
   /**
-   * Get an index if it exists.
+   * Get the metadata of this index.
    *
    * @param {object} [gaxOptions] Request configuration options, outlined here:
    *     https://googleapis.github.io/gax-nodejs/CallSettings.html.

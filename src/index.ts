@@ -497,7 +497,17 @@ class Datastore extends DatastoreRequest {
   export(config: ExportEntitiesConfig): Promise<LongRunningResponse>;
   export(config: ExportEntitiesConfig, callback: LongRunningCallback): void;
   /**
+   * Export entities from this project to a Google Cloud Storage bucket.
+   *
    * @param {ExportEntitiesConfig} config Configuration object.
+   * @param {string | Bucket} config.bucket The `gs://bucket` path or a
+   *     @google-cloud/storage Bucket object.
+   * @param {string[]} [config.kinds] The kinds to include in this import.
+   * @param {string[]} [config.namespaces] The namespace IDs to include in this
+   *     import.
+   * @param {object} [config.gaxOptions] Request configuration options, outlined
+   *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request.
    * @param {Operation} callback.operation An operation object that can be used
    *     to check the status of the request.
@@ -560,7 +570,12 @@ class Datastore extends DatastoreRequest {
   getIndexes(options: GetIndexesOptions, callback: GetIndexesCallback): void;
   getIndexes(callback: GetIndexesCallback): void;
   /**
+   * Get all of the indexes in this project.
+   *
    * @param {GetIndexesOptions | GetIndexesCallback} [optionsOrCallback]
+   * @param {object} [options.gaxOptions] Request configuration options,
+   *     outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    * @param {GetIndexesResponse} [callback] The callback function.
    * @param {?error} callback.error An error returned while making this request.
    * @param {Index[]} callback.indexes All matching Index instances.
@@ -626,6 +641,8 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
+   * Get all of the indexes in this project as a readable object stream.
+   *
    * @param {GetIndexesOptions} [options] Configuration object. See
    *     {@link Datastore#getIndexes} for a complete list of options.
    * @returns {ReadableStream<Index>}
@@ -658,7 +675,17 @@ class Datastore extends DatastoreRequest {
   import(config: ImportEntitiesConfig): Promise<LongRunningResponse>;
   import(config: ImportEntitiesConfig, callback: LongRunningCallback): void;
   /**
+   * Import entities into this project from a remote file.
+   *
    * @param {ImportEntitiesConfig} config Configuration object.
+   * @param {string | File} config.file The `gs://bucket/file` path or a
+   *     @google-cloud/storage File object.
+   * @param {string[]} [config.kinds] The kinds to include in this import.
+   * @param {string[]} [config.namespaces] The namespace IDs to include in this
+   *     import.
+   * @param {object} [config.gaxOptions] Request configuration options, outlined
+   *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request.
    * @param {Operation} callback.operation An operation object that can be used
    *     to check the status of the request.
