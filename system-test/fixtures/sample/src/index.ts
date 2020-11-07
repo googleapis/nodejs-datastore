@@ -20,7 +20,7 @@ import {Datastore} from '@google-cloud/datastore';
 
 // check that the client class type name can be used
 function doStuffWithDatastore(client: Datastore) {
-  client.close();
+  // client.close();
 }
 
 function main() {
