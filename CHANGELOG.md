@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+### [6.2.1](https://www.github.com/googleapis/nodejs-datastore/compare/v6.2.0...v6.2.1) (2020-11-07)
+
+
+### Bug Fixes
+
+* do not modify options object, use defaultScopes ([#751](https://www.github.com/googleapis/nodejs-datastore/issues/751)) ([07a77fe](https://www.github.com/googleapis/nodejs-datastore/commit/07a77fe0f69aecb378c965f403226b29fde57360))
+
 ## [6.2.0](https://www.github.com/googleapis/nodejs-datastore/compare/v6.1.1...v6.2.0) (2020-10-08)
 
 
