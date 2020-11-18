@@ -1390,9 +1390,7 @@ export namespace entity {
      */
     convertToBuffer_(val: string): Buffer {
       val = val.replace(/-/g, '+').replace(/_/g, '/');
-      while (val.length % 4) {
-        val += '=';
-      }
+      val += '='.repeat(val.length % 4);
 
       return Buffer.from(val, 'base64');
     }
