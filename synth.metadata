@@ -3,8 +3,16 @@
     {
       "git": {
         "name": ".",
-        "remote": "git@github.com:googleapis/nodejs-datastore.git",
-        "sha": "e6473b76a8df8a95d2985728781bba924f7dcba7"
+        "remote": "https://github.com/googleapis/nodejs-datastore.git",
+        "sha": "d63a760bdf51c9017710dd56219f6c2501ed903c"
+      }
+    },
+    {
+      "git": {
+        "name": "googleapis",
+        "remote": "https://github.com/googleapis/googleapis.git",
+        "sha": "2f019bf70bfe06f1e2af1b04011b0a2405190e43",
+        "internalRef": "343202295"
       }
     },
     {
@@ -88,7 +96,6 @@
     "README.md",
     "api-extractor.json",
     "linkinator.config.json",
-    "package-lock.json.1585799656",
     "protos/google/datastore/admin/v1/datastore_admin.proto",
     "protos/google/datastore/admin/v1/index.proto",
     "protos/google/datastore/v1/datastore.proto",
@@ -99,7 +106,6 @@
     "protos/protos.json",
     "renovate.json",
     "samples/README.md",
-    "samples/package-lock.json.4106555370",
     "src/v1/datastore_admin_client.ts",
     "src/v1/datastore_admin_client_config.json",
     "src/v1/datastore_admin_proto_list.json",
