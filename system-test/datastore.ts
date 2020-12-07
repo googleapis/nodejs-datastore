@@ -13,13 +13,13 @@
 // limitations under the License.
 
 import * as assert from 'assert';
-import {readFileSync} from 'fs';
+import { readFileSync } from 'fs';
 import * as path from 'path';
-import {before, after, describe, it} from 'mocha';
+import { before, after, describe, it } from 'mocha';
 import * as yaml from 'js-yaml';
-import {Datastore, Index} from '../src';
-import {google} from '../protos/protos';
-import {Storage} from '@google-cloud/storage';
+import { Datastore, Index } from '../src';
+import { google } from '../protos/protos';
+import { Storage } from '@google-cloud/storage';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -36,9 +36,9 @@ describe('Datastore', () => {
     return keyObject;
   };
 
-  const {indexes: DECLARED_INDEXES} = yaml.safeLoad(
+  const { indexes: DECLARED_INDEXES } = yaml.safeLoad(
     readFileSync(path.join(__dirname, 'data', 'index.yaml'), 'utf8')
-  ) as {indexes: google.datastore.admin.v1.IIndex[]};
+  ) as { indexes: google.datastore.admin.v1.IIndex[] };
 
   // TODO/DX ensure indexes before testing, and maybe? cleanup indexes after
   //  possible implications with kokoro project
@@ -67,11 +67,11 @@ describe('Datastore', () => {
       publishedAt: new Date(),
       author: 'Silvano',
       isDraft: false,
-      wordCount: 400,
-      rating: 5.0,
+      wordCount: datastore.int(400),
+      rating: datastore.double(5.0),
       likes: null,
       metadata: {
-        views: 100,
+        views: datastore.int(100),
       },
     };
 
@@ -261,8 +261,8 @@ describe('Datastore', () => {
       const postKey = datastore.key('Team');
       const largeIntValueAsString = '9223372036854775807';
       const points = Datastore.int(largeIntValueAsString);
-      await datastore.save({key: postKey, data: {points}});
-      const [entity] = await datastore.get(postKey, {wrapNumbers: true});
+      await datastore.save({ key: postKey, data: { points } });
+      const [entity] = await datastore.get(postKey, { wrapNumbers: true });
       assert.strictEqual(entity.points.value, largeIntValueAsString);
       assert.throws(() => entity.points.valueOf());
       await datastore.delete(postKey);
@@ -272,9 +272,9 @@ describe('Datastore', () => {
       const postKey = datastore.key('Scores');
       const largeIntValueAsString = '9223372036854775807';
       const panthers = Datastore.int(largeIntValueAsString);
-      const broncos = 922337203;
+      const broncos = Datastore.int(922337203);
       let integerTypeCastFunctionCalled = 0;
-      await datastore.save({key: postKey, data: {panthers, broncos}});
+      await datastore.save({ key: postKey, data: { panthers, broncos } });
       const [entity] = await datastore.get(postKey, {
         wrapNumbers: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -295,7 +295,7 @@ describe('Datastore', () => {
 
     it('should save/get/delete with a key name', async () => {
       const postKey = datastore.key(['Post', 'post1']);
-      await datastore.save({key: postKey, data: post});
+      await datastore.save({ key: postKey, data: post });
       const [entity] = await datastore.get(postKey);
       assert.deepStrictEqual(entity[datastore.KEY], postKey);
       delete entity[datastore.KEY];
@@ -305,7 +305,7 @@ describe('Datastore', () => {
 
     it('should save/get/delete with a numeric key id', async () => {
       const postKey = datastore.key(['Post', 123456789]);
-      await datastore.save({key: postKey, data: post});
+      await datastore.save({ key: postKey, data: post });
       const [entity] = await datastore.get(postKey);
       delete entity[datastore.KEY];
       assert.deepStrictEqual(entity, post);
@@ -317,7 +317,7 @@ describe('Datastore', () => {
       const data = {
         buf: Buffer.from('010100000000000000000059400000000000006940', 'hex'),
       };
-      await datastore.save({key: postKey, data});
+      await datastore.save({ key: postKey, data });
       const assignedId = postKey.id;
       assert(assignedId);
       const [entity] = await datastore.get(postKey);
@@ -331,7 +331,7 @@ describe('Datastore', () => {
       const data = {
         buf: Buffer.from([]),
       };
-      await datastore.save({key: postKey, data});
+      await datastore.save({ key: postKey, data });
       const assignedId = postKey.id;
       assert(assignedId);
       const [entity] = await datastore.get(postKey);
@@ -342,7 +342,7 @@ describe('Datastore', () => {
 
     it('should save/get/delete with a generated key id', async () => {
       const postKey = datastore.key('Post');
-      await datastore.save({key: postKey, data: post});
+      await datastore.save({ key: postKey, data: post });
 
       // The key's path should now be complete.
       assert(postKey.id);
@@ -355,7 +355,7 @@ describe('Datastore', () => {
 
     it('should save/get/update', async () => {
       const postKey = datastore.key('Post');
-      await datastore.save({key: postKey, data: post});
+      await datastore.save({ key: postKey, data: post });
       const [entity] = await datastore.get(postKey);
       assert.strictEqual(entity.title, post.title);
       entity.title = 'Updated';
@@ -405,7 +405,7 @@ describe('Datastore', () => {
 
     it('should fail explicitly set second insert on save', async () => {
       const postKey = datastore.key('Post');
-      await datastore.save({key: postKey, data: post});
+      await datastore.save({ key: postKey, data: post });
 
       // The key's path should now be complete.
       assert(postKey.id);
@@ -440,14 +440,14 @@ describe('Datastore', () => {
         publishedAt: new Date('2001-01-01T00:00:00.000Z'),
         author: 'Silvano',
         isDraft: false,
-        wordCount: 450,
-        rating: 4.5,
+        wordCount: datastore.int(450),
+        rating: datastore.double(4.5),
       };
       const key1 = datastore.key('Post');
       const key2 = datastore.key('Post');
       await datastore.save([
-        {key: key1, data: post},
-        {key: key2, data: post2},
+        { key: key1, data: post },
+        { key: key2, data: post2 },
       ]);
       const [entities] = await datastore.get([key1, key2]);
       assert.strictEqual(entities.length, 2);
@@ -460,8 +460,8 @@ describe('Datastore', () => {
 
       datastore.save(
         [
-          {key: key1, data: post},
-          {key: key2, data: post},
+          { key: key1, data: post },
+          { key: key2, data: post },
         ],
         err => {
           assert.ifError(err);
@@ -570,49 +570,49 @@ describe('Datastore', () => {
       {
         name: 'Rickard',
         family: 'Stark',
-        appearances: 9,
+        appearances: datastore.int(9),
         alive: false,
       },
       {
         name: 'Eddard',
         family: 'Stark',
-        appearances: 9,
+        appearances: datastore.int(9),
         alive: false,
       },
       {
         name: 'Catelyn',
         family: ['Stark', 'Tully'],
-        appearances: 26,
+        appearances: datastore.int(26),
         alive: false,
       },
       {
         name: 'Arya',
         family: 'Stark',
-        appearances: 33,
+        appearances: datastore.int(33),
         alive: true,
       },
       {
         name: 'Sansa',
         family: 'Stark',
-        appearances: 31,
+        appearances: datastore.int(31),
         alive: true,
       },
       {
         name: 'Robb',
         family: 'Stark',
-        appearances: 22,
+        appearances: datastore.int(22),
         alive: false,
       },
       {
         name: 'Bran',
         family: 'Stark',
-        appearances: 25,
+        appearances: datastore.int(25),
         alive: true,
       },
       {
         name: 'Jon Snow',
         family: 'Stark',
-        appearances: 32,
+        appearances: datastore.int(32),
         alive: true,
       },
     ];
@@ -715,7 +715,7 @@ describe('Datastore', () => {
       const q = datastore
         .createQuery('Character')
         .hasAncestor(ancestor)
-        .filter('appearances', '>=', 20);
+        .filter('appearances', '>=', datastore.int(20));
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });
@@ -725,7 +725,7 @@ describe('Datastore', () => {
         .createQuery('Character')
         .hasAncestor(ancestor)
         .filter('family', 'Stark')
-        .filter('appearances', '>=', 20);
+        .filter('appearances', '>=', datastore.int(20));
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });
@@ -841,7 +841,7 @@ describe('Datastore', () => {
       const transaction = datastore.transaction();
       await transaction.run();
       await transaction.get(key);
-      transaction.save({key, data: obj});
+      transaction.save({ key, data: obj });
       await transaction.commit();
       const [entity] = await datastore.get(key);
       delete entity[datastore.KEY];
@@ -865,11 +865,11 @@ describe('Datastore', () => {
       transaction.save([
         {
           key,
-          data: {rating: 10},
+          data: { rating: datastore.int(10) },
         },
         {
           key: incompleteKey,
-          data: {rating: 100},
+          data: { rating: datastore.int(100) },
         },
       ]);
 
@@ -885,7 +885,7 @@ describe('Datastore', () => {
         datastore.get(key),
       ]);
       assert.strictEqual(typeof deletedEntity, 'undefined');
-      assert.strictEqual(fetchedEntity.rating, 10);
+      assert.strictEqual(fetchedEntity.rating, datastore.int(10));
     });
 
     it('should use the last modification to a key', async () => {
@@ -897,13 +897,13 @@ describe('Datastore', () => {
         {
           key,
           data: {
-            rating: 10,
+            rating: datastore.int(10),
           },
         },
         {
           key: incompleteKey,
           data: {
-            rating: 100,
+            rating: datastore.int(100),
           },
         },
       ]);
@@ -934,18 +934,18 @@ describe('Datastore', () => {
     });
 
     it('should read in a readOnly transaction', async () => {
-      const transaction = datastore.transaction({readOnly: true});
+      const transaction = datastore.transaction({ readOnly: true });
       const key = datastore.key(['Company', 'Google']);
       await transaction.run();
       await transaction.get(key);
     });
 
     it('should not write in a readOnly transaction', async () => {
-      const transaction = datastore.transaction({readOnly: true});
+      const transaction = datastore.transaction({ readOnly: true });
       const key = datastore.key(['Company', 'Google']);
       await transaction.run();
       await transaction.get(key);
-      transaction.save({key, data: {}});
+      transaction.save({ key, data: {} });
       await assert.rejects(transaction.commit());
     });
   });
@@ -1008,10 +1008,10 @@ describe('Datastore', () => {
     const bucket = gcs.bucket('nodejs-datastore-system-tests');
 
     it('should export, then import entities', async () => {
-      const [exportOperation] = await datastore.export({bucket});
+      const [exportOperation] = await datastore.export({ bucket });
       await exportOperation.promise();
 
-      const [files] = await bucket.getFiles({maxResults: 1});
+      const [files] = await bucket.getFiles({ maxResults: 1 });
       const [exportedFile] = files;
       assert.ok(exportedFile.name.includes('overall_export_metadata'));
 
