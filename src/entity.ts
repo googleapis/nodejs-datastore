@@ -593,7 +593,7 @@ export namespace entity {
 
     if (typeof value === 'number') {
       const integerOutOfBoundsWarning =
-        "'IntegerOutOfBoundsWarning: the value for '" +
+        "IntegerOutOfBoundsWarning: the value for '" +
         property +
         "' property is outside of bounds of a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy " +

@@ -759,7 +759,7 @@ describe('entity', () => {
         "Use 'Datastore.int(<integer_value_as_string>)' or " +
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
         'Datastore types in your database.';
-      process.on('warning', warning => {
+      process.once('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
         done();
       });
@@ -772,7 +772,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should emit warning on out of bounds int', done => {
+    it.only('should emit warning on out of bounds int', done => {
       const largeIntValue = 9223372036854775807;
       const property = 'largeInt';
       const expectedWarning =
@@ -783,7 +783,7 @@ describe('entity', () => {
         "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy " +
         'in your database.';
 
-      process.on('warning', warning => {
+      process.once('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
         done();
       });
@@ -816,7 +816,7 @@ describe('entity', () => {
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
         'Datastore types in your database.';
 
-      process.on('warning', warning => {
+      process.once('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
         done();
       });
