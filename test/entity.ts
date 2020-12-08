@@ -13,12 +13,12 @@
 // limitations under the License.
 
 import * as assert from 'assert';
-import { beforeEach, afterEach, describe, it } from 'mocha';
+import {beforeEach, afterEach, describe, it} from 'mocha';
 import * as extend from 'extend';
 import * as sinon from 'sinon';
-import { Datastore } from '../src';
-import { Entity } from '../src/entity';
-import { IntegerTypeCastOptions } from '../src/query';
+import {Datastore} from '../src';
+import {Entity} from '../src/entity';
+import {IntegerTypeCastOptions} from '../src/query';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
@@ -26,16 +26,16 @@ export function outOfBoundsError(opts: {
 }) {
   return new Error(
     'We attempted to return all of the numeric values, but ' +
-    (opts.propertyName ? opts.propertyName + ' ' : '') +
-    'value ' +
-    opts.integerValue +
-    " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-    "To prevent this error, please consider passing 'options.wrapNumbers=true' or\n" +
-    "'options.wrapNumbers' as\n" +
-    '{\n' +
-    '  integerTypeCastFunction: provide <your_custom_function>\n' +
-    '  properties: optionally specify property name(s) to be custom casted\n' +
-    '}\n'
+      (opts.propertyName ? opts.propertyName + ' ' : '') +
+      'value ' +
+      opts.integerValue +
+      " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
+      "To prevent this error, please consider passing 'options.wrapNumbers=true' or\n" +
+      "'options.wrapNumbers' as\n" +
+      '{\n' +
+      '  integerTypeCastFunction: provide <your_custom_function>\n' +
+      '  properties: optionally specify property name(s) to be custom casted\n' +
+      '}\n'
   );
 }
 
@@ -156,12 +156,12 @@ describe('entity', () => {
           // should throw when Number is passed
           assert.throws(() => {
             new entity.Int(largeIntegerValue).valueOf();
-          }, outOfBoundsError({ integerValue: largeIntegerValue }));
+          }, outOfBoundsError({integerValue: largeIntegerValue}));
 
           // should throw when string is passed
           assert.throws(() => {
             new entity.Int(smallIntegerValue.toString()).valueOf();
-          }, outOfBoundsError({ integerValue: smallIntegerValue }));
+          }, outOfBoundsError({integerValue: smallIntegerValue}));
         });
 
         it('should not auto throw on initialization', () => {
@@ -272,12 +272,12 @@ describe('entity', () => {
 
   describe('isDsGeoPoint', () => {
     it('should correctly identify a GeoPoint', () => {
-      const geoPoint = new entity.GeoPoint({ latitude: 24, longitude: 88 });
+      const geoPoint = new entity.GeoPoint({latitude: 24, longitude: 88});
       assert.strictEqual(entity.isDsGeoPoint(geoPoint), true);
     });
 
     it('should correctly identify a homomorphic non-GeoPoint', () => {
-      const geoPoint = new entity.GeoPoint({ latitude: 24, longitude: 88 });
+      const geoPoint = new entity.GeoPoint({latitude: 24, longitude: 88});
       const nonGeoPoint = Object.assign({}, geoPoint);
       assert.strictEqual(entity.isDsGeoPoint(nonGeoPoint), false);
     });
@@ -286,47 +286,47 @@ describe('entity', () => {
   describe('Key', () => {
     it('should assign the namespace', () => {
       const namespace = 'NS';
-      const key = new entity.Key({ namespace, path: [] });
+      const key = new entity.Key({namespace, path: []});
       assert.strictEqual(key.namespace, namespace);
     });
 
     it('should assign the kind', () => {
       const kind = 'kind';
-      const key = new entity.Key({ path: [kind] });
+      const key = new entity.Key({path: [kind]});
       assert.strictEqual(key.kind, kind);
     });
 
     it('should assign the ID', () => {
       const id = 11;
-      const key = new entity.Key({ path: ['Kind', id] });
+      const key = new entity.Key({path: ['Kind', id]});
       assert.strictEqual(key.id, id);
     });
 
     it('should assign the ID from an Int', () => {
       const id = new entity.Int(11);
-      const key = new entity.Key({ path: ['Kind', id] });
+      const key = new entity.Key({path: ['Kind', id]});
       assert.strictEqual(key.id, id.value);
     });
 
     it('should assign the name', () => {
       const name = 'name';
-      const key = new entity.Key({ path: ['Kind', name] });
+      const key = new entity.Key({path: ['Kind', name]});
       assert.strictEqual(key.name, name);
     });
 
     it('should assign a parent', () => {
-      const key = new entity.Key({ path: ['ParentKind', 1, 'Kind', 1] });
+      const key = new entity.Key({path: ['ParentKind', 1, 'Kind', 1]});
       assert(key.parent instanceof entity.Key);
     });
 
     it('should not modify input path', () => {
       const inputPath = ['ParentKind', 1, 'Kind', 1];
-      new entity.Key({ path: inputPath });
+      new entity.Key({path: inputPath});
       assert.deepStrictEqual(inputPath, ['ParentKind', 1, 'Kind', 1]);
     });
 
     it('should always compute the correct path', () => {
-      const key = new entity.Key({ path: ['ParentKind', 1, 'Kind', 1] });
+      const key = new entity.Key({path: ['ParentKind', 1, 'Kind', 1]});
       assert.deepStrictEqual(key.path, ['ParentKind', 1, 'Kind', 1]);
 
       key.parent.kind = 'GrandParentKind';
@@ -373,12 +373,12 @@ describe('entity', () => {
 
   describe('isDsKey', () => {
     it('should correctly identify a Key', () => {
-      const key = new entity.Key({ path: ['Kind', 1] });
+      const key = new entity.Key({path: ['Kind', 1]});
       assert.strictEqual(entity.isDsKey(key), true);
     });
 
     it('should correctly identify a homomorphic non-Key', () => {
-      const notKey = Object.assign({}, new entity.Key({ path: ['Kind', 1] }));
+      const notKey = Object.assign({}, new entity.Key({path: ['Kind', 1]}));
       assert.strictEqual(entity.isDsKey(notKey), false);
     });
   });
@@ -594,7 +594,7 @@ describe('entity', () => {
         });
 
         it('should wrap ints with wrapNumbers as object', () => {
-          const wrapNumbers = { integerTypeCastFunction: () => { } };
+          const wrapNumbers = {integerTypeCastFunction: () => {}};
           const stub = sinon.spy(entity, 'Int');
 
           entity.decodeValueProto(valueProto, wrapNumbers);
@@ -602,11 +602,11 @@ describe('entity', () => {
         });
 
         it('should call #valueOf if integerTypeCastFunction is provided', () => {
-          Object.assign(valueProto, { integerValue: Number.MAX_SAFE_INTEGER });
+          Object.assign(valueProto, {integerValue: Number.MAX_SAFE_INTEGER});
           const takeFirstTen = sinon
             .stub()
             .callsFake((value: string) => value.toString().substr(0, 10));
-          const wrapNumbers = { integerTypeCastFunction: takeFirstTen };
+          const wrapNumbers = {integerTypeCastFunction: takeFirstTen};
 
           assert.strictEqual(
             entity.decodeValueProto(valueProto, wrapNumbers),
@@ -751,13 +751,14 @@ describe('entity', () => {
         integerValue: value,
       };
 
-      const property = "value"
-      const expectedWarning = "TypeCastWarning: the value for '" +
+      const property = 'value';
+      const expectedWarning =
+        "TypeCastWarning: the value for '" +
         property +
         "' property is a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' or " +
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
-        "Datastore types during the upload."
+        'Datastore types during the upload.';
       process.on('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
         done();
@@ -805,13 +806,14 @@ describe('entity', () => {
         doubleValue: value,
       };
 
-      const property = "value"
-      const expectedWarning = "TypeCastWarning: the value for '" +
+      const property = 'value';
+      const expectedWarning =
+        "TypeCastWarning: the value for '" +
         property +
         "' property is a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' or " +
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
-        "Datastore types during the upload."
+        'Datastore types during the upload.';
 
       process.on('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
@@ -1010,7 +1012,7 @@ describe('entity', () => {
     });
 
     describe('should pass `wrapNumbers` to decodeValueProto', () => {
-      const entityProto = { properties: { number: {} } };
+      const entityProto = {properties: {number: {}}};
       let decodeValueProtoStub: sinon.SinonStub;
       let wrapNumbers: boolean | IntegerTypeCastOptions | undefined;
 
@@ -1042,7 +1044,7 @@ describe('entity', () => {
 
       it('should pass `wrapNumbers` to decodeValueProto as IntegerTypeCastOptions', () => {
         const integerTypeCastOptions = {
-          integerTypeCastFunction: () => { },
+          integerTypeCastFunction: () => {},
           properties: 'that',
         };
 
@@ -1176,7 +1178,7 @@ describe('entity', () => {
 
           nestedArrayVariants: [
             {
-              a: [{ b: value13 }, { c: value14 }],
+              a: [{b: value13}, {c: value14}],
             },
             {
               a: null,
@@ -1185,7 +1187,7 @@ describe('entity', () => {
               a: [value15],
             },
             {
-              a: [{ b: ['nasty', 'array'] }],
+              a: [{b: ['nasty', 'array']}],
             },
           ],
 
@@ -1540,7 +1542,7 @@ describe('entity', () => {
     });
 
     describe('should pass `wrapNumbers` to entityFromEntityProto', () => {
-      const results = [{ entity: {} }];
+      const results = [{entity: {}}];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let entityFromEntityProtoStub: any;
       let wrapNumbers: boolean | IntegerTypeCastOptions | undefined;
@@ -1570,7 +1572,7 @@ describe('entity', () => {
 
       it('should pass `wrapNumbers` to entityFromEntityProto as IntegerTypeCastOptions', () => {
         const integerTypeCastOptions = {
-          integerTypeCastFunction: () => { },
+          integerTypeCastFunction: () => {},
           properties: 'that',
         };
 
@@ -1890,7 +1892,7 @@ describe('entity', () => {
         path: ['Kind2', 'somename'],
       });
 
-      const ds = new Datastore({ projectId: 'project-id' });
+      const ds = new Datastore({projectId: 'project-id'});
 
       const query = ds
         .createQuery('Kind1')
@@ -1908,7 +1910,7 @@ describe('entity', () => {
     });
 
     it('should handle buffer start and end values', () => {
-      const ds = new Datastore({ projectId: 'project-id' });
+      const ds = new Datastore({projectId: 'project-id'});
       const startVal = Buffer.from('start');
       const endVal = Buffer.from('end');
 

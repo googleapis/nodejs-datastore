@@ -13,15 +13,15 @@
 // limitations under the License.
 
 import * as assert from 'assert';
-import { before, beforeEach, after, afterEach, describe, it } from 'mocha';
+import {before, beforeEach, after, afterEach, describe, it} from 'mocha';
 import * as gax from 'google-gax';
 import * as proxyquire from 'proxyquire';
-import { PassThrough, Readable } from 'stream';
+import {PassThrough, Readable} from 'stream';
 
 import * as ds from '../src';
-import { DatastoreOptions } from '../src';
-import { entity, Entity, EntityProto, EntityObject } from '../src/entity';
-import { RequestConfig } from '../src/request';
+import {DatastoreOptions} from '../src';
+import {entity, Entity, EntityProto, EntityObject} from '../src/entity';
+import {RequestConfig} from '../src/request';
 import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
@@ -84,7 +84,7 @@ const fakeEntity: any = {
 
 let googleAuthOverride: Function | null;
 function fakeGoogleAuth(...args: Array<{}>) {
-  return (googleAuthOverride || (() => { }))(...args);
+  return (googleAuthOverride || (() => {}))(...args);
 }
 
 let createInsecureOverride: Function | null;
@@ -99,7 +99,7 @@ const fakeGoogleGax = {
         credentials: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           createInsecure(...args: any[]) {
-            return (createInsecureOverride || (() => { }))(...args);
+            return (createInsecureOverride || (() => {}))(...args);
           },
         },
       } as {}) as gax.GrpcModule;
@@ -133,7 +133,7 @@ class FakeTransaction {
   }
 }
 
-function FakeV1() { }
+function FakeV1() {}
 
 const sandbox = sinon.createSandbox();
 
@@ -158,10 +158,10 @@ describe('Datastore', () => {
 
   before(() => {
     Datastore = proxyquire('../src', {
-      './entity.js': { entity: fakeEntity },
-      './index-class.js': { Index: FakeIndex },
-      './query.js': { Query: FakeQuery },
-      './transaction.js': { Transaction: FakeTransaction },
+      './entity.js': {entity: fakeEntity},
+      './index-class.js': {Index: FakeIndex},
+      './query.js': {Query: FakeQuery},
+      './transaction.js': {Transaction: FakeTransaction},
       './v1': FakeV1,
       'google-auth-library': {
         GoogleAuth: fakeGoogleAuth,
@@ -330,13 +330,13 @@ describe('Datastore', () => {
 
   describe('geoPoint', () => {
     it('should expose GeoPoint builder', () => {
-      const aGeoPoint = { latitude: 24, longitude: 88 };
+      const aGeoPoint = {latitude: 24, longitude: 88};
       const geoPoint = Datastore.geoPoint(aGeoPoint);
       assert.strictEqual(geoPoint.value, aGeoPoint);
     });
 
     it('should also be on the prototype', () => {
-      const aGeoPoint = { latitude: 24, longitude: 88 };
+      const aGeoPoint = {latitude: 24, longitude: 88};
       const geoPoint = datastore.geoPoint(aGeoPoint);
       assert.strictEqual(geoPoint.value, aGeoPoint);
     });
@@ -380,7 +380,7 @@ describe('Datastore', () => {
 
   describe('isGeoPoint', () => {
     it('should pass value to entity', () => {
-      const value = { fakeLatitude: 1, fakeLongitude: 2 };
+      const value = {fakeLatitude: 1, fakeLongitude: 2};
       let called = false;
       const saved = fakeEntity.isDsGeoPoint;
       fakeEntity.isDsGeoPoint = (arg: {}) => {
@@ -424,7 +424,7 @@ describe('Datastore', () => {
 
   describe('isKey', () => {
     it('should pass value to entity', () => {
-      const value = { zz: true };
+      const value = {zz: true};
       let called = false;
       const saved = fakeEntity.isDsKey;
       fakeEntity.isDsKey = (arg: {}) => {
@@ -538,7 +538,7 @@ describe('Datastore', () => {
         done();
       };
 
-      datastore.export({ bucket }, assert.ifError);
+      datastore.export({bucket}, assert.ifError);
     });
 
     it('should remove extraneous gs:// prefix from input', done => {
@@ -550,11 +550,11 @@ describe('Datastore', () => {
         done();
       };
 
-      datastore.export({ bucket }, assert.ifError);
+      datastore.export({bucket}, assert.ifError);
     });
 
     it('should accept a Bucket object destination', done => {
-      const bucket = { name: 'bucket' };
+      const bucket = {name: 'bucket'};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -565,7 +565,7 @@ describe('Datastore', () => {
         done();
       };
 
-      datastore.export({ bucket }, assert.ifError);
+      datastore.export({bucket}, assert.ifError);
     });
 
     it('should throw if a destination is not provided', () => {
@@ -588,7 +588,7 @@ describe('Datastore', () => {
 
     it('should accept kinds', done => {
       const kinds = ['kind1', 'kind2'];
-      const config = { bucket: 'bucket', kinds };
+      const config = {bucket: 'bucket', kinds};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -614,7 +614,7 @@ describe('Datastore', () => {
 
     it('should accept namespaces', done => {
       const namespaces = ['ns1', 'n2'];
-      const config = { bucket: 'bucket', namespaces };
+      const config = {bucket: 'bucket', namespaces};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -663,7 +663,7 @@ describe('Datastore', () => {
 
     it('should send any user input to API', done => {
       const userProperty = 'abc';
-      const config = { bucket: 'bucket', userProperty };
+      const config = {bucket: 'bucket', userProperty};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -675,7 +675,7 @@ describe('Datastore', () => {
     });
 
     it('should send correct request', done => {
-      const config = { bucket: 'bucket' };
+      const config = {bucket: 'bucket'};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -690,7 +690,7 @@ describe('Datastore', () => {
 
     it('should accept gaxOptions', done => {
       const gaxOptions = {};
-      const config = { bucket: 'bucket', gaxOptions };
+      const config = {bucket: 'bucket', gaxOptions};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -704,7 +704,7 @@ describe('Datastore', () => {
 
   describe('getIndexes', () => {
     it('should send the correct request', done => {
-      const options = { a: 'b' };
+      const options = {a: 'b'};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -789,7 +789,7 @@ describe('Datastore', () => {
 
     it('should accept gaxOptions', done => {
       const options = {
-        gaxOptions: { a: 'b' },
+        gaxOptions: {a: 'b'},
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -804,7 +804,7 @@ describe('Datastore', () => {
 
     it('should not send gaxOptions as request options', done => {
       const options = {
-        gaxOptions: { a: 'b' },
+        gaxOptions: {a: 'b'},
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -868,7 +868,7 @@ describe('Datastore', () => {
     });
 
     it('should execute callback with Index instances', done => {
-      const rawIndex = { indexId: 'name', a: 'b' };
+      const rawIndex = {indexId: 'name', a: 'b'};
       const indexInstance = {};
 
       datastore.index = (id: string) => {
@@ -892,8 +892,8 @@ describe('Datastore', () => {
     });
 
     it('should execute callback with prepared nextQuery', done => {
-      const options = { pageToken: '1' };
-      const nextQuery = { pageToken: '2' };
+      const options = {pageToken: '1'};
+      const nextQuery = {pageToken: '2'};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any, callback: Function) => {
@@ -913,7 +913,7 @@ describe('Datastore', () => {
 
   describe('getIndexesStream', () => {
     it('should make correct request', done => {
-      const options = { a: 'b' };
+      const options = {a: 'b'};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.requestStream_ = (config: any) => {
@@ -931,7 +931,7 @@ describe('Datastore', () => {
     });
 
     it('should accept gaxOptions', done => {
-      const options = { gaxOptions: {} };
+      const options = {gaxOptions: {}};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.requestStream_ = (config: any) => {
@@ -944,7 +944,7 @@ describe('Datastore', () => {
     });
 
     it('should transform response indexes into Index objects', done => {
-      const rawIndex = { indexId: 'name', a: 'b' };
+      const rawIndex = {indexId: 'name', a: 'b'};
       const indexInstance = {};
       const requestStream = new Readable({
         objectMode: true,
@@ -996,7 +996,7 @@ describe('Datastore', () => {
         done();
       };
 
-      datastore.import({ file }, assert.ifError);
+      datastore.import({file}, assert.ifError);
     });
 
     it('should remove extraneous gs:// prefix from input', done => {
@@ -1008,11 +1008,11 @@ describe('Datastore', () => {
         done();
       };
 
-      datastore.import({ file }, assert.ifError);
+      datastore.import({file}, assert.ifError);
     });
 
     it('should accept a File object source', done => {
-      const file = { bucket: { name: 'bucket' }, name: 'file' };
+      const file = {bucket: {name: 'bucket'}, name: 'file'};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -1023,7 +1023,7 @@ describe('Datastore', () => {
         done();
       };
 
-      datastore.import({ file }, assert.ifError);
+      datastore.import({file}, assert.ifError);
     });
 
     it('should throw if a source is not provided', () => {
@@ -1034,7 +1034,7 @@ describe('Datastore', () => {
 
     it('should accept kinds', done => {
       const kinds = ['kind1', 'kind2'];
-      const config = { file: 'file', kinds };
+      const config = {file: 'file', kinds};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -1060,7 +1060,7 @@ describe('Datastore', () => {
 
     it('should accept namespaces', done => {
       const namespaces = ['ns1', 'n2'];
-      const config = { file: 'file', namespaces };
+      const config = {file: 'file', namespaces};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -1109,7 +1109,7 @@ describe('Datastore', () => {
 
     it('should send any user input to API', done => {
       const userProperty = 'abc';
-      const config = { file: 'file', userProperty };
+      const config = {file: 'file', userProperty};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -1121,7 +1121,7 @@ describe('Datastore', () => {
     });
 
     it('should send correct request', done => {
-      const config = { file: 'file' };
+      const config = {file: 'file'};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -1136,7 +1136,7 @@ describe('Datastore', () => {
 
     it('should accept gaxOptions', done => {
       const gaxOptions = {};
-      const config = { file: 'file', gaxOptions };
+      const config = {file: 'file', gaxOptions};
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       datastore.request_ = (config: any) => {
@@ -1167,7 +1167,7 @@ describe('Datastore', () => {
 
     it('should prepare entity objects', done => {
       const entityObject = {};
-      const preparedEntityObject = { prepared: true };
+      const preparedEntityObject = {prepared: true};
       const expectedEntityObject = Object.assign({}, preparedEntityObject, {
         method: 'insert',
       });
@@ -1202,8 +1202,8 @@ describe('Datastore', () => {
         ]);
         callback();
       };
-      const key = new entity.Key({ namespace: 'ns', path: ['Company'] });
-      datastore.insert({ key, data: {} }, done);
+      const key = new entity.Key({namespace: 'ns', path: ['Company']});
+      datastore.insert({key, data: {}}, done);
     });
   });
 
@@ -1297,8 +1297,8 @@ describe('Datastore', () => {
       };
       datastore.save(
         [
-          { key, data: { k: 'v' } },
-          { key, data: { k: 'v' } },
+          {key, data: {k: 'v'}},
+          {key, data: {k: 'v'}},
         ],
         done
       );
@@ -1380,7 +1380,7 @@ describe('Datastore', () => {
           return {
             key,
             method: 'insert',
-            data: { k: 'v' },
+            data: {k: 'v'},
           } as {};
         });
 
@@ -1400,22 +1400,22 @@ describe('Datastore', () => {
         assert(is.object(config.reqOpts!.mutations![2].upsert));
 
         const insert = config.reqOpts!.mutations![0].insert!;
-        assert.deepStrictEqual(insert.properties!.k, { stringValue: 'v' });
+        assert.deepStrictEqual(insert.properties!.k, {stringValue: 'v'});
 
         const update = config.reqOpts!.mutations![1].update!;
-        assert.deepStrictEqual(update.properties!.k2, { stringValue: 'v2' });
+        assert.deepStrictEqual(update.properties!.k2, {stringValue: 'v2'});
 
         const upsert = config.reqOpts!.mutations![2].upsert!;
-        assert.deepStrictEqual(upsert.properties!.k3, { stringValue: 'v3' });
+        assert.deepStrictEqual(upsert.properties!.k3, {stringValue: 'v3'});
 
         callback();
       };
 
       datastore.save(
         [
-          { key, method: 'insert', data: { k: 'v' } },
-          { key, method: 'update', data: { k2: 'v2' } },
-          { key, method: 'upsert', data: { k3: 'v3' } },
+          {key, method: 'insert', data: {k: 'v'}},
+          {key, method: 'update', data: {k2: 'v2'}},
+          {key, method: 'upsert', data: {k3: 'v3'}},
         ],
         done
       );
@@ -1463,13 +1463,13 @@ describe('Datastore', () => {
     });
 
     it('should return apiResponse in callback', done => {
-      const key = new entity.Key({ namespace: 'ns', path: ['Company'] });
+      const key = new entity.Key({namespace: 'ns', path: ['Company']});
       const mockCommitResponse = {};
       datastore.request_ = (config: RequestConfig, callback: Function) => {
         callback(null, mockCommitResponse);
       };
       datastore.save(
-        { key, data: {} },
+        {key, data: {}},
         (err: Error | null, apiResponse: Entity) => {
           assert.ifError(err);
           assert.strictEqual(mockCommitResponse, apiResponse);
@@ -1820,9 +1820,9 @@ describe('Datastore', () => {
     });
 
     it('should assign ID on keys without them', done => {
-      const incompleteKey = new entity.Key({ path: ['Incomplete'] });
-      const incompleteKey2 = new entity.Key({ path: ['Incomplete'] });
-      const completeKey = new entity.Key({ path: ['Complete', 'Key'] });
+      const incompleteKey = new entity.Key({path: ['Incomplete']});
+      const incompleteKey2 = new entity.Key({path: ['Incomplete']});
+      const completeKey = new entity.Key({path: ['Complete', 'Key']});
 
       const keyProtos: Array<{}> = [];
       const ids = [1, 2];
@@ -1852,9 +1852,9 @@ describe('Datastore', () => {
 
       datastore.save(
         [
-          { key: incompleteKey, data: {} },
-          { key: incompleteKey2, data: {} },
-          { key: completeKey, data: {} },
+          {key: incompleteKey, data: {}},
+          {key: incompleteKey2, data: {}},
+          {key: completeKey, data: {}},
         ],
         (err: Error) => {
           assert.ifError(err);
@@ -1882,7 +1882,7 @@ describe('Datastore', () => {
       it('should queue request & callback', () => {
         datastore.save({
           key,
-          data: [{ name: 'name', value: 'value' }],
+          data: [{name: 'name', value: 'value'}],
         });
 
         assert.strictEqual(typeof datastore.requestCallbacks_[0], 'function');
@@ -1898,7 +1898,7 @@ describe('Datastore', () => {
 
     it('should prepare entity objects', done => {
       const entityObject = {};
-      const preparedEntityObject = { prepared: true };
+      const preparedEntityObject = {prepared: true};
       const expectedEntityObject = Object.assign({}, preparedEntityObject, {
         method: 'update',
       });
@@ -1934,8 +1934,8 @@ describe('Datastore', () => {
         callback();
       };
 
-      const key = new entity.Key({ namespace: 'ns', path: ['Company'] });
-      datastore.update({ key, data: {} }, done);
+      const key = new entity.Key({namespace: 'ns', path: ['Company']});
+      datastore.update({key, data: {}}, done);
     });
   });
 
@@ -1946,7 +1946,7 @@ describe('Datastore', () => {
 
     it('should prepare entity objects', done => {
       const entityObject = {};
-      const preparedEntityObject = { prepared: true };
+      const preparedEntityObject = {prepared: true};
       const expectedEntityObject = Object.assign({}, preparedEntityObject, {
         method: 'upsert',
       });
@@ -1983,8 +1983,8 @@ describe('Datastore', () => {
         callback();
       };
 
-      const key = new entity.Key({ namespace: 'ns', path: ['Company'] });
-      datastore.upsert({ key, data: {} }, done);
+      const key = new entity.Key({namespace: 'ns', path: ['Company']});
+      datastore.upsert({key, data: {}}, done);
     });
   });
 
@@ -2047,7 +2047,7 @@ describe('Datastore', () => {
     });
 
     it('should not set customEndpoint_ when using default baseurl', () => {
-      const datastore = new Datastore({ projectId: PROJECT_ID });
+      const datastore = new Datastore({projectId: PROJECT_ID});
       datastore.determineBaseUrl_();
       assert.strictEqual(datastore.customEndpoint_, undefined);
     });

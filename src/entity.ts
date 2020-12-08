@@ -16,12 +16,12 @@
 import arrify = require('arrify');
 import * as extend from 'extend';
 import * as is from 'is';
-import { Query, QueryProto, IntegerTypeCastOptions } from './query';
-import { PathType } from '.';
-import { protobuf as Protobuf } from 'google-gax';
+import {Query, QueryProto, IntegerTypeCastOptions} from './query';
+import {PathType} from '.';
+import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
-import { google } from '../protos/protos';
-import { type } from 'os';
+import {google} from '../protos/protos';
+import {type} from 'os';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -34,7 +34,7 @@ export namespace entity {
       const errorMessages = {
         MISSING_KIND: 'A key should contain at least a kind.',
         MISSING_ANCESTOR_ID: 'Ancestor keys require an id or name.',
-      } as { [index: string]: string };
+      } as {[index: string]: string};
       super(errorMessages[opts.code]);
       this.name = 'InvalidKey';
     }
@@ -189,7 +189,7 @@ export namespace entity {
     }
 
     toJSON(): Json {
-      return { type: this.type, value: this.value };
+      return {type: this.type, value: this.value};
     }
   }
 
@@ -447,16 +447,16 @@ export namespace entity {
     if (!Number.isSafeInteger(num)) {
       throw new Error(
         'We attempted to return all of the numeric values, but ' +
-        (value.propertyName ? value.propertyName + ' ' : '') +
-        'value ' +
-        value.integerValue +
-        " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
-        "To prevent this error, please consider passing 'options.wrapNumbers=true' or\n" +
-        "'options.wrapNumbers' as\n" +
-        '{\n' +
-        '  integerTypeCastFunction: provide <your_custom_function>\n' +
-        '  properties: optionally specify property name(s) to be custom casted\n' +
-        '}\n'
+          (value.propertyName ? value.propertyName + ' ' : '') +
+          'value ' +
+          value.integerValue +
+          " is out of bounds of 'Number.MAX_SAFE_INTEGER'.\n" +
+          "To prevent this error, please consider passing 'options.wrapNumbers=true' or\n" +
+          "'options.wrapNumbers' as\n" +
+          '{\n' +
+          '  integerTypeCastFunction: provide <your_custom_function>\n' +
+          '  properties: optionally specify property name(s) to be custom casted\n' +
+          '}\n'
       );
     }
     return num;
@@ -592,18 +592,19 @@ export namespace entity {
     }
 
     if (typeof value === 'number') {
-      const integerOutOfBoundsWarning = "'IntegerOutOfBoundsWarning: the value for '" +
+      const integerOutOfBoundsWarning =
+        "'IntegerOutOfBoundsWarning: the value for '" +
         property +
         "' property is outside of bounds of a JavaScript Number.\n" +
-        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload."
+        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload.";
 
-      const typeCastWarning = "TypeCastWarning: the value for '" +
+      const typeCastWarning =
+        "TypeCastWarning: the value for '" +
         property +
         "' property is a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' or " +
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
-        "Datastore types during the upload."
-
+        'Datastore types during the upload.';
 
       if (Number.isInteger(value)) {
         if (!Number.isSafeInteger(value)) {
@@ -1332,7 +1333,7 @@ export namespace entity {
       const reference = {
         app: projectId,
         namespace: key.namespace,
-        path: { element: elements },
+        path: {element: elements},
       };
 
       const buffer = this.protos.Reference.encode(reference).finish();
@@ -1429,7 +1430,7 @@ export interface ValueProto {
 
 export interface EntityProto {
   key?: KeyProto | null;
-  properties?: { [k: string]: ValueProto };
+  properties?: {[k: string]: ValueProto};
   excludeFromIndexes?: boolean;
 }
 
@@ -1453,7 +1454,7 @@ export interface ResponseResult {
 }
 
 export interface EntityObject {
-  data: { [k: string]: Entity };
+  data: {[k: string]: Entity};
   excludeFromIndexes: string[];
 }
 
