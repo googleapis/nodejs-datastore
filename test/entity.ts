@@ -744,21 +744,21 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should encode an int', done => {
+    it.only('should encode an int', done => {
       const value = 8;
 
       const expectedValueProto = {
         integerValue: value,
       };
 
-      const property = 'value';
+      const property = 'undefined';
       const expectedWarning =
         "TypeCastWarning: the value for '" +
         property +
         "' property is a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' or " +
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
-        'Datastore types during the upload.';
+        'Datastore types in your database.';
       process.on('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
         done();
@@ -780,7 +780,8 @@ describe('entity', () => {
         "the value for '" +
         property +
         "' property is outside of bounds of a JavaScript Number.\n" +
-        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload.";
+        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy " +
+        'in your database.';
 
       process.on('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
@@ -799,21 +800,21 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should encode a double', done => {
+    it.only('should encode a double', done => {
       const value = 8.3;
 
       const expectedValueProto = {
         doubleValue: value,
       };
 
-      const property = 'value';
+      const property = 'undefined';
       const expectedWarning =
         "TypeCastWarning: the value for '" +
         property +
         "' property is a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' or " +
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
-        'Datastore types during the upload.';
+        'Datastore types in your database.';
 
       process.on('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);

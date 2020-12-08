@@ -596,7 +596,8 @@ export namespace entity {
         "'IntegerOutOfBoundsWarning: the value for '" +
         property +
         "' property is outside of bounds of a JavaScript Number.\n" +
-        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload.";
+        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy " +
+        'in your database.';
 
       const typeCastWarning =
         "TypeCastWarning: the value for '" +
@@ -604,7 +605,7 @@ export namespace entity {
         "' property is a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' or " +
         "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
-        'Datastore types during the upload.';
+        'Datastore types in your database.';
 
       if (Number.isInteger(value)) {
         if (!Number.isSafeInteger(value)) {
