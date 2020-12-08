@@ -744,17 +744,48 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should throw if an invalid value was provided', () => {
-      assert.throws(() => {
-        entity.encodeValue();
-      }, /Unsupported field value/);
-    });
-    it('should encode an int', () => {
+    it('should encode an int', done => {
       const value = 8;
 
-      assert.throws(() => {
-        entity.encodeValue(value);
-      }, /The value for 'undefined' property is a JavaScript Number/);
+      const expectedValueProto = {
+        integerValue: value,
+      };
+
+      const property = "value"
+      const expectedWarning = "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        "Datastore types during the upload."
+      process.on('warning', warning => {
+        assert.strictEqual(warning.message, expectedWarning);
+        done();
+      });
+
+      entity.Int = function (value_: {}) {
+        assert.strictEqual(value_, value);
+        this.value = value_;
+      };
+
+      assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
+    });
+
+    it('should emit warning on out of bounds int', done => {
+      const largeIntValue = 9223372036854775807;
+      const property = 'largeInt';
+      const expectedWarning =
+        'IntegerOutOfBoundsWarning: ' +
+        "the value for '" +
+        property +
+        "' property is outside of bounds of a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload.";
+
+      process.on('warning', warning => {
+        assert.strictEqual(warning.message, expectedWarning);
+        done();
+      });
+      entity.encodeValue(largeIntValue, property);
     });
 
     it('should encode an Int object', () => {
@@ -767,14 +798,32 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should encode a double', () => {
+    it('should encode a double', done => {
       const value = 8.3;
 
+      const expectedValueProto = {
+        doubleValue: value,
+      };
 
-      assert.throws(() => {
-        entity.encodeValue(value);
-      }, /The value for 'undefined' property is a JavaScript Number/);
+      const property = "value"
+      const expectedWarning = "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        "Datastore types during the upload."
 
+      process.on('warning', warning => {
+        assert.strictEqual(warning.message, expectedWarning);
+        done();
+      });
+
+      entity.Double = function (value_: {}) {
+        assert.strictEqual(value_, value);
+        this.value = value_;
+      };
+
+      assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
     it('should encode a Double object', () => {

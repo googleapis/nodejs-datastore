@@ -34,10 +34,8 @@ const fakeEntity: any = {
   KEY_SYMBOL: Symbol('fake key symbol'),
   Int: class {
     value: {};
-    type: string;
     constructor(value: {}) {
       this.value = value;
-      this.type = 'DatastoreInt';
     }
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,11 +44,8 @@ const fakeEntity: any = {
   },
   Double: class {
     value: {};
-    type: string;
-
     constructor(value: {}) {
       this.value = value;
-      this.type = 'DatastoreDouble';
     }
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1321,7 +1316,7 @@ describe('Datastore', () => {
           arrayValue: {
             values: [
               {
-                integerValue: 0,
+                integerValue: '0',
               },
               {
                 nullValue: 0,
@@ -1347,7 +1342,7 @@ describe('Datastore', () => {
         data: {
           stringField: 'string value',
           nullField: null,
-          arrayField: [Datastore.int(0), null],
+          arrayField: [datastore.int(0), null],
           objectField: null,
         },
         excludeLargeProperties: true,
@@ -1450,7 +1445,7 @@ describe('Datastore', () => {
           data: {
             value: {
               a: 'b',
-              c: [ds.Datastore.int(1), ds.Datastore.int(2), ds.Datastore.int(3)],
+              c: [datastore.int(1), datastore.int(2), datastore.int(3)],
             },
           },
         },

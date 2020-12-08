@@ -21,6 +21,7 @@ import { PathType } from '.';
 import { protobuf as Protobuf } from 'google-gax';
 import * as path from 'path';
 import { google } from '../protos/protos';
+import { type } from 'os';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -216,7 +217,7 @@ export namespace entity {
     return (
       isDsInt(maybeDsInt) ||
       (is.object(maybeDsInt) &&
-        (is.string(maybeDsInt.value) || is.number(maybeDsInt.value)) &&
+        is.string(maybeDsInt.value) &&
         maybeDsInt.type === 'DatastoreInt')
     );
   }
@@ -580,14 +581,45 @@ export namespace entity {
       return valueProto;
     }
 
-    if (isDsInt(value) || isDsIntLike(value)) {
+    if (isDsInt(value)) {
       valueProto.integerValue = value.value;
       return valueProto;
     }
 
-    if (isDsDouble(value) || isDsDoubleLike(value)) {
+    if (isDsDouble(value)) {
       valueProto.doubleValue = value.value;
       return valueProto;
+    }
+
+    if (typeof value === 'number') {
+      const integerOutOfBoundsWarning = "'IntegerOutOfBoundsWarning: the value for '" +
+        property +
+        "' property is outside of bounds of a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload."
+
+      const typeCastWarning = "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        "Datastore types during the upload."
+
+
+      if (Number.isInteger(value)) {
+        if (!Number.isSafeInteger(value)) {
+          process.emitWarning(integerOutOfBoundsWarning);
+        } else {
+          process.emitWarning(typeCastWarning);
+        }
+        value = new entity.Int(value);
+        valueProto.integerValue = value.value;
+        return valueProto;
+      } else {
+        process.emitWarning(typeCastWarning);
+        value = new entity.Double(value);
+        valueProto.doubleValue = value.value;
+        return valueProto;
+      }
     }
 
     if (isDsGeoPoint(value)) {
@@ -631,24 +663,12 @@ export namespace entity {
       return valueProto;
     }
 
-    if (typeof value === 'number') {
-      const message = "The value for '" +
-        property +
-        "' property is a JavaScript Number. Use " +
-        "'Datastore.int(<integer_value_as_string>)' or " +
-        "'Datastore.double(<double_value_as_string>)' to preserve " +
-        "accuracy during the upload."
-
-      throw new Error(message);
-    }
-
     if (is.object(value)) {
       if (!is.empty(value)) {
         value = extend(true, {}, value);
 
         for (const prop in value) {
           value[prop] = entity.encodeValue(value[prop], prop);
-          // value[prop] = entity.encodeValue(value, prop);
         }
       }
 
