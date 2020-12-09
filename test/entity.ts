@@ -744,7 +744,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it.only('should encode an int', done => {
+    it('should encode an int', done => {
       const value = 8;
 
       const expectedValueProto = {
@@ -772,7 +772,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it.only('should emit warning on out of bounds int', done => {
+    it('should emit warning on out of bounds int', done => {
       const largeIntValue = 9223372036854775807;
       const property = 'largeInt';
       const expectedWarning =
@@ -800,7 +800,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it.only('should encode a double', done => {
+    it('should encode a double', done => {
       const value = 8.3;
 
       const expectedValueProto = {
