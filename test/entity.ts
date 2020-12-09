@@ -772,6 +772,37 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
+    it('should encode an int but only warn once', done => {
+      const value = 8;
+
+      const expectedValueProto = {
+        integerValue: value,
+      };
+
+      const property = 'undefined';
+      const expectedWarning =
+        "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
+      process.once('warning', warning => {
+        assert.strictEqual(warning.message, expectedWarning);
+        done();
+      });
+
+      entity.Int = function (value_: {}) {
+        assert.strictEqual(value_, value);
+        this.value = value_;
+      };
+
+      assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
+      // if an error is reported on this, done() is called more than once and
+      // should cause failure.
+      assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
+    });
+
     it('should emit warning on out of bounds int', done => {
       const largeIntValue = 9223372036854775807;
       const property = 'largeInt';
