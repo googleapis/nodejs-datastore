@@ -1316,7 +1316,13 @@ describe('Datastore', () => {
           arrayValue: {
             values: [
               {
-                integerValue: '0',
+                entityValue: {
+                  properties: {
+                    value: {
+                      integerValue: '0',
+                    },
+                  },
+                },
               },
               {
                 nullValue: 0,
