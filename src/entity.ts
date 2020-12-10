@@ -685,7 +685,6 @@ export namespace entity {
 
   const warningTypesIssued = new Set<string>();
   const warn = (warningName: string, warningMessage: string) => {
-    console.log(warningName);
     if (!warningTypesIssued.has(warningName)) {
       warningTypesIssued.add(warningName);
       process.emitWarning(warningMessage);
