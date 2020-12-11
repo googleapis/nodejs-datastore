@@ -547,7 +547,7 @@ export namespace entity {
         }
 
         if (wrapNumbers) {
-          return new entity.Double(value);
+          return new entity.Double(valueProto);
         }
         return Number(value);
       }

@@ -20,6 +20,7 @@ import * as yaml from 'js-yaml';
 import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
+import {entity} from '../src/entity';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -67,11 +68,11 @@ describe('Datastore', () => {
       publishedAt: new Date(),
       author: 'Silvano',
       isDraft: false,
-      wordCount: 400,
-      rating: 5.0,
+      wordCount: new entity.Int({propertyName: 'wordCount', integerValue: 400}),
+      rating: new entity.Double({propertyName: 'rating', doubleValue: 5.0}),
       likes: null,
       metadata: {
-        views: 100,
+        views: new entity.Int({propertyName: 'views', integerValue: 100}),
       },
     };
 
@@ -547,7 +548,7 @@ describe('Datastore', () => {
           },
         });
         const [entity] = await datastore.get(key);
-        assert.strictEqual(entity.year, integerValue);
+        assert.strictEqual(entity.year.valueOf(), integerValue);
       });
 
       it('should save and decode a double', async () => {
@@ -561,7 +562,7 @@ describe('Datastore', () => {
           },
         });
         const [entity] = await datastore.get(key);
-        assert.strictEqual(entity.nines, doubleValue);
+        assert.strictEqual(entity.nines.valueOf(), doubleValue);
       });
 
       it('should save and decode a geo point', async () => {
@@ -919,7 +920,7 @@ describe('Datastore', () => {
         datastore.get(key),
       ]);
       assert.strictEqual(typeof deletedEntity, 'undefined');
-      assert.strictEqual(fetchedEntity.rating, 10);
+      assert.strictEqual(fetchedEntity.rating.valueOf(), 10);
     });
 
     it('should use the last modification to a key', async () => {
