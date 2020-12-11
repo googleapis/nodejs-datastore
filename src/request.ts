@@ -447,7 +447,7 @@ class DatastoreRequest {
    *     [here](https://cloud.google.com/datastore/docs/articles/balancing-strong-and-eventual-consistency-with-google-cloud-datastore).
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=false]
+   * @param {boolean | IntegerTypeCastOptions} [options.wrapNumbers=true]
    *     Wrap values of integerValue type in {@link Datastore#Int} objects.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int} objects.
    *     If an `object`, this will return a value returned by

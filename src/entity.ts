@@ -475,7 +475,7 @@ export namespace entity {
    *
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
-   * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=true] Wrap values of integerValue type in
    *     {@link Datastore#Int} objects.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int} objects.
    *     If an `object`, this will return a value returned by
@@ -523,10 +523,21 @@ export namespace entity {
       }
 
       case 'doubleValue': {
+        if (wrapNumbers === undefined) {
+          wrapNumbers = true;
+        }
+
+        if (wrapNumbers) {
+          return new entity.Double(value);
+        }
         return Number(value);
       }
 
       case 'integerValue': {
+        if (wrapNumbers === undefined) {
+          wrapNumbers = true;
+        }
+
         return wrapNumbers
           ? typeof wrapNumbers === 'object'
             ? new entity.Int(valueProto, wrapNumbers).valueOf()
