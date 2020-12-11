@@ -52,27 +52,46 @@ export namespace entity {
    * provided.
    *
    * @class
-   * @param {number} value The double value.
+   * @param {number|string} value The double value.
    *
    * @example
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const aDouble = datastore.double(7.3);
    */
-  export class Double {
+  export class Double extends Number {
+    private _entityPropertyName: string | undefined;
     type: string;
-    value: number;
-    constructor(value: number) {
+    value: string;
+    constructor(value: number | string | ValueProto) {
+      super(typeof value === 'object' ? value.doubleValue : value);
+
       /**
        * @name Double#type
        * @type {string}
        */
       this.type = 'DatastoreDouble';
+
+      this._entityPropertyName =
+        typeof value === 'object' ? value.propertyName : undefined;
+
       /**
        * @name Double#value
-       * @type {number}
+       * @type {string}
        */
-      this.value = value;
+      this.value =
+        typeof value === 'object'
+          ? value.doubleValue.toString()
+          : value.toString();
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    valueOf(): any {
+      return Number(this.value);
+    }
+
+    toJSON(): Json {
+      return {type: this.type, value: this.value};
     }
   }
 
