@@ -273,26 +273,28 @@ describe('Datastore', () => {
       const points = Datastore.double(2);
       await datastore.save({key: postKey, data: {points}});
       let [entity] = await datastore.get(postKey, {wrapNumbers: true});
-      // Expect content is stored in datastore as a double, returned as int
-      // as doubles can safely be brought to local types.
-      // NOTE: this is a bit awkward as is since you can't prevent decoding of doubles
-      // assert.strictEqual(entity.points.type, 'DatastoreDouble');
-      // assert.strictEqual(entity.points.value, '2');
+      // Expect content is stored in datastore as a double with wrapping to
+      // return a wrapped double
+      assert.strictEqual(entity.points.type, 'DatastoreDouble');
+      assert.strictEqual(entity.points.value, 2);
+
+      [entity] = await datastore.get(postKey, {wrapNumbers: false});
+      // Verify that when requested with wrapNumbers false, we get a plain
+      // javascript Number 2.
       assert.strictEqual(entity.points, 2);
 
       [entity] = await datastore.get(postKey);
-      // without wrap numbers, expect to get a number '2'
-      assert.strictEqual(entity.points, 2);
+      // Expect without any options, a wrapped double to be returned.
+      assert.strictEqual(entity.points.type, 'DatastoreDouble');
+      assert.strictEqual(entity.points.value, 2);
 
-      // If we re-save here, without numbers wrapped, it will raise a warning
-      // we have an unsafe to convert representation
-      // NOTE: the data has been reuploaded in a different state than what was
-      // retrieved
+      // Save the data again, reget, ensuring that along the way it isn't
+      // somehow changed to another numeric type.
       await datastore.save(entity);
-      [entity] = await datastore.get(postKey, {wrapNumbers: true});
-      // expect as we saved, that this has been made into a a datastore int now.
-      assert.strictEqual(entity.points.type, 'DatastoreInt');
-      assert.strictEqual(entity.points.value, '2');
+      [entity] = await datastore.get(postKey);
+      // expect as we saved, that this property is still a DatastoreDouble.
+      assert.strictEqual(entity.points.type, 'DatastoreDouble');
+      assert.strictEqual(entity.points.value, 2);
 
       await datastore.delete(postKey);
     });
