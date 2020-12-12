@@ -370,6 +370,17 @@ describe('Request', () => {
             found: [
               {
                 entity: {
+                  key: {
+                    partitionId: {
+                      projectId: 'grape-spaceship-123',
+                    },
+                    path: [
+                      {
+                        kind: 'Post',
+                        name: 'post1',
+                      },
+                    ],
+                  },
                   properties: {
                     [propertyName]: {
                       integerValue: largeInt,
@@ -382,7 +393,7 @@ describe('Request', () => {
           });
         };
 
-        const stream = request.createReadStream(key);
+        const stream = request.createReadStream(key, {wrapNumbers: false});
 
         stream
           .on('data', () => {})
@@ -928,6 +939,17 @@ describe('Request', () => {
               entityResults: [
                 {
                   entity: {
+                    key: {
+                      partitionId: {
+                        projectId: 'grape-spaceship-123',
+                      },
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                    },
                     properties: {
                       [propertyName]: {
                         integerValue: largeInt,
@@ -941,7 +963,7 @@ describe('Request', () => {
           });
         };
 
-        const stream = request.runQueryStream({});
+        const stream = request.runQueryStream({}, {wrapNumbers: false});
 
         stream
           .on('error', (err: Error) => {

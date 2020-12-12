@@ -62,7 +62,7 @@ export namespace entity {
   export class Double extends Number {
     private _entityPropertyName: string | undefined;
     type: string;
-    value: string;
+    value: number;
     constructor(value: number | string | ValueProto) {
       super(typeof value === 'object' ? value.doubleValue : value);
 
@@ -77,12 +77,10 @@ export namespace entity {
 
       /**
        * @name Double#value
-       * @type {string}
+       * @type {number}
        */
       this.value =
-        typeof value === 'object'
-          ? value.doubleValue.toString()
-          : value.toString();
+        typeof value === 'object' ? Number(value.doubleValue) : Number(value);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,7 +88,7 @@ export namespace entity {
       return Number(this.value);
     }
 
-    toJSON(): Json {
+    toJSON(): any {
       return {type: this.type, value: this.value};
     }
   }

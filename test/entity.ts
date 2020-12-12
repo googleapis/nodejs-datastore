@@ -19,6 +19,7 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
+import {decode} from 'punycode';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
@@ -428,7 +429,7 @@ describe('entity', () => {
         );
       });
 
-      it('should not wrap numbers by default', () => {
+      it('should wrap numbers by default', () => {
         const decodeValueProto = entity.decodeValueProto;
         entity.decodeValueProto = (
           valueProto: {},
@@ -439,7 +440,25 @@ describe('entity', () => {
           return decodeValueProto(valueProto, wrapNumbers);
         };
 
-        assert.deepStrictEqual(entity.decodeValueProto(valueProto), [intValue]);
+        assert.deepStrictEqual(entity.decodeValueProto(valueProto), [
+          new entity.Int(intValue),
+        ]);
+      });
+
+      it('should not wrap numbers with option', () => {
+        const decodeValueProto = entity.decodeValueProto;
+        entity.decodeValueProto = (
+          valueProto: {},
+          wrapNumbers?: boolean | {}
+        ) => {
+          assert.strictEqual(wrapNumbers, false);
+
+          return decodeValueProto(valueProto, wrapNumbers);
+        };
+
+        assert.deepStrictEqual(entity.decodeValueProto(valueProto, false), [
+          intValue,
+        ]);
       });
 
       it('should wrap numbers with an option', () => {
@@ -552,13 +571,13 @@ describe('entity', () => {
 
       describe('default `wrapNumbers: undefined`', () => {
         it('should not wrap ints by default', () => {
-          assert.strictEqual(
-            typeof entity.decodeValueProto(valueProto),
-            'number'
-          );
+          const decoded = entity.decodeValueProto(valueProto);
+          assert.strictEqual(typeof decoded, 'object');
+          assert.strictEqual(typeof decoded.value, 'string');
+          assert.strictEqual(typeof decoded.valueOf(), 'number');
         });
 
-        it('should throw if integer value is outside of bounds', () => {
+        it('should throw if integer value is outside of bounds and unwrapping', () => {
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
 
@@ -575,11 +594,11 @@ describe('entity', () => {
           };
 
           assert.throws(() => {
-            entity.decodeValueProto(valueProto);
+            entity.decodeValueProto(valueProto, false);
           }, outOfBoundsError(valueProto));
 
           assert.throws(() => {
-            entity.decodeValueProto(valueProto2);
+            entity.decodeValueProto(valueProto2, false);
           }, outOfBoundsError(valueProto2));
         });
       });
@@ -670,7 +689,10 @@ describe('entity', () => {
         doubleValue: expectedValue,
       };
 
-      assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
+      assert.strictEqual(
+        entity.decodeValueProto(valueProto).value,
+        expectedValue
+      );
     });
 
     it('should decode keys', () => {
