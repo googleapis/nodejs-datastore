@@ -277,7 +277,7 @@ describe('Datastore', () => {
       // Expect content is stored in datastore as a double with wrapping to
       // return a wrapped double
       assert.strictEqual(entity.points.type, 'DatastoreDouble');
-      assert.strictEqual(entity.points.value, '2');
+      assert.strictEqual(entity.points.value, 2);
 
       [entity] = await datastore.get(postKey, {wrapNumbers: false});
       // Verify that when requested with wrapNumbers false, we get a plain
@@ -287,7 +287,7 @@ describe('Datastore', () => {
       [entity] = await datastore.get(postKey);
       // Expect without any options, a wrapped double to be returned.
       assert.strictEqual(entity.points.type, 'DatastoreDouble');
-      assert.strictEqual(entity.points.value, '2');
+      assert.strictEqual(entity.points.value, 2);
 
       // Save the data again, reget, ensuring that along the way it isn't
       // somehow changed to another numeric type.
@@ -295,7 +295,7 @@ describe('Datastore', () => {
       [entity] = await datastore.get(postKey);
       // expect as we saved, that this property is still a DatastoreDouble.
       assert.strictEqual(entity.points.type, 'DatastoreDouble');
-      assert.strictEqual(entity.points.value, '2');
+      assert.strictEqual(entity.points.value, 2);
 
       // Verify that DatastoreDouble implement Number behavior
       assert.strictEqual(entity.points + 1, 3);
