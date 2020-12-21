@@ -106,6 +106,10 @@ has instructions for running the samples.
 | --------------------------- | --------------------------------- | ------ |
 | Concepts | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/concepts.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/concepts.js,samples/README.md) |
 | Error | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/error.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/error.js,samples/README.md) |
+| Export | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/export.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/export.js,samples/README.md) |
+| Import | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/import.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/import.js,samples/README.md) |
+| Indexes.get | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/indexes.get.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/indexes.get.js,samples/README.md) |
+| Indexes.list | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/indexes.list.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/indexes.list.js,samples/README.md) |
 | Quickstart | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/quickstart.js,samples/README.md) |
 | Add Task | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/tasks.add.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/tasks.add.js,samples/README.md) |
 | Delete Task | [source code](https://github.com/googleapis/nodejs-datastore/blob/master/samples/tasks.delete.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/tasks.delete.js,samples/README.md) |
@@ -124,7 +128,7 @@ Our client libraries follow the [Node.js release schedule](https://nodejs.org/en
 Libraries are compatible with all current _active_ and _maintenance_ versions of
 Node.js.
 
-Client libraries targetting some end-of-life versions of Node.js are available, and
+Client libraries targeting some end-of-life versions of Node.js are available, and
 can be installed via npm [dist-tags](https://docs.npmjs.com/cli/dist-tag).
 The dist-tags follow the naming convention `legacy-(version)`.
 
@@ -175,7 +179,7 @@ Apache Version 2.0
 See [LICENSE](https://github.com/googleapis/nodejs-datastore/blob/master/LICENSE)
 
 [client-docs]: https://googleapis.dev/nodejs/datastore/latest
-[product-docs]: https://cloud.google.com/datastore
+[product-docs]: https://cloud.google.com/datastore/docs
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
