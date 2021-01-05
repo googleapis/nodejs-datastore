@@ -68,7 +68,7 @@
     "c8": "^7.1.0",
     "codecov": "^3.6.5",
     "gts": "^3.0.0",
-    "js-yaml": "^3.14.0",
+    "js-yaml": "^4.0.0",
     "jsdoc": "^3.6.3",
     "jsdoc-fresh": "^1.0.2",
     "jsdoc-region-tag": "^1.0.4",
