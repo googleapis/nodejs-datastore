@@ -55,8 +55,8 @@
   },
   "devDependencies": {
     "@google-cloud/storage": "^5.3.0",
-    "@microsoft/api-documenter": "^7.8.10",
-    "@microsoft/api-extractor": "^7.8.10",
+    "@microsoft/api-documenter": "7.11.0",
+    "@microsoft/api-extractor": "7.8.2-pr1796.0",
     "@types/extend": "^3.0.1",
     "@types/is": "0.0.21",
     "@types/js-yaml": "^3.12.5",
