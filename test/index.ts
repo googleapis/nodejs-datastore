@@ -1677,6 +1677,8 @@ describe('Datastore', () => {
             'metadata.otherProperty',
             'metadata.obj.*',
             'metadata.longStringArray[].*',
+            'undefinedData.*',
+            'undefinedArray[].*',
           ],
         },
         assert.ifError

@@ -825,6 +825,7 @@ export namespace entity {
       if (
         firstPathPartIsArray &&
         // check also if the property in question is actually an array value.
+        entity.properties![firstPathPart] &&
         entity.properties![firstPathPart].arrayValue &&
         // check if wildcard is not applied
         !hasWildCard
@@ -850,15 +851,17 @@ export namespace entity {
           }
         });
       } else if (firstPathPartIsArray && hasWildCard && remainderPath === '*') {
-        const array = entity.properties![firstPathPart].arrayValue;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        array.values.forEach((value: any) => {
-          if (value.entityValue) {
-            excludePathFromEntity(value.entityValue, '.*');
-          } else {
-            excludePathFromEntity(value, '');
-          }
-        });
+        if (entity.properties![firstPathPart]) {
+          const array = entity.properties![firstPathPart].arrayValue;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          array.values.forEach((value: any) => {
+            if (value.entityValue) {
+              excludePathFromEntity(value.entityValue, '.*');
+            } else {
+              excludePathFromEntity(value, '');
+            }
+          });
+        }
       } else if (firstPathPartIsEntity) {
         if (firstPathPart === '') {
           Object.keys(entity.properties!).forEach(path => {
@@ -869,17 +872,19 @@ export namespace entity {
           });
         } else {
           if (hasWildCard && remainderPath === '*') {
-            const parentEntity = entity.properties![firstPathPart].entityValue;
-
-            if (parentEntity) {
-              Object.keys(parentEntity.properties).forEach(path => {
-                const newPath = parentEntity.properties[path].arrayValue
-                  ? path + '[].*'
-                  : path + '.*';
-                excludePathFromEntity(parentEntity, newPath);
-              });
-            } else {
-              excludePathFromEntity(entity, firstPathPart);
+            if (entity.properties![firstPathPart]) {
+              const parentEntity = entity.properties![firstPathPart]
+                .entityValue;
+              if (parentEntity) {
+                Object.keys(parentEntity.properties).forEach(path => {
+                  const newPath = parentEntity.properties[path].arrayValue
+                    ? path + '[].*'
+                    : path + '.*';
+                  excludePathFromEntity(parentEntity, newPath);
+                });
+              } else {
+                excludePathFromEntity(entity, firstPathPart);
+              }
             }
           } else {
             const parentEntity = entity.properties![firstPathPart].entityValue;
