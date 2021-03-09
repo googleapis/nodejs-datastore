@@ -18,19 +18,11 @@
 
 /* global window */
 import * as gax from 'google-gax';
-import {
-  Callback,
-  CallOptions,
-  Descriptors,
-  ClientOptions,
-  LROperation,
-  PaginationCallback,
-  GaxCall,
-} from 'google-gax';
+import {Callback, CallOptions, Descriptors, ClientOptions, LROperation, PaginationCallback, GaxCall} from 'google-gax';
 import * as path from 'path';
 
-import {Transform} from 'stream';
-import {RequestType} from 'google-gax/build/src/apitypes';
+import { Transform } from 'stream';
+import { RequestType } from 'google-gax/build/src/apitypes';
 import * as protos from '../../protos/protos';
 /**
  * Client JSON configuration object, loaded from
@@ -38,7 +30,7 @@ import * as protos from '../../protos/protos';
  * This file defines retry strategy and timeouts for all API methods in this library.
  */
 import * as gapicConfig from './datastore_admin_client_config.json';
-import {operationsProtos} from 'google-gax';
+import { operationsProtos } from 'google-gax';
 const version = require('../../../package.json').version;
 
 /**
@@ -161,13 +153,10 @@ export class DatastoreAdminClient {
   constructor(opts?: ClientOptions) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof DatastoreAdminClient;
-    const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+    const servicePath = opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
     const port = opts?.port || staticMembers.port;
     const clientConfig = opts?.clientConfig ?? {};
-    const fallback =
-      opts?.fallback ??
-      (typeof window !== 'undefined' && typeof window?.fetch === 'function');
+    const fallback = opts?.fallback ?? (typeof window !== 'undefined' && typeof window?.fetch === 'function');
     opts = Object.assign({servicePath, port, clientConfig, fallback}, opts);
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
@@ -185,7 +174,7 @@ export class DatastoreAdminClient {
     this._opts = opts;
 
     // Save the auth object to the client, for use by other methods.
-    this.auth = this._gaxGrpc.auth as gax.GoogleAuth;
+    this.auth = (this._gaxGrpc.auth as gax.GoogleAuth);
 
     // Set the default scopes in auth client if needed.
     if (servicePath === staticMembers.servicePath) {
@@ -193,7 +182,10 @@ export class DatastoreAdminClient {
     }
 
     // Determine the client header string.
-    const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
+    const clientHeader = [
+      `gax/${this._gaxModule.version}`,
+      `gapic/${version}`,
+    ];
     if (typeof process !== 'undefined' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
@@ -209,80 +201,75 @@ export class DatastoreAdminClient {
     // For Node.js, pass the path to JSON proto file.
     // For browsers, pass the JSON content.
 
-    const nodejsProtoPath = path.join(
-      __dirname,
-      '..',
-      '..',
-      'protos',
-      'protos.json'
-    );
+    const nodejsProtoPath = path.join(__dirname, '..', '..', 'protos', 'protos.json');
     this._protos = this._gaxGrpc.loadProto(
-      opts.fallback
-        ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-          require('../../protos/protos.json')
-        : nodejsProtoPath
+      opts.fallback ?
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        require("../../protos/protos.json") :
+        nodejsProtoPath
     );
 
     // Some of the methods on this service return "paged" results,
     // (e.g. 50 results at a time, with tokens to get subsequent
     // pages). Denote the keys used for pagination and results.
     this.descriptors.page = {
-      listIndexes: new this._gaxModule.PageDescriptor(
-        'pageToken',
-        'nextPageToken',
-        'indexes'
-      ),
+      listIndexes:
+          new this._gaxModule.PageDescriptor('pageToken', 'nextPageToken', 'indexes')
     };
 
     // This API contains "long-running operations", which return a
     // an Operation object that allows for tracking of the operation,
     // rather than holding a request open.
-    const protoFilesRoot = opts.fallback
-      ? this._gaxModule.protobuf.Root.fromJSON(
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          require('../../protos/protos.json')
-        )
-      : this._gaxModule.protobuf.loadSync(nodejsProtoPath);
+    const protoFilesRoot = opts.fallback ?
+      this._gaxModule.protobuf.Root.fromJSON(
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        require("../../protos/protos.json")) :
+      this._gaxModule.protobuf.loadSync(nodejsProtoPath);
 
-    this.operationsClient = this._gaxModule
-      .lro({
-        auth: this.auth,
-        grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
-      })
-      .operationsClient(opts);
+    this.operationsClient = this._gaxModule.lro({
+      auth: this.auth,
+      grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined
+    }).operationsClient(opts);
     const exportEntitiesResponse = protoFilesRoot.lookup(
-      '.google.datastore.admin.v1.ExportEntitiesResponse'
-    ) as gax.protobuf.Type;
+      '.google.datastore.admin.v1.ExportEntitiesResponse') as gax.protobuf.Type;
     const exportEntitiesMetadata = protoFilesRoot.lookup(
-      '.google.datastore.admin.v1.ExportEntitiesMetadata'
-    ) as gax.protobuf.Type;
+      '.google.datastore.admin.v1.ExportEntitiesMetadata') as gax.protobuf.Type;
     const importEntitiesResponse = protoFilesRoot.lookup(
-      '.google.protobuf.Empty'
-    ) as gax.protobuf.Type;
+      '.google.protobuf.Empty') as gax.protobuf.Type;
     const importEntitiesMetadata = protoFilesRoot.lookup(
-      '.google.datastore.admin.v1.ImportEntitiesMetadata'
-    ) as gax.protobuf.Type;
+      '.google.datastore.admin.v1.ImportEntitiesMetadata') as gax.protobuf.Type;
+    const createIndexResponse = protoFilesRoot.lookup(
+      '.google.datastore.admin.v1.Index') as gax.protobuf.Type;
+    const createIndexMetadata = protoFilesRoot.lookup(
+      '.google.datastore.admin.v1.IndexOperationMetadata') as gax.protobuf.Type;
+    const deleteIndexResponse = protoFilesRoot.lookup(
+      '.google.datastore.admin.v1.Index') as gax.protobuf.Type;
+    const deleteIndexMetadata = protoFilesRoot.lookup(
+      '.google.datastore.admin.v1.IndexOperationMetadata') as gax.protobuf.Type;
 
     this.descriptors.longrunning = {
       exportEntities: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
         exportEntitiesResponse.decode.bind(exportEntitiesResponse),
-        exportEntitiesMetadata.decode.bind(exportEntitiesMetadata)
-      ),
+        exportEntitiesMetadata.decode.bind(exportEntitiesMetadata)),
       importEntities: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
         importEntitiesResponse.decode.bind(importEntitiesResponse),
-        importEntitiesMetadata.decode.bind(importEntitiesMetadata)
-      ),
+        importEntitiesMetadata.decode.bind(importEntitiesMetadata)),
+      createIndex: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createIndexResponse.decode.bind(createIndexResponse),
+        createIndexMetadata.decode.bind(createIndexMetadata)),
+      deleteIndex: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteIndexResponse.decode.bind(deleteIndexResponse),
+        deleteIndexMetadata.decode.bind(deleteIndexMetadata))
     };
 
     // Put together the default options sent with requests.
     this._defaults = this._gaxGrpc.constructSettings(
-      'google.datastore.admin.v1.DatastoreAdmin',
-      gapicConfig as gax.ClientConfig,
-      opts.clientConfig || {},
-      {'x-goog-api-client': clientHeader.join(' ')}
-    );
+        'google.datastore.admin.v1.DatastoreAdmin', gapicConfig as gax.ClientConfig,
+        opts.clientConfig || {}, {'x-goog-api-client': clientHeader.join(' ')});
 
     // Set up a dictionary of "inner API calls"; the core implementation
     // of calling the API is handled in `google-gax`, with this code
@@ -310,23 +297,16 @@ export class DatastoreAdminClient {
     // Put together the "service stub" for
     // google.datastore.admin.v1.DatastoreAdmin.
     this.datastoreAdminStub = this._gaxGrpc.createStub(
-      this._opts.fallback
-        ? (this._protos as protobuf.Root).lookupService(
-            'google.datastore.admin.v1.DatastoreAdmin'
-          )
-        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this._opts.fallback ?
+          (this._protos as protobuf.Root).lookupService('google.datastore.admin.v1.DatastoreAdmin') :
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (this._protos as any).google.datastore.admin.v1.DatastoreAdmin,
-      this._opts
-    ) as Promise<{[method: string]: Function}>;
+        this._opts) as Promise<{[method: string]: Function}>;
 
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
-    const datastoreAdminStubMethods = [
-      'exportEntities',
-      'importEntities',
-      'getIndex',
-      'listIndexes',
-    ];
+    const datastoreAdminStubMethods =
+        ['exportEntities', 'importEntities', 'createIndex', 'deleteIndex', 'getIndex', 'listIndexes'];
     for (const methodName of datastoreAdminStubMethods) {
       const callPromise = this.datastoreAdminStub.then(
         stub => (...args: Array<{}>) => {
@@ -336,10 +316,9 @@ export class DatastoreAdminClient {
           const func = stub[methodName];
           return func.apply(stub, args);
         },
-        (err: Error | null | undefined) => () => {
+        (err: Error|null|undefined) => () => {
           throw err;
-        }
-      );
+        });
 
       const descriptor =
         this.descriptors.page[methodName] ||
@@ -390,7 +369,7 @@ export class DatastoreAdminClient {
   static get scopes() {
     return [
       'https://www.googleapis.com/auth/cloud-platform',
-      'https://www.googleapis.com/auth/datastore',
+      'https://www.googleapis.com/auth/datastore'
     ];
   }
 
@@ -400,9 +379,8 @@ export class DatastoreAdminClient {
    * Return the project ID used by this class.
    * @returns {Promise} A promise that resolves to string containing the project ID.
    */
-  getProjectId(
-    callback?: Callback<string, undefined, undefined>
-  ): Promise<string> | void {
+  getProjectId(callback?: Callback<string, undefined, undefined>):
+      Promise<string>|void {
     if (callback) {
       this.auth.getProjectId(callback);
       return;
@@ -414,78 +392,65 @@ export class DatastoreAdminClient {
   // -- Service calls --
   // -------------------
   getIndex(
-    request: protos.google.datastore.admin.v1.IGetIndexRequest,
-    options?: CallOptions
-  ): Promise<
-    [
-      protos.google.datastore.admin.v1.IIndex,
-      protos.google.datastore.admin.v1.IGetIndexRequest | undefined,
-      {} | undefined
-    ]
-  >;
+      request: protos.google.datastore.admin.v1.IGetIndexRequest,
+      options?: CallOptions):
+      Promise<[
+        protos.google.datastore.admin.v1.IIndex,
+        protos.google.datastore.admin.v1.IGetIndexRequest|undefined, {}|undefined
+      ]>;
   getIndex(
-    request: protos.google.datastore.admin.v1.IGetIndexRequest,
-    options: CallOptions,
-    callback: Callback<
-      protos.google.datastore.admin.v1.IIndex,
-      protos.google.datastore.admin.v1.IGetIndexRequest | null | undefined,
-      {} | null | undefined
-    >
-  ): void;
-  getIndex(
-    request: protos.google.datastore.admin.v1.IGetIndexRequest,
-    callback: Callback<
-      protos.google.datastore.admin.v1.IIndex,
-      protos.google.datastore.admin.v1.IGetIndexRequest | null | undefined,
-      {} | null | undefined
-    >
-  ): void;
-  /**
-   * Gets an index.
-   *
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.projectId
-   *   Project ID against which to make the request.
-   * @param {string} request.indexId
-   *   The resource ID of the index to get.
-   * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
-   * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [Index]{@link google.datastore.admin.v1.Index}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
-   *   for more details and examples.
-   * @example
-   * const [response] = await client.getIndex(request);
-   */
-  getIndex(
-    request: protos.google.datastore.admin.v1.IGetIndexRequest,
-    optionsOrCallback?:
-      | CallOptions
-      | Callback<
+      request: protos.google.datastore.admin.v1.IGetIndexRequest,
+      options: CallOptions,
+      callback: Callback<
           protos.google.datastore.admin.v1.IIndex,
-          protos.google.datastore.admin.v1.IGetIndexRequest | null | undefined,
-          {} | null | undefined
-        >,
-    callback?: Callback<
-      protos.google.datastore.admin.v1.IIndex,
-      protos.google.datastore.admin.v1.IGetIndexRequest | null | undefined,
-      {} | null | undefined
-    >
-  ): Promise<
-    [
-      protos.google.datastore.admin.v1.IIndex,
-      protos.google.datastore.admin.v1.IGetIndexRequest | undefined,
-      {} | undefined
-    ]
-  > | void {
+          protos.google.datastore.admin.v1.IGetIndexRequest|null|undefined,
+          {}|null|undefined>): void;
+  getIndex(
+      request: protos.google.datastore.admin.v1.IGetIndexRequest,
+      callback: Callback<
+          protos.google.datastore.admin.v1.IIndex,
+          protos.google.datastore.admin.v1.IGetIndexRequest|null|undefined,
+          {}|null|undefined>): void;
+/**
+ * Gets an index.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Project ID against which to make the request.
+ * @param {string} request.indexId
+ *   The resource ID of the index to get.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Index]{@link google.datastore.admin.v1.Index}.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+ *   for more details and examples.
+ * @example
+ * const [response] = await client.getIndex(request);
+ */
+  getIndex(
+      request: protos.google.datastore.admin.v1.IGetIndexRequest,
+      optionsOrCallback?: CallOptions|Callback<
+          protos.google.datastore.admin.v1.IIndex,
+          protos.google.datastore.admin.v1.IGetIndexRequest|null|undefined,
+          {}|null|undefined>,
+      callback?: Callback<
+          protos.google.datastore.admin.v1.IIndex,
+          protos.google.datastore.admin.v1.IGetIndexRequest|null|undefined,
+          {}|null|undefined>):
+      Promise<[
+        protos.google.datastore.admin.v1.IIndex,
+        protos.google.datastore.admin.v1.IGetIndexRequest|undefined, {}|undefined
+      ]>|void {
     request = request || {};
     let options: CallOptions;
     if (typeof optionsOrCallback === 'function' && callback === undefined) {
       callback = optionsOrCallback;
       options = {};
-    } else {
+    }
+    else {
       options = optionsOrCallback as CallOptions;
     }
     options = options || {};
@@ -494,134 +459,103 @@ export class DatastoreAdminClient {
     options.otherArgs.headers[
       'x-goog-request-params'
     ] = gax.routingHeader.fromParams({
-      project_id: request.projectId || '',
+      'project_id': request.projectId || '',
     });
     this.initialize();
     return this.innerApiCalls.getIndex(request, options, callback);
   }
 
   exportEntities(
-    request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
-    options?: CallOptions
-  ): Promise<
-    [
-      LROperation<
-        protos.google.datastore.admin.v1.IExportEntitiesResponse,
-        protos.google.datastore.admin.v1.IExportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | undefined,
-      {} | undefined
-    ]
-  >;
+      request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
+      options?: CallOptions):
+      Promise<[
+        LROperation<protos.google.datastore.admin.v1.IExportEntitiesResponse, protos.google.datastore.admin.v1.IExportEntitiesMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>;
   exportEntities(
-    request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
-    options: CallOptions,
-    callback: Callback<
-      LROperation<
-        protos.google.datastore.admin.v1.IExportEntitiesResponse,
-        protos.google.datastore.admin.v1.IExportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | null | undefined,
-      {} | null | undefined
-    >
-  ): void;
+      request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
+      options: CallOptions,
+      callback: Callback<
+          LROperation<protos.google.datastore.admin.v1.IExportEntitiesResponse, protos.google.datastore.admin.v1.IExportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
   exportEntities(
-    request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
-    callback: Callback<
-      LROperation<
-        protos.google.datastore.admin.v1.IExportEntitiesResponse,
-        protos.google.datastore.admin.v1.IExportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | null | undefined,
-      {} | null | undefined
-    >
-  ): void;
-  /**
-   * Exports a copy of all or a subset of entities from Google Cloud Datastore
-   * to another storage system, such as Google Cloud Storage. Recent updates to
-   * entities may not be reflected in the export. The export occurs in the
-   * background and its progress can be monitored and managed via the
-   * Operation resource that is created. The output of an export may only be
-   * used once the associated operation is done. If an export operation is
-   * cancelled before completion it may leave partial data behind in Google
-   * Cloud Storage.
-   *
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.projectId
-   *   Required. Project ID against which to make the request.
-   * @param {number[]} request.labels
-   *   Client-assigned labels.
-   * @param {google.datastore.admin.v1.EntityFilter} request.entityFilter
-   *   Description of what data from the project is included in the export.
-   * @param {string} request.outputUrlPrefix
-   *   Required. Location for the export metadata and data files.
-   *
-   *   The full resource URL of the external storage location. Currently, only
-   *   Google Cloud Storage is supported. So output_url_prefix should be of the
-   *   form: `gs://BUCKET_NAME[/NAMESPACE_PATH]`, where `BUCKET_NAME` is the
-   *   name of the Cloud Storage bucket and `NAMESPACE_PATH` is an optional Cloud
-   *   Storage namespace path (this is not a Cloud Datastore namespace). For more
-   *   information about Cloud Storage namespace paths, see
-   *   [Object name
-   *   considerations](https://cloud.google.com/storage/docs/naming#object-considerations).
-   *
-   *   The resulting files will be nested deeper than the specified URL prefix.
-   *   The final output URL will be provided in the
-   *   {@link google.datastore.admin.v1.ExportEntitiesResponse.output_url|google.datastore.admin.v1.ExportEntitiesResponse.output_url} field. That
-   *   value should be used for subsequent ImportEntities operations.
-   *
-   *   By nesting the data files deeper, the same Cloud Storage bucket can be used
-   *   in multiple ExportEntities operations without conflict.
-   * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
-   * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing
-   *   a long running operation. Its `promise()` method returns a promise
-   *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
-   *   for more details and examples.
-   * @example
-   * const [operation] = await client.exportEntities(request);
-   * const [response] = await operation.promise();
-   */
+      request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
+      callback: Callback<
+          LROperation<protos.google.datastore.admin.v1.IExportEntitiesResponse, protos.google.datastore.admin.v1.IExportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
+/**
+ * Exports a copy of all or a subset of entities from Google Cloud Datastore
+ * to another storage system, such as Google Cloud Storage. Recent updates to
+ * entities may not be reflected in the export. The export occurs in the
+ * background and its progress can be monitored and managed via the
+ * Operation resource that is created. The output of an export may only be
+ * used once the associated operation is done. If an export operation is
+ * cancelled before completion it may leave partial data behind in Google
+ * Cloud Storage.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Required. Project ID against which to make the request.
+ * @param {number[]} request.labels
+ *   Client-assigned labels.
+ * @param {google.datastore.admin.v1.EntityFilter} request.entityFilter
+ *   Description of what data from the project is included in the export.
+ * @param {string} request.outputUrlPrefix
+ *   Required. Location for the export metadata and data files.
+ *
+ *   The full resource URL of the external storage location. Currently, only
+ *   Google Cloud Storage is supported. So output_url_prefix should be of the
+ *   form: `gs://BUCKET_NAME[/NAMESPACE_PATH]`, where `BUCKET_NAME` is the
+ *   name of the Cloud Storage bucket and `NAMESPACE_PATH` is an optional Cloud
+ *   Storage namespace path (this is not a Cloud Datastore namespace). For more
+ *   information about Cloud Storage namespace paths, see
+ *   [Object name
+ *   considerations](https://cloud.google.com/storage/docs/naming#object-considerations).
+ *
+ *   The resulting files will be nested deeper than the specified URL prefix.
+ *   The final output URL will be provided in the
+ *   {@link google.datastore.admin.v1.ExportEntitiesResponse.output_url|google.datastore.admin.v1.ExportEntitiesResponse.output_url} field. That
+ *   value should be used for subsequent ImportEntities operations.
+ *
+ *   By nesting the data files deeper, the same Cloud Storage bucket can be used
+ *   in multiple ExportEntities operations without conflict.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing
+ *   a long running operation. Its `promise()` method returns a promise
+ *   you can `await` for.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const [operation] = await client.exportEntities(request);
+ * const [response] = await operation.promise();
+ */
   exportEntities(
-    request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
-    optionsOrCallback?:
-      | CallOptions
-      | Callback<
-          LROperation<
-            protos.google.datastore.admin.v1.IExportEntitiesResponse,
-            protos.google.datastore.admin.v1.IExportEntitiesMetadata
-          >,
-          protos.google.longrunning.IOperation | null | undefined,
-          {} | null | undefined
-        >,
-    callback?: Callback<
-      LROperation<
-        protos.google.datastore.admin.v1.IExportEntitiesResponse,
-        protos.google.datastore.admin.v1.IExportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | null | undefined,
-      {} | null | undefined
-    >
-  ): Promise<
-    [
-      LROperation<
-        protos.google.datastore.admin.v1.IExportEntitiesResponse,
-        protos.google.datastore.admin.v1.IExportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | undefined,
-      {} | undefined
-    ]
-  > | void {
+      request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
+      optionsOrCallback?: CallOptions|Callback<
+          LROperation<protos.google.datastore.admin.v1.IExportEntitiesResponse, protos.google.datastore.admin.v1.IExportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>,
+      callback?: Callback<
+          LROperation<protos.google.datastore.admin.v1.IExportEntitiesResponse, protos.google.datastore.admin.v1.IExportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>):
+      Promise<[
+        LROperation<protos.google.datastore.admin.v1.IExportEntitiesResponse, protos.google.datastore.admin.v1.IExportEntitiesMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>|void {
     request = request || {};
     let options: CallOptions;
     if (typeof optionsOrCallback === 'function' && callback === undefined) {
       callback = optionsOrCallback;
       options = {};
-    } else {
+    }
+    else {
       options = optionsOrCallback as CallOptions;
     }
     options = options || {};
@@ -630,165 +564,118 @@ export class DatastoreAdminClient {
     options.otherArgs.headers[
       'x-goog-request-params'
     ] = gax.routingHeader.fromParams({
-      project_id: request.projectId || '',
+      'project_id': request.projectId || '',
     });
     this.initialize();
     return this.innerApiCalls.exportEntities(request, options, callback);
   }
-  /**
-   * Check the status of the long running operation returned by `exportEntities()`.
-   * @param {String} name
-   *   The operation name that will be passed.
-   * @returns {Promise} - The promise which resolves to an object.
-   *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
-   *   for more details and examples.
-   * @example
-   * const decodedOperation = await checkExportEntitiesProgress(name);
-   * console.log(decodedOperation.result);
-   * console.log(decodedOperation.done);
-   * console.log(decodedOperation.metadata);
-   */
-  async checkExportEntitiesProgress(
-    name: string
-  ): Promise<
-    LROperation<
-      protos.google.datastore.admin.v1.ExportEntitiesResponse,
-      protos.google.datastore.admin.v1.ExportEntitiesMetadata
-    >
-  > {
-    const request = new operationsProtos.google.longrunning.GetOperationRequest(
-      {name}
-    );
+/**
+ * Check the status of the long running operation returned by `exportEntities()`.
+ * @param {String} name
+ *   The operation name that will be passed.
+ * @returns {Promise} - The promise which resolves to an object.
+ *   The decoded operation object has result and metadata field to get information from.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const decodedOperation = await checkExportEntitiesProgress(name);
+ * console.log(decodedOperation.result);
+ * console.log(decodedOperation.done);
+ * console.log(decodedOperation.metadata);
+ */
+  async checkExportEntitiesProgress(name: string): Promise<LROperation<protos.google.datastore.admin.v1.ExportEntitiesResponse, protos.google.datastore.admin.v1.ExportEntitiesMetadata>>{
+    const request = new operationsProtos.google.longrunning.GetOperationRequest({name});
     const [operation] = await this.operationsClient.getOperation(request);
-    const decodeOperation = new gax.Operation(
-      operation,
-      this.descriptors.longrunning.exportEntities,
-      gax.createDefaultBackoffSettings()
-    );
-    return decodeOperation as LROperation<
-      protos.google.datastore.admin.v1.ExportEntitiesResponse,
-      protos.google.datastore.admin.v1.ExportEntitiesMetadata
-    >;
+    const decodeOperation = new gax.Operation(operation, this.descriptors.longrunning.exportEntities, gax.createDefaultBackoffSettings());
+    return decodeOperation as LROperation<protos.google.datastore.admin.v1.ExportEntitiesResponse, protos.google.datastore.admin.v1.ExportEntitiesMetadata>;
   }
   importEntities(
-    request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
-    options?: CallOptions
-  ): Promise<
-    [
-      LROperation<
-        protos.google.protobuf.IEmpty,
-        protos.google.datastore.admin.v1.IImportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | undefined,
-      {} | undefined
-    ]
-  >;
+      request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
+      options?: CallOptions):
+      Promise<[
+        LROperation<protos.google.protobuf.IEmpty, protos.google.datastore.admin.v1.IImportEntitiesMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>;
   importEntities(
-    request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
-    options: CallOptions,
-    callback: Callback<
-      LROperation<
-        protos.google.protobuf.IEmpty,
-        protos.google.datastore.admin.v1.IImportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | null | undefined,
-      {} | null | undefined
-    >
-  ): void;
+      request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
+      options: CallOptions,
+      callback: Callback<
+          LROperation<protos.google.protobuf.IEmpty, protos.google.datastore.admin.v1.IImportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
   importEntities(
-    request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
-    callback: Callback<
-      LROperation<
-        protos.google.protobuf.IEmpty,
-        protos.google.datastore.admin.v1.IImportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | null | undefined,
-      {} | null | undefined
-    >
-  ): void;
-  /**
-   * Imports entities into Google Cloud Datastore. Existing entities with the
-   * same key are overwritten. The import occurs in the background and its
-   * progress can be monitored and managed via the Operation resource that is
-   * created. If an ImportEntities operation is cancelled, it is possible
-   * that a subset of the data has already been imported to Cloud Datastore.
-   *
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.projectId
-   *   Required. Project ID against which to make the request.
-   * @param {number[]} request.labels
-   *   Client-assigned labels.
-   * @param {string} request.inputUrl
-   *   Required. The full resource URL of the external storage location. Currently, only
-   *   Google Cloud Storage is supported. So input_url should be of the form:
-   *   `gs://BUCKET_NAME[/NAMESPACE_PATH]/OVERALL_EXPORT_METADATA_FILE`, where
-   *   `BUCKET_NAME` is the name of the Cloud Storage bucket, `NAMESPACE_PATH` is
-   *   an optional Cloud Storage namespace path (this is not a Cloud Datastore
-   *   namespace), and `OVERALL_EXPORT_METADATA_FILE` is the metadata file written
-   *   by the ExportEntities operation. For more information about Cloud Storage
-   *   namespace paths, see
-   *   [Object name
-   *   considerations](https://cloud.google.com/storage/docs/naming#object-considerations).
-   *
-   *   For more information, see
-   *   {@link google.datastore.admin.v1.ExportEntitiesResponse.output_url|google.datastore.admin.v1.ExportEntitiesResponse.output_url}.
-   * @param {google.datastore.admin.v1.EntityFilter} request.entityFilter
-   *   Optionally specify which kinds/namespaces are to be imported. If provided,
-   *   the list must be a subset of the EntityFilter used in creating the export,
-   *   otherwise a FAILED_PRECONDITION error will be returned. If no filter is
-   *   specified then all entities from the export are imported.
-   * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
-   * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing
-   *   a long running operation. Its `promise()` method returns a promise
-   *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
-   *   for more details and examples.
-   * @example
-   * const [operation] = await client.importEntities(request);
-   * const [response] = await operation.promise();
-   */
+      request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
+      callback: Callback<
+          LROperation<protos.google.protobuf.IEmpty, protos.google.datastore.admin.v1.IImportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
+/**
+ * Imports entities into Google Cloud Datastore. Existing entities with the
+ * same key are overwritten. The import occurs in the background and its
+ * progress can be monitored and managed via the Operation resource that is
+ * created. If an ImportEntities operation is cancelled, it is possible
+ * that a subset of the data has already been imported to Cloud Datastore.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Required. Project ID against which to make the request.
+ * @param {number[]} request.labels
+ *   Client-assigned labels.
+ * @param {string} request.inputUrl
+ *   Required. The full resource URL of the external storage location. Currently, only
+ *   Google Cloud Storage is supported. So input_url should be of the form:
+ *   `gs://BUCKET_NAME[/NAMESPACE_PATH]/OVERALL_EXPORT_METADATA_FILE`, where
+ *   `BUCKET_NAME` is the name of the Cloud Storage bucket, `NAMESPACE_PATH` is
+ *   an optional Cloud Storage namespace path (this is not a Cloud Datastore
+ *   namespace), and `OVERALL_EXPORT_METADATA_FILE` is the metadata file written
+ *   by the ExportEntities operation. For more information about Cloud Storage
+ *   namespace paths, see
+ *   [Object name
+ *   considerations](https://cloud.google.com/storage/docs/naming#object-considerations).
+ *
+ *   For more information, see
+ *   {@link google.datastore.admin.v1.ExportEntitiesResponse.output_url|google.datastore.admin.v1.ExportEntitiesResponse.output_url}.
+ * @param {google.datastore.admin.v1.EntityFilter} request.entityFilter
+ *   Optionally specify which kinds/namespaces are to be imported. If provided,
+ *   the list must be a subset of the EntityFilter used in creating the export,
+ *   otherwise a FAILED_PRECONDITION error will be returned. If no filter is
+ *   specified then all entities from the export are imported.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing
+ *   a long running operation. Its `promise()` method returns a promise
+ *   you can `await` for.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const [operation] = await client.importEntities(request);
+ * const [response] = await operation.promise();
+ */
   importEntities(
-    request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
-    optionsOrCallback?:
-      | CallOptions
-      | Callback<
-          LROperation<
-            protos.google.protobuf.IEmpty,
-            protos.google.datastore.admin.v1.IImportEntitiesMetadata
-          >,
-          protos.google.longrunning.IOperation | null | undefined,
-          {} | null | undefined
-        >,
-    callback?: Callback<
-      LROperation<
-        protos.google.protobuf.IEmpty,
-        protos.google.datastore.admin.v1.IImportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | null | undefined,
-      {} | null | undefined
-    >
-  ): Promise<
-    [
-      LROperation<
-        protos.google.protobuf.IEmpty,
-        protos.google.datastore.admin.v1.IImportEntitiesMetadata
-      >,
-      protos.google.longrunning.IOperation | undefined,
-      {} | undefined
-    ]
-  > | void {
+      request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
+      optionsOrCallback?: CallOptions|Callback<
+          LROperation<protos.google.protobuf.IEmpty, protos.google.datastore.admin.v1.IImportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>,
+      callback?: Callback<
+          LROperation<protos.google.protobuf.IEmpty, protos.google.datastore.admin.v1.IImportEntitiesMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>):
+      Promise<[
+        LROperation<protos.google.protobuf.IEmpty, protos.google.datastore.admin.v1.IImportEntitiesMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>|void {
     request = request || {};
     let options: CallOptions;
     if (typeof optionsOrCallback === 'function' && callback === undefined) {
       callback = optionsOrCallback;
       options = {};
-    } else {
+    }
+    else {
       options = optionsOrCallback as CallOptions;
     }
     options = options || {};
@@ -797,132 +684,109 @@ export class DatastoreAdminClient {
     options.otherArgs.headers[
       'x-goog-request-params'
     ] = gax.routingHeader.fromParams({
-      project_id: request.projectId || '',
+      'project_id': request.projectId || '',
     });
     this.initialize();
     return this.innerApiCalls.importEntities(request, options, callback);
   }
-  /**
-   * Check the status of the long running operation returned by `importEntities()`.
-   * @param {String} name
-   *   The operation name that will be passed.
-   * @returns {Promise} - The promise which resolves to an object.
-   *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
-   *   for more details and examples.
-   * @example
-   * const decodedOperation = await checkImportEntitiesProgress(name);
-   * console.log(decodedOperation.result);
-   * console.log(decodedOperation.done);
-   * console.log(decodedOperation.metadata);
-   */
-  async checkImportEntitiesProgress(
-    name: string
-  ): Promise<
-    LROperation<
-      protos.google.protobuf.Empty,
-      protos.google.datastore.admin.v1.ImportEntitiesMetadata
-    >
-  > {
-    const request = new operationsProtos.google.longrunning.GetOperationRequest(
-      {name}
-    );
+/**
+ * Check the status of the long running operation returned by `importEntities()`.
+ * @param {String} name
+ *   The operation name that will be passed.
+ * @returns {Promise} - The promise which resolves to an object.
+ *   The decoded operation object has result and metadata field to get information from.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const decodedOperation = await checkImportEntitiesProgress(name);
+ * console.log(decodedOperation.result);
+ * console.log(decodedOperation.done);
+ * console.log(decodedOperation.metadata);
+ */
+  async checkImportEntitiesProgress(name: string): Promise<LROperation<protos.google.protobuf.Empty, protos.google.datastore.admin.v1.ImportEntitiesMetadata>>{
+    const request = new operationsProtos.google.longrunning.GetOperationRequest({name});
     const [operation] = await this.operationsClient.getOperation(request);
-    const decodeOperation = new gax.Operation(
-      operation,
-      this.descriptors.longrunning.importEntities,
-      gax.createDefaultBackoffSettings()
-    );
-    return decodeOperation as LROperation<
-      protos.google.protobuf.Empty,
-      protos.google.datastore.admin.v1.ImportEntitiesMetadata
-    >;
+    const decodeOperation = new gax.Operation(operation, this.descriptors.longrunning.importEntities, gax.createDefaultBackoffSettings());
+    return decodeOperation as LROperation<protos.google.protobuf.Empty, protos.google.datastore.admin.v1.ImportEntitiesMetadata>;
   }
-  listIndexes(
-    request: protos.google.datastore.admin.v1.IListIndexesRequest,
-    options?: CallOptions
-  ): Promise<
-    [
-      protos.google.datastore.admin.v1.IIndex[],
-      protos.google.datastore.admin.v1.IListIndexesRequest | null,
-      protos.google.datastore.admin.v1.IListIndexesResponse
-    ]
-  >;
-  listIndexes(
-    request: protos.google.datastore.admin.v1.IListIndexesRequest,
-    options: CallOptions,
-    callback: PaginationCallback<
-      protos.google.datastore.admin.v1.IListIndexesRequest,
-      protos.google.datastore.admin.v1.IListIndexesResponse | null | undefined,
-      protos.google.datastore.admin.v1.IIndex
-    >
-  ): void;
-  listIndexes(
-    request: protos.google.datastore.admin.v1.IListIndexesRequest,
-    callback: PaginationCallback<
-      protos.google.datastore.admin.v1.IListIndexesRequest,
-      protos.google.datastore.admin.v1.IListIndexesResponse | null | undefined,
-      protos.google.datastore.admin.v1.IIndex
-    >
-  ): void;
-  /**
-   * Lists the indexes that match the specified filters.  Datastore uses an
-   * eventually consistent query to fetch the list of indexes and may
-   * occasionally return stale results.
-   *
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.projectId
-   *   Project ID against which to make the request.
-   * @param {string} request.filter
-   * @param {number} request.pageSize
-   *   The maximum number of items to return.  If zero, then all results will be
-   *   returned.
-   * @param {string} request.pageToken
-   *   The next_page_token value returned from a previous List request, if any.
-   * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
-   * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of [Index]{@link google.datastore.admin.v1.Index}.
-   *   The client library will perform auto-pagination by default: it will call the API as many
-   *   times as needed and will merge results from all the pages into this array.
-   *   Note that it can affect your quota.
-   *   We recommend using `listIndexesAsync()`
-   *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
-   *   for more details and examples.
-   */
-  listIndexes(
-    request: protos.google.datastore.admin.v1.IListIndexesRequest,
-    optionsOrCallback?:
-      | CallOptions
-      | PaginationCallback<
-          protos.google.datastore.admin.v1.IListIndexesRequest,
-          | protos.google.datastore.admin.v1.IListIndexesResponse
-          | null
-          | undefined,
-          protos.google.datastore.admin.v1.IIndex
-        >,
-    callback?: PaginationCallback<
-      protos.google.datastore.admin.v1.IListIndexesRequest,
-      protos.google.datastore.admin.v1.IListIndexesResponse | null | undefined,
-      protos.google.datastore.admin.v1.IIndex
-    >
-  ): Promise<
-    [
-      protos.google.datastore.admin.v1.IIndex[],
-      protos.google.datastore.admin.v1.IListIndexesRequest | null,
-      protos.google.datastore.admin.v1.IListIndexesResponse
-    ]
-  > | void {
+  createIndex(
+      request: protos.google.datastore.admin.v1.ICreateIndexRequest,
+      options?: CallOptions):
+      Promise<[
+        LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>;
+  createIndex(
+      request: protos.google.datastore.admin.v1.ICreateIndexRequest,
+      options: CallOptions,
+      callback: Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
+  createIndex(
+      request: protos.google.datastore.admin.v1.ICreateIndexRequest,
+      callback: Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
+/**
+ * Creates the specified index.
+ * A newly created index's initial state is `CREATING`. On completion of the
+ * returned {@link google.longrunning.Operation|google.longrunning.Operation}, the state will be `READY`.
+ * If the index already exists, the call will return an `ALREADY_EXISTS`
+ * status.
+ *
+ * During index creation, the process could result in an error, in which
+ * case the index will move to the `ERROR` state. The process can be recovered
+ * by fixing the data that caused the error, removing the index with
+ * {@link google.datastore.admin.v1.DatastoreAdmin.DeleteIndex|delete}, then
+ * re-creating the index with [create]
+ * [google.datastore.admin.v1.DatastoreAdmin.CreateIndex].
+ *
+ * Indexes with a single property cannot be created.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Project ID against which to make the request.
+ * @param {google.datastore.admin.v1.Index} request.index
+ *   The index to create. The name and state fields are output only and will be
+ *   ignored. Single property indexes cannot be created or deleted.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing
+ *   a long running operation. Its `promise()` method returns a promise
+ *   you can `await` for.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const [operation] = await client.createIndex(request);
+ * const [response] = await operation.promise();
+ */
+  createIndex(
+      request: protos.google.datastore.admin.v1.ICreateIndexRequest,
+      optionsOrCallback?: CallOptions|Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>,
+      callback?: Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>):
+      Promise<[
+        LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>|void {
     request = request || {};
     let options: CallOptions;
     if (typeof optionsOrCallback === 'function' && callback === undefined) {
       callback = optionsOrCallback;
       options = {};
-    } else {
+    }
+    else {
       options = optionsOrCallback as CallOptions;
     }
     options = options || {};
@@ -931,40 +795,251 @@ export class DatastoreAdminClient {
     options.otherArgs.headers[
       'x-goog-request-params'
     ] = gax.routingHeader.fromParams({
-      project_id: request.projectId || '',
+      'project_id': request.projectId || '',
+    });
+    this.initialize();
+    return this.innerApiCalls.createIndex(request, options, callback);
+  }
+/**
+ * Check the status of the long running operation returned by `createIndex()`.
+ * @param {String} name
+ *   The operation name that will be passed.
+ * @returns {Promise} - The promise which resolves to an object.
+ *   The decoded operation object has result and metadata field to get information from.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const decodedOperation = await checkCreateIndexProgress(name);
+ * console.log(decodedOperation.result);
+ * console.log(decodedOperation.done);
+ * console.log(decodedOperation.metadata);
+ */
+  async checkCreateIndexProgress(name: string): Promise<LROperation<protos.google.datastore.admin.v1.Index, protos.google.datastore.admin.v1.IndexOperationMetadata>>{
+    const request = new operationsProtos.google.longrunning.GetOperationRequest({name});
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new gax.Operation(operation, this.descriptors.longrunning.createIndex, gax.createDefaultBackoffSettings());
+    return decodeOperation as LROperation<protos.google.datastore.admin.v1.Index, protos.google.datastore.admin.v1.IndexOperationMetadata>;
+  }
+  deleteIndex(
+      request: protos.google.datastore.admin.v1.IDeleteIndexRequest,
+      options?: CallOptions):
+      Promise<[
+        LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>;
+  deleteIndex(
+      request: protos.google.datastore.admin.v1.IDeleteIndexRequest,
+      options: CallOptions,
+      callback: Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
+  deleteIndex(
+      request: protos.google.datastore.admin.v1.IDeleteIndexRequest,
+      callback: Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>): void;
+/**
+ * Deletes an existing index.
+ * An index can only be deleted if it is in a `READY` or `ERROR` state. On
+ * successful execution of the request, the index will be in a `DELETING`
+ * {@link google.datastore.admin.v1.Index.State|state}. And on completion of the
+ * returned {@link google.longrunning.Operation|google.longrunning.Operation}, the index will be removed.
+ *
+ * During index deletion, the process could result in an error, in which
+ * case the index will move to the `ERROR` state. The process can be recovered
+ * by fixing the data that caused the error, followed by calling
+ * {@link google.datastore.admin.v1.DatastoreAdmin.DeleteIndex|delete} again.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Project ID against which to make the request.
+ * @param {string} request.indexId
+ *   The resource ID of the index to delete.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing
+ *   a long running operation. Its `promise()` method returns a promise
+ *   you can `await` for.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const [operation] = await client.deleteIndex(request);
+ * const [response] = await operation.promise();
+ */
+  deleteIndex(
+      request: protos.google.datastore.admin.v1.IDeleteIndexRequest,
+      optionsOrCallback?: CallOptions|Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>,
+      callback?: Callback<
+          LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+          protos.google.longrunning.IOperation|null|undefined,
+          {}|null|undefined>):
+      Promise<[
+        LROperation<protos.google.datastore.admin.v1.IIndex, protos.google.datastore.admin.v1.IIndexOperationMetadata>,
+        protos.google.longrunning.IOperation|undefined, {}|undefined
+      ]>|void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    }
+    else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers[
+      'x-goog-request-params'
+    ] = gax.routingHeader.fromParams({
+      'project_id': request.projectId || '',
+    });
+    this.initialize();
+    return this.innerApiCalls.deleteIndex(request, options, callback);
+  }
+/**
+ * Check the status of the long running operation returned by `deleteIndex()`.
+ * @param {String} name
+ *   The operation name that will be passed.
+ * @returns {Promise} - The promise which resolves to an object.
+ *   The decoded operation object has result and metadata field to get information from.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+ *   for more details and examples.
+ * @example
+ * const decodedOperation = await checkDeleteIndexProgress(name);
+ * console.log(decodedOperation.result);
+ * console.log(decodedOperation.done);
+ * console.log(decodedOperation.metadata);
+ */
+  async checkDeleteIndexProgress(name: string): Promise<LROperation<protos.google.datastore.admin.v1.Index, protos.google.datastore.admin.v1.IndexOperationMetadata>>{
+    const request = new operationsProtos.google.longrunning.GetOperationRequest({name});
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new gax.Operation(operation, this.descriptors.longrunning.deleteIndex, gax.createDefaultBackoffSettings());
+    return decodeOperation as LROperation<protos.google.datastore.admin.v1.Index, protos.google.datastore.admin.v1.IndexOperationMetadata>;
+  }
+  listIndexes(
+      request: protos.google.datastore.admin.v1.IListIndexesRequest,
+      options?: CallOptions):
+      Promise<[
+        protos.google.datastore.admin.v1.IIndex[],
+        protos.google.datastore.admin.v1.IListIndexesRequest|null,
+        protos.google.datastore.admin.v1.IListIndexesResponse
+      ]>;
+  listIndexes(
+      request: protos.google.datastore.admin.v1.IListIndexesRequest,
+      options: CallOptions,
+      callback: PaginationCallback<
+          protos.google.datastore.admin.v1.IListIndexesRequest,
+          protos.google.datastore.admin.v1.IListIndexesResponse|null|undefined,
+          protos.google.datastore.admin.v1.IIndex>): void;
+  listIndexes(
+      request: protos.google.datastore.admin.v1.IListIndexesRequest,
+      callback: PaginationCallback<
+          protos.google.datastore.admin.v1.IListIndexesRequest,
+          protos.google.datastore.admin.v1.IListIndexesResponse|null|undefined,
+          protos.google.datastore.admin.v1.IIndex>): void;
+/**
+ * Lists the indexes that match the specified filters.  Datastore uses an
+ * eventually consistent query to fetch the list of indexes and may
+ * occasionally return stale results.
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Project ID against which to make the request.
+ * @param {string} request.filter
+ * @param {number} request.pageSize
+ *   The maximum number of items to return.  If zero, then all results will be
+ *   returned.
+ * @param {string} request.pageToken
+ *   The next_page_token value returned from a previous List request, if any.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of [Index]{@link google.datastore.admin.v1.Index}.
+ *   The client library will perform auto-pagination by default: it will call the API as many
+ *   times as needed and will merge results from all the pages into this array.
+ *   Note that it can affect your quota.
+ *   We recommend using `listIndexesAsync()`
+ *   method described below for async iteration which you can stop as needed.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+ *   for more details and examples.
+ */
+  listIndexes(
+      request: protos.google.datastore.admin.v1.IListIndexesRequest,
+      optionsOrCallback?: CallOptions|PaginationCallback<
+          protos.google.datastore.admin.v1.IListIndexesRequest,
+          protos.google.datastore.admin.v1.IListIndexesResponse|null|undefined,
+          protos.google.datastore.admin.v1.IIndex>,
+      callback?: PaginationCallback<
+          protos.google.datastore.admin.v1.IListIndexesRequest,
+          protos.google.datastore.admin.v1.IListIndexesResponse|null|undefined,
+          protos.google.datastore.admin.v1.IIndex>):
+      Promise<[
+        protos.google.datastore.admin.v1.IIndex[],
+        protos.google.datastore.admin.v1.IListIndexesRequest|null,
+        protos.google.datastore.admin.v1.IListIndexesResponse
+      ]>|void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    }
+    else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers[
+      'x-goog-request-params'
+    ] = gax.routingHeader.fromParams({
+      'project_id': request.projectId || '',
     });
     this.initialize();
     return this.innerApiCalls.listIndexes(request, options, callback);
   }
 
-  /**
-   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.projectId
-   *   Project ID against which to make the request.
-   * @param {string} request.filter
-   * @param {number} request.pageSize
-   *   The maximum number of items to return.  If zero, then all results will be
-   *   returned.
-   * @param {string} request.pageToken
-   *   The next_page_token value returned from a previous List request, if any.
-   * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
-   * @returns {Stream}
-   *   An object stream which emits an object representing [Index]{@link google.datastore.admin.v1.Index} on 'data' event.
-   *   The client library will perform auto-pagination by default: it will call the API as many
-   *   times as needed. Note that it can affect your quota.
-   *   We recommend using `listIndexesAsync()`
-   *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
-   *   for more details and examples.
-   */
+/**
+ * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Project ID against which to make the request.
+ * @param {string} request.filter
+ * @param {number} request.pageSize
+ *   The maximum number of items to return.  If zero, then all results will be
+ *   returned.
+ * @param {string} request.pageToken
+ *   The next_page_token value returned from a previous List request, if any.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Stream}
+ *   An object stream which emits an object representing [Index]{@link google.datastore.admin.v1.Index} on 'data' event.
+ *   The client library will perform auto-pagination by default: it will call the API as many
+ *   times as needed. Note that it can affect your quota.
+ *   We recommend using `listIndexesAsync()`
+ *   method described below for async iteration which you can stop as needed.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+ *   for more details and examples.
+ */
   listIndexesStream(
-    request?: protos.google.datastore.admin.v1.IListIndexesRequest,
-    options?: CallOptions
-  ): Transform {
+      request?: protos.google.datastore.admin.v1.IListIndexesRequest,
+      options?: CallOptions):
+    Transform{
     request = request || {};
     options = options || {};
     options.otherArgs = options.otherArgs || {};
@@ -972,7 +1047,7 @@ export class DatastoreAdminClient {
     options.otherArgs.headers[
       'x-goog-request-params'
     ] = gax.routingHeader.fromParams({
-      project_id: request.projectId || '',
+      'project_id': request.projectId || '',
     });
     const callSettings = new gax.CallSettings(options);
     this.initialize();
@@ -983,40 +1058,40 @@ export class DatastoreAdminClient {
     );
   }
 
-  /**
-   * Equivalent to `listIndexes`, but returns an iterable object.
-   *
-   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
-   * @param {Object} request
-   *   The request object that will be sent.
-   * @param {string} request.projectId
-   *   Project ID against which to make the request.
-   * @param {string} request.filter
-   * @param {number} request.pageSize
-   *   The maximum number of items to return.  If zero, then all results will be
-   *   returned.
-   * @param {string} request.pageToken
-   *   The next_page_token value returned from a previous List request, if any.
-   * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
-   * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
-   *   When you iterate the returned iterable, each element will be an object representing
-   *   [Index]{@link google.datastore.admin.v1.Index}. The API will be called under the hood as needed, once per the page,
-   *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
-   *   for more details and examples.
-   * @example
-   * const iterable = client.listIndexesAsync(request);
-   * for await (const response of iterable) {
-   *   // process response
-   * }
-   */
+/**
+ * Equivalent to `listIndexes`, but returns an iterable object.
+ *
+ * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.projectId
+ *   Project ID against which to make the request.
+ * @param {string} request.filter
+ * @param {number} request.pageSize
+ *   The maximum number of items to return.  If zero, then all results will be
+ *   returned.
+ * @param {string} request.pageToken
+ *   The next_page_token value returned from a previous List request, if any.
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Object}
+ *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+ *   When you iterate the returned iterable, each element will be an object representing
+ *   [Index]{@link google.datastore.admin.v1.Index}. The API will be called under the hood as needed, once per the page,
+ *   so you can stop the iteration when you don't need more results.
+ *   Please see the
+ *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+ *   for more details and examples.
+ * @example
+ * const iterable = client.listIndexesAsync(request);
+ * for await (const response of iterable) {
+ *   // process response
+ * }
+ */
   listIndexesAsync(
-    request?: protos.google.datastore.admin.v1.IListIndexesRequest,
-    options?: CallOptions
-  ): AsyncIterable<protos.google.datastore.admin.v1.IIndex> {
+      request?: protos.google.datastore.admin.v1.IListIndexesRequest,
+      options?: CallOptions):
+    AsyncIterable<protos.google.datastore.admin.v1.IIndex>{
     request = request || {};
     options = options || {};
     options.otherArgs = options.otherArgs || {};
@@ -1024,14 +1099,14 @@ export class DatastoreAdminClient {
     options.otherArgs.headers[
       'x-goog-request-params'
     ] = gax.routingHeader.fromParams({
-      project_id: request.projectId || '',
+      'project_id': request.projectId || '',
     });
     options = options || {};
     const callSettings = new gax.CallSettings(options);
     this.initialize();
     return this.descriptors.page.listIndexes.asyncIterate(
       this.innerApiCalls['listIndexes'] as GaxCall,
-      (request as unknown) as RequestType,
+      request as unknown as RequestType,
       callSettings
     ) as AsyncIterable<protos.google.datastore.admin.v1.IIndex>;
   }
