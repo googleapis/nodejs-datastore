@@ -25,16 +25,6 @@
                 "importEntities"
               ]
             },
-            "CreateIndex": {
-              "methods": [
-                "createIndex"
-              ]
-            },
-            "DeleteIndex": {
-              "methods": [
-                "deleteIndex"
-              ]
-            },
             "ListIndexes": {
               "methods": [
                 "listIndexes",
@@ -60,16 +50,6 @@
             "ImportEntities": {
               "methods": [
                 "importEntities"
-              ]
-            },
-            "CreateIndex": {
-              "methods": [
-                "createIndex"
-              ]
-            },
-            "DeleteIndex": {
-              "methods": [
-                "deleteIndex"
               ]
             },
             "ListIndexes": {
