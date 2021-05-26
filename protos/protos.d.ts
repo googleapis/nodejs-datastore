@@ -2867,7 +2867,7 @@ export namespace google {
                 public mode: (google.datastore.v1.CommitRequest.Mode|keyof typeof google.datastore.v1.CommitRequest.Mode);
 
                 /** CommitRequest transaction. */
-                public transaction?: (Uint8Array|string|null);
+                public transaction: (Uint8Array|string);
 
                 /** CommitRequest mutations. */
                 public mutations: google.datastore.v1.IMutation[];
@@ -3465,7 +3465,7 @@ export namespace google {
                 public delete?: (google.datastore.v1.IKey|null);
 
                 /** Mutation baseVersion. */
-                public baseVersion?: (number|Long|string|null);
+                public baseVersion: (number|Long|string);
 
                 /** Mutation operation. */
                 public operation?: ("insert"|"update"|"upsert"|"delete");
@@ -3666,10 +3666,10 @@ export namespace google {
                 constructor(properties?: google.datastore.v1.IReadOptions);
 
                 /** ReadOptions readConsistency. */
-                public readConsistency?: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency|null);
+                public readConsistency: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency);
 
                 /** ReadOptions transaction. */
-                public transaction?: (Uint8Array|string|null);
+                public transaction: (Uint8Array|string);
 
                 /** ReadOptions consistencyType. */
                 public consistencyType?: ("readConsistency"|"transaction");
@@ -4251,10 +4251,10 @@ export namespace google {
                     public kind: string;
 
                     /** PathElement id. */
-                    public id?: (number|Long|string|null);
+                    public id: (number|Long|string);
 
                     /** PathElement name. */
-                    public name?: (string|null);
+                    public name: string;
 
                     /** PathElement idType. */
                     public idType?: ("id"|"name");
@@ -4474,16 +4474,16 @@ export namespace google {
                 constructor(properties?: google.datastore.v1.IValue);
 
                 /** Value nullValue. */
-                public nullValue?: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue|null);
+                public nullValue: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue);
 
                 /** Value booleanValue. */
-                public booleanValue?: (boolean|null);
+                public booleanValue: boolean;
 
                 /** Value integerValue. */
-                public integerValue?: (number|Long|string|null);
+                public integerValue: (number|Long|string);
 
                 /** Value doubleValue. */
-                public doubleValue?: (number|null);
+                public doubleValue: number;
 
                 /** Value timestampValue. */
                 public timestampValue?: (google.protobuf.ITimestamp|null);
@@ -4492,10 +4492,10 @@ export namespace google {
                 public keyValue?: (google.datastore.v1.IKey|null);
 
                 /** Value stringValue. */
-                public stringValue?: (string|null);
+                public stringValue: string;
 
                 /** Value blobValue. */
-                public blobValue?: (Uint8Array|string|null);
+                public blobValue: (Uint8Array|string);
 
                 /** Value geoPointValue. */
                 public geoPointValue?: (google.type.ILatLng|null);
@@ -5760,7 +5760,7 @@ export namespace google {
                 public value?: (google.datastore.v1.IValue|null);
 
                 /** GqlQueryParameter cursor. */
-                public cursor?: (Uint8Array|string|null);
+                public cursor: (Uint8Array|string);
 
                 /** GqlQueryParameter parameterType. */
                 public parameterType?: ("value"|"cursor");
@@ -6122,19 +6122,19 @@ export namespace google {
             public selector: string;
 
             /** HttpRule get. */
-            public get?: (string|null);
+            public get: string;
 
             /** HttpRule put. */
-            public put?: (string|null);
+            public put: string;
 
             /** HttpRule post. */
-            public post?: (string|null);
+            public post: string;
 
             /** HttpRule delete. */
-            public delete?: (string|null);
+            public delete: string;
 
             /** HttpRule patch. */
-            public patch?: (string|null);
+            public patch: string;
 
             /** HttpRule custom. */
             public custom?: (google.api.ICustomHttpPattern|null);
@@ -9947,16 +9947,16 @@ export namespace google {
             constructor(properties?: google.protobuf.IValue);
 
             /** Value nullValue. */
-            public nullValue?: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue|null);
+            public nullValue: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue);
 
             /** Value numberValue. */
-            public numberValue?: (number|null);
+            public numberValue: number;
 
             /** Value stringValue. */
-            public stringValue?: (string|null);
+            public stringValue: string;
 
             /** Value boolValue. */
-            public boolValue?: (boolean|null);
+            public boolValue: boolean;
 
             /** Value structValue. */
             public structValue?: (google.protobuf.IStruct|null);

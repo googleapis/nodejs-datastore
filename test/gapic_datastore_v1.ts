@@ -26,9 +26,10 @@ import * as datastoreModule from '../src';
 import {protobuf} from 'google-gax';
 
 function generateSampleMessage<T extends object>(instance: T) {
-  const filledObject = (
-    instance.constructor as typeof protobuf.Message
-  ).toObject(instance as protobuf.Message<T>, {defaults: true});
+  const filledObject = (instance.constructor as typeof protobuf.Message).toObject(
+    instance as protobuf.Message<T>,
+    {defaults: true}
+  );
   return (instance.constructor as typeof protobuf.Message).fromObject(
     filledObject
   ) as T;
@@ -183,8 +184,9 @@ describe('v1.DatastoreClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.v1.LookupResponse()
       );
-      client.innerApiCalls.lookup =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.lookup = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.lookup(
           request,
@@ -291,8 +293,9 @@ describe('v1.DatastoreClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.v1.RunQueryResponse()
       );
-      client.innerApiCalls.runQuery =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.runQuery = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.runQuery(
           request,
@@ -399,8 +402,9 @@ describe('v1.DatastoreClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.v1.BeginTransactionResponse()
       );
-      client.innerApiCalls.beginTransaction =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.beginTransaction = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.beginTransaction(
           request,
@@ -510,8 +514,9 @@ describe('v1.DatastoreClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.v1.CommitResponse()
       );
-      client.innerApiCalls.commit =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.commit = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.commit(
           request,
@@ -618,8 +623,9 @@ describe('v1.DatastoreClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.v1.RollbackResponse()
       );
-      client.innerApiCalls.rollback =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.rollback = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.rollback(
           request,
@@ -726,8 +732,9 @@ describe('v1.DatastoreClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.v1.AllocateIdsResponse()
       );
-      client.innerApiCalls.allocateIds =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.allocateIds = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.allocateIds(
           request,
@@ -837,8 +844,9 @@ describe('v1.DatastoreClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.v1.ReserveIdsResponse()
       );
-      client.innerApiCalls.reserveIds =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.reserveIds = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.reserveIds(
           request,

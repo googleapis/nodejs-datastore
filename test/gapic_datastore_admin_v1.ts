@@ -28,9 +28,10 @@ import {PassThrough} from 'stream';
 import {protobuf, LROperation, operationsProtos} from 'google-gax';
 
 function generateSampleMessage<T extends object>(instance: T) {
-  const filledObject = (
-    instance.constructor as typeof protobuf.Message
-  ).toObject(instance as protobuf.Message<T>, {defaults: true});
+  const filledObject = (instance.constructor as typeof protobuf.Message).toObject(
+    instance as protobuf.Message<T>,
+    {defaults: true}
+  );
   return (instance.constructor as typeof protobuf.Message).fromObject(
     filledObject
   ) as T;
@@ -280,8 +281,9 @@ describe('v1.DatastoreAdminClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.admin.v1.Index()
       );
-      client.innerApiCalls.getIndex =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.getIndex = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.getIndex(
           request,
@@ -357,8 +359,9 @@ describe('v1.DatastoreAdminClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
-      client.innerApiCalls.exportEntities =
-        stubLongRunningCall(expectedResponse);
+      client.innerApiCalls.exportEntities = stubLongRunningCall(
+        expectedResponse
+      );
       const [operation] = await client.exportEntities(request);
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
@@ -390,8 +393,9 @@ describe('v1.DatastoreAdminClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
-      client.innerApiCalls.exportEntities =
-        stubLongRunningCallWithCallback(expectedResponse);
+      client.innerApiCalls.exportEntities = stubLongRunningCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.exportEntities(
           request,
@@ -551,8 +555,9 @@ describe('v1.DatastoreAdminClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
-      client.innerApiCalls.importEntities =
-        stubLongRunningCall(expectedResponse);
+      client.innerApiCalls.importEntities = stubLongRunningCall(
+        expectedResponse
+      );
       const [operation] = await client.importEntities(request);
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
@@ -584,8 +589,9 @@ describe('v1.DatastoreAdminClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
-      client.innerApiCalls.importEntities =
-        stubLongRunningCallWithCallback(expectedResponse);
+      client.innerApiCalls.importEntities = stubLongRunningCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.importEntities(
           request,
@@ -777,8 +783,9 @@ describe('v1.DatastoreAdminClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
-      client.innerApiCalls.createIndex =
-        stubLongRunningCallWithCallback(expectedResponse);
+      client.innerApiCalls.createIndex = stubLongRunningCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.createIndex(
           request,
@@ -967,8 +974,9 @@ describe('v1.DatastoreAdminClient', () => {
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
-      client.innerApiCalls.deleteIndex =
-        stubLongRunningCallWithCallback(expectedResponse);
+      client.innerApiCalls.deleteIndex = stubLongRunningCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.deleteIndex(
           request,
@@ -1160,8 +1168,9 @@ describe('v1.DatastoreAdminClient', () => {
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
       ];
-      client.innerApiCalls.listIndexes =
-        stubSimpleCallWithCallback(expectedResponse);
+      client.innerApiCalls.listIndexes = stubSimpleCallWithCallback(
+        expectedResponse
+      );
       const promise = new Promise((resolve, reject) => {
         client.listIndexes(
           request,
@@ -1233,8 +1242,9 @@ describe('v1.DatastoreAdminClient', () => {
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
       ];
-      client.descriptors.page.listIndexes.createStream =
-        stubPageStreamingCall(expectedResponse);
+      client.descriptors.page.listIndexes.createStream = stubPageStreamingCall(
+        expectedResponse
+      );
       const stream = client.listIndexesStream(request);
       const promise = new Promise((resolve, reject) => {
         const responses: protos.google.datastore.admin.v1.Index[] = [];
@@ -1328,8 +1338,9 @@ describe('v1.DatastoreAdminClient', () => {
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
       ];
-      client.descriptors.page.listIndexes.asyncIterate =
-        stubAsyncIterationCall(expectedResponse);
+      client.descriptors.page.listIndexes.asyncIterate = stubAsyncIterationCall(
+        expectedResponse
+      );
       const responses: protos.google.datastore.admin.v1.IIndex[] = [];
       const iterable = client.listIndexesAsync(request);
       for await (const resource of iterable) {

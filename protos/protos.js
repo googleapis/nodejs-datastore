@@ -6809,11 +6809,11 @@
     
                     /**
                      * CommitRequest transaction.
-                     * @member {Uint8Array|null|undefined} transaction
+                     * @member {Uint8Array} transaction
                      * @memberof google.datastore.v1.CommitRequest
                      * @instance
                      */
-                    CommitRequest.prototype.transaction = null;
+                    CommitRequest.prototype.transaction = $util.newBuffer([]);
     
                     /**
                      * CommitRequest mutations.
@@ -8241,11 +8241,11 @@
     
                     /**
                      * Mutation baseVersion.
-                     * @member {number|Long|null|undefined} baseVersion
+                     * @member {number|Long} baseVersion
                      * @memberof google.datastore.v1.Mutation
                      * @instance
                      */
-                    Mutation.prototype.baseVersion = null;
+                    Mutation.prototype.baseVersion = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
@@ -8817,19 +8817,19 @@
     
                     /**
                      * ReadOptions readConsistency.
-                     * @member {google.datastore.v1.ReadOptions.ReadConsistency|null|undefined} readConsistency
+                     * @member {google.datastore.v1.ReadOptions.ReadConsistency} readConsistency
                      * @memberof google.datastore.v1.ReadOptions
                      * @instance
                      */
-                    ReadOptions.prototype.readConsistency = null;
+                    ReadOptions.prototype.readConsistency = 0;
     
                     /**
                      * ReadOptions transaction.
-                     * @member {Uint8Array|null|undefined} transaction
+                     * @member {Uint8Array} transaction
                      * @memberof google.datastore.v1.ReadOptions
                      * @instance
                      */
-                    ReadOptions.prototype.transaction = null;
+                    ReadOptions.prototype.transaction = $util.newBuffer([]);
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
@@ -10140,19 +10140,19 @@
     
                         /**
                          * PathElement id.
-                         * @member {number|Long|null|undefined} id
+                         * @member {number|Long} id
                          * @memberof google.datastore.v1.Key.PathElement
                          * @instance
                          */
-                        PathElement.prototype.id = null;
+                        PathElement.prototype.id = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                         /**
                          * PathElement name.
-                         * @member {string|null|undefined} name
+                         * @member {string} name
                          * @memberof google.datastore.v1.Key.PathElement
                          * @instance
                          */
-                        PathElement.prototype.name = null;
+                        PathElement.prototype.name = "";
     
                         // OneOf field names bound to virtual getters and setters
                         var $oneOfFields;
@@ -10619,35 +10619,35 @@
     
                     /**
                      * Value nullValue.
-                     * @member {google.protobuf.NullValue|null|undefined} nullValue
+                     * @member {google.protobuf.NullValue} nullValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.nullValue = null;
+                    Value.prototype.nullValue = 0;
     
                     /**
                      * Value booleanValue.
-                     * @member {boolean|null|undefined} booleanValue
+                     * @member {boolean} booleanValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.booleanValue = null;
+                    Value.prototype.booleanValue = false;
     
                     /**
                      * Value integerValue.
-                     * @member {number|Long|null|undefined} integerValue
+                     * @member {number|Long} integerValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.integerValue = null;
+                    Value.prototype.integerValue = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                     /**
                      * Value doubleValue.
-                     * @member {number|null|undefined} doubleValue
+                     * @member {number} doubleValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.doubleValue = null;
+                    Value.prototype.doubleValue = 0;
     
                     /**
                      * Value timestampValue.
@@ -10667,19 +10667,19 @@
     
                     /**
                      * Value stringValue.
-                     * @member {string|null|undefined} stringValue
+                     * @member {string} stringValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.stringValue = null;
+                    Value.prototype.stringValue = "";
     
                     /**
                      * Value blobValue.
-                     * @member {Uint8Array|null|undefined} blobValue
+                     * @member {Uint8Array} blobValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.blobValue = null;
+                    Value.prototype.blobValue = $util.newBuffer([]);
     
                     /**
                      * Value geoPointValue.
@@ -14152,11 +14152,11 @@
     
                     /**
                      * GqlQueryParameter cursor.
-                     * @member {Uint8Array|null|undefined} cursor
+                     * @member {Uint8Array} cursor
                      * @memberof google.datastore.v1.GqlQueryParameter
                      * @instance
                      */
-                    GqlQueryParameter.prototype.cursor = null;
+                    GqlQueryParameter.prototype.cursor = $util.newBuffer([]);
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
@@ -15094,43 +15094,43 @@
     
                 /**
                  * HttpRule get.
-                 * @member {string|null|undefined} get
+                 * @member {string} get
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.get = null;
+                HttpRule.prototype.get = "";
     
                 /**
                  * HttpRule put.
-                 * @member {string|null|undefined} put
+                 * @member {string} put
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.put = null;
+                HttpRule.prototype.put = "";
     
                 /**
                  * HttpRule post.
-                 * @member {string|null|undefined} post
+                 * @member {string} post
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.post = null;
+                HttpRule.prototype.post = "";
     
                 /**
                  * HttpRule delete.
-                 * @member {string|null|undefined} delete
+                 * @member {string} delete
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype["delete"] = null;
+                HttpRule.prototype["delete"] = "";
     
                 /**
                  * HttpRule patch.
-                 * @member {string|null|undefined} patch
+                 * @member {string} patch
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.patch = null;
+                HttpRule.prototype.patch = "";
     
                 /**
                  * HttpRule custom.
@@ -25455,35 +25455,35 @@
     
                 /**
                  * Value nullValue.
-                 * @member {google.protobuf.NullValue|null|undefined} nullValue
+                 * @member {google.protobuf.NullValue} nullValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.nullValue = null;
+                Value.prototype.nullValue = 0;
     
                 /**
                  * Value numberValue.
-                 * @member {number|null|undefined} numberValue
+                 * @member {number} numberValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.numberValue = null;
+                Value.prototype.numberValue = 0;
     
                 /**
                  * Value stringValue.
-                 * @member {string|null|undefined} stringValue
+                 * @member {string} stringValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.stringValue = null;
+                Value.prototype.stringValue = "";
     
                 /**
                  * Value boolValue.
-                 * @member {boolean|null|undefined} boolValue
+                 * @member {boolean} boolValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.boolValue = null;
+                Value.prototype.boolValue = false;
     
                 /**
                  * Value structValue.
