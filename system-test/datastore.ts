@@ -36,7 +36,7 @@ describe('Datastore', () => {
     return keyObject;
   };
 
-  const {indexes: DECLARED_INDEXES} = yaml.safeLoad(
+  const {indexes: DECLARED_INDEXES} = yaml.load(
     readFileSync(path.join(__dirname, 'data', 'index.yaml'), 'utf8')
   ) as {indexes: google.datastore.admin.v1.IIndex[]};
 
@@ -1007,7 +1007,20 @@ describe('Datastore', () => {
     const gcs = new Storage();
     const bucket = gcs.bucket('nodejs-datastore-system-tests');
 
-    it('should export, then import entities', async () => {
+    const delay = async (test: Mocha.Context) => {
+      const retries = test.currentRetry();
+      if (retries === 0) return; // no retry on the first failure.
+      // see: https://cloud.google.com/storage/docs/exponential-backoff:
+      const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
+      return new Promise(done => {
+        console.info(`retrying "${test.title}" in ${ms}ms`);
+        setTimeout(done, ms);
+      });
+    };
+
+    it('should export, then import entities', async function () {
+      this.retries(3);
+      delay(this);
       const [exportOperation] = await datastore.export({bucket});
       await exportOperation.promise();
 
@@ -1022,8 +1035,9 @@ describe('Datastore', () => {
       // This is a >20 minute operation, so we're just going to make sure the
       // right type of operation was started.
       assert.strictEqual(
-        (importOperation.metadata as google.datastore.admin.v1.IImportEntitiesMetadata)
-          .inputUrl,
+        (
+          importOperation.metadata as google.datastore.admin.v1.IImportEntitiesMetadata
+        ).inputUrl,
         `gs://${exportedFile.bucket.name}/${exportedFile.name}`
       );
 
