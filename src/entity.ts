@@ -873,8 +873,8 @@ export namespace entity {
         } else {
           if (hasWildCard && remainderPath === '*') {
             if (entity.properties![firstPathPart]) {
-              const parentEntity = entity.properties![firstPathPart]
-                .entityValue;
+              const parentEntity =
+                entity.properties![firstPathPart].entityValue;
               if (parentEntity) {
                 Object.keys(parentEntity.properties).forEach(path => {
                   const newPath = parentEntity.properties[path].arrayValue
