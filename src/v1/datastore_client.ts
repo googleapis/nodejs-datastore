@@ -345,6 +345,10 @@ export class DatastoreClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.lookup(request);
+   *
+   * @example <caption>include:samples/generated/v1/datastore.lookup.js</caption>
+   * region_tag:datastore_lookup_sample
+   *
    */
   lookup(
     request?: protos.google.datastore.v1.ILookupRequest,
@@ -439,6 +443,10 @@ export class DatastoreClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.runQuery(request);
+   *
+   * @example <caption>include:samples/generated/v1/datastore.run_query.js</caption>
+   * region_tag:datastore_run_query_sample
+   *
    */
   runQuery(
     request?: protos.google.datastore.v1.IRunQueryRequest,
@@ -524,6 +532,10 @@ export class DatastoreClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.beginTransaction(request);
+   *
+   * @example <caption>include:samples/generated/v1/datastore.begin_transaction.js</caption>
+   * region_tag:datastore_begin_transaction_sample
+   *
    */
   beginTransaction(
     request?: protos.google.datastore.v1.IBeginTransactionRequest,
@@ -630,6 +642,10 @@ export class DatastoreClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.commit(request);
+   *
+   * @example <caption>include:samples/generated/v1/datastore.commit.js</caption>
+   * region_tag:datastore_commit_sample
+   *
    */
   commit(
     request?: protos.google.datastore.v1.ICommitRequest,
@@ -716,6 +732,10 @@ export class DatastoreClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.rollback(request);
+   *
+   * @example <caption>include:samples/generated/v1/datastore.rollback.js</caption>
+   * region_tag:datastore_rollback_sample
+   *
    */
   rollback(
     request?: protos.google.datastore.v1.IRollbackRequest,
@@ -803,6 +823,10 @@ export class DatastoreClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.allocateIds(request);
+   *
+   * @example <caption>include:samples/generated/v1/datastore.allocate_ids.js</caption>
+   * region_tag:datastore_allocate_ids_sample
+   *
    */
   allocateIds(
     request?: protos.google.datastore.v1.IAllocateIdsRequest,
@@ -892,6 +916,10 @@ export class DatastoreClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.reserveIds(request);
+   *
+   * @example <caption>include:samples/generated/v1/datastore.reserve_ids.js</caption>
+   * region_tag:datastore_reserve_ids_sample
+   *
    */
   reserveIds(
     request?: protos.google.datastore.v1.IReserveIdsRequest,
