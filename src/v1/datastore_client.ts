@@ -19,9 +19,9 @@
 /* global window */
 import * as gax from 'google-gax';
 import {Callback, CallOptions, Descriptors, ClientOptions} from 'google-gax';
-import * as path from 'path';
 
 import * as protos from '../../protos/protos';
+import jsonProtos = require('../../protos/protos.json');
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/datastore_client_config.json`.
@@ -45,6 +45,7 @@ const version = require('../../../package.json').version;
 export class DatastoreClient {
   private _terminated = false;
   private _opts: ClientOptions;
+  private _providedCustomServicePath: boolean;
   private _gaxModule: typeof gax | typeof gax.fallback;
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
@@ -56,6 +57,7 @@ export class DatastoreClient {
     longrunning: {},
     batching: {},
   };
+  warn: (code: string, message: string, warnType?: string) => void;
   innerApiCalls: {[name: string]: Function};
   datastoreStub?: Promise<{[name: string]: Function}>;
 
@@ -98,6 +100,9 @@ export class DatastoreClient {
     const staticMembers = this.constructor as typeof DatastoreClient;
     const servicePath =
       opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+    this._providedCustomServicePath = !!(
+      opts?.servicePath || opts?.apiEndpoint
+    );
     const port = opts?.port || staticMembers.port;
     const clientConfig = opts?.clientConfig ?? {};
     const fallback =
@@ -122,6 +127,12 @@ export class DatastoreClient {
     // Save the auth object to the client, for use by other methods.
     this.auth = this._gaxGrpc.auth as gax.GoogleAuth;
 
+    // Set useJWTAccessWithScope on the auth object.
+    this.auth.useJWTAccessWithScope = true;
+
+    // Set defaultServicePath on the auth object.
+    this.auth.defaultServicePath = staticMembers.servicePath;
+
     // Set the default scopes in auth client if needed.
     if (servicePath === staticMembers.servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
@@ -136,27 +147,14 @@ export class DatastoreClient {
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
+    } else if (opts.fallback === 'rest') {
+      clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
     // Load the applicable protos.
-    // For Node.js, pass the path to JSON proto file.
-    // For browsers, pass the JSON content.
-
-    const nodejsProtoPath = path.join(
-      __dirname,
-      '..',
-      '..',
-      'protos',
-      'protos.json'
-    );
-    this._protos = this._gaxGrpc.loadProto(
-      opts.fallback
-        ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-          require('../../protos/protos.json')
-        : nodejsProtoPath
-    );
+    this._protos = this._gaxGrpc.loadProtoJSON(jsonProtos);
 
     // Put together the default options sent with requests.
     this._defaults = this._gaxGrpc.constructSettings(
@@ -170,6 +168,9 @@ export class DatastoreClient {
     // of calling the API is handled in `google-gax`, with this code
     // merely providing the destination and request information.
     this.innerApiCalls = {};
+
+    // Add a warn function to the client constructor so it can be easily tested.
+    this.warn = gax.warn;
   }
 
   /**
@@ -198,7 +199,8 @@ export class DatastoreClient {
           )
         : // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (this._protos as any).google.datastore.v1.Datastore,
-      this._opts
+      this._opts,
+      this._providedCustomServicePath
     ) as Promise<{[method: string]: Function}>;
 
     // Iterate over each of the methods that the service provides
@@ -297,7 +299,7 @@ export class DatastoreClient {
   // -- Service calls --
   // -------------------
   lookup(
-    request: protos.google.datastore.v1.ILookupRequest,
+    request?: protos.google.datastore.v1.ILookupRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -345,7 +347,7 @@ export class DatastoreClient {
    * const [response] = await client.lookup(request);
    */
   lookup(
-    request: protos.google.datastore.v1.ILookupRequest,
+    request?: protos.google.datastore.v1.ILookupRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -384,7 +386,7 @@ export class DatastoreClient {
     return this.innerApiCalls.lookup(request, options, callback);
   }
   runQuery(
-    request: protos.google.datastore.v1.IRunQueryRequest,
+    request?: protos.google.datastore.v1.IRunQueryRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -439,7 +441,7 @@ export class DatastoreClient {
    * const [response] = await client.runQuery(request);
    */
   runQuery(
-    request: protos.google.datastore.v1.IRunQueryRequest,
+    request?: protos.google.datastore.v1.IRunQueryRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -478,7 +480,7 @@ export class DatastoreClient {
     return this.innerApiCalls.runQuery(request, options, callback);
   }
   beginTransaction(
-    request: protos.google.datastore.v1.IBeginTransactionRequest,
+    request?: protos.google.datastore.v1.IBeginTransactionRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -524,7 +526,7 @@ export class DatastoreClient {
    * const [response] = await client.beginTransaction(request);
    */
   beginTransaction(
-    request: protos.google.datastore.v1.IBeginTransactionRequest,
+    request?: protos.google.datastore.v1.IBeginTransactionRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -565,7 +567,7 @@ export class DatastoreClient {
     return this.innerApiCalls.beginTransaction(request, options, callback);
   }
   commit(
-    request: protos.google.datastore.v1.ICommitRequest,
+    request?: protos.google.datastore.v1.ICommitRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -630,7 +632,7 @@ export class DatastoreClient {
    * const [response] = await client.commit(request);
    */
   commit(
-    request: protos.google.datastore.v1.ICommitRequest,
+    request?: protos.google.datastore.v1.ICommitRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -669,7 +671,7 @@ export class DatastoreClient {
     return this.innerApiCalls.commit(request, options, callback);
   }
   rollback(
-    request: protos.google.datastore.v1.IRollbackRequest,
+    request?: protos.google.datastore.v1.IRollbackRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -716,7 +718,7 @@ export class DatastoreClient {
    * const [response] = await client.rollback(request);
    */
   rollback(
-    request: protos.google.datastore.v1.IRollbackRequest,
+    request?: protos.google.datastore.v1.IRollbackRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -755,7 +757,7 @@ export class DatastoreClient {
     return this.innerApiCalls.rollback(request, options, callback);
   }
   allocateIds(
-    request: protos.google.datastore.v1.IAllocateIdsRequest,
+    request?: protos.google.datastore.v1.IAllocateIdsRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -803,7 +805,7 @@ export class DatastoreClient {
    * const [response] = await client.allocateIds(request);
    */
   allocateIds(
-    request: protos.google.datastore.v1.IAllocateIdsRequest,
+    request?: protos.google.datastore.v1.IAllocateIdsRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -842,7 +844,7 @@ export class DatastoreClient {
     return this.innerApiCalls.allocateIds(request, options, callback);
   }
   reserveIds(
-    request: protos.google.datastore.v1.IReserveIdsRequest,
+    request?: protos.google.datastore.v1.IReserveIdsRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -892,7 +894,7 @@ export class DatastoreClient {
    * const [response] = await client.reserveIds(request);
    */
   reserveIds(
-    request: protos.google.datastore.v1.IReserveIdsRequest,
+    request?: protos.google.datastore.v1.IReserveIdsRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<

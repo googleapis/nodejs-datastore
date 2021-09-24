@@ -27,11 +27,11 @@ import {
   PaginationCallback,
   GaxCall,
 } from 'google-gax';
-import * as path from 'path';
 
 import {Transform} from 'stream';
 import {RequestType} from 'google-gax/build/src/apitypes';
 import * as protos from '../../protos/protos';
+import jsonProtos = require('../../protos/protos.json');
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/datastore_admin_client_config.json`.
@@ -109,6 +109,7 @@ const version = require('../../../package.json').version;
 export class DatastoreAdminClient {
   private _terminated = false;
   private _opts: ClientOptions;
+  private _providedCustomServicePath: boolean;
   private _gaxModule: typeof gax | typeof gax.fallback;
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
@@ -120,6 +121,7 @@ export class DatastoreAdminClient {
     longrunning: {},
     batching: {},
   };
+  warn: (code: string, message: string, warnType?: string) => void;
   innerApiCalls: {[name: string]: Function};
   operationsClient: gax.OperationsClient;
   datastoreAdminStub?: Promise<{[name: string]: Function}>;
@@ -163,6 +165,9 @@ export class DatastoreAdminClient {
     const staticMembers = this.constructor as typeof DatastoreAdminClient;
     const servicePath =
       opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+    this._providedCustomServicePath = !!(
+      opts?.servicePath || opts?.apiEndpoint
+    );
     const port = opts?.port || staticMembers.port;
     const clientConfig = opts?.clientConfig ?? {};
     const fallback =
@@ -187,6 +192,12 @@ export class DatastoreAdminClient {
     // Save the auth object to the client, for use by other methods.
     this.auth = this._gaxGrpc.auth as gax.GoogleAuth;
 
+    // Set useJWTAccessWithScope on the auth object.
+    this.auth.useJWTAccessWithScope = true;
+
+    // Set defaultServicePath on the auth object.
+    this.auth.defaultServicePath = staticMembers.servicePath;
+
     // Set the default scopes in auth client if needed.
     if (servicePath === staticMembers.servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
@@ -201,27 +212,14 @@ export class DatastoreAdminClient {
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
+    } else if (opts.fallback === 'rest') {
+      clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
     // Load the applicable protos.
-    // For Node.js, pass the path to JSON proto file.
-    // For browsers, pass the JSON content.
-
-    const nodejsProtoPath = path.join(
-      __dirname,
-      '..',
-      '..',
-      'protos',
-      'protos.json'
-    );
-    this._protos = this._gaxGrpc.loadProto(
-      opts.fallback
-        ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-          require('../../protos/protos.json')
-        : nodejsProtoPath
-    );
+    this._protos = this._gaxGrpc.loadProtoJSON(jsonProtos);
 
     // Some of the methods on this service return "paged" results,
     // (e.g. 50 results at a time, with tokens to get subsequent
@@ -234,15 +232,11 @@ export class DatastoreAdminClient {
       ),
     };
 
+    const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
+
     // This API contains "long-running operations", which return a
     // an Operation object that allows for tracking of the operation,
     // rather than holding a request open.
-    const protoFilesRoot = opts.fallback
-      ? this._gaxModule.protobuf.Root.fromJSON(
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          require('../../protos/protos.json')
-        )
-      : this._gaxModule.protobuf.loadSync(nodejsProtoPath);
 
     this.operationsClient = this._gaxModule
       .lro({
@@ -310,6 +304,9 @@ export class DatastoreAdminClient {
     // of calling the API is handled in `google-gax`, with this code
     // merely providing the destination and request information.
     this.innerApiCalls = {};
+
+    // Add a warn function to the client constructor so it can be easily tested.
+    this.warn = gax.warn;
   }
 
   /**
@@ -338,7 +335,8 @@ export class DatastoreAdminClient {
           )
         : // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (this._protos as any).google.datastore.admin.v1.DatastoreAdmin,
-      this._opts
+      this._opts,
+      this._providedCustomServicePath
     ) as Promise<{[method: string]: Function}>;
 
     // Iterate over each of the methods that the service provides
@@ -439,7 +437,7 @@ export class DatastoreAdminClient {
   // -- Service calls --
   // -------------------
   getIndex(
-    request: protos.google.datastore.admin.v1.IGetIndexRequest,
+    request?: protos.google.datastore.admin.v1.IGetIndexRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -485,7 +483,7 @@ export class DatastoreAdminClient {
    * const [response] = await client.getIndex(request);
    */
   getIndex(
-    request: protos.google.datastore.admin.v1.IGetIndexRequest,
+    request?: protos.google.datastore.admin.v1.IGetIndexRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -525,7 +523,7 @@ export class DatastoreAdminClient {
   }
 
   exportEntities(
-    request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
+    request?: protos.google.datastore.admin.v1.IExportEntitiesRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -611,7 +609,7 @@ export class DatastoreAdminClient {
    * const [response] = await operation.promise();
    */
   exportEntities(
-    request: protos.google.datastore.admin.v1.IExportEntitiesRequest,
+    request?: protos.google.datastore.admin.v1.IExportEntitiesRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -696,7 +694,7 @@ export class DatastoreAdminClient {
     >;
   }
   importEntities(
-    request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
+    request?: protos.google.datastore.admin.v1.IImportEntitiesRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -777,7 +775,7 @@ export class DatastoreAdminClient {
    * const [response] = await operation.promise();
    */
   importEntities(
-    request: protos.google.datastore.admin.v1.IImportEntitiesRequest,
+    request?: protos.google.datastore.admin.v1.IImportEntitiesRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -862,7 +860,7 @@ export class DatastoreAdminClient {
     >;
   }
   createIndex(
-    request: protos.google.datastore.admin.v1.ICreateIndexRequest,
+    request?: protos.google.datastore.admin.v1.ICreateIndexRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -934,7 +932,7 @@ export class DatastoreAdminClient {
    * const [response] = await operation.promise();
    */
   createIndex(
-    request: protos.google.datastore.admin.v1.ICreateIndexRequest,
+    request?: protos.google.datastore.admin.v1.ICreateIndexRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -1019,7 +1017,7 @@ export class DatastoreAdminClient {
     >;
   }
   deleteIndex(
-    request: protos.google.datastore.admin.v1.IDeleteIndexRequest,
+    request?: protos.google.datastore.admin.v1.IDeleteIndexRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -1086,7 +1084,7 @@ export class DatastoreAdminClient {
    * const [response] = await operation.promise();
    */
   deleteIndex(
-    request: protos.google.datastore.admin.v1.IDeleteIndexRequest,
+    request?: protos.google.datastore.admin.v1.IDeleteIndexRequest,
     optionsOrCallback?:
       | CallOptions
       | Callback<
@@ -1171,7 +1169,7 @@ export class DatastoreAdminClient {
     >;
   }
   listIndexes(
-    request: protos.google.datastore.admin.v1.IListIndexesRequest,
+    request?: protos.google.datastore.admin.v1.IListIndexesRequest,
     options?: CallOptions
   ): Promise<
     [
@@ -1226,7 +1224,7 @@ export class DatastoreAdminClient {
    *   for more details and examples.
    */
   listIndexes(
-    request: protos.google.datastore.admin.v1.IListIndexesRequest,
+    request?: protos.google.datastore.admin.v1.IListIndexesRequest,
     optionsOrCallback?:
       | CallOptions
       | PaginationCallback<
@@ -1376,6 +1374,7 @@ export class DatastoreAdminClient {
       return this.datastoreAdminStub!.then(stub => {
         this._terminated = true;
         stub.close();
+        this.operationsClient.close();
       });
     }
     return Promise.resolve();
