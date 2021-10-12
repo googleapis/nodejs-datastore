@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 'use strict';
 
-function main(projectId) {
-  // [START datastore_v1_generated_Datastore_RunQuery_async]
+function main(projectId, keys) {
+  // [START datastore_v1_generated_Datastore_Lookup_async]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -25,24 +24,13 @@ function main(projectId) {
    */
   // const projectId = 'abc123'
   /**
-   *  Entities are partitioned into subsets, identified by a partition ID.
-   *  Queries are scoped to a single partition.
-   *  This partition ID is normalized with the standard default context
-   *  partition ID.
-   */
-  // const partitionId = ''
-  /**
-   *  The options for this query.
+   *  The options for this lookup request.
    */
   // const readOptions = ''
   /**
-   *  The query to run.
+   *  Required. Keys of entities to look up.
    */
-  // const query = ''
-  /**
-   *  The GQL query to run.
-   */
-  // const gqlQuery = ''
+  // const keys = 1234
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
@@ -50,19 +38,20 @@ function main(projectId) {
   // Instantiates a client
   const datastoreClient = new DatastoreClient();
 
-  async function runQuery() {
+  async function lookup() {
     // Construct request
     const request = {
       projectId,
+      keys,
     };
 
     // Run request
-    const response = await datastoreClient.runQuery(request);
+    const response = await datastoreClient.lookup(request);
     console.log(response);
   }
 
-  runQuery();
-  // [END datastore_v1_generated_Datastore_RunQuery_async]
+  lookup();
+  // [END datastore_v1_generated_Datastore_Lookup_async]
 }
 
 process.on('unhandledRejection', err => {

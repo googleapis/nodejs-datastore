@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 'use strict';
 
-function main(projectId, keys) {
-  // [START datastore_v1_generated_Datastore_AllocateIds_async]
+function main(projectId) {
+  // [START datastore_v1_generated_Datastore_RunQuery_async]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -25,10 +24,24 @@ function main(projectId, keys) {
    */
   // const projectId = 'abc123'
   /**
-   *  Required. A list of keys with incomplete key paths for which to allocate IDs.
-   *  No key may be reserved/read-only.
+   *  Entities are partitioned into subsets, identified by a partition ID.
+   *  Queries are scoped to a single partition.
+   *  This partition ID is normalized with the standard default context
+   *  partition ID.
    */
-  // const keys = 1234
+  // const partitionId = ''
+  /**
+   *  The options for this query.
+   */
+  // const readOptions = ''
+  /**
+   *  The query to run.
+   */
+  // const query = ''
+  /**
+   *  The GQL query to run.
+   */
+  // const gqlQuery = ''
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
@@ -36,20 +49,19 @@ function main(projectId, keys) {
   // Instantiates a client
   const datastoreClient = new DatastoreClient();
 
-  async function allocateIds() {
+  async function runQuery() {
     // Construct request
     const request = {
       projectId,
-      keys,
     };
 
     // Run request
-    const response = await datastoreClient.allocateIds(request);
+    const response = await datastoreClient.runQuery(request);
     console.log(response);
   }
 
-  allocateIds();
-  // [END datastore_v1_generated_Datastore_AllocateIds_async]
+  runQuery();
+  // [END datastore_v1_generated_Datastore_RunQuery_async]
 }
 
 process.on('unhandledRejection', err => {

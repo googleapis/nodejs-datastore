@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 'use strict';
 
-function main(projectId, transaction) {
-  // [START datastore_v1_generated_Datastore_Rollback_async]
+function main(projectId) {
+  // [START datastore_v1_generated_Datastore_BeginTransaction_async]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -25,10 +24,9 @@ function main(projectId, transaction) {
    */
   // const projectId = 'abc123'
   /**
-   *  Required. The transaction identifier, returned by a call to
-   *  [Datastore.BeginTransaction][google.datastore.v1.Datastore.BeginTransaction].
+   *  Options for a new transaction.
    */
-  // const transaction = 'Buffer.from('string')'
+  // const transactionOptions = ''
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
@@ -36,20 +34,19 @@ function main(projectId, transaction) {
   // Instantiates a client
   const datastoreClient = new DatastoreClient();
 
-  async function rollback() {
+  async function beginTransaction() {
     // Construct request
     const request = {
       projectId,
-      transaction,
     };
 
     // Run request
-    const response = await datastoreClient.rollback(request);
+    const response = await datastoreClient.beginTransaction(request);
     console.log(response);
   }
 
-  rollback();
-  // [END datastore_v1_generated_Datastore_Rollback_async]
+  beginTransaction();
+  // [END datastore_v1_generated_Datastore_BeginTransaction_async]
 }
 
 process.on('unhandledRejection', err => {

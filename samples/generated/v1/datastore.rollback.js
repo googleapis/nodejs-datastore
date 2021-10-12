@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 'use strict';
 
-function main(projectId, keys) {
-  // [START datastore_v1_generated_Datastore_Lookup_async]
+function main(projectId, transaction) {
+  // [START datastore_v1_generated_Datastore_Rollback_async]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -25,13 +24,10 @@ function main(projectId, keys) {
    */
   // const projectId = 'abc123'
   /**
-   *  The options for this lookup request.
+   *  Required. The transaction identifier, returned by a call to
+   *  [Datastore.BeginTransaction][google.datastore.v1.Datastore.BeginTransaction].
    */
-  // const readOptions = ''
-  /**
-   *  Required. Keys of entities to look up.
-   */
-  // const keys = 1234
+  // const transaction = 'Buffer.from('string')'
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
@@ -39,20 +35,20 @@ function main(projectId, keys) {
   // Instantiates a client
   const datastoreClient = new DatastoreClient();
 
-  async function lookup() {
+  async function rollback() {
     // Construct request
     const request = {
       projectId,
-      keys,
+      transaction,
     };
 
     // Run request
-    const response = await datastoreClient.lookup(request);
+    const response = await datastoreClient.rollback(request);
     console.log(response);
   }
 
-  lookup();
-  // [END datastore_v1_generated_Datastore_Lookup_async]
+  rollback();
+  // [END datastore_v1_generated_Datastore_Rollback_async]
 }
 
 process.on('unhandledRejection', err => {

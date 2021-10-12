@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 'use strict';
 
-function main(projectId) {
-  // [START datastore_v1_generated_Datastore_Commit_async]
+function main(projectId, keys) {
+  // [START datastore_v1_generated_Datastore_AllocateIds_async]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -25,28 +24,10 @@ function main(projectId) {
    */
   // const projectId = 'abc123'
   /**
-   *  The type of commit to perform. Defaults to `TRANSACTIONAL`.
+   *  Required. A list of keys with incomplete key paths for which to allocate IDs.
+   *  No key may be reserved/read-only.
    */
-  // const mode = ''
-  /**
-   *  The identifier of the transaction associated with the commit. A
-   *  transaction identifier is returned by a call to
-   *  [Datastore.BeginTransaction][google.datastore.v1.Datastore.BeginTransaction].
-   */
-  // const transaction = 'Buffer.from('string')'
-  /**
-   *  The mutations to perform.
-   *  When mode is `TRANSACTIONAL`, mutations affecting a single entity are
-   *  applied in order. The following sequences of mutations affecting a single
-   *  entity are not permitted in a single `Commit` request:
-   *  - `insert` followed by `insert`
-   *  - `update` followed by `insert`
-   *  - `upsert` followed by `insert`
-   *  - `delete` followed by `update`
-   *  When mode is `NON_TRANSACTIONAL`, no two mutations may affect a single
-   *  entity.
-   */
-  // const mutations = 1234
+  // const keys = 1234
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
@@ -54,19 +35,20 @@ function main(projectId) {
   // Instantiates a client
   const datastoreClient = new DatastoreClient();
 
-  async function commit() {
+  async function allocateIds() {
     // Construct request
     const request = {
       projectId,
+      keys,
     };
 
     // Run request
-    const response = await datastoreClient.commit(request);
+    const response = await datastoreClient.allocateIds(request);
     console.log(response);
   }
 
-  commit();
-  // [END datastore_v1_generated_Datastore_Commit_async]
+  allocateIds();
+  // [END datastore_v1_generated_Datastore_AllocateIds_async]
 }
 
 process.on('unhandledRejection', err => {

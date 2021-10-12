@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 'use strict';
 
 function main(projectId) {
-  // [START datastore_v1_generated_Datastore_BeginTransaction_async]
+  // [START datastore_v1_generated_Datastore_Commit_async]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -25,9 +24,28 @@ function main(projectId) {
    */
   // const projectId = 'abc123'
   /**
-   *  Options for a new transaction.
+   *  The type of commit to perform. Defaults to `TRANSACTIONAL`.
    */
-  // const transactionOptions = ''
+  // const mode = ''
+  /**
+   *  The identifier of the transaction associated with the commit. A
+   *  transaction identifier is returned by a call to
+   *  [Datastore.BeginTransaction][google.datastore.v1.Datastore.BeginTransaction].
+   */
+  // const transaction = 'Buffer.from('string')'
+  /**
+   *  The mutations to perform.
+   *  When mode is `TRANSACTIONAL`, mutations affecting a single entity are
+   *  applied in order. The following sequences of mutations affecting a single
+   *  entity are not permitted in a single `Commit` request:
+   *  - `insert` followed by `insert`
+   *  - `update` followed by `insert`
+   *  - `upsert` followed by `insert`
+   *  - `delete` followed by `update`
+   *  When mode is `NON_TRANSACTIONAL`, no two mutations may affect a single
+   *  entity.
+   */
+  // const mutations = 1234
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
@@ -35,19 +53,19 @@ function main(projectId) {
   // Instantiates a client
   const datastoreClient = new DatastoreClient();
 
-  async function beginTransaction() {
+  async function commit() {
     // Construct request
     const request = {
       projectId,
     };
 
     // Run request
-    const response = await datastoreClient.beginTransaction(request);
+    const response = await datastoreClient.commit(request);
     console.log(response);
   }
 
-  beginTransaction();
-  // [END datastore_v1_generated_Datastore_BeginTransaction_async]
+  commit();
+  // [END datastore_v1_generated_Datastore_Commit_async]
 }
 
 process.on('unhandledRejection', err => {
