@@ -4,6 +4,27 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+### [6.6.2](https://www.github.com/googleapis/nodejs-datastore/compare/v6.6.1...v6.6.2) (2021-11-08)
+
+
+### Bug Fixes
+
+* **cloud-rad:** move comments for TSDoc ([#896](https://www.github.com/googleapis/nodejs-datastore/issues/896)) ([2941f2f](https://www.github.com/googleapis/nodejs-datastore/commit/2941f2f0f132b41534e303d441d837051ce88fd7))
+
+### [6.6.1](https://www.github.com/googleapis/nodejs-datastore/compare/v6.6.0...v6.6.1) (2021-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency sinon to v12 ([#894](https://www.github.com/googleapis/nodejs-datastore/issues/894)) ([6010464](https://www.github.com/googleapis/nodejs-datastore/commit/60104649455aefdfba100a9e5c57543faf9278fb))
+
+## [6.6.0](https://www.github.com/googleapis/nodejs-datastore/compare/v6.5.0...v6.6.0) (2021-10-13)
+
+
+### Features
+
+* update retry and timeout logic for generated async/stream ([#883](https://www.github.com/googleapis/nodejs-datastore/issues/883)) ([cd3ae5c](https://www.github.com/googleapis/nodejs-datastore/commit/cd3ae5c12eddac3cc1149308c96cf9a8b0265e21))
+
 ## [6.5.0](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.8...v6.5.0) (2021-08-23)
 
 
