@@ -11,5 +11,5 @@
   "api_id": "datastore.googleapis.com",
   "codeowner_team": "@googleapis/firestore-dpe",
   "api_shortname": "datastore",
-  "library_type": ""
+  "library_type": "GAPIC_COMBO"
 }
