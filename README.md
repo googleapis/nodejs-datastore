@@ -6,7 +6,6 @@
 
 
 [![npm version](https://img.shields.io/npm/v/@google-cloud/datastore.svg)](https://www.npmjs.org/package/@google-cloud/datastore)
-[![codecov](https://img.shields.io/codecov/c/github/googleapis/nodejs-datastore/main.svg?style=flat)](https://codecov.io/gh/googleapis/nodejs-datastore)
 
 
 
