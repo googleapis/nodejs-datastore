@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [6.7.0](https://www.github.com/googleapis/nodejs-datastore/compare/v6.6.2...v6.7.0) (2022-01-07)
+
+
+### Features
+
+* define Datastore -> Firestore in Datastore mode migration long running operation metadata ([#907](https://www.github.com/googleapis/nodejs-datastore/issues/907)) ([652f66d](https://www.github.com/googleapis/nodejs-datastore/commit/652f66d2f88d80c900499890e7dd474cdbbc9c0b))
+
 ### [6.6.2](https://www.github.com/googleapis/nodejs-datastore/compare/v6.6.1...v6.6.2) (2021-11-08)
 
 
