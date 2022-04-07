@@ -96,6 +96,9 @@ When using the emulator, you may experience errors such as "DEADLINE_EXCEEDED" w
 A workaround is available, provided by [@ohmpatel1997](https://github.com/ohmpatel1997) [here](https://github.com/googleapis/nodejs-datastore/issues/95#issuecomment-554387312).
 
 
+
+This library is built on top of google-gax as its transport layer. To customize the common behavior of this client library (timeout, retry, etc), see [Client Library Howto](https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md).
+
 ## Samples
 
 Samples are in the [`samples/`](https://github.com/googleapis/nodejs-datastore/tree/main/samples) directory. Each sample's `README.md` has instructions for running its sample.
