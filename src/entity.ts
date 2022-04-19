@@ -1190,8 +1190,8 @@ export namespace entity {
       '<=': 'LESS_THAN_OR_EQUAL',
       HAS_ANCESTOR: 'HAS_ANCESTOR',
       '!=': 'NOT_EQUAL',
-      'IN': 'IN',
-      'NOT_IN': 'NOT_IN'
+      IN: 'IN',
+      NOT_IN: 'NOT_IN',
     };
 
     const SIGN_TO_ORDER = {

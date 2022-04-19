@@ -22,7 +22,16 @@ import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 
-export type Operator = '=' | '<' | '>' | '<=' | '>=' | 'HAS_ANCESTOR' | '!=' | 'IN' | 'NOT_IN';
+export type Operator =
+  | '='
+  | '<'
+  | '>'
+  | '<='
+  | '>='
+  | 'HAS_ANCESTOR'
+  | '!='
+  | 'IN'
+  | 'NOT_IN';
 
 export interface OrderOptions {
   descending?: boolean;
