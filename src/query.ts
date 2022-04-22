@@ -163,8 +163,7 @@ class Query {
 
   /**
    * Datastore allows querying on properties. Supported comparison operators
-   * are `=`, `<`, `>`, `<=`, and `>=`. "Not equal" and `IN` operators are
-   * currently not supported.
+   * are `=`, `<`, `>`, `<=`, `>=`, `!=`, `HAS_ANCESTOR`, `IN` and `NOT_IN`.
    *
    * *To filter by ancestors, see {module:datastore/query#hasAncestor}.*
    *
