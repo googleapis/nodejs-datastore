@@ -289,7 +289,7 @@ describe('Datastore', () => {
       assert.strictEqual(entity.points.type, 'DatastoreDouble');
       assert.strictEqual(entity.points.value, 2);
 
-      // Save the data again, reget, ensuring that along the way it isn't
+      // Save the data again, get again, ensuring that along the way it isn't
       // somehow changed to another numeric type.
       await datastore.save(entity);
       [entity] = await datastore.get(postKey);
