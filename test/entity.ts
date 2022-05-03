@@ -570,11 +570,15 @@ describe('entity', () => {
       };
 
       describe('default `wrapNumbers: undefined`', () => {
-        it('should not wrap ints by default', () => {
+        it('should wrap ints by default', () => {
           const decoded = entity.decodeValueProto(valueProto);
           assert.strictEqual(typeof decoded, 'object');
           assert.strictEqual(typeof decoded.value, 'string');
           assert.strictEqual(typeof decoded.valueOf(), 'number');
+        });
+        it('should not wrap ints', () => {
+          const decoded = entity.decodeValueProto(valueProto, false);
+          assert.strictEqual(decoded, 8);
         });
 
         it('should throw if integer value is outside of bounds and unwrapping', () => {
