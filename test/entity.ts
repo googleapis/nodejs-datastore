@@ -684,20 +684,30 @@ describe('entity', () => {
       const decodedValue = entity.decodeValueProto(valueProto);
       assert.deepStrictEqual(decodedValue, expectedValue);
     });
-
-    it('should decode doubles', () => {
-      const expectedValue = 8.3;
+    describe('doubleValues', () => {
+      const expectedDecodedValue = 8.3;
 
       const valueProto = {
         valueType: 'doubleValue',
-        doubleValue: expectedValue,
+        doubleValue: expectedDecodedValue,
       };
 
-      assert.strictEqual(
-        entity.decodeValueProto(valueProto).value,
-        expectedValue
-      );
+      it('should wrap doubles by default', () => {
+        const decoded = entity.decodeValueProto(valueProto);
+        const decodedWithWrapping = entity.decodeValueProto(valueProto, true);
+        assert.deepStrictEqual(decoded, decodedWithWrapping);
+        assert.strictEqual(typeof decoded, 'object');
+        assert.strictEqual(decoded.valueOf(), expectedDecodedValue);
+        assert.strictEqual(decoded.value, expectedDecodedValue);
+      });
+      it('should not wrap doubles', () => {
+        assert.strictEqual(
+            entity.decodeValueProto(valueProto, false),
+            expectedDecodedValue
+        );
+      });
     });
+
 
     it('should decode keys', () => {
       const expectedValue = {};
