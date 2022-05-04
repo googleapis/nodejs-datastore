@@ -19,7 +19,6 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
-import {decode} from 'punycode';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
