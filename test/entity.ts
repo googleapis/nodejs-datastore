@@ -916,12 +916,12 @@ describe('entity', () => {
       const largeIntValue = 9223372036854775807;
       const property = 'largeInt';
       const expectedWarning =
-        'IntegerOutOfBoundsWarning: ' +
-        "the value for '" +
+        "IntegerOutOfBoundsWarning: the value for '" +
         property +
         "' property is outside of bounds of a JavaScript Number.\n" +
-        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy " +
-        'in your database.';
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
 
       process.once('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
