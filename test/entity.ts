@@ -17,7 +17,7 @@ import {beforeEach, afterEach, describe, it} from 'mocha';
 import * as extend from 'extend';
 import * as sinon from 'sinon';
 import {Datastore} from '../src';
-import {Entity} from '../src/entity';
+import {entity, Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
 
 export function outOfBoundsError(opts: {
@@ -755,6 +755,47 @@ describe('entity', () => {
       };
 
       assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
+    });
+  });
+
+  describe('encode for request', () => {
+    it('request should receive doubleValue', done => {
+      const datastore = new Datastore({});
+      const key = new entity.Key({
+        namespace: 'namespace',
+        path: ['Company', 123],
+      });
+      const points = Datastore.double(2);
+      const entities = [{
+        key,
+        data: { points }
+      }];
+
+      datastore.request_ = (data: any) => {
+        // By the time the request is made, the original object has already been
+        // transformed into a raw request.
+        assert.deepStrictEqual(data, {
+          client: 'DatastoreClient',
+          method: 'commit',
+          reqOpts: {
+            mutations: [{
+              upsert: {
+                key: {
+                  path: [{ kind: 'Company', id: 123}],
+                  partitionId: { namespaceId: 'namespace'}
+                },
+                properties: {
+                  points: {doubleValue: 2}
+                }
+              },
+            }]
+          },
+          gaxOpts: {}
+        });
+        done();
+      };
+
+      datastore.save(entities, assert.ifError);
     });
   });
 
