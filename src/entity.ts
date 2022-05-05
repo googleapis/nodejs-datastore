@@ -64,7 +64,8 @@ export namespace entity {
     type: string;
     value: number;
     constructor(value: number | string | ValueProto) {
-      super(typeof value === 'object' ? value.doubleValue : value);
+      const inferredValue = typeof value === 'object' ? value.doubleValue : value;
+      super(inferredValue);
 
       /**
        * @name Double#type
@@ -79,8 +80,7 @@ export namespace entity {
        * @name Double#value
        * @type {number}
        */
-      this.value =
-        typeof value === 'object' ? Number(value.doubleValue) : Number(value);
+      this.value = Number(inferredValue);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
