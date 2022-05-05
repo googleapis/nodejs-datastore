@@ -54,11 +54,44 @@ describe('entity', () => {
   });
 
   describe('Double', () => {
+    function checkDouble(double: entity.Double, comparisonValue: number) {
+      assert.strictEqual(double.value, comparisonValue);
+      assert.strictEqual(double.valueOf(), comparisonValue);
+      assert.deepStrictEqual(double.toJSON(), {
+        type: 'DatastoreDouble',
+        value: comparisonValue
+      });
+    }
     it('should store the value', () => {
       const value = 8.3;
-
       const double = new entity.Double(value);
-      assert.strictEqual(double.value, value);
+      checkDouble(double, value);
+    });
+    it('should store the rounded value', () => {
+      const value = 8.0;
+      const double = new entity.Double(value);
+      checkDouble(double, value);
+    });
+    it('should store the stringified value', () => {
+      const value = "8.3";
+      const double = new entity.Double(value);
+      checkDouble(double, 8.3);
+    });
+    it('should store from a value proto', () => {
+      const valueProto = {
+        valueType: 'doubleValue',
+        doubleValue: 8,
+      };
+      const double = new entity.Double(valueProto);
+      checkDouble(double, 8);
+    });
+    it('should store from a value proto with a stringified value', () => {
+      const valueProto = {
+        valueType: 'doubleValue',
+        doubleValue: '8',
+      };
+      const double = new entity.Double(valueProto);
+      checkDouble(double, 8);
     });
   });
 
