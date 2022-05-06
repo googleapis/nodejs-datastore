@@ -59,7 +59,7 @@ describe('entity', () => {
       assert.strictEqual(double.valueOf(), comparisonValue);
       assert.deepStrictEqual(double.toJSON(), {
         type: 'DatastoreDouble',
-        value: comparisonValue
+        value: comparisonValue,
       });
     }
     it('should store the value', () => {
@@ -73,7 +73,7 @@ describe('entity', () => {
       checkDouble(double, value);
     });
     it('should store the stringified value', () => {
-      const value = "8.3";
+      const value = '8.3';
       const double = new entity.Double(value);
       checkDouble(double, 8.3);
     });
@@ -734,12 +734,11 @@ describe('entity', () => {
       });
       it('should not wrap doubles', () => {
         assert.strictEqual(
-            entity.decodeValueProto(valueProto, false),
-            expectedDecodedValue
+          entity.decodeValueProto(valueProto, false),
+          expectedDecodedValue
         );
       });
     });
-
 
     it('should decode keys', () => {
       const expectedValue = {};
@@ -799,10 +798,12 @@ describe('entity', () => {
         path: ['Company', 123],
       });
       const points = Datastore.double(2);
-      const entities = [{
-        key,
-        data: { points }
-      }];
+      const entities = [
+        {
+          key,
+          data: {points},
+        },
+      ];
 
       datastore.request_ = (data: any) => {
         // By the time the request is made, the original object has already been
@@ -811,19 +812,21 @@ describe('entity', () => {
           client: 'DatastoreClient',
           method: 'commit',
           reqOpts: {
-            mutations: [{
-              upsert: {
-                key: {
-                  path: [{ kind: 'Company', id: 123}],
-                  partitionId: { namespaceId: 'namespace'}
+            mutations: [
+              {
+                upsert: {
+                  key: {
+                    path: [{kind: 'Company', id: 123}],
+                    partitionId: {namespaceId: 'namespace'},
+                  },
+                  properties: {
+                    points: {doubleValue: 2},
+                  },
                 },
-                properties: {
-                  points: {doubleValue: 2}
-                }
               },
-            }]
+            ],
           },
-          gaxOpts: {}
+          gaxOpts: {},
         });
         done();
       };

@@ -740,8 +740,8 @@ describe('Request', () => {
           request.get(keys, (err: Error) => {
             assert.ifError(err);
 
-            const createReadStreamOptions = request.createReadStream.getCall(0)
-              .args[1];
+            const createReadStreamOptions =
+              request.createReadStream.getCall(0).args[1];
             assert.strictEqual(createReadStreamOptions.wrapNumbers, undefined);
             done();
           });
@@ -751,8 +751,8 @@ describe('Request', () => {
           request.get(keys, {wrapNumbers: true}, (err: Error) => {
             assert.ifError(err);
 
-            const createReadStreamOptions = request.createReadStream.getCall(0)
-              .args[1];
+            const createReadStreamOptions =
+              request.createReadStream.getCall(0).args[1];
             assert.strictEqual(
               typeof createReadStreamOptions.wrapNumbers,
               'boolean'
@@ -773,9 +773,8 @@ describe('Request', () => {
             (err: Error) => {
               assert.ifError(err);
 
-              const createReadStreamOptions = request.createReadStream.getCall(
-                0
-              ).args[1];
+              const createReadStreamOptions =
+                request.createReadStream.getCall(0).args[1];
               assert.strictEqual(
                 createReadStreamOptions.wrapNumbers,
                 integerTypeCastOptions
@@ -1089,11 +1088,11 @@ describe('Request', () => {
           limitVal: 1,
           offsetVal: 8,
         };
-        const queryProto = ({
+        const queryProto = {
           limit: {
             value: query.limitVal,
           },
-        } as {}) as QueryProto;
+        } as {} as QueryProto;
 
         let timesRequestCalled = 0;
         let startCalled = false;
@@ -1421,11 +1420,11 @@ describe('Request', () => {
     const PROJECT_ID = 'project-id';
     const NAMESPACE = 'a-namespace';
 
-    const DATASTORE = ({
+    const DATASTORE = {
       request_() {},
       projectId: PROJECT_ID,
       namespace: NAMESPACE,
-    } as {}) as ds.Datastore;
+    } as {} as ds.Datastore;
 
     const key = {
       namespace: 'ns',
