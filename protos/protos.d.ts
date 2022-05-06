@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,6 +75,34 @@ export namespace google {
                     public importEntities(request: google.datastore.admin.v1.IImportEntitiesRequest): Promise<google.longrunning.Operation>;
 
                     /**
+                     * Calls CreateIndex.
+                     * @param request CreateIndexRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public createIndex(request: google.datastore.admin.v1.ICreateIndexRequest, callback: google.datastore.admin.v1.DatastoreAdmin.CreateIndexCallback): void;
+
+                    /**
+                     * Calls CreateIndex.
+                     * @param request CreateIndexRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createIndex(request: google.datastore.admin.v1.ICreateIndexRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls DeleteIndex.
+                     * @param request DeleteIndexRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteIndex(request: google.datastore.admin.v1.IDeleteIndexRequest, callback: google.datastore.admin.v1.DatastoreAdmin.DeleteIndexCallback): void;
+
+                    /**
+                     * Calls DeleteIndex.
+                     * @param request DeleteIndexRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteIndex(request: google.datastore.admin.v1.IDeleteIndexRequest): Promise<google.longrunning.Operation>;
+
+                    /**
                      * Calls GetIndex.
                      * @param request GetIndexRequest message or plain object
                      * @param callback Node-style callback called with the error, if any, and Index
@@ -118,6 +146,20 @@ export namespace google {
                      * @param [response] Operation
                      */
                     type ImportEntitiesCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#createIndex}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CreateIndexCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#deleteIndex}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteIndexCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
                      * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#getIndex}.
@@ -261,15 +303,6 @@ export namespace google {
                         FAILED = 6,
                         CANCELLED = 7
                     }
-                }
-
-                /** OperationType enum. */
-                enum OperationType {
-                    OPERATION_TYPE_UNSPECIFIED = 0,
-                    EXPORT_ENTITIES = 1,
-                    IMPORT_ENTITIES = 2,
-                    CREATE_INDEX = 3,
-                    DELETE_INDEX = 4
                 }
 
                 /** Properties of a Progress. */
@@ -998,6 +1031,198 @@ export namespace google {
                     public toJSON(): { [k: string]: any };
                 }
 
+                /** Properties of a CreateIndexRequest. */
+                interface ICreateIndexRequest {
+
+                    /** CreateIndexRequest projectId */
+                    projectId?: (string|null);
+
+                    /** CreateIndexRequest index */
+                    index?: (google.datastore.admin.v1.IIndex|null);
+                }
+
+                /** Represents a CreateIndexRequest. */
+                class CreateIndexRequest implements ICreateIndexRequest {
+
+                    /**
+                     * Constructs a new CreateIndexRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.admin.v1.ICreateIndexRequest);
+
+                    /** CreateIndexRequest projectId. */
+                    public projectId: string;
+
+                    /** CreateIndexRequest index. */
+                    public index?: (google.datastore.admin.v1.IIndex|null);
+
+                    /**
+                     * Creates a new CreateIndexRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateIndexRequest instance
+                     */
+                    public static create(properties?: google.datastore.admin.v1.ICreateIndexRequest): google.datastore.admin.v1.CreateIndexRequest;
+
+                    /**
+                     * Encodes the specified CreateIndexRequest message. Does not implicitly {@link google.datastore.admin.v1.CreateIndexRequest.verify|verify} messages.
+                     * @param message CreateIndexRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.admin.v1.ICreateIndexRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateIndexRequest message, length delimited. Does not implicitly {@link google.datastore.admin.v1.CreateIndexRequest.verify|verify} messages.
+                     * @param message CreateIndexRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.admin.v1.ICreateIndexRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateIndexRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateIndexRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.admin.v1.CreateIndexRequest;
+
+                    /**
+                     * Decodes a CreateIndexRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateIndexRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.admin.v1.CreateIndexRequest;
+
+                    /**
+                     * Verifies a CreateIndexRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateIndexRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateIndexRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.admin.v1.CreateIndexRequest;
+
+                    /**
+                     * Creates a plain object from a CreateIndexRequest message. Also converts values to other types if specified.
+                     * @param message CreateIndexRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.admin.v1.CreateIndexRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateIndexRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
+
+                /** Properties of a DeleteIndexRequest. */
+                interface IDeleteIndexRequest {
+
+                    /** DeleteIndexRequest projectId */
+                    projectId?: (string|null);
+
+                    /** DeleteIndexRequest indexId */
+                    indexId?: (string|null);
+                }
+
+                /** Represents a DeleteIndexRequest. */
+                class DeleteIndexRequest implements IDeleteIndexRequest {
+
+                    /**
+                     * Constructs a new DeleteIndexRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.admin.v1.IDeleteIndexRequest);
+
+                    /** DeleteIndexRequest projectId. */
+                    public projectId: string;
+
+                    /** DeleteIndexRequest indexId. */
+                    public indexId: string;
+
+                    /**
+                     * Creates a new DeleteIndexRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteIndexRequest instance
+                     */
+                    public static create(properties?: google.datastore.admin.v1.IDeleteIndexRequest): google.datastore.admin.v1.DeleteIndexRequest;
+
+                    /**
+                     * Encodes the specified DeleteIndexRequest message. Does not implicitly {@link google.datastore.admin.v1.DeleteIndexRequest.verify|verify} messages.
+                     * @param message DeleteIndexRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.admin.v1.IDeleteIndexRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteIndexRequest message, length delimited. Does not implicitly {@link google.datastore.admin.v1.DeleteIndexRequest.verify|verify} messages.
+                     * @param message DeleteIndexRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.admin.v1.IDeleteIndexRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteIndexRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteIndexRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.admin.v1.DeleteIndexRequest;
+
+                    /**
+                     * Decodes a DeleteIndexRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteIndexRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.admin.v1.DeleteIndexRequest;
+
+                    /**
+                     * Verifies a DeleteIndexRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteIndexRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteIndexRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.admin.v1.DeleteIndexRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteIndexRequest message. Also converts values to other types if specified.
+                     * @param message DeleteIndexRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.admin.v1.DeleteIndexRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteIndexRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
+
                 /** Properties of a GetIndexRequest. */
                 interface IGetIndexRequest {
 
@@ -1400,6 +1625,111 @@ export namespace google {
                     public toJSON(): { [k: string]: any };
                 }
 
+                /** Properties of a DatastoreFirestoreMigrationMetadata. */
+                interface IDatastoreFirestoreMigrationMetadata {
+
+                    /** DatastoreFirestoreMigrationMetadata migrationState */
+                    migrationState?: (google.datastore.admin.v1.MigrationState|keyof typeof google.datastore.admin.v1.MigrationState|null);
+
+                    /** DatastoreFirestoreMigrationMetadata migrationStep */
+                    migrationStep?: (google.datastore.admin.v1.MigrationStep|keyof typeof google.datastore.admin.v1.MigrationStep|null);
+                }
+
+                /** Represents a DatastoreFirestoreMigrationMetadata. */
+                class DatastoreFirestoreMigrationMetadata implements IDatastoreFirestoreMigrationMetadata {
+
+                    /**
+                     * Constructs a new DatastoreFirestoreMigrationMetadata.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata);
+
+                    /** DatastoreFirestoreMigrationMetadata migrationState. */
+                    public migrationState: (google.datastore.admin.v1.MigrationState|keyof typeof google.datastore.admin.v1.MigrationState);
+
+                    /** DatastoreFirestoreMigrationMetadata migrationStep. */
+                    public migrationStep: (google.datastore.admin.v1.MigrationStep|keyof typeof google.datastore.admin.v1.MigrationStep);
+
+                    /**
+                     * Creates a new DatastoreFirestoreMigrationMetadata instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DatastoreFirestoreMigrationMetadata instance
+                     */
+                    public static create(properties?: google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata): google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata;
+
+                    /**
+                     * Encodes the specified DatastoreFirestoreMigrationMetadata message. Does not implicitly {@link google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata.verify|verify} messages.
+                     * @param message DatastoreFirestoreMigrationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DatastoreFirestoreMigrationMetadata message, length delimited. Does not implicitly {@link google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata.verify|verify} messages.
+                     * @param message DatastoreFirestoreMigrationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DatastoreFirestoreMigrationMetadata message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DatastoreFirestoreMigrationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata;
+
+                    /**
+                     * Decodes a DatastoreFirestoreMigrationMetadata message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DatastoreFirestoreMigrationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata;
+
+                    /**
+                     * Verifies a DatastoreFirestoreMigrationMetadata message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DatastoreFirestoreMigrationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DatastoreFirestoreMigrationMetadata
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata;
+
+                    /**
+                     * Creates a plain object from a DatastoreFirestoreMigrationMetadata message. Also converts values to other types if specified.
+                     * @param message DatastoreFirestoreMigrationMetadata
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DatastoreFirestoreMigrationMetadata to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
+
+                /** OperationType enum. */
+                enum OperationType {
+                    OPERATION_TYPE_UNSPECIFIED = 0,
+                    EXPORT_ENTITIES = 1,
+                    IMPORT_ENTITIES = 2,
+                    CREATE_INDEX = 3,
+                    DELETE_INDEX = 4
+                }
+
                 /** Properties of an Index. */
                 interface IIndex {
 
@@ -1640,6 +1970,411 @@ export namespace google {
                         DELETING = 3,
                         ERROR = 4
                     }
+                }
+
+                /** Properties of a MigrationStateEvent. */
+                interface IMigrationStateEvent {
+
+                    /** MigrationStateEvent state */
+                    state?: (google.datastore.admin.v1.MigrationState|keyof typeof google.datastore.admin.v1.MigrationState|null);
+                }
+
+                /** Represents a MigrationStateEvent. */
+                class MigrationStateEvent implements IMigrationStateEvent {
+
+                    /**
+                     * Constructs a new MigrationStateEvent.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.admin.v1.IMigrationStateEvent);
+
+                    /** MigrationStateEvent state. */
+                    public state: (google.datastore.admin.v1.MigrationState|keyof typeof google.datastore.admin.v1.MigrationState);
+
+                    /**
+                     * Creates a new MigrationStateEvent instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns MigrationStateEvent instance
+                     */
+                    public static create(properties?: google.datastore.admin.v1.IMigrationStateEvent): google.datastore.admin.v1.MigrationStateEvent;
+
+                    /**
+                     * Encodes the specified MigrationStateEvent message. Does not implicitly {@link google.datastore.admin.v1.MigrationStateEvent.verify|verify} messages.
+                     * @param message MigrationStateEvent message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.admin.v1.IMigrationStateEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified MigrationStateEvent message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationStateEvent.verify|verify} messages.
+                     * @param message MigrationStateEvent message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.admin.v1.IMigrationStateEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a MigrationStateEvent message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns MigrationStateEvent
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.admin.v1.MigrationStateEvent;
+
+                    /**
+                     * Decodes a MigrationStateEvent message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns MigrationStateEvent
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.admin.v1.MigrationStateEvent;
+
+                    /**
+                     * Verifies a MigrationStateEvent message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a MigrationStateEvent message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns MigrationStateEvent
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.admin.v1.MigrationStateEvent;
+
+                    /**
+                     * Creates a plain object from a MigrationStateEvent message. Also converts values to other types if specified.
+                     * @param message MigrationStateEvent
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.admin.v1.MigrationStateEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this MigrationStateEvent to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
+
+                /** Properties of a MigrationProgressEvent. */
+                interface IMigrationProgressEvent {
+
+                    /** MigrationProgressEvent step */
+                    step?: (google.datastore.admin.v1.MigrationStep|keyof typeof google.datastore.admin.v1.MigrationStep|null);
+
+                    /** MigrationProgressEvent prepareStepDetails */
+                    prepareStepDetails?: (google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails|null);
+
+                    /** MigrationProgressEvent redirectWritesStepDetails */
+                    redirectWritesStepDetails?: (google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails|null);
+                }
+
+                /** Represents a MigrationProgressEvent. */
+                class MigrationProgressEvent implements IMigrationProgressEvent {
+
+                    /**
+                     * Constructs a new MigrationProgressEvent.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.admin.v1.IMigrationProgressEvent);
+
+                    /** MigrationProgressEvent step. */
+                    public step: (google.datastore.admin.v1.MigrationStep|keyof typeof google.datastore.admin.v1.MigrationStep);
+
+                    /** MigrationProgressEvent prepareStepDetails. */
+                    public prepareStepDetails?: (google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails|null);
+
+                    /** MigrationProgressEvent redirectWritesStepDetails. */
+                    public redirectWritesStepDetails?: (google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails|null);
+
+                    /** MigrationProgressEvent stepDetails. */
+                    public stepDetails?: ("prepareStepDetails"|"redirectWritesStepDetails");
+
+                    /**
+                     * Creates a new MigrationProgressEvent instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns MigrationProgressEvent instance
+                     */
+                    public static create(properties?: google.datastore.admin.v1.IMigrationProgressEvent): google.datastore.admin.v1.MigrationProgressEvent;
+
+                    /**
+                     * Encodes the specified MigrationProgressEvent message. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.verify|verify} messages.
+                     * @param message MigrationProgressEvent message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.admin.v1.IMigrationProgressEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified MigrationProgressEvent message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.verify|verify} messages.
+                     * @param message MigrationProgressEvent message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.admin.v1.IMigrationProgressEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a MigrationProgressEvent message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns MigrationProgressEvent
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.admin.v1.MigrationProgressEvent;
+
+                    /**
+                     * Decodes a MigrationProgressEvent message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns MigrationProgressEvent
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.admin.v1.MigrationProgressEvent;
+
+                    /**
+                     * Verifies a MigrationProgressEvent message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a MigrationProgressEvent message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns MigrationProgressEvent
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.admin.v1.MigrationProgressEvent;
+
+                    /**
+                     * Creates a plain object from a MigrationProgressEvent message. Also converts values to other types if specified.
+                     * @param message MigrationProgressEvent
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.admin.v1.MigrationProgressEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this MigrationProgressEvent to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+                }
+
+                namespace MigrationProgressEvent {
+
+                    /** Properties of a PrepareStepDetails. */
+                    interface IPrepareStepDetails {
+
+                        /** PrepareStepDetails concurrencyMode */
+                        concurrencyMode?: (google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|keyof typeof google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|null);
+                    }
+
+                    /** Represents a PrepareStepDetails. */
+                    class PrepareStepDetails implements IPrepareStepDetails {
+
+                        /**
+                         * Constructs a new PrepareStepDetails.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails);
+
+                        /** PrepareStepDetails concurrencyMode. */
+                        public concurrencyMode: (google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|keyof typeof google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode);
+
+                        /**
+                         * Creates a new PrepareStepDetails instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns PrepareStepDetails instance
+                         */
+                        public static create(properties?: google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails): google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails;
+
+                        /**
+                         * Encodes the specified PrepareStepDetails message. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.verify|verify} messages.
+                         * @param message PrepareStepDetails message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified PrepareStepDetails message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.verify|verify} messages.
+                         * @param message PrepareStepDetails message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a PrepareStepDetails message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns PrepareStepDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails;
+
+                        /**
+                         * Decodes a PrepareStepDetails message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns PrepareStepDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails;
+
+                        /**
+                         * Verifies a PrepareStepDetails message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a PrepareStepDetails message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns PrepareStepDetails
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails;
+
+                        /**
+                         * Creates a plain object from a PrepareStepDetails message. Also converts values to other types if specified.
+                         * @param message PrepareStepDetails
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this PrepareStepDetails to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    /** Properties of a RedirectWritesStepDetails. */
+                    interface IRedirectWritesStepDetails {
+
+                        /** RedirectWritesStepDetails concurrencyMode */
+                        concurrencyMode?: (google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|keyof typeof google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|null);
+                    }
+
+                    /** Represents a RedirectWritesStepDetails. */
+                    class RedirectWritesStepDetails implements IRedirectWritesStepDetails {
+
+                        /**
+                         * Constructs a new RedirectWritesStepDetails.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails);
+
+                        /** RedirectWritesStepDetails concurrencyMode. */
+                        public concurrencyMode: (google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|keyof typeof google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode);
+
+                        /**
+                         * Creates a new RedirectWritesStepDetails instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns RedirectWritesStepDetails instance
+                         */
+                        public static create(properties?: google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails): google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails;
+
+                        /**
+                         * Encodes the specified RedirectWritesStepDetails message. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.verify|verify} messages.
+                         * @param message RedirectWritesStepDetails message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified RedirectWritesStepDetails message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.verify|verify} messages.
+                         * @param message RedirectWritesStepDetails message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a RedirectWritesStepDetails message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns RedirectWritesStepDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails;
+
+                        /**
+                         * Decodes a RedirectWritesStepDetails message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns RedirectWritesStepDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails;
+
+                        /**
+                         * Verifies a RedirectWritesStepDetails message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a RedirectWritesStepDetails message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns RedirectWritesStepDetails
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails;
+
+                        /**
+                         * Creates a plain object from a RedirectWritesStepDetails message. Also converts values to other types if specified.
+                         * @param message RedirectWritesStepDetails
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this RedirectWritesStepDetails to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    /** ConcurrencyMode enum. */
+                    enum ConcurrencyMode {
+                        CONCURRENCY_MODE_UNSPECIFIED = 0,
+                        PESSIMISTIC = 1,
+                        OPTIMISTIC = 2
+                    }
+                }
+
+                /** MigrationState enum. */
+                enum MigrationState {
+                    MIGRATION_STATE_UNSPECIFIED = 0,
+                    RUNNING = 1,
+                    PAUSED = 2,
+                    COMPLETE = 3
+                }
+
+                /** MigrationStep enum. */
+                enum MigrationStep {
+                    MIGRATION_STEP_UNSPECIFIED = 0,
+                    PREPARE = 6,
+                    START = 1,
+                    APPLY_WRITES_SYNCHRONOUSLY = 7,
+                    COPY_AND_VERIFY = 2,
+                    REDIRECT_EVENTUALLY_CONSISTENT_READS = 3,
+                    REDIRECT_STRONGLY_CONSISTENT_READS = 4,
+                    REDIRECT_WRITES = 5
                 }
             }
         }
@@ -1931,6 +2666,9 @@ export namespace google {
 
                 /** LookupResponse deferred */
                 deferred?: (google.datastore.v1.IKey[]|null);
+
+                /** LookupResponse readTime */
+                readTime?: (google.protobuf.ITimestamp|null);
             }
 
             /** Represents a LookupResponse. */
@@ -1950,6 +2688,9 @@ export namespace google {
 
                 /** LookupResponse deferred. */
                 public deferred: google.datastore.v1.IKey[];
+
+                /** LookupResponse readTime. */
+                public readTime?: (google.protobuf.ITimestamp|null);
 
                 /**
                  * Creates a new LookupResponse instance using the specified properties.
@@ -2633,7 +3374,7 @@ export namespace google {
                 public mode: (google.datastore.v1.CommitRequest.Mode|keyof typeof google.datastore.v1.CommitRequest.Mode);
 
                 /** CommitRequest transaction. */
-                public transaction: (Uint8Array|string);
+                public transaction?: (Uint8Array|string|null);
 
                 /** CommitRequest mutations. */
                 public mutations: google.datastore.v1.IMutation[];
@@ -2730,6 +3471,9 @@ export namespace google {
 
                 /** CommitResponse indexUpdates */
                 indexUpdates?: (number|null);
+
+                /** CommitResponse commitTime */
+                commitTime?: (google.protobuf.ITimestamp|null);
             }
 
             /** Represents a CommitResponse. */
@@ -2746,6 +3490,9 @@ export namespace google {
 
                 /** CommitResponse indexUpdates. */
                 public indexUpdates: number;
+
+                /** CommitResponse commitTime. */
+                public commitTime?: (google.protobuf.ITimestamp|null);
 
                 /**
                  * Creates a new CommitResponse instance using the specified properties.
@@ -3207,6 +3954,9 @@ export namespace google {
 
                 /** Mutation baseVersion */
                 baseVersion?: (number|Long|string|null);
+
+                /** Mutation updateTime */
+                updateTime?: (google.protobuf.ITimestamp|null);
             }
 
             /** Represents a Mutation. */
@@ -3231,13 +3981,16 @@ export namespace google {
                 public delete?: (google.datastore.v1.IKey|null);
 
                 /** Mutation baseVersion. */
-                public baseVersion: (number|Long|string);
+                public baseVersion?: (number|Long|string|null);
+
+                /** Mutation updateTime. */
+                public updateTime?: (google.protobuf.ITimestamp|null);
 
                 /** Mutation operation. */
                 public operation?: ("insert"|"update"|"upsert"|"delete");
 
                 /** Mutation conflictDetectionStrategy. */
-                public conflictDetectionStrategy?: "baseVersion";
+                public conflictDetectionStrategy?: ("baseVersion"|"updateTime");
 
                 /**
                  * Creates a new Mutation instance using the specified properties.
@@ -3319,6 +4072,9 @@ export namespace google {
                 /** MutationResult version */
                 version?: (number|Long|string|null);
 
+                /** MutationResult updateTime */
+                updateTime?: (google.protobuf.ITimestamp|null);
+
                 /** MutationResult conflictDetected */
                 conflictDetected?: (boolean|null);
             }
@@ -3337,6 +4093,9 @@ export namespace google {
 
                 /** MutationResult version. */
                 public version: (number|Long|string);
+
+                /** MutationResult updateTime. */
+                public updateTime?: (google.protobuf.ITimestamp|null);
 
                 /** MutationResult conflictDetected. */
                 public conflictDetected: boolean;
@@ -3420,6 +4179,9 @@ export namespace google {
 
                 /** ReadOptions transaction */
                 transaction?: (Uint8Array|string|null);
+
+                /** ReadOptions readTime */
+                readTime?: (google.protobuf.ITimestamp|null);
             }
 
             /** Represents a ReadOptions. */
@@ -3432,13 +4194,16 @@ export namespace google {
                 constructor(properties?: google.datastore.v1.IReadOptions);
 
                 /** ReadOptions readConsistency. */
-                public readConsistency: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency);
+                public readConsistency?: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency|null);
 
                 /** ReadOptions transaction. */
-                public transaction: (Uint8Array|string);
+                public transaction?: (Uint8Array|string|null);
+
+                /** ReadOptions readTime. */
+                public readTime?: (google.protobuf.ITimestamp|null);
 
                 /** ReadOptions consistencyType. */
-                public consistencyType?: ("readConsistency"|"transaction");
+                public consistencyType?: ("readConsistency"|"transaction"|"readTime");
 
                 /**
                  * Creates a new ReadOptions instance using the specified properties.
@@ -3714,6 +4479,9 @@ export namespace google {
 
                 /** Properties of a ReadOnly. */
                 interface IReadOnly {
+
+                    /** ReadOnly readTime */
+                    readTime?: (google.protobuf.ITimestamp|null);
                 }
 
                 /** Represents a ReadOnly. */
@@ -3724,6 +4492,9 @@ export namespace google {
                      * @param [properties] Properties to set
                      */
                     constructor(properties?: google.datastore.v1.TransactionOptions.IReadOnly);
+
+                    /** ReadOnly readTime. */
+                    public readTime?: (google.protobuf.ITimestamp|null);
 
                     /**
                      * Creates a new ReadOnly instance using the specified properties.
@@ -4017,10 +4788,10 @@ export namespace google {
                     public kind: string;
 
                     /** PathElement id. */
-                    public id: (number|Long|string);
+                    public id?: (number|Long|string|null);
 
                     /** PathElement name. */
-                    public name: string;
+                    public name?: (string|null);
 
                     /** PathElement idType. */
                     public idType?: ("id"|"name");
@@ -4240,16 +5011,16 @@ export namespace google {
                 constructor(properties?: google.datastore.v1.IValue);
 
                 /** Value nullValue. */
-                public nullValue: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue);
+                public nullValue?: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue|null);
 
                 /** Value booleanValue. */
-                public booleanValue: boolean;
+                public booleanValue?: (boolean|null);
 
                 /** Value integerValue. */
-                public integerValue: (number|Long|string);
+                public integerValue?: (number|Long|string|null);
 
                 /** Value doubleValue. */
-                public doubleValue: number;
+                public doubleValue?: (number|null);
 
                 /** Value timestampValue. */
                 public timestampValue?: (google.protobuf.ITimestamp|null);
@@ -4258,10 +5029,10 @@ export namespace google {
                 public keyValue?: (google.datastore.v1.IKey|null);
 
                 /** Value stringValue. */
-                public stringValue: string;
+                public stringValue?: (string|null);
 
                 /** Value blobValue. */
-                public blobValue: (Uint8Array|string);
+                public blobValue?: (Uint8Array|string|null);
 
                 /** Value geoPointValue. */
                 public geoPointValue?: (google.type.ILatLng|null);
@@ -4457,6 +5228,9 @@ export namespace google {
                 /** EntityResult version */
                 version?: (number|Long|string|null);
 
+                /** EntityResult updateTime */
+                updateTime?: (google.protobuf.ITimestamp|null);
+
                 /** EntityResult cursor */
                 cursor?: (Uint8Array|string|null);
             }
@@ -4475,6 +5249,9 @@ export namespace google {
 
                 /** EntityResult version. */
                 public version: (number|Long|string);
+
+                /** EntityResult updateTime. */
+                public updateTime?: (google.protobuf.ITimestamp|null);
 
                 /** EntityResult cursor. */
                 public cursor: (Uint8Array|string);
@@ -5391,7 +6168,10 @@ export namespace google {
                     GREATER_THAN = 3,
                     GREATER_THAN_OR_EQUAL = 4,
                     EQUAL = 5,
-                    HAS_ANCESTOR = 11
+                    IN = 6,
+                    NOT_EQUAL = 9,
+                    HAS_ANCESTOR = 11,
+                    NOT_IN = 13
                 }
             }
 
@@ -5526,7 +6306,7 @@ export namespace google {
                 public value?: (google.datastore.v1.IValue|null);
 
                 /** GqlQueryParameter cursor. */
-                public cursor: (Uint8Array|string);
+                public cursor?: (Uint8Array|string|null);
 
                 /** GqlQueryParameter parameterType. */
                 public parameterType?: ("value"|"cursor");
@@ -5625,6 +6405,9 @@ export namespace google {
 
                 /** QueryResultBatch snapshotVersion */
                 snapshotVersion?: (number|Long|string|null);
+
+                /** QueryResultBatch readTime */
+                readTime?: (google.protobuf.ITimestamp|null);
             }
 
             /** Represents a QueryResultBatch. */
@@ -5656,6 +6439,9 @@ export namespace google {
 
                 /** QueryResultBatch snapshotVersion. */
                 public snapshotVersion: (number|Long|string);
+
+                /** QueryResultBatch readTime. */
+                public readTime?: (google.protobuf.ITimestamp|null);
 
                 /**
                  * Creates a new QueryResultBatch instance using the specified properties.
@@ -5888,19 +6674,19 @@ export namespace google {
             public selector: string;
 
             /** HttpRule get. */
-            public get: string;
+            public get?: (string|null);
 
             /** HttpRule put. */
-            public put: string;
+            public put?: (string|null);
 
             /** HttpRule post. */
-            public post: string;
+            public post?: (string|null);
 
             /** HttpRule delete. */
-            public delete: string;
+            public delete?: (string|null);
 
             /** HttpRule patch. */
-            public patch: string;
+            public patch?: (string|null);
 
             /** HttpRule custom. */
             public custom?: (google.api.ICustomHttpPattern|null);
@@ -6091,7 +6877,9 @@ export namespace google {
             REQUIRED = 2,
             OUTPUT_ONLY = 3,
             INPUT_ONLY = 4,
-            IMMUTABLE = 5
+            IMMUTABLE = 5,
+            UNORDERED_LIST = 6,
+            NON_EMPTY_DEFAULT = 7
         }
     }
 
@@ -9712,16 +10500,16 @@ export namespace google {
             constructor(properties?: google.protobuf.IValue);
 
             /** Value nullValue. */
-            public nullValue: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue);
+            public nullValue?: (google.protobuf.NullValue|keyof typeof google.protobuf.NullValue|null);
 
             /** Value numberValue. */
-            public numberValue: number;
+            public numberValue?: (number|null);
 
             /** Value stringValue. */
-            public stringValue: string;
+            public stringValue?: (string|null);
 
             /** Value boolValue. */
-            public boolValue: boolean;
+            public boolValue?: (boolean|null);
 
             /** Value structValue. */
             public structValue?: (google.protobuf.IStruct|null);

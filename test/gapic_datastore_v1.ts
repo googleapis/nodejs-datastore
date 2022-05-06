@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -88,12 +88,27 @@ describe('v1.DatastoreClient', () => {
     assert(client.datastoreStub);
   });
 
-  it('has close method', () => {
+  it('has close method for the initialized client', done => {
     const client = new datastoreModule.v1.DatastoreClient({
       credentials: {client_email: 'bogus', private_key: 'bogus'},
       projectId: 'bogus',
     });
-    client.close();
+    client.initialize();
+    assert(client.datastoreStub);
+    client.close().then(() => {
+      done();
+    });
+  });
+
+  it('has close method for the non-initialized client', done => {
+    const client = new datastoreModule.v1.DatastoreClient({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
+    assert.strictEqual(client.datastoreStub, undefined);
+    client.close().then(() => {
+      done();
+    });
   });
 
   it('has getProjectId method', async () => {
@@ -236,6 +251,21 @@ describe('v1.DatastoreClient', () => {
           .calledWith(request, expectedOptions, undefined)
       );
     });
+
+    it('invokes lookup with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.LookupRequest()
+      );
+      request.projectId = '';
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.lookup(request), expectedError);
+    });
   });
 
   describe('runQuery', () => {
@@ -343,6 +373,21 @@ describe('v1.DatastoreClient', () => {
           .getCall(0)
           .calledWith(request, expectedOptions, undefined)
       );
+    });
+
+    it('invokes runQuery with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.RunQueryRequest()
+      );
+      request.projectId = '';
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.runQuery(request), expectedError);
     });
   });
 
@@ -455,6 +500,21 @@ describe('v1.DatastoreClient', () => {
           .calledWith(request, expectedOptions, undefined)
       );
     });
+
+    it('invokes beginTransaction with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.BeginTransactionRequest()
+      );
+      request.projectId = '';
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.beginTransaction(request), expectedError);
+    });
   });
 
   describe('commit', () => {
@@ -563,6 +623,21 @@ describe('v1.DatastoreClient', () => {
           .calledWith(request, expectedOptions, undefined)
       );
     });
+
+    it('invokes commit with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.CommitRequest()
+      );
+      request.projectId = '';
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.commit(request), expectedError);
+    });
   });
 
   describe('rollback', () => {
@@ -670,6 +745,21 @@ describe('v1.DatastoreClient', () => {
           .getCall(0)
           .calledWith(request, expectedOptions, undefined)
       );
+    });
+
+    it('invokes rollback with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.RollbackRequest()
+      );
+      request.projectId = '';
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.rollback(request), expectedError);
     });
   });
 
@@ -782,6 +872,21 @@ describe('v1.DatastoreClient', () => {
           .calledWith(request, expectedOptions, undefined)
       );
     });
+
+    it('invokes allocateIds with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.AllocateIdsRequest()
+      );
+      request.projectId = '';
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.allocateIds(request), expectedError);
+    });
   });
 
   describe('reserveIds', () => {
@@ -892,6 +997,21 @@ describe('v1.DatastoreClient', () => {
           .getCall(0)
           .calledWith(request, expectedOptions, undefined)
       );
+    });
+
+    it('invokes reserveIds with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.ReserveIdsRequest()
+      );
+      request.projectId = '';
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.reserveIds(request), expectedError);
     });
   });
 });

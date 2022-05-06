@@ -4,6 +4,104 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+### [6.6.2](https://www.github.com/googleapis/nodejs-datastore/compare/v6.6.1...v6.6.2) (2021-11-08)
+
+
+### Bug Fixes
+
+* **cloud-rad:** move comments for TSDoc ([#896](https://www.github.com/googleapis/nodejs-datastore/issues/896)) ([2941f2f](https://www.github.com/googleapis/nodejs-datastore/commit/2941f2f0f132b41534e303d441d837051ce88fd7))
+
+### [6.6.1](https://www.github.com/googleapis/nodejs-datastore/compare/v6.6.0...v6.6.1) (2021-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency sinon to v12 ([#894](https://www.github.com/googleapis/nodejs-datastore/issues/894)) ([6010464](https://www.github.com/googleapis/nodejs-datastore/commit/60104649455aefdfba100a9e5c57543faf9278fb))
+
+## [6.6.0](https://www.github.com/googleapis/nodejs-datastore/compare/v6.5.0...v6.6.0) (2021-10-13)
+
+
+### Features
+
+* update retry and timeout logic for generated async/stream ([#883](https://www.github.com/googleapis/nodejs-datastore/issues/883)) ([cd3ae5c](https://www.github.com/googleapis/nodejs-datastore/commit/cd3ae5c12eddac3cc1149308c96cf9a8b0265e21))
+
+## [6.5.0](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.8...v6.5.0) (2021-08-23)
+
+
+### Features
+
+* turns on self-signed JWT feature flag ([#869](https://www.github.com/googleapis/nodejs-datastore/issues/869)) ([a42c88e](https://www.github.com/googleapis/nodejs-datastore/commit/a42c88e1b87ffcf38b1c45e94a846d1defb8fda2))
+
+### [6.4.8](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.7...v6.4.8) (2021-08-17)
+
+
+### Bug Fixes
+
+* **build:** migrate to using main branch ([#866](https://www.github.com/googleapis/nodejs-datastore/issues/866)) ([85844a4](https://www.github.com/googleapis/nodejs-datastore/commit/85844a4ff618fcb96c00802941d72135fc65bb98))
+* **deps:** google-gax v2.24.1 ([#868](https://www.github.com/googleapis/nodejs-datastore/issues/868)) ([1c0d40f](https://www.github.com/googleapis/nodejs-datastore/commit/1c0d40f27789d7f923b1a004d2b3589269969c93))
+
+### [6.4.7](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.6...v6.4.7) (2021-07-26)
+
+
+### Bug Fixes
+
+* drop dependency on pumpify ([#860](https://www.github.com/googleapis/nodejs-datastore/issues/860)) ([f3d4fd9](https://www.github.com/googleapis/nodejs-datastore/commit/f3d4fd97de3c90550977a096667088d063b51623))
+
+### [6.4.6](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.5...v6.4.6) (2021-07-19)
+
+
+### Bug Fixes
+
+* Updating WORKSPACE files to use the newest version of the Typescript generator. ([#855](https://www.github.com/googleapis/nodejs-datastore/issues/855)) ([1cdba8c](https://www.github.com/googleapis/nodejs-datastore/commit/1cdba8cc446b592170a8e404b24e09845524f50a))
+
+### [6.4.5](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.4...v6.4.5) (2021-07-12)
+
+
+### Bug Fixes
+
+* **deps:** google-gax v2.17.1 ([#853](https://www.github.com/googleapis/nodejs-datastore/issues/853)) ([67b47ce](https://www.github.com/googleapis/nodejs-datastore/commit/67b47cee28f317ea5e4a3e24bd4def2189496dff))
+
+### [6.4.4](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.3...v6.4.4) (2021-06-30)
+
+
+### Bug Fixes
+
+* **deps:** google-gax v2.17.0 with mTLS ([#849](https://www.github.com/googleapis/nodejs-datastore/issues/849)) ([76fa921](https://www.github.com/googleapis/nodejs-datastore/commit/76fa9217732060e2e408a49d9b6aaa7606ce13e6))
+
+### [6.4.3](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.2...v6.4.3) (2021-06-30)
+
+
+### Bug Fixes
+
+* Resolve getProjectId ([#848](https://www.github.com/googleapis/nodejs-datastore/issues/848)) ([9bfa885](https://www.github.com/googleapis/nodejs-datastore/commit/9bfa8857e832435112a38c8ab35f21d9054fbaa5))
+
+### [6.4.2](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.1...v6.4.2) (2021-06-23)
+
+
+### Bug Fixes
+
+* make request optional in all cases ([#843](https://www.github.com/googleapis/nodejs-datastore/issues/843)) ([d025627](https://www.github.com/googleapis/nodejs-datastore/commit/d0256278d1003a789c8b9ca082f923c5999b3257))
+
+### [6.4.1](https://www.github.com/googleapis/nodejs-datastore/compare/v6.4.0...v6.4.1) (2021-06-10)
+
+
+### Bug Fixes
+
+* **deps:** require google-gax v2.12.0 ([#825](https://www.github.com/googleapis/nodejs-datastore/issues/825)) ([0dee08a](https://www.github.com/googleapis/nodejs-datastore/commit/0dee08a912620c114ddfcf38a1d0636893f6f15a))
+* **deps:** update dependency sinon to v11 ([#832](https://www.github.com/googleapis/nodejs-datastore/issues/832)) ([d32610c](https://www.github.com/googleapis/nodejs-datastore/commit/d32610cdbe08151effc1a8d4b74540e68cbf4012))
+
+## [6.4.0](https://www.github.com/googleapis/nodejs-datastore/compare/v6.3.1...v6.4.0) (2021-04-29)
+
+
+### Features
+
+* Add createIndex, deleteIndex protos ([#797](https://www.github.com/googleapis/nodejs-datastore/issues/797)) ([3ff1f51](https://www.github.com/googleapis/nodejs-datastore/commit/3ff1f51f19297db94a370ec3fc9130f36e25ea70))
+
+
+### Bug Fixes
+
+* **deps:** update dependency sinon to v10 ([#810](https://www.github.com/googleapis/nodejs-datastore/issues/810)) ([267992f](https://www.github.com/googleapis/nodejs-datastore/commit/267992f4f1523fc5038715b009ebc697c5ca8255))
+
 ### [6.3.1](https://www.github.com/googleapis/nodejs-datastore/compare/v6.3.0...v6.3.1) (2020-11-25)
 
 

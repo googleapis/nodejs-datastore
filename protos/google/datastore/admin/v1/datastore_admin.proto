@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/datastore/admin/v1/index.proto";
+import "google/datastore/admin/v1/migration.proto";
 import "google/longrunning/operations.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -28,6 +29,7 @@ option go_package = "google.golang.org/genproto/googleapis/datastore/admin/v1;ad
 option java_multiple_files = true;
 option java_outer_classname = "DatastoreAdminProto";
 option java_package = "com.google.datastore.admin.v1";
+option php_namespace = "Google\\Cloud\\Datastore\\Admin\\V1";
 option ruby_package = "Google::Cloud::Datastore::Admin::V1";
 
 // Google Cloud Datastore Admin API
@@ -134,6 +136,51 @@ service DatastoreAdmin {
     };
   }
 
+  // Creates the specified index.
+  // A newly created index's initial state is `CREATING`. On completion of the
+  // returned [google.longrunning.Operation][google.longrunning.Operation], the state will be `READY`.
+  // If the index already exists, the call will return an `ALREADY_EXISTS`
+  // status.
+  //
+  // During index creation, the process could result in an error, in which
+  // case the index will move to the `ERROR` state. The process can be recovered
+  // by fixing the data that caused the error, removing the index with
+  // [delete][google.datastore.admin.v1.DatastoreAdmin.DeleteIndex], then
+  // re-creating the index with [create]
+  // [google.datastore.admin.v1.DatastoreAdmin.CreateIndex].
+  //
+  // Indexes with a single property cannot be created.
+  rpc CreateIndex(CreateIndexRequest) returns (google.longrunning.Operation) {
+    option (google.api.http) = {
+      post: "/v1/projects/{project_id}/indexes"
+      body: "index"
+    };
+    option (google.longrunning.operation_info) = {
+      response_type: "Index"
+      metadata_type: "IndexOperationMetadata"
+    };
+  }
+
+  // Deletes an existing index.
+  // An index can only be deleted if it is in a `READY` or `ERROR` state. On
+  // successful execution of the request, the index will be in a `DELETING`
+  // [state][google.datastore.admin.v1.Index.State]. And on completion of the
+  // returned [google.longrunning.Operation][google.longrunning.Operation], the index will be removed.
+  //
+  // During index deletion, the process could result in an error, in which
+  // case the index will move to the `ERROR` state. The process can be recovered
+  // by fixing the data that caused the error, followed by calling
+  // [delete][google.datastore.admin.v1.DatastoreAdmin.DeleteIndex] again.
+  rpc DeleteIndex(DeleteIndexRequest) returns (google.longrunning.Operation) {
+    option (google.api.http) = {
+      delete: "/v1/projects/{project_id}/indexes/{index_id}"
+    };
+    option (google.longrunning.operation_info) = {
+      response_type: "Index"
+      metadata_type: "IndexOperationMetadata"
+    };
+  }
+
   // Gets an index.
   rpc GetIndex(GetIndexRequest) returns (Index) {
     option (google.api.http) = {
@@ -198,24 +245,6 @@ message CommonMetadata {
 
   // The current state of the Operation.
   State state = 5;
-}
-
-// Operation types.
-enum OperationType {
-  // Unspecified.
-  OPERATION_TYPE_UNSPECIFIED = 0;
-
-  // ExportEntities.
-  EXPORT_ENTITIES = 1;
-
-  // ImportEntities.
-  IMPORT_ENTITIES = 2;
-
-  // CreateIndex.
-  CREATE_INDEX = 3;
-
-  // DeleteIndex.
-  DELETE_INDEX = 4;
 }
 
 // Measures the progress of a particular metric.
@@ -377,6 +406,27 @@ message EntityFilter {
   repeated string namespace_ids = 2;
 }
 
+// The request for
+// [google.datastore.admin.v1.DatastoreAdmin.CreateIndex][google.datastore.admin.v1.DatastoreAdmin.CreateIndex].
+message CreateIndexRequest {
+  // Project ID against which to make the request.
+  string project_id = 1;
+
+  // The index to create. The name and state fields are output only and will be
+  // ignored. Single property indexes cannot be created or deleted.
+  Index index = 3;
+}
+
+// The request for
+// [google.datastore.admin.v1.DatastoreAdmin.DeleteIndex][google.datastore.admin.v1.DatastoreAdmin.DeleteIndex].
+message DeleteIndexRequest {
+  // Project ID against which to make the request.
+  string project_id = 1;
+
+  // The resource ID of the index to delete.
+  string index_id = 3;
+}
+
 // The request for [google.datastore.admin.v1.DatastoreAdmin.GetIndex][google.datastore.admin.v1.DatastoreAdmin.GetIndex].
 message GetIndexRequest {
   // Project ID against which to make the request.
@@ -422,4 +472,40 @@ message IndexOperationMetadata {
 
   // The index resource ID that this operation is acting on.
   string index_id = 3;
+}
+
+// Metadata for Datastore to Firestore migration operations.
+//
+// The DatastoreFirestoreMigration operation is not started by the end-user via
+// an explicit "creation" method. This is an intentional deviation from the LRO
+// design pattern.
+//
+// This singleton resource can be accessed at:
+// `projects/{project_id}/datastore-firestore-migration`
+message DatastoreFirestoreMigrationMetadata {
+  // The current state of migration from Cloud Datastore to Cloud Firestore in
+  // Datastore mode.
+  MigrationState migration_state = 1;
+
+  // The current step of migration from Cloud Datastore to Cloud Firestore in
+  // Datastore mode.
+  MigrationStep migration_step = 2;
+}
+
+// Operation types.
+enum OperationType {
+  // Unspecified.
+  OPERATION_TYPE_UNSPECIFIED = 0;
+
+  // ExportEntities.
+  EXPORT_ENTITIES = 1;
+
+  // ImportEntities.
+  IMPORT_ENTITIES = 2;
+
+  // CreateIndex.
+  CREATE_INDEX = 3;
+
+  // DeleteIndex.
+  DELETE_INDEX = 4;
 }

@@ -37,7 +37,7 @@ describe('Datastore', () => {
     return keyObject;
   };
 
-  const {indexes: DECLARED_INDEXES} = yaml.safeLoad(
+  const {indexes: DECLARED_INDEXES} = yaml.load(
     readFileSync(path.join(__dirname, 'data', 'index.yaml'), 'utf8')
   ) as {indexes: google.datastore.admin.v1.IIndex[]};
 
@@ -59,6 +59,11 @@ describe('Datastore', () => {
   it('should allocate IDs', async () => {
     const keys = await datastore.allocateIds(datastore.key('Kind'), 10);
     assert.ok(keys);
+  });
+
+  it('should get the project id', async () => {
+    const projectId = await datastore.getProjectId();
+    assert.notEqual(projectId, null);
   });
 
   describe('create, retrieve and delete', () => {
@@ -1042,7 +1047,20 @@ describe('Datastore', () => {
     const gcs = new Storage();
     const bucket = gcs.bucket('nodejs-datastore-system-tests');
 
-    it('should export, then import entities', async () => {
+    const delay = async (test: Mocha.Context) => {
+      const retries = test.currentRetry();
+      if (retries === 0) return; // no retry on the first failure.
+      // see: https://cloud.google.com/storage/docs/exponential-backoff:
+      const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
+      return new Promise(done => {
+        console.info(`retrying "${test.title}" in ${ms}ms`);
+        setTimeout(done, ms);
+      });
+    };
+
+    it('should export, then import entities', async function () {
+      this.retries(3);
+      delay(this);
       const [exportOperation] = await datastore.export({bucket});
       await exportOperation.promise();
 

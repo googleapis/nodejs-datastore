@@ -104,9 +104,9 @@ class DatastoreRequest {
    *     entity[datastore.KEY] = datastore.key('Kind')
    *     datastore.save(entity, (err) => {})
    *
-   * @private
+   * @internal
    *
-   * @see [#1803]{@link https://github.com/GoogleCloudPlatform/google-cloud-node/issues/1803}
+   * @see {@link https://github.com/GoogleCloudPlatform/google-cloud-node/issues/1803}
    *
    * @param {object} obj The user's input object.
    */
@@ -124,15 +124,6 @@ class DatastoreRequest {
     return entityObject;
   }
 
-  allocateIds(
-    key: entity.Key,
-    options: AllocateIdsOptions | number
-  ): Promise<AllocateIdsResponse>;
-  allocateIds(
-    key: entity.Key,
-    options: AllocateIdsOptions | number,
-    callback: AllocateIdsCallback
-  ): void;
   /**
    * Generate IDs without creating entities.
    *
@@ -148,6 +139,7 @@ class DatastoreRequest {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
+   * ```
    * const incompleteKey = datastore.key(['Company']);
    *
    * //-
@@ -204,7 +196,17 @@ class DatastoreRequest {
    *   const keys = data[0];
    *   const apiResponse = data[1];
    * });
+   * ```
    */
+  allocateIds(
+    key: entity.Key,
+    options: AllocateIdsOptions | number
+  ): Promise<AllocateIdsResponse>;
+  allocateIds(
+    key: entity.Key,
+    options: AllocateIdsOptions | number,
+    callback: AllocateIdsCallback
+  ): void;
   allocateIds(
     key: entity.Key,
     options: AllocateIdsOptions | number,
@@ -245,6 +247,7 @@ class DatastoreRequest {
    *     for a complete list of options.
    *
    * @example
+   * ```
    * const keys = [
    *   datastore.key(['Company', 123]),
    *   datastore.key(['Product', 'Computer'])
@@ -258,6 +261,7 @@ class DatastoreRequest {
    *   .on('end', () => {
    *     // All entities retrieved.
    *   });
+   * ```
    */
   createReadStream(
     keys: Entities,
@@ -332,13 +336,6 @@ class DatastoreRequest {
     return stream;
   }
 
-  delete(keys: Entities, gaxOptions?: CallOptions): Promise<DeleteResponse>;
-  delete(keys: Entities, callback: DeleteCallback): void;
-  delete(
-    keys: Entities,
-    gaxOptions: CallOptions,
-    callback: DeleteCallback
-  ): void;
   /**
    * Delete all entities identified with the specified key(s).
    *
@@ -350,6 +347,7 @@ class DatastoreRequest {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
+   * ```
    * const key = datastore.key(['Company', 123]);
    * datastore.delete(key, (err, apiResp) => {});
    *
@@ -386,7 +384,15 @@ class DatastoreRequest {
    * datastore.delete().then((data) => {
    *   const apiResponse = data[0];
    * });
+   * ```
    */
+  delete(keys: Entities, gaxOptions?: CallOptions): Promise<DeleteResponse>;
+  delete(keys: Entities, callback: DeleteCallback): void;
+  delete(
+    keys: Entities,
+    gaxOptions: CallOptions,
+    callback: DeleteCallback
+  ): void;
   delete(
     keys: entity.Key | entity.Key[],
     gaxOptionsOrCallback?: CallOptions | DeleteCallback,
@@ -422,16 +428,6 @@ class DatastoreRequest {
     );
   }
 
-  get(
-    keys: entity.Key | entity.Key[],
-    options?: CreateReadStreamOptions
-  ): Promise<GetResponse>;
-  get(keys: entity.Key | entity.Key[], callback: GetCallback): void;
-  get(
-    keys: entity.Key | entity.Key[],
-    options: CreateReadStreamOptions,
-    callback: GetCallback
-  ): void;
   /**
    * Retrieve the entities identified with the specified key(s) in the current
    * transaction. Get operations require a valid key to retrieve the
@@ -459,6 +455,7 @@ class DatastoreRequest {
    *     the provided keys.
    *
    * @example
+   * ```
    * //-
    * // Get a single entity.
    * //-
@@ -522,7 +519,18 @@ class DatastoreRequest {
    * datastore.get(keys).then((data) => {
    *   const entities = data[0];
    * });
+   * ```
    */
+  get(
+    keys: entity.Key | entity.Key[],
+    options?: CreateReadStreamOptions
+  ): Promise<GetResponse>;
+  get(keys: entity.Key | entity.Key[], callback: GetCallback): void;
+  get(
+    keys: entity.Key | entity.Key[],
+    options: CreateReadStreamOptions,
+    callback: GetCallback
+  ): void;
   get(
     keys: entity.Key | entity.Key[],
     optionsOrCallback?: CreateReadStreamOptions | GetCallback,
@@ -545,13 +553,6 @@ class DatastoreRequest {
       );
   }
 
-  runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
-  runQuery(
-    query: Query,
-    options: RunQueryOptions,
-    callback: RunQueryCallback
-  ): void;
-  runQuery(query: Query, callback: RunQueryCallback): void;
   /**
    * Datastore allows you to query entities by kind, filter them by property
    * filters, and sort them by a property name. Projection and pagination are
@@ -592,6 +593,7 @@ class DatastoreRequest {
    *     - {@link Datastore#NO_MORE_RESULTS}: There are no more results.
    *
    * @example
+   * ```
    * //-
    * // Where you see `transaction`, assume this is the context that's relevant
    * to
@@ -648,7 +650,15 @@ class DatastoreRequest {
    * datastore.runQuery(query).then((data) => {
    *   const entities = data[0];
    * });
+   * ```
    */
+  runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
+  runQuery(
+    query: Query,
+    options: RunQueryOptions,
+    callback: RunQueryCallback
+  ): void;
+  runQuery(query: Query, callback: RunQueryCallback): void;
   runQuery(
     query: Query,
     optionsOrCallback?: RunQueryOptions | RunQueryCallback,
@@ -684,6 +694,7 @@ class DatastoreRequest {
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
    *
    * @example
+   * ```
    * datastore.runQueryStream(query)
    *   .on('error', console.error)
    *   .on('data', (entity) => {
@@ -703,6 +714,7 @@ class DatastoreRequest {
    *   .on('data', (entity) => {
    *     this.end();
    *   });
+   * ```
    */
   runQueryStream(query: Query, options: RunQueryStreamOptions = {}): Transform {
     query = extend(true, new Query(), query);
@@ -804,8 +816,6 @@ class DatastoreRequest {
     return stream;
   }
 
-  merge(entities: Entities): Promise<CommitResponse>;
-  merge(entities: Entities, callback: SaveCallback): void;
   /**
    * Merge the specified object(s). If a key is incomplete, its associated object
    * is inserted and the original Key object is updated to contain the generated ID.
@@ -829,6 +839,8 @@ class DatastoreRequest {
    * @param {?error} callback.err An error returned while making this request
    * @param {object} callback.apiResponse The full API response.
    */
+  merge(entities: Entities): Promise<CommitResponse>;
+  merge(entities: Entities, callback: SaveCallback): void;
   merge(
     entities: Entities,
     callback?: SaveCallback
@@ -933,7 +945,6 @@ class DatastoreRequest {
     });
   }
 
-  request_(config: RequestConfig, callback: RequestCallback): void;
   /**
    * Make a request to the API endpoint. Properties to indicate a transactional
    * or non-transactional operation are added automatically.
@@ -947,6 +958,7 @@ class DatastoreRequest {
    *
    * @private
    */
+  request_(config: RequestConfig, callback: RequestCallback): void;
   request_(config: RequestConfig, callback: RequestCallback): void {
     this.prepareGaxRequest_(config, (err: Error, requestFn: Function) => {
       if (err) {

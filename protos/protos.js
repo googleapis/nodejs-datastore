@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -160,6 +160,72 @@
                          * @memberof google.datastore.admin.v1.DatastoreAdmin
                          * @instance
                          * @param {google.datastore.admin.v1.IImportEntitiesRequest} request ImportEntitiesRequest message or plain object
+                         * @returns {Promise<google.longrunning.Operation>} Promise
+                         * @variation 2
+                         */
+    
+                        /**
+                         * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#createIndex}.
+                         * @memberof google.datastore.admin.v1.DatastoreAdmin
+                         * @typedef CreateIndexCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.longrunning.Operation} [response] Operation
+                         */
+    
+                        /**
+                         * Calls CreateIndex.
+                         * @function createIndex
+                         * @memberof google.datastore.admin.v1.DatastoreAdmin
+                         * @instance
+                         * @param {google.datastore.admin.v1.ICreateIndexRequest} request CreateIndexRequest message or plain object
+                         * @param {google.datastore.admin.v1.DatastoreAdmin.CreateIndexCallback} callback Node-style callback called with the error, if any, and Operation
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(DatastoreAdmin.prototype.createIndex = function createIndex(request, callback) {
+                            return this.rpcCall(createIndex, $root.google.datastore.admin.v1.CreateIndexRequest, $root.google.longrunning.Operation, request, callback);
+                        }, "name", { value: "CreateIndex" });
+    
+                        /**
+                         * Calls CreateIndex.
+                         * @function createIndex
+                         * @memberof google.datastore.admin.v1.DatastoreAdmin
+                         * @instance
+                         * @param {google.datastore.admin.v1.ICreateIndexRequest} request CreateIndexRequest message or plain object
+                         * @returns {Promise<google.longrunning.Operation>} Promise
+                         * @variation 2
+                         */
+    
+                        /**
+                         * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#deleteIndex}.
+                         * @memberof google.datastore.admin.v1.DatastoreAdmin
+                         * @typedef DeleteIndexCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.longrunning.Operation} [response] Operation
+                         */
+    
+                        /**
+                         * Calls DeleteIndex.
+                         * @function deleteIndex
+                         * @memberof google.datastore.admin.v1.DatastoreAdmin
+                         * @instance
+                         * @param {google.datastore.admin.v1.IDeleteIndexRequest} request DeleteIndexRequest message or plain object
+                         * @param {google.datastore.admin.v1.DatastoreAdmin.DeleteIndexCallback} callback Node-style callback called with the error, if any, and Operation
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(DatastoreAdmin.prototype.deleteIndex = function deleteIndex(request, callback) {
+                            return this.rpcCall(deleteIndex, $root.google.datastore.admin.v1.DeleteIndexRequest, $root.google.longrunning.Operation, request, callback);
+                        }, "name", { value: "DeleteIndex" });
+    
+                        /**
+                         * Calls DeleteIndex.
+                         * @function deleteIndex
+                         * @memberof google.datastore.admin.v1.DatastoreAdmin
+                         * @instance
+                         * @param {google.datastore.admin.v1.IDeleteIndexRequest} request DeleteIndexRequest message or plain object
                          * @returns {Promise<google.longrunning.Operation>} Promise
                          * @variation 2
                          */
@@ -650,26 +716,6 @@
                         })();
     
                         return CommonMetadata;
-                    })();
-    
-                    /**
-                     * OperationType enum.
-                     * @name google.datastore.admin.v1.OperationType
-                     * @enum {number}
-                     * @property {number} OPERATION_TYPE_UNSPECIFIED=0 OPERATION_TYPE_UNSPECIFIED value
-                     * @property {number} EXPORT_ENTITIES=1 EXPORT_ENTITIES value
-                     * @property {number} IMPORT_ENTITIES=2 IMPORT_ENTITIES value
-                     * @property {number} CREATE_INDEX=3 CREATE_INDEX value
-                     * @property {number} DELETE_INDEX=4 DELETE_INDEX value
-                     */
-                    v1.OperationType = (function() {
-                        var valuesById = {}, values = Object.create(valuesById);
-                        values[valuesById[0] = "OPERATION_TYPE_UNSPECIFIED"] = 0;
-                        values[valuesById[1] = "EXPORT_ENTITIES"] = 1;
-                        values[valuesById[2] = "IMPORT_ENTITIES"] = 2;
-                        values[valuesById[3] = "CREATE_INDEX"] = 3;
-                        values[valuesById[4] = "DELETE_INDEX"] = 4;
-                        return values;
                     })();
     
                     v1.Progress = (function() {
@@ -2521,6 +2567,431 @@
                         return EntityFilter;
                     })();
     
+                    v1.CreateIndexRequest = (function() {
+    
+                        /**
+                         * Properties of a CreateIndexRequest.
+                         * @memberof google.datastore.admin.v1
+                         * @interface ICreateIndexRequest
+                         * @property {string|null} [projectId] CreateIndexRequest projectId
+                         * @property {google.datastore.admin.v1.IIndex|null} [index] CreateIndexRequest index
+                         */
+    
+                        /**
+                         * Constructs a new CreateIndexRequest.
+                         * @memberof google.datastore.admin.v1
+                         * @classdesc Represents a CreateIndexRequest.
+                         * @implements ICreateIndexRequest
+                         * @constructor
+                         * @param {google.datastore.admin.v1.ICreateIndexRequest=} [properties] Properties to set
+                         */
+                        function CreateIndexRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * CreateIndexRequest projectId.
+                         * @member {string} projectId
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @instance
+                         */
+                        CreateIndexRequest.prototype.projectId = "";
+    
+                        /**
+                         * CreateIndexRequest index.
+                         * @member {google.datastore.admin.v1.IIndex|null|undefined} index
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @instance
+                         */
+                        CreateIndexRequest.prototype.index = null;
+    
+                        /**
+                         * Creates a new CreateIndexRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.ICreateIndexRequest=} [properties] Properties to set
+                         * @returns {google.datastore.admin.v1.CreateIndexRequest} CreateIndexRequest instance
+                         */
+                        CreateIndexRequest.create = function create(properties) {
+                            return new CreateIndexRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified CreateIndexRequest message. Does not implicitly {@link google.datastore.admin.v1.CreateIndexRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.ICreateIndexRequest} message CreateIndexRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        CreateIndexRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.projectId);
+                            if (message.index != null && Object.hasOwnProperty.call(message, "index"))
+                                $root.google.datastore.admin.v1.Index.encode(message.index, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified CreateIndexRequest message, length delimited. Does not implicitly {@link google.datastore.admin.v1.CreateIndexRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.ICreateIndexRequest} message CreateIndexRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        CreateIndexRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a CreateIndexRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.datastore.admin.v1.CreateIndexRequest} CreateIndexRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        CreateIndexRequest.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.CreateIndexRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.projectId = reader.string();
+                                    break;
+                                case 3:
+                                    message.index = $root.google.datastore.admin.v1.Index.decode(reader, reader.uint32());
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a CreateIndexRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.datastore.admin.v1.CreateIndexRequest} CreateIndexRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        CreateIndexRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a CreateIndexRequest message.
+                         * @function verify
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        CreateIndexRequest.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.projectId != null && message.hasOwnProperty("projectId"))
+                                if (!$util.isString(message.projectId))
+                                    return "projectId: string expected";
+                            if (message.index != null && message.hasOwnProperty("index")) {
+                                var error = $root.google.datastore.admin.v1.Index.verify(message.index);
+                                if (error)
+                                    return "index." + error;
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a CreateIndexRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.datastore.admin.v1.CreateIndexRequest} CreateIndexRequest
+                         */
+                        CreateIndexRequest.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.datastore.admin.v1.CreateIndexRequest)
+                                return object;
+                            var message = new $root.google.datastore.admin.v1.CreateIndexRequest();
+                            if (object.projectId != null)
+                                message.projectId = String(object.projectId);
+                            if (object.index != null) {
+                                if (typeof object.index !== "object")
+                                    throw TypeError(".google.datastore.admin.v1.CreateIndexRequest.index: object expected");
+                                message.index = $root.google.datastore.admin.v1.Index.fromObject(object.index);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a CreateIndexRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.CreateIndexRequest} message CreateIndexRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        CreateIndexRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.projectId = "";
+                                object.index = null;
+                            }
+                            if (message.projectId != null && message.hasOwnProperty("projectId"))
+                                object.projectId = message.projectId;
+                            if (message.index != null && message.hasOwnProperty("index"))
+                                object.index = $root.google.datastore.admin.v1.Index.toObject(message.index, options);
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this CreateIndexRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.datastore.admin.v1.CreateIndexRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        CreateIndexRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        return CreateIndexRequest;
+                    })();
+    
+                    v1.DeleteIndexRequest = (function() {
+    
+                        /**
+                         * Properties of a DeleteIndexRequest.
+                         * @memberof google.datastore.admin.v1
+                         * @interface IDeleteIndexRequest
+                         * @property {string|null} [projectId] DeleteIndexRequest projectId
+                         * @property {string|null} [indexId] DeleteIndexRequest indexId
+                         */
+    
+                        /**
+                         * Constructs a new DeleteIndexRequest.
+                         * @memberof google.datastore.admin.v1
+                         * @classdesc Represents a DeleteIndexRequest.
+                         * @implements IDeleteIndexRequest
+                         * @constructor
+                         * @param {google.datastore.admin.v1.IDeleteIndexRequest=} [properties] Properties to set
+                         */
+                        function DeleteIndexRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * DeleteIndexRequest projectId.
+                         * @member {string} projectId
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @instance
+                         */
+                        DeleteIndexRequest.prototype.projectId = "";
+    
+                        /**
+                         * DeleteIndexRequest indexId.
+                         * @member {string} indexId
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @instance
+                         */
+                        DeleteIndexRequest.prototype.indexId = "";
+    
+                        /**
+                         * Creates a new DeleteIndexRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.IDeleteIndexRequest=} [properties] Properties to set
+                         * @returns {google.datastore.admin.v1.DeleteIndexRequest} DeleteIndexRequest instance
+                         */
+                        DeleteIndexRequest.create = function create(properties) {
+                            return new DeleteIndexRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified DeleteIndexRequest message. Does not implicitly {@link google.datastore.admin.v1.DeleteIndexRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.IDeleteIndexRequest} message DeleteIndexRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        DeleteIndexRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.projectId);
+                            if (message.indexId != null && Object.hasOwnProperty.call(message, "indexId"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.indexId);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified DeleteIndexRequest message, length delimited. Does not implicitly {@link google.datastore.admin.v1.DeleteIndexRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.IDeleteIndexRequest} message DeleteIndexRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        DeleteIndexRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a DeleteIndexRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.datastore.admin.v1.DeleteIndexRequest} DeleteIndexRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        DeleteIndexRequest.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.DeleteIndexRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.projectId = reader.string();
+                                    break;
+                                case 3:
+                                    message.indexId = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a DeleteIndexRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.datastore.admin.v1.DeleteIndexRequest} DeleteIndexRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        DeleteIndexRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a DeleteIndexRequest message.
+                         * @function verify
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        DeleteIndexRequest.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.projectId != null && message.hasOwnProperty("projectId"))
+                                if (!$util.isString(message.projectId))
+                                    return "projectId: string expected";
+                            if (message.indexId != null && message.hasOwnProperty("indexId"))
+                                if (!$util.isString(message.indexId))
+                                    return "indexId: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a DeleteIndexRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.datastore.admin.v1.DeleteIndexRequest} DeleteIndexRequest
+                         */
+                        DeleteIndexRequest.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.datastore.admin.v1.DeleteIndexRequest)
+                                return object;
+                            var message = new $root.google.datastore.admin.v1.DeleteIndexRequest();
+                            if (object.projectId != null)
+                                message.projectId = String(object.projectId);
+                            if (object.indexId != null)
+                                message.indexId = String(object.indexId);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a DeleteIndexRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @static
+                         * @param {google.datastore.admin.v1.DeleteIndexRequest} message DeleteIndexRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        DeleteIndexRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.projectId = "";
+                                object.indexId = "";
+                            }
+                            if (message.projectId != null && message.hasOwnProperty("projectId"))
+                                object.projectId = message.projectId;
+                            if (message.indexId != null && message.hasOwnProperty("indexId"))
+                                object.indexId = message.indexId;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this DeleteIndexRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.datastore.admin.v1.DeleteIndexRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        DeleteIndexRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        return DeleteIndexRequest;
+                    })();
+    
                     v1.GetIndexRequest = (function() {
     
                         /**
@@ -3458,6 +3929,302 @@
                         return IndexOperationMetadata;
                     })();
     
+                    v1.DatastoreFirestoreMigrationMetadata = (function() {
+    
+                        /**
+                         * Properties of a DatastoreFirestoreMigrationMetadata.
+                         * @memberof google.datastore.admin.v1
+                         * @interface IDatastoreFirestoreMigrationMetadata
+                         * @property {google.datastore.admin.v1.MigrationState|null} [migrationState] DatastoreFirestoreMigrationMetadata migrationState
+                         * @property {google.datastore.admin.v1.MigrationStep|null} [migrationStep] DatastoreFirestoreMigrationMetadata migrationStep
+                         */
+    
+                        /**
+                         * Constructs a new DatastoreFirestoreMigrationMetadata.
+                         * @memberof google.datastore.admin.v1
+                         * @classdesc Represents a DatastoreFirestoreMigrationMetadata.
+                         * @implements IDatastoreFirestoreMigrationMetadata
+                         * @constructor
+                         * @param {google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata=} [properties] Properties to set
+                         */
+                        function DatastoreFirestoreMigrationMetadata(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * DatastoreFirestoreMigrationMetadata migrationState.
+                         * @member {google.datastore.admin.v1.MigrationState} migrationState
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @instance
+                         */
+                        DatastoreFirestoreMigrationMetadata.prototype.migrationState = 0;
+    
+                        /**
+                         * DatastoreFirestoreMigrationMetadata migrationStep.
+                         * @member {google.datastore.admin.v1.MigrationStep} migrationStep
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @instance
+                         */
+                        DatastoreFirestoreMigrationMetadata.prototype.migrationStep = 0;
+    
+                        /**
+                         * Creates a new DatastoreFirestoreMigrationMetadata instance using the specified properties.
+                         * @function create
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata=} [properties] Properties to set
+                         * @returns {google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata} DatastoreFirestoreMigrationMetadata instance
+                         */
+                        DatastoreFirestoreMigrationMetadata.create = function create(properties) {
+                            return new DatastoreFirestoreMigrationMetadata(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified DatastoreFirestoreMigrationMetadata message. Does not implicitly {@link google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata} message DatastoreFirestoreMigrationMetadata message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        DatastoreFirestoreMigrationMetadata.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.migrationState != null && Object.hasOwnProperty.call(message, "migrationState"))
+                                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.migrationState);
+                            if (message.migrationStep != null && Object.hasOwnProperty.call(message, "migrationStep"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.migrationStep);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified DatastoreFirestoreMigrationMetadata message, length delimited. Does not implicitly {@link google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {google.datastore.admin.v1.IDatastoreFirestoreMigrationMetadata} message DatastoreFirestoreMigrationMetadata message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        DatastoreFirestoreMigrationMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a DatastoreFirestoreMigrationMetadata message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata} DatastoreFirestoreMigrationMetadata
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        DatastoreFirestoreMigrationMetadata.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.migrationState = reader.int32();
+                                    break;
+                                case 2:
+                                    message.migrationStep = reader.int32();
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a DatastoreFirestoreMigrationMetadata message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata} DatastoreFirestoreMigrationMetadata
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        DatastoreFirestoreMigrationMetadata.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a DatastoreFirestoreMigrationMetadata message.
+                         * @function verify
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        DatastoreFirestoreMigrationMetadata.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.migrationState != null && message.hasOwnProperty("migrationState"))
+                                switch (message.migrationState) {
+                                default:
+                                    return "migrationState: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                    break;
+                                }
+                            if (message.migrationStep != null && message.hasOwnProperty("migrationStep"))
+                                switch (message.migrationStep) {
+                                default:
+                                    return "migrationStep: enum value expected";
+                                case 0:
+                                case 6:
+                                case 1:
+                                case 7:
+                                case 2:
+                                case 3:
+                                case 4:
+                                case 5:
+                                    break;
+                                }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a DatastoreFirestoreMigrationMetadata message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata} DatastoreFirestoreMigrationMetadata
+                         */
+                        DatastoreFirestoreMigrationMetadata.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata)
+                                return object;
+                            var message = new $root.google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata();
+                            switch (object.migrationState) {
+                            case "MIGRATION_STATE_UNSPECIFIED":
+                            case 0:
+                                message.migrationState = 0;
+                                break;
+                            case "RUNNING":
+                            case 1:
+                                message.migrationState = 1;
+                                break;
+                            case "PAUSED":
+                            case 2:
+                                message.migrationState = 2;
+                                break;
+                            case "COMPLETE":
+                            case 3:
+                                message.migrationState = 3;
+                                break;
+                            }
+                            switch (object.migrationStep) {
+                            case "MIGRATION_STEP_UNSPECIFIED":
+                            case 0:
+                                message.migrationStep = 0;
+                                break;
+                            case "PREPARE":
+                            case 6:
+                                message.migrationStep = 6;
+                                break;
+                            case "START":
+                            case 1:
+                                message.migrationStep = 1;
+                                break;
+                            case "APPLY_WRITES_SYNCHRONOUSLY":
+                            case 7:
+                                message.migrationStep = 7;
+                                break;
+                            case "COPY_AND_VERIFY":
+                            case 2:
+                                message.migrationStep = 2;
+                                break;
+                            case "REDIRECT_EVENTUALLY_CONSISTENT_READS":
+                            case 3:
+                                message.migrationStep = 3;
+                                break;
+                            case "REDIRECT_STRONGLY_CONSISTENT_READS":
+                            case 4:
+                                message.migrationStep = 4;
+                                break;
+                            case "REDIRECT_WRITES":
+                            case 5:
+                                message.migrationStep = 5;
+                                break;
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a DatastoreFirestoreMigrationMetadata message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @static
+                         * @param {google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata} message DatastoreFirestoreMigrationMetadata
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        DatastoreFirestoreMigrationMetadata.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.migrationState = options.enums === String ? "MIGRATION_STATE_UNSPECIFIED" : 0;
+                                object.migrationStep = options.enums === String ? "MIGRATION_STEP_UNSPECIFIED" : 0;
+                            }
+                            if (message.migrationState != null && message.hasOwnProperty("migrationState"))
+                                object.migrationState = options.enums === String ? $root.google.datastore.admin.v1.MigrationState[message.migrationState] : message.migrationState;
+                            if (message.migrationStep != null && message.hasOwnProperty("migrationStep"))
+                                object.migrationStep = options.enums === String ? $root.google.datastore.admin.v1.MigrationStep[message.migrationStep] : message.migrationStep;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this DatastoreFirestoreMigrationMetadata to JSON.
+                         * @function toJSON
+                         * @memberof google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        DatastoreFirestoreMigrationMetadata.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        return DatastoreFirestoreMigrationMetadata;
+                    })();
+    
+                    /**
+                     * OperationType enum.
+                     * @name google.datastore.admin.v1.OperationType
+                     * @enum {number}
+                     * @property {number} OPERATION_TYPE_UNSPECIFIED=0 OPERATION_TYPE_UNSPECIFIED value
+                     * @property {number} EXPORT_ENTITIES=1 EXPORT_ENTITIES value
+                     * @property {number} IMPORT_ENTITIES=2 IMPORT_ENTITIES value
+                     * @property {number} CREATE_INDEX=3 CREATE_INDEX value
+                     * @property {number} DELETE_INDEX=4 DELETE_INDEX value
+                     */
+                    v1.OperationType = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "OPERATION_TYPE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "EXPORT_ENTITIES"] = 1;
+                        values[valuesById[2] = "IMPORT_ENTITIES"] = 2;
+                        values[valuesById[3] = "CREATE_INDEX"] = 3;
+                        values[valuesById[4] = "DELETE_INDEX"] = 4;
+                        return values;
+                    })();
+    
                     v1.Index = (function() {
     
                         /**
@@ -4104,6 +4871,997 @@
                         return Index;
                     })();
     
+                    v1.MigrationStateEvent = (function() {
+    
+                        /**
+                         * Properties of a MigrationStateEvent.
+                         * @memberof google.datastore.admin.v1
+                         * @interface IMigrationStateEvent
+                         * @property {google.datastore.admin.v1.MigrationState|null} [state] MigrationStateEvent state
+                         */
+    
+                        /**
+                         * Constructs a new MigrationStateEvent.
+                         * @memberof google.datastore.admin.v1
+                         * @classdesc Represents a MigrationStateEvent.
+                         * @implements IMigrationStateEvent
+                         * @constructor
+                         * @param {google.datastore.admin.v1.IMigrationStateEvent=} [properties] Properties to set
+                         */
+                        function MigrationStateEvent(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * MigrationStateEvent state.
+                         * @member {google.datastore.admin.v1.MigrationState} state
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @instance
+                         */
+                        MigrationStateEvent.prototype.state = 0;
+    
+                        /**
+                         * Creates a new MigrationStateEvent instance using the specified properties.
+                         * @function create
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.IMigrationStateEvent=} [properties] Properties to set
+                         * @returns {google.datastore.admin.v1.MigrationStateEvent} MigrationStateEvent instance
+                         */
+                        MigrationStateEvent.create = function create(properties) {
+                            return new MigrationStateEvent(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified MigrationStateEvent message. Does not implicitly {@link google.datastore.admin.v1.MigrationStateEvent.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.IMigrationStateEvent} message MigrationStateEvent message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        MigrationStateEvent.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+                                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.state);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified MigrationStateEvent message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationStateEvent.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.IMigrationStateEvent} message MigrationStateEvent message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        MigrationStateEvent.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a MigrationStateEvent message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.datastore.admin.v1.MigrationStateEvent} MigrationStateEvent
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        MigrationStateEvent.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationStateEvent();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.state = reader.int32();
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a MigrationStateEvent message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.datastore.admin.v1.MigrationStateEvent} MigrationStateEvent
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        MigrationStateEvent.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a MigrationStateEvent message.
+                         * @function verify
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        MigrationStateEvent.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                switch (message.state) {
+                                default:
+                                    return "state: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                    break;
+                                }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a MigrationStateEvent message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.datastore.admin.v1.MigrationStateEvent} MigrationStateEvent
+                         */
+                        MigrationStateEvent.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.datastore.admin.v1.MigrationStateEvent)
+                                return object;
+                            var message = new $root.google.datastore.admin.v1.MigrationStateEvent();
+                            switch (object.state) {
+                            case "MIGRATION_STATE_UNSPECIFIED":
+                            case 0:
+                                message.state = 0;
+                                break;
+                            case "RUNNING":
+                            case 1:
+                                message.state = 1;
+                                break;
+                            case "PAUSED":
+                            case 2:
+                                message.state = 2;
+                                break;
+                            case "COMPLETE":
+                            case 3:
+                                message.state = 3;
+                                break;
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a MigrationStateEvent message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.MigrationStateEvent} message MigrationStateEvent
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        MigrationStateEvent.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.state = options.enums === String ? "MIGRATION_STATE_UNSPECIFIED" : 0;
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                object.state = options.enums === String ? $root.google.datastore.admin.v1.MigrationState[message.state] : message.state;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this MigrationStateEvent to JSON.
+                         * @function toJSON
+                         * @memberof google.datastore.admin.v1.MigrationStateEvent
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        MigrationStateEvent.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        return MigrationStateEvent;
+                    })();
+    
+                    v1.MigrationProgressEvent = (function() {
+    
+                        /**
+                         * Properties of a MigrationProgressEvent.
+                         * @memberof google.datastore.admin.v1
+                         * @interface IMigrationProgressEvent
+                         * @property {google.datastore.admin.v1.MigrationStep|null} [step] MigrationProgressEvent step
+                         * @property {google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails|null} [prepareStepDetails] MigrationProgressEvent prepareStepDetails
+                         * @property {google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails|null} [redirectWritesStepDetails] MigrationProgressEvent redirectWritesStepDetails
+                         */
+    
+                        /**
+                         * Constructs a new MigrationProgressEvent.
+                         * @memberof google.datastore.admin.v1
+                         * @classdesc Represents a MigrationProgressEvent.
+                         * @implements IMigrationProgressEvent
+                         * @constructor
+                         * @param {google.datastore.admin.v1.IMigrationProgressEvent=} [properties] Properties to set
+                         */
+                        function MigrationProgressEvent(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * MigrationProgressEvent step.
+                         * @member {google.datastore.admin.v1.MigrationStep} step
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @instance
+                         */
+                        MigrationProgressEvent.prototype.step = 0;
+    
+                        /**
+                         * MigrationProgressEvent prepareStepDetails.
+                         * @member {google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails|null|undefined} prepareStepDetails
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @instance
+                         */
+                        MigrationProgressEvent.prototype.prepareStepDetails = null;
+    
+                        /**
+                         * MigrationProgressEvent redirectWritesStepDetails.
+                         * @member {google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails|null|undefined} redirectWritesStepDetails
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @instance
+                         */
+                        MigrationProgressEvent.prototype.redirectWritesStepDetails = null;
+    
+                        // OneOf field names bound to virtual getters and setters
+                        var $oneOfFields;
+    
+                        /**
+                         * MigrationProgressEvent stepDetails.
+                         * @member {"prepareStepDetails"|"redirectWritesStepDetails"|undefined} stepDetails
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @instance
+                         */
+                        Object.defineProperty(MigrationProgressEvent.prototype, "stepDetails", {
+                            get: $util.oneOfGetter($oneOfFields = ["prepareStepDetails", "redirectWritesStepDetails"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+    
+                        /**
+                         * Creates a new MigrationProgressEvent instance using the specified properties.
+                         * @function create
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.IMigrationProgressEvent=} [properties] Properties to set
+                         * @returns {google.datastore.admin.v1.MigrationProgressEvent} MigrationProgressEvent instance
+                         */
+                        MigrationProgressEvent.create = function create(properties) {
+                            return new MigrationProgressEvent(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified MigrationProgressEvent message. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.IMigrationProgressEvent} message MigrationProgressEvent message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        MigrationProgressEvent.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.step != null && Object.hasOwnProperty.call(message, "step"))
+                                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.step);
+                            if (message.prepareStepDetails != null && Object.hasOwnProperty.call(message, "prepareStepDetails"))
+                                $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.encode(message.prepareStepDetails, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            if (message.redirectWritesStepDetails != null && Object.hasOwnProperty.call(message, "redirectWritesStepDetails"))
+                                $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.encode(message.redirectWritesStepDetails, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified MigrationProgressEvent message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.IMigrationProgressEvent} message MigrationProgressEvent message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        MigrationProgressEvent.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a MigrationProgressEvent message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.datastore.admin.v1.MigrationProgressEvent} MigrationProgressEvent
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        MigrationProgressEvent.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationProgressEvent();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1:
+                                    message.step = reader.int32();
+                                    break;
+                                case 2:
+                                    message.prepareStepDetails = $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.decode(reader, reader.uint32());
+                                    break;
+                                case 3:
+                                    message.redirectWritesStepDetails = $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.decode(reader, reader.uint32());
+                                    break;
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a MigrationProgressEvent message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.datastore.admin.v1.MigrationProgressEvent} MigrationProgressEvent
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        MigrationProgressEvent.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a MigrationProgressEvent message.
+                         * @function verify
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        MigrationProgressEvent.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            var properties = {};
+                            if (message.step != null && message.hasOwnProperty("step"))
+                                switch (message.step) {
+                                default:
+                                    return "step: enum value expected";
+                                case 0:
+                                case 6:
+                                case 1:
+                                case 7:
+                                case 2:
+                                case 3:
+                                case 4:
+                                case 5:
+                                    break;
+                                }
+                            if (message.prepareStepDetails != null && message.hasOwnProperty("prepareStepDetails")) {
+                                properties.stepDetails = 1;
+                                {
+                                    var error = $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.verify(message.prepareStepDetails);
+                                    if (error)
+                                        return "prepareStepDetails." + error;
+                                }
+                            }
+                            if (message.redirectWritesStepDetails != null && message.hasOwnProperty("redirectWritesStepDetails")) {
+                                if (properties.stepDetails === 1)
+                                    return "stepDetails: multiple values";
+                                properties.stepDetails = 1;
+                                {
+                                    var error = $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.verify(message.redirectWritesStepDetails);
+                                    if (error)
+                                        return "redirectWritesStepDetails." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a MigrationProgressEvent message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.datastore.admin.v1.MigrationProgressEvent} MigrationProgressEvent
+                         */
+                        MigrationProgressEvent.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.datastore.admin.v1.MigrationProgressEvent)
+                                return object;
+                            var message = new $root.google.datastore.admin.v1.MigrationProgressEvent();
+                            switch (object.step) {
+                            case "MIGRATION_STEP_UNSPECIFIED":
+                            case 0:
+                                message.step = 0;
+                                break;
+                            case "PREPARE":
+                            case 6:
+                                message.step = 6;
+                                break;
+                            case "START":
+                            case 1:
+                                message.step = 1;
+                                break;
+                            case "APPLY_WRITES_SYNCHRONOUSLY":
+                            case 7:
+                                message.step = 7;
+                                break;
+                            case "COPY_AND_VERIFY":
+                            case 2:
+                                message.step = 2;
+                                break;
+                            case "REDIRECT_EVENTUALLY_CONSISTENT_READS":
+                            case 3:
+                                message.step = 3;
+                                break;
+                            case "REDIRECT_STRONGLY_CONSISTENT_READS":
+                            case 4:
+                                message.step = 4;
+                                break;
+                            case "REDIRECT_WRITES":
+                            case 5:
+                                message.step = 5;
+                                break;
+                            }
+                            if (object.prepareStepDetails != null) {
+                                if (typeof object.prepareStepDetails !== "object")
+                                    throw TypeError(".google.datastore.admin.v1.MigrationProgressEvent.prepareStepDetails: object expected");
+                                message.prepareStepDetails = $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.fromObject(object.prepareStepDetails);
+                            }
+                            if (object.redirectWritesStepDetails != null) {
+                                if (typeof object.redirectWritesStepDetails !== "object")
+                                    throw TypeError(".google.datastore.admin.v1.MigrationProgressEvent.redirectWritesStepDetails: object expected");
+                                message.redirectWritesStepDetails = $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.fromObject(object.redirectWritesStepDetails);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a MigrationProgressEvent message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @static
+                         * @param {google.datastore.admin.v1.MigrationProgressEvent} message MigrationProgressEvent
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        MigrationProgressEvent.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.step = options.enums === String ? "MIGRATION_STEP_UNSPECIFIED" : 0;
+                            if (message.step != null && message.hasOwnProperty("step"))
+                                object.step = options.enums === String ? $root.google.datastore.admin.v1.MigrationStep[message.step] : message.step;
+                            if (message.prepareStepDetails != null && message.hasOwnProperty("prepareStepDetails")) {
+                                object.prepareStepDetails = $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.toObject(message.prepareStepDetails, options);
+                                if (options.oneofs)
+                                    object.stepDetails = "prepareStepDetails";
+                            }
+                            if (message.redirectWritesStepDetails != null && message.hasOwnProperty("redirectWritesStepDetails")) {
+                                object.redirectWritesStepDetails = $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.toObject(message.redirectWritesStepDetails, options);
+                                if (options.oneofs)
+                                    object.stepDetails = "redirectWritesStepDetails";
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this MigrationProgressEvent to JSON.
+                         * @function toJSON
+                         * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        MigrationProgressEvent.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        MigrationProgressEvent.PrepareStepDetails = (function() {
+    
+                            /**
+                             * Properties of a PrepareStepDetails.
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                             * @interface IPrepareStepDetails
+                             * @property {google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|null} [concurrencyMode] PrepareStepDetails concurrencyMode
+                             */
+    
+                            /**
+                             * Constructs a new PrepareStepDetails.
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                             * @classdesc Represents a PrepareStepDetails.
+                             * @implements IPrepareStepDetails
+                             * @constructor
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails=} [properties] Properties to set
+                             */
+                            function PrepareStepDetails(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * PrepareStepDetails concurrencyMode.
+                             * @member {google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode} concurrencyMode
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @instance
+                             */
+                            PrepareStepDetails.prototype.concurrencyMode = 0;
+    
+                            /**
+                             * Creates a new PrepareStepDetails instance using the specified properties.
+                             * @function create
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails=} [properties] Properties to set
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails} PrepareStepDetails instance
+                             */
+                            PrepareStepDetails.create = function create(properties) {
+                                return new PrepareStepDetails(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified PrepareStepDetails message. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails} message PrepareStepDetails message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PrepareStepDetails.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.concurrencyMode != null && Object.hasOwnProperty.call(message, "concurrencyMode"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.concurrencyMode);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified PrepareStepDetails message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IPrepareStepDetails} message PrepareStepDetails message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PrepareStepDetails.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a PrepareStepDetails message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails} PrepareStepDetails
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PrepareStepDetails.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1:
+                                        message.concurrencyMode = reader.int32();
+                                        break;
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a PrepareStepDetails message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails} PrepareStepDetails
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PrepareStepDetails.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a PrepareStepDetails message.
+                             * @function verify
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            PrepareStepDetails.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.concurrencyMode != null && message.hasOwnProperty("concurrencyMode"))
+                                    switch (message.concurrencyMode) {
+                                    default:
+                                        return "concurrencyMode: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        break;
+                                    }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a PrepareStepDetails message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails} PrepareStepDetails
+                             */
+                            PrepareStepDetails.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails)
+                                    return object;
+                                var message = new $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails();
+                                switch (object.concurrencyMode) {
+                                case "CONCURRENCY_MODE_UNSPECIFIED":
+                                case 0:
+                                    message.concurrencyMode = 0;
+                                    break;
+                                case "PESSIMISTIC":
+                                case 1:
+                                    message.concurrencyMode = 1;
+                                    break;
+                                case "OPTIMISTIC":
+                                case 2:
+                                    message.concurrencyMode = 2;
+                                    break;
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a PrepareStepDetails message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails} message PrepareStepDetails
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            PrepareStepDetails.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults)
+                                    object.concurrencyMode = options.enums === String ? "CONCURRENCY_MODE_UNSPECIFIED" : 0;
+                                if (message.concurrencyMode != null && message.hasOwnProperty("concurrencyMode"))
+                                    object.concurrencyMode = options.enums === String ? $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] : message.concurrencyMode;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this PrepareStepDetails to JSON.
+                             * @function toJSON
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            PrepareStepDetails.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            return PrepareStepDetails;
+                        })();
+    
+                        MigrationProgressEvent.RedirectWritesStepDetails = (function() {
+    
+                            /**
+                             * Properties of a RedirectWritesStepDetails.
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                             * @interface IRedirectWritesStepDetails
+                             * @property {google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode|null} [concurrencyMode] RedirectWritesStepDetails concurrencyMode
+                             */
+    
+                            /**
+                             * Constructs a new RedirectWritesStepDetails.
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent
+                             * @classdesc Represents a RedirectWritesStepDetails.
+                             * @implements IRedirectWritesStepDetails
+                             * @constructor
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails=} [properties] Properties to set
+                             */
+                            function RedirectWritesStepDetails(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * RedirectWritesStepDetails concurrencyMode.
+                             * @member {google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode} concurrencyMode
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @instance
+                             */
+                            RedirectWritesStepDetails.prototype.concurrencyMode = 0;
+    
+                            /**
+                             * Creates a new RedirectWritesStepDetails instance using the specified properties.
+                             * @function create
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails=} [properties] Properties to set
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails} RedirectWritesStepDetails instance
+                             */
+                            RedirectWritesStepDetails.create = function create(properties) {
+                                return new RedirectWritesStepDetails(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified RedirectWritesStepDetails message. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails} message RedirectWritesStepDetails message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RedirectWritesStepDetails.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.concurrencyMode != null && Object.hasOwnProperty.call(message, "concurrencyMode"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.concurrencyMode);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified RedirectWritesStepDetails message, length delimited. Does not implicitly {@link google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.IRedirectWritesStepDetails} message RedirectWritesStepDetails message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RedirectWritesStepDetails.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a RedirectWritesStepDetails message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails} RedirectWritesStepDetails
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RedirectWritesStepDetails.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1:
+                                        message.concurrencyMode = reader.int32();
+                                        break;
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a RedirectWritesStepDetails message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails} RedirectWritesStepDetails
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RedirectWritesStepDetails.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a RedirectWritesStepDetails message.
+                             * @function verify
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            RedirectWritesStepDetails.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.concurrencyMode != null && message.hasOwnProperty("concurrencyMode"))
+                                    switch (message.concurrencyMode) {
+                                    default:
+                                        return "concurrencyMode: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        break;
+                                    }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a RedirectWritesStepDetails message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails} RedirectWritesStepDetails
+                             */
+                            RedirectWritesStepDetails.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails)
+                                    return object;
+                                var message = new $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails();
+                                switch (object.concurrencyMode) {
+                                case "CONCURRENCY_MODE_UNSPECIFIED":
+                                case 0:
+                                    message.concurrencyMode = 0;
+                                    break;
+                                case "PESSIMISTIC":
+                                case 1:
+                                    message.concurrencyMode = 1;
+                                    break;
+                                case "OPTIMISTIC":
+                                case 2:
+                                    message.concurrencyMode = 2;
+                                    break;
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a RedirectWritesStepDetails message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @static
+                             * @param {google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails} message RedirectWritesStepDetails
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            RedirectWritesStepDetails.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults)
+                                    object.concurrencyMode = options.enums === String ? "CONCURRENCY_MODE_UNSPECIFIED" : 0;
+                                if (message.concurrencyMode != null && message.hasOwnProperty("concurrencyMode"))
+                                    object.concurrencyMode = options.enums === String ? $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] : message.concurrencyMode;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this RedirectWritesStepDetails to JSON.
+                             * @function toJSON
+                             * @memberof google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            RedirectWritesStepDetails.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            return RedirectWritesStepDetails;
+                        })();
+    
+                        /**
+                         * ConcurrencyMode enum.
+                         * @name google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode
+                         * @enum {number}
+                         * @property {number} CONCURRENCY_MODE_UNSPECIFIED=0 CONCURRENCY_MODE_UNSPECIFIED value
+                         * @property {number} PESSIMISTIC=1 PESSIMISTIC value
+                         * @property {number} OPTIMISTIC=2 OPTIMISTIC value
+                         */
+                        MigrationProgressEvent.ConcurrencyMode = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "CONCURRENCY_MODE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "PESSIMISTIC"] = 1;
+                            values[valuesById[2] = "OPTIMISTIC"] = 2;
+                            return values;
+                        })();
+    
+                        return MigrationProgressEvent;
+                    })();
+    
+                    /**
+                     * MigrationState enum.
+                     * @name google.datastore.admin.v1.MigrationState
+                     * @enum {number}
+                     * @property {number} MIGRATION_STATE_UNSPECIFIED=0 MIGRATION_STATE_UNSPECIFIED value
+                     * @property {number} RUNNING=1 RUNNING value
+                     * @property {number} PAUSED=2 PAUSED value
+                     * @property {number} COMPLETE=3 COMPLETE value
+                     */
+                    v1.MigrationState = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "MIGRATION_STATE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "RUNNING"] = 1;
+                        values[valuesById[2] = "PAUSED"] = 2;
+                        values[valuesById[3] = "COMPLETE"] = 3;
+                        return values;
+                    })();
+    
+                    /**
+                     * MigrationStep enum.
+                     * @name google.datastore.admin.v1.MigrationStep
+                     * @enum {number}
+                     * @property {number} MIGRATION_STEP_UNSPECIFIED=0 MIGRATION_STEP_UNSPECIFIED value
+                     * @property {number} PREPARE=6 PREPARE value
+                     * @property {number} START=1 START value
+                     * @property {number} APPLY_WRITES_SYNCHRONOUSLY=7 APPLY_WRITES_SYNCHRONOUSLY value
+                     * @property {number} COPY_AND_VERIFY=2 COPY_AND_VERIFY value
+                     * @property {number} REDIRECT_EVENTUALLY_CONSISTENT_READS=3 REDIRECT_EVENTUALLY_CONSISTENT_READS value
+                     * @property {number} REDIRECT_STRONGLY_CONSISTENT_READS=4 REDIRECT_STRONGLY_CONSISTENT_READS value
+                     * @property {number} REDIRECT_WRITES=5 REDIRECT_WRITES value
+                     */
+                    v1.MigrationStep = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "MIGRATION_STEP_UNSPECIFIED"] = 0;
+                        values[valuesById[6] = "PREPARE"] = 6;
+                        values[valuesById[1] = "START"] = 1;
+                        values[valuesById[7] = "APPLY_WRITES_SYNCHRONOUSLY"] = 7;
+                        values[valuesById[2] = "COPY_AND_VERIFY"] = 2;
+                        values[valuesById[3] = "REDIRECT_EVENTUALLY_CONSISTENT_READS"] = 3;
+                        values[valuesById[4] = "REDIRECT_STRONGLY_CONSISTENT_READS"] = 4;
+                        values[valuesById[5] = "REDIRECT_WRITES"] = 5;
+                        return values;
+                    })();
+    
                     return v1;
                 })();
     
@@ -4653,6 +6411,7 @@
                      * @property {Array.<google.datastore.v1.IEntityResult>|null} [found] LookupResponse found
                      * @property {Array.<google.datastore.v1.IEntityResult>|null} [missing] LookupResponse missing
                      * @property {Array.<google.datastore.v1.IKey>|null} [deferred] LookupResponse deferred
+                     * @property {google.protobuf.ITimestamp|null} [readTime] LookupResponse readTime
                      */
     
                     /**
@@ -4698,6 +6457,14 @@
                     LookupResponse.prototype.deferred = $util.emptyArray;
     
                     /**
+                     * LookupResponse readTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} readTime
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @instance
+                     */
+                    LookupResponse.prototype.readTime = null;
+    
+                    /**
                      * Creates a new LookupResponse instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.LookupResponse
@@ -4730,6 +6497,8 @@
                         if (message.deferred != null && message.deferred.length)
                             for (var i = 0; i < message.deferred.length; ++i)
                                 $root.google.datastore.v1.Key.encode(message.deferred[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.readTime != null && Object.hasOwnProperty.call(message, "readTime"))
+                            $root.google.protobuf.Timestamp.encode(message.readTime, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                         return writer;
                     };
     
@@ -4778,6 +6547,9 @@
                                 if (!(message.deferred && message.deferred.length))
                                     message.deferred = [];
                                 message.deferred.push($root.google.datastore.v1.Key.decode(reader, reader.uint32()));
+                                break;
+                            case 7:
+                                message.readTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -4841,6 +6613,11 @@
                                     return "deferred." + error;
                             }
                         }
+                        if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                            var error = $root.google.protobuf.Timestamp.verify(message.readTime);
+                            if (error)
+                                return "readTime." + error;
+                        }
                         return null;
                     };
     
@@ -4886,6 +6663,11 @@
                                 message.deferred[i] = $root.google.datastore.v1.Key.fromObject(object.deferred[i]);
                             }
                         }
+                        if (object.readTime != null) {
+                            if (typeof object.readTime !== "object")
+                                throw TypeError(".google.datastore.v1.LookupResponse.readTime: object expected");
+                            message.readTime = $root.google.protobuf.Timestamp.fromObject(object.readTime);
+                        }
                         return message;
                     };
     
@@ -4907,6 +6689,8 @@
                             object.missing = [];
                             object.deferred = [];
                         }
+                        if (options.defaults)
+                            object.readTime = null;
                         if (message.found && message.found.length) {
                             object.found = [];
                             for (var j = 0; j < message.found.length; ++j)
@@ -4922,6 +6706,8 @@
                             for (var j = 0; j < message.deferred.length; ++j)
                                 object.deferred[j] = $root.google.datastore.v1.Key.toObject(message.deferred[j], options);
                         }
+                        if (message.readTime != null && message.hasOwnProperty("readTime"))
+                            object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);
                         return object;
                     };
     
@@ -6318,11 +8104,11 @@
     
                     /**
                      * CommitRequest transaction.
-                     * @member {Uint8Array} transaction
+                     * @member {Uint8Array|null|undefined} transaction
                      * @memberof google.datastore.v1.CommitRequest
                      * @instance
                      */
-                    CommitRequest.prototype.transaction = $util.newBuffer([]);
+                    CommitRequest.prototype.transaction = null;
     
                     /**
                      * CommitRequest mutations.
@@ -6612,6 +8398,7 @@
                      * @interface ICommitResponse
                      * @property {Array.<google.datastore.v1.IMutationResult>|null} [mutationResults] CommitResponse mutationResults
                      * @property {number|null} [indexUpdates] CommitResponse indexUpdates
+                     * @property {google.protobuf.ITimestamp|null} [commitTime] CommitResponse commitTime
                      */
     
                     /**
@@ -6647,6 +8434,14 @@
                     CommitResponse.prototype.indexUpdates = 0;
     
                     /**
+                     * CommitResponse commitTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} commitTime
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @instance
+                     */
+                    CommitResponse.prototype.commitTime = null;
+    
+                    /**
                      * Creates a new CommitResponse instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.CommitResponse
@@ -6675,6 +8470,8 @@
                                 $root.google.datastore.v1.MutationResult.encode(message.mutationResults[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                         if (message.indexUpdates != null && Object.hasOwnProperty.call(message, "indexUpdates"))
                             writer.uint32(/* id 4, wireType 0 =*/32).int32(message.indexUpdates);
+                        if (message.commitTime != null && Object.hasOwnProperty.call(message, "commitTime"))
+                            $root.google.protobuf.Timestamp.encode(message.commitTime, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                         return writer;
                     };
     
@@ -6716,6 +8513,9 @@
                                 break;
                             case 4:
                                 message.indexUpdates = reader.int32();
+                                break;
+                            case 8:
+                                message.commitTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -6764,6 +8564,11 @@
                         if (message.indexUpdates != null && message.hasOwnProperty("indexUpdates"))
                             if (!$util.isInteger(message.indexUpdates))
                                 return "indexUpdates: integer expected";
+                        if (message.commitTime != null && message.hasOwnProperty("commitTime")) {
+                            var error = $root.google.protobuf.Timestamp.verify(message.commitTime);
+                            if (error)
+                                return "commitTime." + error;
+                        }
                         return null;
                     };
     
@@ -6791,6 +8596,11 @@
                         }
                         if (object.indexUpdates != null)
                             message.indexUpdates = object.indexUpdates | 0;
+                        if (object.commitTime != null) {
+                            if (typeof object.commitTime !== "object")
+                                throw TypeError(".google.datastore.v1.CommitResponse.commitTime: object expected");
+                            message.commitTime = $root.google.protobuf.Timestamp.fromObject(object.commitTime);
+                        }
                         return message;
                     };
     
@@ -6809,8 +8619,10 @@
                         var object = {};
                         if (options.arrays || options.defaults)
                             object.mutationResults = [];
-                        if (options.defaults)
+                        if (options.defaults) {
                             object.indexUpdates = 0;
+                            object.commitTime = null;
+                        }
                         if (message.mutationResults && message.mutationResults.length) {
                             object.mutationResults = [];
                             for (var j = 0; j < message.mutationResults.length; ++j)
@@ -6818,6 +8630,8 @@
                         }
                         if (message.indexUpdates != null && message.hasOwnProperty("indexUpdates"))
                             object.indexUpdates = message.indexUpdates;
+                        if (message.commitTime != null && message.hasOwnProperty("commitTime"))
+                            object.commitTime = $root.google.protobuf.Timestamp.toObject(message.commitTime, options);
                         return object;
                     };
     
@@ -7699,6 +9513,7 @@
                      * @property {google.datastore.v1.IEntity|null} [upsert] Mutation upsert
                      * @property {google.datastore.v1.IKey|null} ["delete"] Mutation delete
                      * @property {number|Long|null} [baseVersion] Mutation baseVersion
+                     * @property {google.protobuf.ITimestamp|null} [updateTime] Mutation updateTime
                      */
     
                     /**
@@ -7750,11 +9565,19 @@
     
                     /**
                      * Mutation baseVersion.
-                     * @member {number|Long} baseVersion
+                     * @member {number|Long|null|undefined} baseVersion
                      * @memberof google.datastore.v1.Mutation
                      * @instance
                      */
-                    Mutation.prototype.baseVersion = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                    Mutation.prototype.baseVersion = null;
+    
+                    /**
+                     * Mutation updateTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} updateTime
+                     * @memberof google.datastore.v1.Mutation
+                     * @instance
+                     */
+                    Mutation.prototype.updateTime = null;
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
@@ -7772,12 +9595,12 @@
     
                     /**
                      * Mutation conflictDetectionStrategy.
-                     * @member {"baseVersion"|undefined} conflictDetectionStrategy
+                     * @member {"baseVersion"|"updateTime"|undefined} conflictDetectionStrategy
                      * @memberof google.datastore.v1.Mutation
                      * @instance
                      */
                     Object.defineProperty(Mutation.prototype, "conflictDetectionStrategy", {
-                        get: $util.oneOfGetter($oneOfFields = ["baseVersion"]),
+                        get: $util.oneOfGetter($oneOfFields = ["baseVersion", "updateTime"]),
                         set: $util.oneOfSetter($oneOfFields)
                     });
     
@@ -7815,6 +9638,8 @@
                             $root.google.datastore.v1.Key.encode(message["delete"], writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                         if (message.baseVersion != null && Object.hasOwnProperty.call(message, "baseVersion"))
                             writer.uint32(/* id 8, wireType 0 =*/64).int64(message.baseVersion);
+                        if (message.updateTime != null && Object.hasOwnProperty.call(message, "updateTime"))
+                            $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
                         return writer;
                     };
     
@@ -7863,6 +9688,9 @@
                                 break;
                             case 8:
                                 message.baseVersion = reader.int64();
+                                break;
+                            case 11:
+                                message.updateTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -7943,6 +9771,16 @@
                             if (!$util.isInteger(message.baseVersion) && !(message.baseVersion && $util.isInteger(message.baseVersion.low) && $util.isInteger(message.baseVersion.high)))
                                 return "baseVersion: integer|Long expected";
                         }
+                        if (message.updateTime != null && message.hasOwnProperty("updateTime")) {
+                            if (properties.conflictDetectionStrategy === 1)
+                                return "conflictDetectionStrategy: multiple values";
+                            properties.conflictDetectionStrategy = 1;
+                            {
+                                var error = $root.google.protobuf.Timestamp.verify(message.updateTime);
+                                if (error)
+                                    return "updateTime." + error;
+                            }
+                        }
                         return null;
                     };
     
@@ -7987,6 +9825,11 @@
                                 message.baseVersion = object.baseVersion;
                             else if (typeof object.baseVersion === "object")
                                 message.baseVersion = new $util.LongBits(object.baseVersion.low >>> 0, object.baseVersion.high >>> 0).toNumber();
+                        if (object.updateTime != null) {
+                            if (typeof object.updateTime !== "object")
+                                throw TypeError(".google.datastore.v1.Mutation.updateTime: object expected");
+                            message.updateTime = $root.google.protobuf.Timestamp.fromObject(object.updateTime);
+                        }
                         return message;
                     };
     
@@ -8031,6 +9874,11 @@
                             if (options.oneofs)
                                 object.conflictDetectionStrategy = "baseVersion";
                         }
+                        if (message.updateTime != null && message.hasOwnProperty("updateTime")) {
+                            object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
+                            if (options.oneofs)
+                                object.conflictDetectionStrategy = "updateTime";
+                        }
                         return object;
                     };
     
@@ -8056,6 +9904,7 @@
                      * @interface IMutationResult
                      * @property {google.datastore.v1.IKey|null} [key] MutationResult key
                      * @property {number|Long|null} [version] MutationResult version
+                     * @property {google.protobuf.ITimestamp|null} [updateTime] MutationResult updateTime
                      * @property {boolean|null} [conflictDetected] MutationResult conflictDetected
                      */
     
@@ -8089,6 +9938,14 @@
                      * @instance
                      */
                     MutationResult.prototype.version = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                    /**
+                     * MutationResult updateTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} updateTime
+                     * @memberof google.datastore.v1.MutationResult
+                     * @instance
+                     */
+                    MutationResult.prototype.updateTime = null;
     
                     /**
                      * MutationResult conflictDetected.
@@ -8128,6 +9985,8 @@
                             writer.uint32(/* id 4, wireType 0 =*/32).int64(message.version);
                         if (message.conflictDetected != null && Object.hasOwnProperty.call(message, "conflictDetected"))
                             writer.uint32(/* id 5, wireType 0 =*/40).bool(message.conflictDetected);
+                        if (message.updateTime != null && Object.hasOwnProperty.call(message, "updateTime"))
+                            $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
                         return writer;
                     };
     
@@ -8167,6 +10026,9 @@
                                 break;
                             case 4:
                                 message.version = reader.int64();
+                                break;
+                            case 6:
+                                message.updateTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                 break;
                             case 5:
                                 message.conflictDetected = reader.bool();
@@ -8214,6 +10076,11 @@
                         if (message.version != null && message.hasOwnProperty("version"))
                             if (!$util.isInteger(message.version) && !(message.version && $util.isInteger(message.version.low) && $util.isInteger(message.version.high)))
                                 return "version: integer|Long expected";
+                        if (message.updateTime != null && message.hasOwnProperty("updateTime")) {
+                            var error = $root.google.protobuf.Timestamp.verify(message.updateTime);
+                            if (error)
+                                return "updateTime." + error;
+                        }
                         if (message.conflictDetected != null && message.hasOwnProperty("conflictDetected"))
                             if (typeof message.conflictDetected !== "boolean")
                                 return "conflictDetected: boolean expected";
@@ -8246,6 +10113,11 @@
                                 message.version = object.version;
                             else if (typeof object.version === "object")
                                 message.version = new $util.LongBits(object.version.low >>> 0, object.version.high >>> 0).toNumber();
+                        if (object.updateTime != null) {
+                            if (typeof object.updateTime !== "object")
+                                throw TypeError(".google.datastore.v1.MutationResult.updateTime: object expected");
+                            message.updateTime = $root.google.protobuf.Timestamp.fromObject(object.updateTime);
+                        }
                         if (object.conflictDetected != null)
                             message.conflictDetected = Boolean(object.conflictDetected);
                         return message;
@@ -8272,6 +10144,7 @@
                             } else
                                 object.version = options.longs === String ? "0" : 0;
                             object.conflictDetected = false;
+                            object.updateTime = null;
                         }
                         if (message.key != null && message.hasOwnProperty("key"))
                             object.key = $root.google.datastore.v1.Key.toObject(message.key, options);
@@ -8282,6 +10155,8 @@
                                 object.version = options.longs === String ? $util.Long.prototype.toString.call(message.version) : options.longs === Number ? new $util.LongBits(message.version.low >>> 0, message.version.high >>> 0).toNumber() : message.version;
                         if (message.conflictDetected != null && message.hasOwnProperty("conflictDetected"))
                             object.conflictDetected = message.conflictDetected;
+                        if (message.updateTime != null && message.hasOwnProperty("updateTime"))
+                            object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
                         return object;
                     };
     
@@ -8307,6 +10182,7 @@
                      * @interface IReadOptions
                      * @property {google.datastore.v1.ReadOptions.ReadConsistency|null} [readConsistency] ReadOptions readConsistency
                      * @property {Uint8Array|null} [transaction] ReadOptions transaction
+                     * @property {google.protobuf.ITimestamp|null} [readTime] ReadOptions readTime
                      */
     
                     /**
@@ -8326,31 +10202,39 @@
     
                     /**
                      * ReadOptions readConsistency.
-                     * @member {google.datastore.v1.ReadOptions.ReadConsistency} readConsistency
+                     * @member {google.datastore.v1.ReadOptions.ReadConsistency|null|undefined} readConsistency
                      * @memberof google.datastore.v1.ReadOptions
                      * @instance
                      */
-                    ReadOptions.prototype.readConsistency = 0;
+                    ReadOptions.prototype.readConsistency = null;
     
                     /**
                      * ReadOptions transaction.
-                     * @member {Uint8Array} transaction
+                     * @member {Uint8Array|null|undefined} transaction
                      * @memberof google.datastore.v1.ReadOptions
                      * @instance
                      */
-                    ReadOptions.prototype.transaction = $util.newBuffer([]);
+                    ReadOptions.prototype.transaction = null;
+    
+                    /**
+                     * ReadOptions readTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} readTime
+                     * @memberof google.datastore.v1.ReadOptions
+                     * @instance
+                     */
+                    ReadOptions.prototype.readTime = null;
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
     
                     /**
                      * ReadOptions consistencyType.
-                     * @member {"readConsistency"|"transaction"|undefined} consistencyType
+                     * @member {"readConsistency"|"transaction"|"readTime"|undefined} consistencyType
                      * @memberof google.datastore.v1.ReadOptions
                      * @instance
                      */
                     Object.defineProperty(ReadOptions.prototype, "consistencyType", {
-                        get: $util.oneOfGetter($oneOfFields = ["readConsistency", "transaction"]),
+                        get: $util.oneOfGetter($oneOfFields = ["readConsistency", "transaction", "readTime"]),
                         set: $util.oneOfSetter($oneOfFields)
                     });
     
@@ -8382,6 +10266,8 @@
                             writer.uint32(/* id 1, wireType 0 =*/8).int32(message.readConsistency);
                         if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
                             writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.transaction);
+                        if (message.readTime != null && Object.hasOwnProperty.call(message, "readTime"))
+                            $root.google.protobuf.Timestamp.encode(message.readTime, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                         return writer;
                     };
     
@@ -8421,6 +10307,9 @@
                                 break;
                             case 2:
                                 message.transaction = reader.bytes();
+                                break;
+                            case 4:
+                                message.readTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -8476,6 +10365,16 @@
                             if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
                                 return "transaction: buffer expected";
                         }
+                        if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                            if (properties.consistencyType === 1)
+                                return "consistencyType: multiple values";
+                            properties.consistencyType = 1;
+                            {
+                                var error = $root.google.protobuf.Timestamp.verify(message.readTime);
+                                if (error)
+                                    return "readTime." + error;
+                            }
+                        }
                         return null;
                     };
     
@@ -8510,6 +10409,11 @@
                                 $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
                             else if (object.transaction.length)
                                 message.transaction = object.transaction;
+                        if (object.readTime != null) {
+                            if (typeof object.readTime !== "object")
+                                throw TypeError(".google.datastore.v1.ReadOptions.readTime: object expected");
+                            message.readTime = $root.google.protobuf.Timestamp.fromObject(object.readTime);
+                        }
                         return message;
                     };
     
@@ -8535,6 +10439,11 @@
                             object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
                             if (options.oneofs)
                                 object.consistencyType = "transaction";
+                        }
+                        if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                            object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);
+                            if (options.oneofs)
+                                object.consistencyType = "readTime";
                         }
                         return object;
                     };
@@ -9013,6 +10922,7 @@
                          * Properties of a ReadOnly.
                          * @memberof google.datastore.v1.TransactionOptions
                          * @interface IReadOnly
+                         * @property {google.protobuf.ITimestamp|null} [readTime] ReadOnly readTime
                          */
     
                         /**
@@ -9029,6 +10939,14 @@
                                     if (properties[keys[i]] != null)
                                         this[keys[i]] = properties[keys[i]];
                         }
+    
+                        /**
+                         * ReadOnly readTime.
+                         * @member {google.protobuf.ITimestamp|null|undefined} readTime
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @instance
+                         */
+                        ReadOnly.prototype.readTime = null;
     
                         /**
                          * Creates a new ReadOnly instance using the specified properties.
@@ -9054,6 +10972,8 @@
                         ReadOnly.encode = function encode(message, writer) {
                             if (!writer)
                                 writer = $Writer.create();
+                            if (message.readTime != null && Object.hasOwnProperty.call(message, "readTime"))
+                                $root.google.protobuf.Timestamp.encode(message.readTime, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                             return writer;
                         };
     
@@ -9088,6 +11008,9 @@
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
                                 switch (tag >>> 3) {
+                                case 1:
+                                    message.readTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                    break;
                                 default:
                                     reader.skipType(tag & 7);
                                     break;
@@ -9123,6 +11046,11 @@
                         ReadOnly.verify = function verify(message) {
                             if (typeof message !== "object" || message === null)
                                 return "object expected";
+                            if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                                var error = $root.google.protobuf.Timestamp.verify(message.readTime);
+                                if (error)
+                                    return "readTime." + error;
+                            }
                             return null;
                         };
     
@@ -9137,7 +11065,13 @@
                         ReadOnly.fromObject = function fromObject(object) {
                             if (object instanceof $root.google.datastore.v1.TransactionOptions.ReadOnly)
                                 return object;
-                            return new $root.google.datastore.v1.TransactionOptions.ReadOnly();
+                            var message = new $root.google.datastore.v1.TransactionOptions.ReadOnly();
+                            if (object.readTime != null) {
+                                if (typeof object.readTime !== "object")
+                                    throw TypeError(".google.datastore.v1.TransactionOptions.ReadOnly.readTime: object expected");
+                                message.readTime = $root.google.protobuf.Timestamp.fromObject(object.readTime);
+                            }
+                            return message;
                         };
     
                         /**
@@ -9149,8 +11083,15 @@
                          * @param {$protobuf.IConversionOptions} [options] Conversion options
                          * @returns {Object.<string,*>} Plain object
                          */
-                        ReadOnly.toObject = function toObject() {
-                            return {};
+                        ReadOnly.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.readTime = null;
+                            if (message.readTime != null && message.hasOwnProperty("readTime"))
+                                object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);
+                            return object;
                         };
     
                         /**
@@ -9649,19 +11590,19 @@
     
                         /**
                          * PathElement id.
-                         * @member {number|Long} id
+                         * @member {number|Long|null|undefined} id
                          * @memberof google.datastore.v1.Key.PathElement
                          * @instance
                          */
-                        PathElement.prototype.id = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                        PathElement.prototype.id = null;
     
                         /**
                          * PathElement name.
-                         * @member {string} name
+                         * @member {string|null|undefined} name
                          * @memberof google.datastore.v1.Key.PathElement
                          * @instance
                          */
-                        PathElement.prototype.name = "";
+                        PathElement.prototype.name = null;
     
                         // OneOf field names bound to virtual getters and setters
                         var $oneOfFields;
@@ -10128,35 +12069,35 @@
     
                     /**
                      * Value nullValue.
-                     * @member {google.protobuf.NullValue} nullValue
+                     * @member {google.protobuf.NullValue|null|undefined} nullValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.nullValue = 0;
+                    Value.prototype.nullValue = null;
     
                     /**
                      * Value booleanValue.
-                     * @member {boolean} booleanValue
+                     * @member {boolean|null|undefined} booleanValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.booleanValue = false;
+                    Value.prototype.booleanValue = null;
     
                     /**
                      * Value integerValue.
-                     * @member {number|Long} integerValue
+                     * @member {number|Long|null|undefined} integerValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.integerValue = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                    Value.prototype.integerValue = null;
     
                     /**
                      * Value doubleValue.
-                     * @member {number} doubleValue
+                     * @member {number|null|undefined} doubleValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.doubleValue = 0;
+                    Value.prototype.doubleValue = null;
     
                     /**
                      * Value timestampValue.
@@ -10176,19 +12117,19 @@
     
                     /**
                      * Value stringValue.
-                     * @member {string} stringValue
+                     * @member {string|null|undefined} stringValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.stringValue = "";
+                    Value.prototype.stringValue = null;
     
                     /**
                      * Value blobValue.
-                     * @member {Uint8Array} blobValue
+                     * @member {Uint8Array|null|undefined} blobValue
                      * @memberof google.datastore.v1.Value
                      * @instance
                      */
-                    Value.prototype.blobValue = $util.newBuffer([]);
+                    Value.prototype.blobValue = null;
     
                     /**
                      * Value geoPointValue.
@@ -10937,6 +12878,7 @@
                      * @interface IEntityResult
                      * @property {google.datastore.v1.IEntity|null} [entity] EntityResult entity
                      * @property {number|Long|null} [version] EntityResult version
+                     * @property {google.protobuf.ITimestamp|null} [updateTime] EntityResult updateTime
                      * @property {Uint8Array|null} [cursor] EntityResult cursor
                      */
     
@@ -10970,6 +12912,14 @@
                      * @instance
                      */
                     EntityResult.prototype.version = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                    /**
+                     * EntityResult updateTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} updateTime
+                     * @memberof google.datastore.v1.EntityResult
+                     * @instance
+                     */
+                    EntityResult.prototype.updateTime = null;
     
                     /**
                      * EntityResult cursor.
@@ -11009,6 +12959,8 @@
                             writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.cursor);
                         if (message.version != null && Object.hasOwnProperty.call(message, "version"))
                             writer.uint32(/* id 4, wireType 0 =*/32).int64(message.version);
+                        if (message.updateTime != null && Object.hasOwnProperty.call(message, "updateTime"))
+                            $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
                         return writer;
                     };
     
@@ -11048,6 +13000,9 @@
                                 break;
                             case 4:
                                 message.version = reader.int64();
+                                break;
+                            case 5:
+                                message.updateTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                 break;
                             case 3:
                                 message.cursor = reader.bytes();
@@ -11095,6 +13050,11 @@
                         if (message.version != null && message.hasOwnProperty("version"))
                             if (!$util.isInteger(message.version) && !(message.version && $util.isInteger(message.version.low) && $util.isInteger(message.version.high)))
                                 return "version: integer|Long expected";
+                        if (message.updateTime != null && message.hasOwnProperty("updateTime")) {
+                            var error = $root.google.protobuf.Timestamp.verify(message.updateTime);
+                            if (error)
+                                return "updateTime." + error;
+                        }
                         if (message.cursor != null && message.hasOwnProperty("cursor"))
                             if (!(message.cursor && typeof message.cursor.length === "number" || $util.isString(message.cursor)))
                                 return "cursor: buffer expected";
@@ -11127,6 +13087,11 @@
                                 message.version = object.version;
                             else if (typeof object.version === "object")
                                 message.version = new $util.LongBits(object.version.low >>> 0, object.version.high >>> 0).toNumber();
+                        if (object.updateTime != null) {
+                            if (typeof object.updateTime !== "object")
+                                throw TypeError(".google.datastore.v1.EntityResult.updateTime: object expected");
+                            message.updateTime = $root.google.protobuf.Timestamp.fromObject(object.updateTime);
+                        }
                         if (object.cursor != null)
                             if (typeof object.cursor === "string")
                                 $util.base64.decode(object.cursor, message.cursor = $util.newBuffer($util.base64.length(object.cursor)), 0);
@@ -11162,6 +13127,7 @@
                                 object.version = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                             } else
                                 object.version = options.longs === String ? "0" : 0;
+                            object.updateTime = null;
                         }
                         if (message.entity != null && message.hasOwnProperty("entity"))
                             object.entity = $root.google.datastore.v1.Entity.toObject(message.entity, options);
@@ -11172,6 +13138,8 @@
                                 object.version = options.longs === String ? String(message.version) : message.version;
                             else
                                 object.version = options.longs === String ? $util.Long.prototype.toString.call(message.version) : options.longs === Number ? new $util.LongBits(message.version.low >>> 0, message.version.high >>> 0).toNumber() : message.version;
+                        if (message.updateTime != null && message.hasOwnProperty("updateTime"))
+                            object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
                         return object;
                     };
     
@@ -13176,7 +15144,10 @@
                             case 3:
                             case 4:
                             case 5:
+                            case 6:
+                            case 9:
                             case 11:
+                            case 13:
                                 break;
                             }
                         if (message.value != null && message.hasOwnProperty("value")) {
@@ -13229,9 +15200,21 @@
                         case 5:
                             message.op = 5;
                             break;
+                        case "IN":
+                        case 6:
+                            message.op = 6;
+                            break;
+                        case "NOT_EQUAL":
+                        case 9:
+                            message.op = 9;
+                            break;
                         case "HAS_ANCESTOR":
                         case 11:
                             message.op = 11;
+                            break;
+                        case "NOT_IN":
+                        case 13:
+                            message.op = 13;
                             break;
                         }
                         if (object.value != null) {
@@ -13290,7 +15273,10 @@
                      * @property {number} GREATER_THAN=3 GREATER_THAN value
                      * @property {number} GREATER_THAN_OR_EQUAL=4 GREATER_THAN_OR_EQUAL value
                      * @property {number} EQUAL=5 EQUAL value
+                     * @property {number} IN=6 IN value
+                     * @property {number} NOT_EQUAL=9 NOT_EQUAL value
                      * @property {number} HAS_ANCESTOR=11 HAS_ANCESTOR value
+                     * @property {number} NOT_IN=13 NOT_IN value
                      */
                     PropertyFilter.Operator = (function() {
                         var valuesById = {}, values = Object.create(valuesById);
@@ -13300,7 +15286,10 @@
                         values[valuesById[3] = "GREATER_THAN"] = 3;
                         values[valuesById[4] = "GREATER_THAN_OR_EQUAL"] = 4;
                         values[valuesById[5] = "EQUAL"] = 5;
+                        values[valuesById[6] = "IN"] = 6;
+                        values[valuesById[9] = "NOT_EQUAL"] = 9;
                         values[valuesById[11] = "HAS_ANCESTOR"] = 11;
+                        values[valuesById[13] = "NOT_IN"] = 13;
                         return values;
                     })();
     
@@ -13661,11 +15650,11 @@
     
                     /**
                      * GqlQueryParameter cursor.
-                     * @member {Uint8Array} cursor
+                     * @member {Uint8Array|null|undefined} cursor
                      * @memberof google.datastore.v1.GqlQueryParameter
                      * @instance
                      */
-                    GqlQueryParameter.prototype.cursor = $util.newBuffer([]);
+                    GqlQueryParameter.prototype.cursor = null;
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
@@ -13881,6 +15870,7 @@
                      * @property {Uint8Array|null} [endCursor] QueryResultBatch endCursor
                      * @property {google.datastore.v1.QueryResultBatch.MoreResultsType|null} [moreResults] QueryResultBatch moreResults
                      * @property {number|Long|null} [snapshotVersion] QueryResultBatch snapshotVersion
+                     * @property {google.protobuf.ITimestamp|null} [readTime] QueryResultBatch readTime
                      */
     
                     /**
@@ -13956,6 +15946,14 @@
                     QueryResultBatch.prototype.snapshotVersion = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                     /**
+                     * QueryResultBatch readTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} readTime
+                     * @memberof google.datastore.v1.QueryResultBatch
+                     * @instance
+                     */
+                    QueryResultBatch.prototype.readTime = null;
+    
+                    /**
                      * Creates a new QueryResultBatch instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.QueryResultBatch
@@ -13994,6 +15992,8 @@
                             writer.uint32(/* id 6, wireType 0 =*/48).int32(message.skippedResults);
                         if (message.snapshotVersion != null && Object.hasOwnProperty.call(message, "snapshotVersion"))
                             writer.uint32(/* id 7, wireType 0 =*/56).int64(message.snapshotVersion);
+                        if (message.readTime != null && Object.hasOwnProperty.call(message, "readTime"))
+                            $root.google.protobuf.Timestamp.encode(message.readTime, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                         return writer;
                     };
     
@@ -14050,6 +16050,9 @@
                                 break;
                             case 7:
                                 message.snapshotVersion = reader.int64();
+                                break;
+                            case 8:
+                                message.readTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -14128,6 +16131,11 @@
                         if (message.snapshotVersion != null && message.hasOwnProperty("snapshotVersion"))
                             if (!$util.isInteger(message.snapshotVersion) && !(message.snapshotVersion && $util.isInteger(message.snapshotVersion.low) && $util.isInteger(message.snapshotVersion.high)))
                                 return "snapshotVersion: integer|Long expected";
+                        if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                            var error = $root.google.protobuf.Timestamp.verify(message.readTime);
+                            if (error)
+                                return "readTime." + error;
+                        }
                         return null;
                     };
     
@@ -14214,6 +16222,11 @@
                                 message.snapshotVersion = object.snapshotVersion;
                             else if (typeof object.snapshotVersion === "object")
                                 message.snapshotVersion = new $util.LongBits(object.snapshotVersion.low >>> 0, object.snapshotVersion.high >>> 0).toNumber();
+                        if (object.readTime != null) {
+                            if (typeof object.readTime !== "object")
+                                throw TypeError(".google.datastore.v1.QueryResultBatch.readTime: object expected");
+                            message.readTime = $root.google.protobuf.Timestamp.fromObject(object.readTime);
+                        }
                         return message;
                     };
     
@@ -14255,6 +16268,7 @@
                                 object.snapshotVersion = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                             } else
                                 object.snapshotVersion = options.longs === String ? "0" : 0;
+                            object.readTime = null;
                         }
                         if (message.entityResultType != null && message.hasOwnProperty("entityResultType"))
                             object.entityResultType = options.enums === String ? $root.google.datastore.v1.EntityResult.ResultType[message.entityResultType] : message.entityResultType;
@@ -14276,6 +16290,8 @@
                                 object.snapshotVersion = options.longs === String ? String(message.snapshotVersion) : message.snapshotVersion;
                             else
                                 object.snapshotVersion = options.longs === String ? $util.Long.prototype.toString.call(message.snapshotVersion) : options.longs === Number ? new $util.LongBits(message.snapshotVersion.low >>> 0, message.snapshotVersion.high >>> 0).toNumber() : message.snapshotVersion;
+                        if (message.readTime != null && message.hasOwnProperty("readTime"))
+                            object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);
                         return object;
                     };
     
@@ -14603,43 +16619,43 @@
     
                 /**
                  * HttpRule get.
-                 * @member {string} get
+                 * @member {string|null|undefined} get
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.get = "";
+                HttpRule.prototype.get = null;
     
                 /**
                  * HttpRule put.
-                 * @member {string} put
+                 * @member {string|null|undefined} put
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.put = "";
+                HttpRule.prototype.put = null;
     
                 /**
                  * HttpRule post.
-                 * @member {string} post
+                 * @member {string|null|undefined} post
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.post = "";
+                HttpRule.prototype.post = null;
     
                 /**
                  * HttpRule delete.
-                 * @member {string} delete
+                 * @member {string|null|undefined} delete
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype["delete"] = "";
+                HttpRule.prototype["delete"] = null;
     
                 /**
                  * HttpRule patch.
-                 * @member {string} patch
+                 * @member {string|null|undefined} patch
                  * @memberof google.api.HttpRule
                  * @instance
                  */
-                HttpRule.prototype.patch = "";
+                HttpRule.prototype.patch = null;
     
                 /**
                  * HttpRule custom.
@@ -15242,6 +17258,8 @@
              * @property {number} OUTPUT_ONLY=3 OUTPUT_ONLY value
              * @property {number} INPUT_ONLY=4 INPUT_ONLY value
              * @property {number} IMMUTABLE=5 IMMUTABLE value
+             * @property {number} UNORDERED_LIST=6 UNORDERED_LIST value
+             * @property {number} NON_EMPTY_DEFAULT=7 NON_EMPTY_DEFAULT value
              */
             api.FieldBehavior = (function() {
                 var valuesById = {}, values = Object.create(valuesById);
@@ -15251,6 +17269,8 @@
                 values[valuesById[3] = "OUTPUT_ONLY"] = 3;
                 values[valuesById[4] = "INPUT_ONLY"] = 4;
                 values[valuesById[5] = "IMMUTABLE"] = 5;
+                values[valuesById[6] = "UNORDERED_LIST"] = 6;
+                values[valuesById[7] = "NON_EMPTY_DEFAULT"] = 7;
                 return values;
             })();
     
@@ -20698,6 +22718,8 @@
                             case 3:
                             case 4:
                             case 5:
+                            case 6:
+                            case 7:
                                 break;
                             }
                     }
@@ -20792,6 +22814,14 @@
                             case "IMMUTABLE":
                             case 5:
                                 message[".google.api.fieldBehavior"][i] = 5;
+                                break;
+                            case "UNORDERED_LIST":
+                            case 6:
+                                message[".google.api.fieldBehavior"][i] = 6;
+                                break;
+                            case "NON_EMPTY_DEFAULT":
+                            case 7:
+                                message[".google.api.fieldBehavior"][i] = 7;
                                 break;
                             }
                     }
@@ -24957,35 +26987,35 @@
     
                 /**
                  * Value nullValue.
-                 * @member {google.protobuf.NullValue} nullValue
+                 * @member {google.protobuf.NullValue|null|undefined} nullValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.nullValue = 0;
+                Value.prototype.nullValue = null;
     
                 /**
                  * Value numberValue.
-                 * @member {number} numberValue
+                 * @member {number|null|undefined} numberValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.numberValue = 0;
+                Value.prototype.numberValue = null;
     
                 /**
                  * Value stringValue.
-                 * @member {string} stringValue
+                 * @member {string|null|undefined} stringValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.stringValue = "";
+                Value.prototype.stringValue = null;
     
                 /**
                  * Value boolValue.
-                 * @member {boolean} boolValue
+                 * @member {boolean|null|undefined} boolValue
                  * @memberof google.protobuf.Value
                  * @instance
                  */
-                Value.prototype.boolValue = false;
+                Value.prototype.boolValue = null;
     
                 /**
                  * Value structValue.

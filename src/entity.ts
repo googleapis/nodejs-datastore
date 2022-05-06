@@ -55,9 +55,11 @@ export namespace entity {
    * @param {number|string} value The double value.
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const aDouble = datastore.double(7.3);
+   * ```
    */
   export class Double extends Number {
     private _entityPropertyName: string | undefined;
@@ -137,9 +139,11 @@ export namespace entity {
    *     names to be converted using `integerTypeCastFunction`.
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const anInt = datastore.int(7);
+   * ```
    */
   export class Int extends Number {
     type: string;
@@ -253,6 +257,7 @@ export namespace entity {
    * @param {number} coordinates.longitude Longitudinal value.
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const coordinates = {
@@ -261,6 +266,7 @@ export namespace entity {
    * };
    *
    * const geoPoint = datastore.geoPoint(coordinates);
+   * ```
    */
   export class GeoPoint {
     value: Coordinates;
@@ -302,6 +308,7 @@ export namespace entity {
    * @param {string} [options.namespace] Optional namespace.
    *
    * @example
+   * ```
    * //-
    * // Create an incomplete key with a kind value of `Company`.
    * //-
@@ -309,7 +316,9 @@ export namespace entity {
    * const datastore = new Datastore();
    * const key = datastore.key('Company');
    *
+   * ```
    * @example
+   * ```
    * //-
    * // Create a complete key with a kind value of `Company` and id`123`.
    * //-
@@ -317,7 +326,9 @@ export namespace entity {
    * const datastore = new Datastore();
    * const key = datastore.key(['Company', 123]);
    *
+   * ```
    * @example
+   * ```
    * //-
    * // If the ID integer is outside the bounds of a JavaScript Number
    * // object, create an Int.
@@ -329,14 +340,18 @@ export namespace entity {
    *   datastore.int('100000000000001234')
    * ]);
    *
+   * ```
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * // Create a complete key with a kind value of `Company` and name `Google`.
    * // Note: `id` is used for numeric identifiers and `name` is used otherwise.
    * const key = datastore.key(['Company', 'Google']);
    *
+   * ```
    * @example
+   * ```
    * //-
    * // Create a complete key from a provided namespace and path.
    * //-
@@ -347,7 +362,9 @@ export namespace entity {
    *   path: ['Company', 123]
    * });
    *
-   * @example <caption>Serialize the key for later re-use.</caption>
+   * ```
+   * @example Serialize the key for later re-use.
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const key = datastore.key({
@@ -356,6 +373,7 @@ export namespace entity {
    * });
    * // Later...
    * const key = datastore.key(key.serialized);
+   * ```
    */
   export class Key {
     namespace?: string;
@@ -418,6 +436,7 @@ export namespace entity {
      * @returns {object}
      *
      * @example
+     * ```
      * const key = datastore.key({
      *   namespace: 'My-NS',
      *   path: ['Company', 123]
@@ -425,6 +444,7 @@ export namespace entity {
      *
      * // Later...
      * const key = datastore.key(key.serialized);
+     * ```
      */
     get serialized() {
       const serializedKey = {
@@ -502,6 +522,7 @@ export namespace entity {
    * @returns {*}
    *
    * @example
+   * ```
    * decodeValueProto({
    *   booleanValue: false
    * });
@@ -516,6 +537,7 @@ export namespace entity {
    *   blobValue: Buffer.from('68656c6c6f')
    * });
    * // <Buffer 68 65 6c 6c 6f>
+   * ```
    */
   export function decodeValueProto(
     valueProto: ValueProto,
@@ -590,10 +612,12 @@ export namespace entity {
    * @returns {object}
    *
    * @example
+   * ```
    * encodeValue('Hi');
    * // {
    * //   stringValue: 'Hi'
    * // }
+   * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export function encodeValue(value: any, property: string): ValueProto {
@@ -737,6 +761,7 @@ export namespace entity {
    * @returns {object}
    *
    * @example
+   * ```
    * entityFromEntityProto({
    *   properties: {
    *     map: {
@@ -752,6 +777,7 @@ export namespace entity {
    * // {
    * //   name: 'Stephen'
    * // }
+   * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export function entityFromEntityProto(
@@ -779,6 +805,7 @@ export namespace entity {
    * @returns {object}
    *
    * @example
+   * ```
    * entityToEntityProto({
    *   excludeFromIndexes: [
    *     'name'
@@ -800,6 +827,7 @@ export namespace entity {
    * //     }
    * //   }
    * // }
+   * ```
    */
   export function entityToEntityProto(entityObject: EntityObject): EntityProto {
     const properties = entityObject.data;
@@ -959,6 +987,7 @@ export namespace entity {
    *     Please see {@link IntegerTypeCastOptions} for options descriptions.
    *
    * @example
+   * ```
    * request_('runQuery', {}, (err, response) => {
    *   const entityObjects = formatArray(response.batch.entityResults);
    *   // {
@@ -969,6 +998,7 @@ export namespace entity {
    *   // }
    *   //
    * });
+   * ```
    */
   export function formatArray(
     results: ResponseResult[],
@@ -1038,8 +1068,10 @@ export namespace entity {
    * @returns {boolean}
    *
    * @example
+   * ```
    * isKeyComplete(new Key(['Company', 'Google'])); // true
    * isKeyComplete(new Key('Company')); // false
+   * ```
    */
   export function isKeyComplete(key: Key) {
     const lastPathElement = entity.keyToKeyProto(key).path!.pop()!;
@@ -1054,6 +1086,7 @@ export namespace entity {
    * @returns {Key}
    *
    * @example
+   * ```
    * const key = keyFromKeyProto({
    *   partitionId: {
    *     projectId: 'project-id',
@@ -1066,6 +1099,7 @@ export namespace entity {
    *     }
    *   ]
    * });
+   * ```
    */
   export function keyFromKeyProto(keyProto: KeyProto): Key {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1106,6 +1140,7 @@ export namespace entity {
    * @returns {object}
    *
    * @example
+   * ```
    * const keyProto = keyToKeyProto(new Key(['Company', 1]));
    * // {
    * //   path: [
@@ -1115,6 +1150,7 @@ export namespace entity {
    * //     }
    * //   ]
    * // }
+   * ```
    */
   export function keyToKeyProto(key: Key): KeyProto {
     if (is.undefined(key.kind)) {
@@ -1172,6 +1208,7 @@ export namespace entity {
    * @returns {object}
    *
    * @example
+   * ```
    * queryToQueryProto({
    *   namespace: '',
    *   kinds: [
@@ -1196,6 +1233,7 @@ export namespace entity {
    * //   order: [],
    * //   groupBy: []
    * // }
+   * ```
    */
   export function queryToQueryProto(query: Query): QueryProto {
     const OP_TO_OPERATOR = {

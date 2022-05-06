@@ -37,7 +37,7 @@ import {
  * never partially applied. Either all of the operations in the transaction are
  * applied, or none of them are applied.
  *
- * @see [Transactions Reference]{@link https://cloud.google.com/datastore/docs/concepts/transactions}
+ * @see {@link https://cloud.google.com/datastore/docs/concepts/transactions| Transactions Reference}
  *
  * @class
  * @extends {Request}
@@ -45,9 +45,11 @@ import {
  * @mixes module:datastore/request
  *
  * @example
+ * ```
  * const {Datastore} = require('@google-cloud/datastore');
  * const datastore = new Datastore();
  * const transaction = datastore.transaction();
+ * ```
  */
 class Transaction extends DatastoreRequest {
   namespace?: string;
@@ -96,9 +98,6 @@ class Transaction extends DatastoreRequest {
    *      the final commit request with.
    */
 
-  commit(gaxOptions?: CallOptions): Promise<CommitResponse>;
-  commit(callback: CommitCallback): void;
-  commit(gaxOptions: CallOptions, callback: CommitCallback): void;
   /**
    * Commit the remote transaction and finalize the current transaction
    * instance.
@@ -115,6 +114,7 @@ class Transaction extends DatastoreRequest {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
@@ -131,7 +131,11 @@ class Transaction extends DatastoreRequest {
    * transaction.commit().then((data) => {
    *   const apiResponse = data[0];
    * });
+   * ```
    */
+  commit(gaxOptions?: CallOptions): Promise<CommitResponse>;
+  commit(callback: CommitCallback): void;
+  commit(gaxOptions: CallOptions, callback: CommitCallback): void;
   commit(
     gaxOptionsOrCallback?: CallOptions | CommitCallback,
     cb?: CommitCallback
@@ -257,15 +261,11 @@ class Transaction extends DatastoreRequest {
     );
   }
 
-  createQuery(kind?: string): Query;
-  createQuery(kind?: string[]): Query;
-  createQuery(namespace: string, kind: string): Query;
-  createQuery(namespace: string, kind: string[]): Query;
   /**
    * Create a query for the specified kind. See {module:datastore/query} for all
    * of the available methods.
    *
-   * @see [Datastore Queries]{@link https://cloud.google.com/datastore/docs/concepts/queries}
+   * @see {@link https://cloud.google.com/datastore/docs/concepts/queries| Datastore Queries}
    *
    * @see {@link Query}
    *
@@ -274,6 +274,7 @@ class Transaction extends DatastoreRequest {
    * @returns {Query}
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
@@ -323,7 +324,12 @@ class Transaction extends DatastoreRequest {
    *     });
    *   });
    * });
+   * ```
    */
+  createQuery(kind?: string): Query;
+  createQuery(kind?: string[]): Query;
+  createQuery(namespace: string, kind: string): Query;
+  createQuery(namespace: string, kind: string[]): Query;
   createQuery(
     namespaceOrKind?: string | string[],
     kind?: string | string[]
@@ -342,6 +348,7 @@ class Transaction extends DatastoreRequest {
    * @param {Key|Key[]} key Datastore key object(s).
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
@@ -366,6 +373,7 @@ class Transaction extends DatastoreRequest {
    *     }
    *   });
    * });
+   * ```
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   delete(entities?: Entities): any {
@@ -402,9 +410,6 @@ class Transaction extends DatastoreRequest {
     this.save(entities);
   }
 
-  rollback(callback: RollbackCallback): void;
-  rollback(gaxOptions?: CallOptions): Promise<RollbackResponse>;
-  rollback(gaxOptions: CallOptions, callback: RollbackCallback): void;
   /**
    * Reverse a transaction remotely and finalize the current transaction
    * instance.
@@ -416,6 +421,7 @@ class Transaction extends DatastoreRequest {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
@@ -438,7 +444,11 @@ class Transaction extends DatastoreRequest {
    * transaction.rollback().then((data) => {
    *   const apiResponse = data[0];
    * });
+   * ```
    */
+  rollback(callback: RollbackCallback): void;
+  rollback(gaxOptions?: CallOptions): Promise<RollbackResponse>;
+  rollback(gaxOptions: CallOptions, callback: RollbackCallback): void;
   rollback(
     gaxOptionsOrCallback?: CallOptions | RollbackCallback,
     cb?: RollbackCallback
@@ -461,9 +471,6 @@ class Transaction extends DatastoreRequest {
     );
   }
 
-  run(options?: RunOptions): Promise<RunResponse>;
-  run(callback: RunCallback): void;
-  run(options: RunOptions, callback: RunCallback): void;
   /**
    * Begin a remote transaction. In the callback provided, run your
    * transactional commands.
@@ -482,6 +489,7 @@ class Transaction extends DatastoreRequest {
    * @param {object} callback.apiResponse The full API response.
    *
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
@@ -513,7 +521,11 @@ class Transaction extends DatastoreRequest {
    *   const transaction = data[0];
    *   const apiResponse = data[1];
    * });
+   * ```
    */
+  run(options?: RunOptions): Promise<RunResponse>;
+  run(callback: RunCallback): void;
+  run(options: RunOptions, callback: RunCallback): void;
   run(
     optionsOrCallback?: RunOptions | RunCallback,
     cb?: RunCallback
@@ -583,6 +595,7 @@ class Transaction extends DatastoreRequest {
    * @param {object} entities.data Data to save with the provided key.
    *
    * @example
+   * ```
    * <caption>Save a single entity.</caption>
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
@@ -613,7 +626,9 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    *
+   * ```
    * @example
+   * ```
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
    * const transaction = datastore.transaction();
@@ -653,7 +668,9 @@ class Transaction extends DatastoreRequest {
    *   });
    * });
    *
+   * ```
    * @example
+   * ```
    * <caption>Save multiple entities at once.</caption>
    * const {Datastore} = require('@google-cloud/datastore');
    * const datastore = new Datastore();
@@ -687,6 +704,7 @@ class Transaction extends DatastoreRequest {
    *     }
    *   });
    * });
+   * ```
    */
   save(entities: Entities): void {
     arrify(entities).forEach((ent: Entity) => {

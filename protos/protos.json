@@ -11,8 +11,9 @@
                     "csharp_namespace": "Google.Cloud.Datastore.Admin.V1",
                     "go_package": "google.golang.org/genproto/googleapis/datastore/admin/v1;admin",
                     "java_multiple_files": true,
-                    "java_outer_classname": "IndexProto",
+                    "java_outer_classname": "MigrationProto",
                     "java_package": "com.google.datastore.admin.v1",
+                    "php_namespace": "Google\\Cloud\\Datastore\\Admin\\V1",
                     "ruby_package": "Google::Cloud::Datastore::Admin::V1"
                   },
                   "nested": {
@@ -74,6 +75,52 @@
                               "(google.longrunning.operation_info)": {
                                 "response_type": "google.protobuf.Empty",
                                 "metadata_type": "ImportEntitiesMetadata"
+                              }
+                            }
+                          ]
+                        },
+                        "CreateIndex": {
+                          "requestType": "CreateIndexRequest",
+                          "responseType": "google.longrunning.Operation",
+                          "options": {
+                            "(google.api.http).post": "/v1/projects/{project_id}/indexes",
+                            "(google.api.http).body": "index",
+                            "(google.longrunning.operation_info).response_type": "Index",
+                            "(google.longrunning.operation_info).metadata_type": "IndexOperationMetadata"
+                          },
+                          "parsedOptions": [
+                            {
+                              "(google.api.http)": {
+                                "post": "/v1/projects/{project_id}/indexes",
+                                "body": "index"
+                              }
+                            },
+                            {
+                              "(google.longrunning.operation_info)": {
+                                "response_type": "Index",
+                                "metadata_type": "IndexOperationMetadata"
+                              }
+                            }
+                          ]
+                        },
+                        "DeleteIndex": {
+                          "requestType": "DeleteIndexRequest",
+                          "responseType": "google.longrunning.Operation",
+                          "options": {
+                            "(google.api.http).delete": "/v1/projects/{project_id}/indexes/{index_id}",
+                            "(google.longrunning.operation_info).response_type": "Index",
+                            "(google.longrunning.operation_info).metadata_type": "IndexOperationMetadata"
+                          },
+                          "parsedOptions": [
+                            {
+                              "(google.api.http)": {
+                                "delete": "/v1/projects/{project_id}/indexes/{index_id}"
+                              }
+                            },
+                            {
+                              "(google.longrunning.operation_info)": {
+                                "response_type": "Index",
+                                "metadata_type": "IndexOperationMetadata"
                               }
                             }
                           ]
@@ -145,15 +192,6 @@
                             "CANCELLED": 7
                           }
                         }
-                      }
-                    },
-                    "OperationType": {
-                      "values": {
-                        "OPERATION_TYPE_UNSPECIFIED": 0,
-                        "EXPORT_ENTITIES": 1,
-                        "IMPORT_ENTITIES": 2,
-                        "CREATE_INDEX": 3,
-                        "DELETE_INDEX": 4
                       }
                     },
                     "Progress": {
@@ -292,6 +330,30 @@
                         }
                       }
                     },
+                    "CreateIndexRequest": {
+                      "fields": {
+                        "projectId": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "index": {
+                          "type": "Index",
+                          "id": 3
+                        }
+                      }
+                    },
+                    "DeleteIndexRequest": {
+                      "fields": {
+                        "projectId": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "indexId": {
+                          "type": "string",
+                          "id": 3
+                        }
+                      }
+                    },
                     "GetIndexRequest": {
                       "fields": {
                         "projectId": {
@@ -351,6 +413,27 @@
                           "type": "string",
                           "id": 3
                         }
+                      }
+                    },
+                    "DatastoreFirestoreMigrationMetadata": {
+                      "fields": {
+                        "migrationState": {
+                          "type": "MigrationState",
+                          "id": 1
+                        },
+                        "migrationStep": {
+                          "type": "MigrationStep",
+                          "id": 2
+                        }
+                      }
+                    },
+                    "OperationType": {
+                      "values": {
+                        "OPERATION_TYPE_UNSPECIFIED": 0,
+                        "EXPORT_ENTITIES": 1,
+                        "IMPORT_ENTITIES": 2,
+                        "CREATE_INDEX": 3,
+                        "DELETE_INDEX": 4
                       }
                     },
                     "Index": {
@@ -441,6 +524,83 @@
                             "ERROR": 4
                           }
                         }
+                      }
+                    },
+                    "MigrationStateEvent": {
+                      "fields": {
+                        "state": {
+                          "type": "MigrationState",
+                          "id": 1
+                        }
+                      }
+                    },
+                    "MigrationProgressEvent": {
+                      "oneofs": {
+                        "stepDetails": {
+                          "oneof": [
+                            "prepareStepDetails",
+                            "redirectWritesStepDetails"
+                          ]
+                        }
+                      },
+                      "fields": {
+                        "step": {
+                          "type": "MigrationStep",
+                          "id": 1
+                        },
+                        "prepareStepDetails": {
+                          "type": "PrepareStepDetails",
+                          "id": 2
+                        },
+                        "redirectWritesStepDetails": {
+                          "type": "RedirectWritesStepDetails",
+                          "id": 3
+                        }
+                      },
+                      "nested": {
+                        "PrepareStepDetails": {
+                          "fields": {
+                            "concurrencyMode": {
+                              "type": "ConcurrencyMode",
+                              "id": 1
+                            }
+                          }
+                        },
+                        "RedirectWritesStepDetails": {
+                          "fields": {
+                            "concurrencyMode": {
+                              "type": "ConcurrencyMode",
+                              "id": 1
+                            }
+                          }
+                        },
+                        "ConcurrencyMode": {
+                          "values": {
+                            "CONCURRENCY_MODE_UNSPECIFIED": 0,
+                            "PESSIMISTIC": 1,
+                            "OPTIMISTIC": 2
+                          }
+                        }
+                      }
+                    },
+                    "MigrationState": {
+                      "values": {
+                        "MIGRATION_STATE_UNSPECIFIED": 0,
+                        "RUNNING": 1,
+                        "PAUSED": 2,
+                        "COMPLETE": 3
+                      }
+                    },
+                    "MigrationStep": {
+                      "values": {
+                        "MIGRATION_STEP_UNSPECIFIED": 0,
+                        "PREPARE": 6,
+                        "START": 1,
+                        "APPLY_WRITES_SYNCHRONOUSLY": 7,
+                        "COPY_AND_VERIFY": 2,
+                        "REDIRECT_EVENTUALLY_CONSISTENT_READS": 3,
+                        "REDIRECT_STRONGLY_CONSISTENT_READS": 4,
+                        "REDIRECT_WRITES": 5
                       }
                     }
                   }
@@ -644,6 +804,10 @@
                       "rule": "repeated",
                       "type": "Key",
                       "id": 3
+                    },
+                    "readTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 7
                     }
                   }
                 },
@@ -788,6 +952,10 @@
                     "indexUpdates": {
                       "type": "int32",
                       "id": 4
+                    },
+                    "commitTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 8
                     }
                   }
                 },
@@ -857,7 +1025,8 @@
                     },
                     "conflictDetectionStrategy": {
                       "oneof": [
-                        "baseVersion"
+                        "baseVersion",
+                        "updateTime"
                       ]
                     }
                   },
@@ -881,6 +1050,10 @@
                     "baseVersion": {
                       "type": "int64",
                       "id": 8
+                    },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 11
                     }
                   }
                 },
@@ -894,6 +1067,10 @@
                       "type": "int64",
                       "id": 4
                     },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 6
+                    },
                     "conflictDetected": {
                       "type": "bool",
                       "id": 5
@@ -905,7 +1082,8 @@
                     "consistencyType": {
                       "oneof": [
                         "readConsistency",
-                        "transaction"
+                        "transaction",
+                        "readTime"
                       ]
                     }
                   },
@@ -917,6 +1095,10 @@
                     "transaction": {
                       "type": "bytes",
                       "id": 2
+                    },
+                    "readTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 4
                     }
                   },
                   "nested": {
@@ -958,7 +1140,12 @@
                       }
                     },
                     "ReadOnly": {
-                      "fields": {}
+                      "fields": {
+                        "readTime": {
+                          "type": "google.protobuf.Timestamp",
+                          "id": 1
+                        }
+                      }
                     }
                   }
                 },
@@ -1117,6 +1304,10 @@
                     "version": {
                       "type": "int64",
                       "id": 4
+                    },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 5
                     },
                     "cursor": {
                       "type": "bytes",
@@ -1288,7 +1479,10 @@
                         "GREATER_THAN": 3,
                         "GREATER_THAN_OR_EQUAL": 4,
                         "EQUAL": 5,
-                        "HAS_ANCESTOR": 11
+                        "IN": 6,
+                        "NOT_EQUAL": 9,
+                        "HAS_ANCESTOR": 11,
+                        "NOT_IN": 13
                       }
                     }
                   }
@@ -1365,6 +1559,10 @@
                     "snapshotVersion": {
                       "type": "int64",
                       "id": 7
+                    },
+                    "readTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 8
                     }
                   },
                   "nested": {
@@ -1509,14 +1707,16 @@
                 "REQUIRED": 2,
                 "OUTPUT_ONLY": 3,
                 "INPUT_ONLY": 4,
-                "IMMUTABLE": 5
+                "IMMUTABLE": 5,
+                "UNORDERED_LIST": 6,
+                "NON_EMPTY_DEFAULT": 7
               }
             }
           }
         },
         "protobuf": {
           "options": {
-            "go_package": "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor",
+            "go_package": "google.golang.org/protobuf/types/descriptorpb",
             "java_package": "com.google.protobuf",
             "java_outer_classname": "DescriptorProtos",
             "csharp_namespace": "Google.Protobuf.Reflection",
@@ -2075,6 +2275,18 @@
                 ]
               ],
               "reserved": [
+                [
+                  4,
+                  4
+                ],
+                [
+                  5,
+                  5
+                ],
+                [
+                  6,
+                  6
+                ],
                 [
                   8,
                   8
