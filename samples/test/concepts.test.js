@@ -93,13 +93,11 @@ describe('concepts', () => {
   it('performs a kindless query', () => query.testKindlessQuery());
   it('performs a projection query', () => {
     const priorities = transaction.datastore.int({
-      type: 'DatastoreInt',
-      value: 4,
+      integerValue: 4,
       propertyName: 'priority',
     });
     const percentCompletes = transaction.datastore.int({
-      type: 'DatastoreInt',
-      value: 10,
+      integerValue: 10,
       propertyName: 'percent_complete',
     });
     return entity
