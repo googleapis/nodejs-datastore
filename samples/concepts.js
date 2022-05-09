@@ -1033,22 +1033,16 @@ class Transaction extends TestHelper {
       const accounts = results.map(result => result[0]);
       // Restore `datastore` to the mock API.
       datastore = datastoreMock;
-      assert.strictEqual(
-        accounts[0].balance,
-          {
-            _entityPropertyName: 'balance',
-            type: 'DatastoreInt',
-            value: originalBalance - amountToTransfer
-          }
-      );
-      assert.strictEqual(
-        accounts[1].balance,
-        {
-          _entityPropertyName: 'balance',
-          type: 'DatastoreInt',
-          value: originalBalance + amountToTransfer
-        }
-      );
+      assert.strictEqual(accounts[0].balance, {
+        _entityPropertyName: 'balance',
+        type: 'DatastoreInt',
+        value: originalBalance - amountToTransfer,
+      });
+      assert.strictEqual(accounts[1].balance, {
+        _entityPropertyName: 'balance',
+        type: 'DatastoreInt',
+        value: originalBalance + amountToTransfer,
+      });
     } catch (err) {
       datastore = datastoreMock;
       throw err;
