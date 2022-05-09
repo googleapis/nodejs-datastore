@@ -1035,11 +1035,19 @@ class Transaction extends TestHelper {
       datastore = datastoreMock;
       assert.strictEqual(
         accounts[0].balance,
-        originalBalance - amountToTransfer
+          {
+            _entityPropertyName: 'balance',
+            type: 'DatastoreInt',
+            value: originalBalance - amountToTransfer
+          }
       );
       assert.strictEqual(
         accounts[1].balance,
-        originalBalance + amountToTransfer
+        {
+          _entityPropertyName: 'balance',
+          type: 'DatastoreInt',
+          value: originalBalance + amountToTransfer
+        }
       );
     } catch (err) {
       datastore = datastoreMock;
