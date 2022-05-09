@@ -92,12 +92,12 @@ describe('concepts', () => {
   it('performs a query with multi sort', () => query.testMultiSort());
   it('performs a kindless query', () => query.testKindlessQuery());
   it('performs a projection query', () => {
-    const priorities = entity.Int({
+    const priorities = transaction.datastore.int({
       type: 'DatastoreInt',
       value: 4,
       propertyName: 'priority',
     });
-    const percentCompletes = entity.Int({
+    const percentCompletes = transaction.datastore.int({
       type: 'DatastoreInt',
       value: 10,
       propertyName: 'percent_complete',
