@@ -111,8 +111,8 @@ describe('concepts', () => {
       })
       .then(results => {
         assert.deepStrictEqual(results, {
-          priorities: priorities,
-          percentCompletes: percentCompletes,
+          priorities: [priorities],
+          percentCompletes: [percentCompletes],
         });
       });
   });
