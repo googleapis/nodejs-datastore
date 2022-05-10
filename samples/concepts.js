@@ -1041,8 +1041,8 @@ class Transaction extends TestHelper {
       const accounts = results.map(result => result[0]);
       // Restore `datastore` to the mock API.
       datastore = datastoreMock;
-      assert.strictEqual(accounts[0].balance, beforeBalance);
-      assert.strictEqual(accounts[1].balance, afterBalance);
+      assert.deepStrictEqual(accounts[0].balance, beforeBalance);
+      assert.deepStrictEqual(accounts[1].balance, afterBalance);
     } catch (err) {
       datastore = datastoreMock;
       throw err;
