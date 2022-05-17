@@ -134,42 +134,42 @@ export namespace google {
                 namespace DatastoreAdmin {
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#exportEntities}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|exportEntities}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type ExportEntitiesCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#importEntities}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|importEntities}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type ImportEntitiesCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#createIndex}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|createIndex}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type CreateIndexCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#deleteIndex}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|deleteIndex}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type DeleteIndexCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#getIndex}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|getIndex}.
                      * @param error Error, if any
                      * @param [response] Index
                      */
                     type GetIndexCallback = (error: (Error|null), response?: google.datastore.admin.v1.Index) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#listIndexes}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|listIndexes}.
                      * @param error Error, if any
                      * @param [response] ListIndexesResponse
                      */
@@ -2504,49 +2504,49 @@ export namespace google {
             namespace Datastore {
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#lookup}.
+                 * Callback as used by {@link google.datastore.v1.Datastore|lookup}.
                  * @param error Error, if any
                  * @param [response] LookupResponse
                  */
                 type LookupCallback = (error: (Error|null), response?: google.datastore.v1.LookupResponse) => void;
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#runQuery}.
+                 * Callback as used by {@link google.datastore.v1.Datastore|runQuery}.
                  * @param error Error, if any
                  * @param [response] RunQueryResponse
                  */
                 type RunQueryCallback = (error: (Error|null), response?: google.datastore.v1.RunQueryResponse) => void;
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#beginTransaction}.
+                 * Callback as used by {@link google.datastore.v1.Datastore|beginTransaction}.
                  * @param error Error, if any
                  * @param [response] BeginTransactionResponse
                  */
                 type BeginTransactionCallback = (error: (Error|null), response?: google.datastore.v1.BeginTransactionResponse) => void;
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#commit}.
+                 * Callback as used by {@link google.datastore.v1.Datastore|commit}.
                  * @param error Error, if any
                  * @param [response] CommitResponse
                  */
                 type CommitCallback = (error: (Error|null), response?: google.datastore.v1.CommitResponse) => void;
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#rollback}.
+                 * Callback as used by {@link google.datastore.v1.Datastore|rollback}.
                  * @param error Error, if any
                  * @param [response] RollbackResponse
                  */
                 type RollbackCallback = (error: (Error|null), response?: google.datastore.v1.RollbackResponse) => void;
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#allocateIds}.
+                 * Callback as used by {@link google.datastore.v1.Datastore|allocateIds}.
                  * @param error Error, if any
                  * @param [response] AllocateIdsResponse
                  */
                 type AllocateIdsCallback = (error: (Error|null), response?: google.datastore.v1.AllocateIdsResponse) => void;
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#reserveIds}.
+                 * Callback as used by {@link google.datastore.v1.Datastore|reserveIds}.
                  * @param error Error, if any
                  * @param [response] ReserveIdsResponse
                  */
@@ -8731,6 +8731,9 @@ export namespace google {
             /** FieldOptions lazy */
             lazy?: (boolean|null);
 
+            /** FieldOptions unverifiedLazy */
+            unverifiedLazy?: (boolean|null);
+
             /** FieldOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -8764,6 +8767,9 @@ export namespace google {
 
             /** FieldOptions lazy. */
             public lazy: boolean;
+
+            /** FieldOptions unverifiedLazy. */
+            public unverifiedLazy: boolean;
 
             /** FieldOptions deprecated. */
             public deprecated: boolean;
@@ -11594,35 +11600,35 @@ export namespace google {
         namespace Operations {
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#listOperations}.
+             * Callback as used by {@link google.longrunning.Operations|listOperations}.
              * @param error Error, if any
              * @param [response] ListOperationsResponse
              */
             type ListOperationsCallback = (error: (Error|null), response?: google.longrunning.ListOperationsResponse) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#getOperation}.
+             * Callback as used by {@link google.longrunning.Operations|getOperation}.
              * @param error Error, if any
              * @param [response] Operation
              */
             type GetOperationCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#deleteOperation}.
+             * Callback as used by {@link google.longrunning.Operations|deleteOperation}.
              * @param error Error, if any
              * @param [response] Empty
              */
             type DeleteOperationCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#cancelOperation}.
+             * Callback as used by {@link google.longrunning.Operations|cancelOperation}.
              * @param error Error, if any
              * @param [response] Empty
              */
             type CancelOperationCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#waitOperation}.
+             * Callback as used by {@link google.longrunning.Operations|waitOperation}.
              * @param error Error, if any
              * @param [response] Operation
              */
