@@ -71,32 +71,32 @@ describe('Query', () => {
     it('should recognize all the different operators in list', () => {
       const now = new Date();
       const filterData = [
-          ['leqProperty', '<=', now],
-          ['equalProperty', '=', 'Title'],
-          ['greaterThanProperty', '>', 20],
-          ['lessThanProperty', '<', 10],
-          ['geqProperty', '>=', 11],
-          ['neProperty', '!=', 12],
-          ['inProperty', 'IN', 13],
-          ['notInProperty', 'NOT_IN', 14],
-          ['countProperty', 'COUNT', 15],
+        ['leqProperty', '<=', now],
+        ['equalProperty', '=', 'Title'],
+        ['greaterThanProperty', '>', 20],
+        ['lessThanProperty', '<', 10],
+        ['geqProperty', '>=', 11],
+        ['neProperty', '!=', 12],
+        ['inProperty', 'IN', 13],
+        ['notInProperty', 'NOT_IN', 14],
+        ['countProperty', 'COUNT', 15],
       ].map(filter => {
         return {
           property: filter[0],
           operator: filter[1],
-          value: filter[2]
-        }
-      })
+          value: filter[2],
+        };
+      });
       const query = filterData.reduce((query, filter) => {
-        return query.filter(filter.property, filter.operator, filter.value)
-      }, new Query(['kind1']))
+        return query.filter(filter.property, filter.operator, filter.value);
+      }, new Query(['kind1']));
       filterData.forEach((filter, index) => {
         const queryFilter = query.filters[index];
         assert.strictEqual(queryFilter.name, filter.property);
         assert.strictEqual(queryFilter.op, filter.operator);
         assert.strictEqual(queryFilter.val, filter.value);
-      })
-    })
+      });
+    });
 
     // TODO: Consider removing this test as the previous test is a less redundant version of it.
     it('should recognize all the different operators', () => {

@@ -1196,7 +1196,7 @@ export namespace entity {
       '!=': 'NOT_EQUAL',
       IN: 'IN',
       NOT_IN: 'NOT_IN',
-      COUNT: 'COUNT'
+      COUNT: 'COUNT',
     };
 
     const SIGN_TO_ORDER = {
