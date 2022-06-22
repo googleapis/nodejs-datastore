@@ -31,7 +31,8 @@ export type Operator =
   | 'HAS_ANCESTOR'
   | '!='
   | 'IN'
-  | 'NOT_IN';
+  | 'NOT_IN'
+  | 'COUNT';
 
 export interface OrderOptions {
   descending?: boolean;

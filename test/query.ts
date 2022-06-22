@@ -68,6 +68,37 @@ describe('Query', () => {
       assert.strictEqual(filter.val, now);
     });
 
+    it('should recognize all the different operators in list', () => {
+      const now = new Date();
+      const filterData = [
+          ['leqProperty', '<=', now],
+          ['equalProperty', '=', 'Title'],
+          ['greaterThanProperty', '>', 20],
+          ['lessThanProperty', '<', 10],
+          ['geqProperty', '>=', 11],
+          ['neProperty', '!=', 12],
+          ['inProperty', 'IN', 13],
+          ['notInProperty', 'NOT_IN', 14],
+          ['countProperty', 'COUNT', 15],
+      ].map(filter => {
+        return {
+          property: filter[0],
+          operator: filter[1],
+          value: filter[2]
+        }
+      })
+      const query = filterData.reduce((query, filter) => {
+        return query.filter(filter.property, filter.operator, filter.value)
+      }, new Query(['kind1']))
+      filterData.forEach((filter, index) => {
+        const queryFilter = query.filters[index];
+        assert.strictEqual(queryFilter.name, filter.property);
+        assert.strictEqual(queryFilter.op, filter.operator);
+        assert.strictEqual(queryFilter.val, filter.value);
+      })
+    })
+
+    // TODO: Consider removing this test as the previous test is a less redundant version of it.
     it('should recognize all the different operators', () => {
       const now = new Date();
       const query = new Query(['kind1'])
@@ -78,7 +109,8 @@ describe('Query', () => {
         .filter('something', '>=', 11)
         .filter('neProperty', '!=', 12)
         .filter('inProperty', 'IN', 13)
-        .filter('notInProperty', 'NOT_IN', 14);
+        .filter('notInProperty', 'NOT_IN', 14)
+        .filter('countProperty', 'COUNT', 15);
 
       assert.strictEqual(query.filters[0].name, 'date');
       assert.strictEqual(query.filters[0].op, '<=');
@@ -111,6 +143,10 @@ describe('Query', () => {
       assert.strictEqual(query.filters[7].name, 'notInProperty');
       assert.strictEqual(query.filters[7].op, 'NOT_IN');
       assert.strictEqual(query.filters[7].val, 14);
+
+      assert.strictEqual(query.filters[8].name, 'countProperty');
+      assert.strictEqual(query.filters[8].op, 'COUNT');
+      assert.strictEqual(query.filters[8].val, 15);
     });
 
     it('should remove any whitespace surrounding the filter name', () => {

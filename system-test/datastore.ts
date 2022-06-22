@@ -752,6 +752,15 @@ describe('Datastore', () => {
       assert.strictEqual(entities!.length, 5);
     });
 
+    it('should filter queries with COUNT', async () => {
+      const q = datastore
+          .createQuery('Character')
+          .hasAncestor(ancestor)
+          .filter('family', 'COUNT', 2);
+      const [entities] = await datastore.runQuery(q);
+      assert.strictEqual(entities!.length, 1);
+    });
+
     it('should filter queries with defined indexes', async () => {
       const q = datastore
         .createQuery('Character')
