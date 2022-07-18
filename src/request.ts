@@ -279,9 +279,11 @@ class DatastoreRequest {
 
       if (options.consistency) {
         const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
+        const readTime = options.readTime;
 
         reqOpts.readOptions = {
           readConsistency: code,
+          readTime,
         };
       }
 
@@ -1058,7 +1060,7 @@ export interface RequestConfig {
 export interface RequestOptions {
   mutations?: google.datastore.v1.IMutation[];
   keys?: Entity;
-  readOptions?: {readConsistency?: number; transaction?: string};
+  readOptions?: {readConsistency?: number; transaction?: string, readTime?: number};
   partitionId?: google.datastore.v1.IPartitionId | null;
   transactionOptions?: {
     readOnly?: {};
