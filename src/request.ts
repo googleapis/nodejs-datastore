@@ -54,6 +54,7 @@ import {
   RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
+import ITimestamp = google.protobuf.ITimestamp;
 
 /**
  * A map of read consistency values to proto codes.
@@ -279,11 +280,19 @@ class DatastoreRequest {
 
       if (options.consistency) {
         const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
-        const readTime = options.readTime;
 
         reqOpts.readOptions = {
           readConsistency: code,
-          readTime,
+        };
+      }
+      if (options.readTime) {
+        if (!reqOpts.readOptions) {
+          reqOpts.readOptions = {};
+        }
+        const readTime = options.readTime;
+        const seconds = readTime / 1000;
+        reqOpts.readOptions.readTime = {
+          seconds: Math.floor(seconds),
         };
       }
 
@@ -1063,7 +1072,7 @@ export interface RequestOptions {
   readOptions?: {
     readConsistency?: number;
     transaction?: string;
-    readTime?: number;
+    readTime?: ITimestamp;
   };
   partitionId?: google.datastore.v1.IPartitionId | null;
   transactionOptions?: {
