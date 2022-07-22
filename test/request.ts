@@ -33,7 +33,8 @@ import {
   RequestOptions,
   PrepareEntityObjectResponse,
   CommitResponse,
-  GetResponse, RequestCallback,
+  GetResponse,
+  RequestCallback,
 } from '../src/request';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -680,27 +681,31 @@ describe('Request', () => {
           method: 'lookup',
           gaxOpts: undefined,
           reqOpts: {
-            keys: [{
-              path: [{
-                kind: 'Company',
-                id: 123
-              }],
-              partitionId: {namespaceId: 'namespace'}
-            }],
+            keys: [
+              {
+                path: [
+                  {
+                    kind: 'Company',
+                    id: 123,
+                  },
+                ],
+                partitionId: {namespaceId: 'namespace'},
+              },
+            ],
             readOptions: {
               readTime: {
-                seconds: Math.floor(savedTime / 1000)
-              }
-            }
-          }
+                seconds: Math.floor(savedTime / 1000),
+              },
+            },
+          },
         });
         callback(null, {
           deferred: [],
           found: [],
           missing: [],
-          readTime: {seconds: Math.floor(savedTime / 1000), nanos: 0}
+          readTime: {seconds: Math.floor(savedTime / 1000), nanos: 0},
         });
-      }
+      };
       request.get(key, {readTime: savedTime}, (err: any) => {
         if (err) {
           throw err;
