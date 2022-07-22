@@ -694,7 +694,12 @@ describe('Request', () => {
             }
           }
         });
-        callback();
+        callback(null, {
+          deferred: [],
+          found: [],
+          missing: [],
+          readTime: {seconds: Math.floor(savedTime / 1000), nanos: 0}
+        });
       }
       request.get(key, {readTime: savedTime}, (err: any) => {
         if (err) {
