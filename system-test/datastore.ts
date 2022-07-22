@@ -308,7 +308,6 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
-    // TODO: Modify this
     it('should save/get/delete from a snapshot', async () => {
       function sleep(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -334,10 +333,13 @@ describe('Datastore', () => {
       await sleep(1000);
       // Save new post2 data, but then verify the timestamp read has post1 data
       await datastore.save({key: postKey, data: post2});
-      const [entity] = await datastore.get(postKey, {readTime: savedTime}); // Include new options here
+      const [entity] = await datastore.get(postKey, {readTime: savedTime});
       assert.deepStrictEqual(entity[datastore.KEY], postKey);
+      const [entityNoOptions] = await datastore.get(postKey);
+      assert.deepStrictEqual(entityNoOptions[datastore.KEY], postKey);
       delete entity[datastore.KEY];
       assert.deepStrictEqual(entity, post);
+      assert.deepStrictEqual(entity, post2);
       await datastore.delete(postKey);
     });
 
