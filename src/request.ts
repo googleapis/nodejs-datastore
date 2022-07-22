@@ -286,7 +286,7 @@ class DatastoreRequest {
         };
       }
       if (options.readTime) {
-        if (!reqOpts.readOptions) {
+        if (reqOpts.readOptions === undefined) {
           reqOpts.readOptions = {};
         }
         const readTime = options.readTime;
