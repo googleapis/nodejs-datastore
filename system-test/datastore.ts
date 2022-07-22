@@ -339,6 +339,7 @@ describe('Datastore', () => {
       assert.deepStrictEqual(entityNoOptions[datastore.KEY], postKey);
       delete entity[datastore.KEY];
       assert.deepStrictEqual(entity, post);
+      delete entityNoOptions[datastore.KEY];
       assert.deepStrictEqual(entityNoOptions, post2);
       await datastore.delete(postKey);
     });
