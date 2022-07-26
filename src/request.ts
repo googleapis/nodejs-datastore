@@ -965,7 +965,7 @@ class DatastoreRequest {
       };
     }
 
-    datastore.auth.getProjectId((err: any, projectId: string) => {
+    datastore.auth.getProjectId((err, projectId) => {
       if (err) {
         callback!(err);
         return;

@@ -17,3 +17,4 @@
 // ** All changes to this file may be overwritten. **
 
 export {DatastoreClient} from './datastore_client';
+export {DatastoreAdminClient} from './datastore_admin_client';
