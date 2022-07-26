@@ -71,6 +71,7 @@ export interface Filter {
  * ```
  */
 class Query {
+  aggregations: Array<Datastore.protos.AggregationQuery.Aggregation>;
   scope?: Datastore | Transaction;
   namespace?: string | null;
   kinds: string[];
@@ -159,6 +160,18 @@ class Query {
      * @type {number}
      */
     this.offsetVal = -1;
+    /**
+     * @name Query#aggregations
+     * @type {array}
+     */
+    this.aggregations = [];
+  }
+
+  count(maximum: number, alias: string) {
+    const count = Object.assign({}, maximum ? {up_to: maximum} : null);
+    const aggregation = Object.assign({count}, alias ? {} : null)
+    this.aggregations.push(aggregation);
+    return this;
   }
 
   /**

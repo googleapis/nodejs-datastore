@@ -797,6 +797,20 @@ describe('Datastore', () => {
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });
+    it('should do a count aggregate filter', async () => {
+      // TODO: count with alias & up_to and also multiple count filters
+      console.log('running stream');
+      const q = datastore
+          .createQuery('Character')
+          .hasAncestor(ancestor)
+          .filter('family', 'Stark')
+          .filter('appearances', '>=', 20)
+          .count();
+      const result = await datastore.runQuery(q);
+      console.log('result');
+      console.log(result);
+      assert.strictEqual(result, 6);
+    });
 
     it('should filter by ancestor', async () => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
