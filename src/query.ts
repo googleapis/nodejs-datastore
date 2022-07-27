@@ -71,7 +71,7 @@ export interface Filter {
  * ```
  */
 class Query {
-  aggregations: Array<Datastore.protos.AggregationQuery.Aggregation>;
+  aggregations: Array<any>; // TODO: Replace type with aggregation
   scope?: Datastore | Transaction;
   namespace?: string | null;
   kinds: string[];
