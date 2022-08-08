@@ -772,16 +772,18 @@ class DatastoreRequest {
         );
       } else {
         const aggregationQueryOptions: AggregationQueryOptions = {
-          nestedQuery: queryProto,
+          query_type: {
+            nested_query: queryProto,
+          },
           aggregations: query.aggregations
         };
         const reqOpts: RunAggregationQueryRequest = Object.assign(
           sharedQueryOpts,
-          // {query_type:
+          {query_type:
             {
-              aggregationQuery: aggregationQueryOptions
+              aggregation_query: aggregationQueryOptions
             }
-          // }
+          }
         );
         console.log('Aggregate');
         console.log(reqOpts);
@@ -1121,12 +1123,14 @@ export interface RequestOptions extends SharedQueryOptions{
   entityFilter?: google.datastore.admin.v1.IEntityFilter;
 }
 export interface RunAggregationQueryRequest extends SharedQueryOptions{
-  // query_type: {
-    aggregationQuery: AggregationQueryOptions
-  // }
+  query_type: {
+    aggregation_query: AggregationQueryOptions
+  }
 }
 export interface AggregationQueryOptions {
-  nestedQuery: QueryProto,
+  query_type: {
+    nested_query: QueryProto,
+  }
   aggregations: Array<any>
 }
 export type RunQueryStreamOptions = RunQueryOptions;
