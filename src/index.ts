@@ -482,7 +482,8 @@ class Datastore extends DatastoreRequest {
 
     options.projectId = options.projectId || process.env.DATASTORE_PROJECT_ID;
 
-    this.defaultBaseUrl_ = 'datastore.googleapis.com';
+    // this.defaultBaseUrl_ = 'datastore.googleapis.com'; // TODO: Add this back in when ready
+    this.defaultBaseUrl_ = 'nightly-datastore.sandbox.googleapis.com/'
     this.determineBaseUrl_(options.apiEndpoint);
 
     const scopes: string[] = Array.from(

@@ -797,7 +797,8 @@ describe('Datastore', () => {
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });
-    it('should do a count aggregate filter', async () => {
+    // TODO: Remove only
+    it.only('should do a count aggregate filter', async () => {
       // TODO: count with alias & up_to and also multiple count filters
       console.log('running stream');
       const q = datastore
