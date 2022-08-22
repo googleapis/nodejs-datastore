@@ -43,7 +43,7 @@ import {
   EntityProto,
   KeyProto,
   ResponseResult,
-  Entities,
+  Entities, ValueProto,
 } from './entity';
 import {
   Query,
@@ -792,10 +792,33 @@ class DatastoreRequest {
               reqOpts,
               gaxOpts: options.gaxOptions,
             },
-            onResultSet
+            onAggregateResultSet
         );
       }
     };
+    function onAggregateResultSet(err?: Error | null, resp?: Entity) {
+      if (err) {
+        stream.destroy(err);
+        return;
+      }
+      if (resp.batch.aggregationResults) {
+        try {
+          const results = resp.batch.aggregationResults;
+          const finalResults = results
+              .map((aggregationResult: any) => aggregationResult.aggregateProperties)
+              .map((aggregateProperties: any) => {
+                aggregateProperties.reduce((newValues:any, [property, value]:[any, any]) => {
+                  newValues[property] = entity.decodeValueProto(value);
+                  return newValues;
+                })
+              });
+          split(finalResults, stream);
+        } catch (err) {
+          stream.destroy(err);
+          return;
+        }
+      }
+    }
 
     function onResultSet(err?: Error | null, resp?: Entity) {
       if (err) {
