@@ -803,13 +803,13 @@ describe('Datastore', () => {
       console.log('running stream');
       const q = datastore
           .createQuery('Character')
-          .hasAncestor(ancestor)
-          .filter('family', 'Stark')
-          .filter('appearances', '>=', 20)
+          // .hasAncestor(ancestor)
+          // .filter('family', 'Stark')
+          // .filter('appearances', '>=', 20)
           .count();
       const result = await datastore.runQuery(q);
       console.log('result');
-      console.log(result);
+      console.log(JSON.stringify(result));
       assert.strictEqual(result, 6);
     });
 
