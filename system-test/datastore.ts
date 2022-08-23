@@ -794,6 +794,8 @@ describe('Datastore', () => {
         .hasAncestor(ancestor)
         .filter('family', 'Stark')
         .filter('appearances', '>=', 20);
+      // TODO: Remove later
+      const returnValue = await datastore.runQuery(q);
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });

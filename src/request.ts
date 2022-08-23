@@ -801,6 +801,12 @@ class DatastoreRequest {
         stream.destroy(err);
         return;
       }
+      const info: RunQueryInfo = {
+        moreResults: resp.batch.moreResults,
+      };
+      if (resp.batch.endCursor) {
+        info.endCursor = resp.batch.endCursor.toString('base64');
+      }
       if (resp.batch.aggregationResults) {
         try {
           const results = resp.batch.aggregationResults;
@@ -815,7 +821,18 @@ class DatastoreRequest {
                   )
                 )
               );
-          split(finalResults, stream);
+          split(finalResults, stream).then(streamEnded => {
+            if (streamEnded) {
+              return;
+            }
+            if (resp.batch.moreResults !== 'NOT_FINISHED') {
+              stream.emit('info', info);
+              stream.push(null);
+              return;
+            }
+            stream.end();
+            return;
+          });
         } catch (err) {
           stream.destroy(err);
           return;
