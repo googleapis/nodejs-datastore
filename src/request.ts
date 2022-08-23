@@ -806,12 +806,15 @@ class DatastoreRequest {
           const results = resp.batch.aggregationResults;
           const finalResults = results
               .map((aggregationResult: any) => aggregationResult.aggregateProperties)
-              .map((aggregateProperties: any) => {
-                aggregateProperties.reduce((newValues:any, [property, value]:[any, any]) => {
-                  newValues[property] = entity.decodeValueProto(value);
-                  return newValues;
-                })
-              });
+              .map((aggregateProperties: any) =>
+                Object.fromEntries(
+                  new Map(
+                    Object.keys(aggregateProperties).map(key =>
+                      [key, entity.decodeValueProto(aggregateProperties[key])]
+                    )
+                  )
+                )
+              );
           split(finalResults, stream);
         } catch (err) {
           stream.destroy(err);
