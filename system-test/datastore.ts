@@ -799,13 +799,19 @@ describe('Datastore', () => {
     });
     describe('with a count filter', () => {
       // TODO: Remove only
-      it.only('should do a count aggregate filter', async () => {
-        // TODO: count with alias & up_to and also multiple count filters
+      it('should do a count aggregate filter', async () => {
         const q = datastore
             .createQuery('Character')
             .count();
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{property_1: 8}]);
+      });
+      it.only('should do a count aggregate filter with a maximum', async () => {
+        const q = datastore
+            .createQuery('Character')
+            .count(4);
+        const [results] = await datastore.runQuery(q);
+        assert.deepStrictEqual(results, [{property_1: 4}]);
       });
       it('should do a count aggregate filter with other filters', async () => {
         // TODO: count with alias & up_to and also multiple count filters

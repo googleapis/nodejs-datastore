@@ -168,7 +168,7 @@ class Query {
   }
 
   count(maximum?: number | null, alias?: string) {
-    const count = Object.assign({}, maximum ? {up_to: maximum} : null);
+    const count = Object.assign({}, maximum ? {up_to: Buffer.from(maximum, 'base64')} : null);
     const aggregation = Object.assign({count}, alias ? {alias} : null)
     this.aggregations.push(aggregation);
     return this;
