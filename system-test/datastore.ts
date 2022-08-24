@@ -799,16 +799,15 @@ describe('Datastore', () => {
     });
     describe('with a count filter', () => {
       // TODO: Remove only
-      it('should do a count aggregate filter', async () => {
+      it.only('should do a count aggregate filter', async () => {
         // TODO: count with alias & up_to and also multiple count filters
         const q = datastore
             .createQuery('Character')
             .count();
         const [results] = await datastore.runQuery(q);
-        assert.strictEqual(results.length, 1);
-        assert.strictEqual(results[0].property_1, 8);
+        assert.deepStrictEqual(results, [{property_1: 8}]);
       });
-      it.only('should do a count aggregate filter with other filters', async () => {
+      it('should do a count aggregate filter with other filters', async () => {
         // TODO: count with alias & up_to and also multiple count filters
         const q = datastore
             .createQuery('Character')
@@ -816,8 +815,7 @@ describe('Datastore', () => {
             .filter('appearances', '>=', 20)
             .count(null, 'total');
         const [results] = await datastore.runQuery(q);
-        assert.strictEqual(results.length, 1);
-        assert.strictEqual(results[0].total, 6);
+        assert.deepStrictEqual(results, [{total: 6}]);
       });
       // TODO: count with alias & up_to and also multiple count filters
       // TODO: test with filters
@@ -826,8 +824,7 @@ describe('Datastore', () => {
             .createQuery('Character')
             .count(null, 'total');
         const [results] = await datastore.runQuery(q);
-        assert.strictEqual(results.length, 1);
-        assert.strictEqual(results[0].total, 8);
+        assert.deepStrictEqual(results, [{total: 8}]);
       });
       it('should do multiple count filters', async () => {
         const q = datastore
@@ -835,9 +832,7 @@ describe('Datastore', () => {
             .count(4, 'total')
             .count(4, 'total2');
         const [results] = await datastore.runQuery(q);
-        assert.strictEqual(results.length, 1);
-        assert.strictEqual(results[0].total, 8);
-        assert.strictEqual(results[0].total2, 8);
+        assert.deepStrictEqual(results, [{total: 8, total2: 8}]);
       });
     });
     it('should filter by ancestor', async () => {
