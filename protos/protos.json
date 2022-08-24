@@ -11,7 +11,7 @@
                     "csharp_namespace": "Google.Cloud.Datastore.Admin.V1",
                     "go_package": "google.golang.org/genproto/googleapis/datastore/admin/v1;admin",
                     "java_multiple_files": true,
-                    "java_outer_classname": "IndexProto",
+                    "java_outer_classname": "MigrationProto",
                     "java_package": "com.google.datastore.admin.v1",
                     "php_namespace": "Google\\Cloud\\Datastore\\Admin\\V1",
                     "ruby_package": "Google::Cloud::Datastore::Admin::V1"
@@ -292,15 +292,6 @@
                         }
                       }
                     },
-                    "OperationType": {
-                      "values": {
-                        "OPERATION_TYPE_UNSPECIFIED": 0,
-                        "EXPORT_ENTITIES": 1,
-                        "IMPORT_ENTITIES": 2,
-                        "CREATE_INDEX": 3,
-                        "DELETE_INDEX": 4
-                      }
-                    },
                     "ImportEntitiesMetadata": {
                       "fields": {
                         "common": {
@@ -424,6 +415,27 @@
                         }
                       }
                     },
+                    "DatastoreFirestoreMigrationMetadata": {
+                      "fields": {
+                        "migrationState": {
+                          "type": "MigrationState",
+                          "id": 1
+                        },
+                        "migrationStep": {
+                          "type": "MigrationStep",
+                          "id": 2
+                        }
+                      }
+                    },
+                    "OperationType": {
+                      "values": {
+                        "OPERATION_TYPE_UNSPECIFIED": 0,
+                        "EXPORT_ENTITIES": 1,
+                        "IMPORT_ENTITIES": 2,
+                        "CREATE_INDEX": 3,
+                        "DELETE_INDEX": 4
+                      }
+                    },
                     "Index": {
                       "fields": {
                         "projectId": {
@@ -471,6 +483,20 @@
                         }
                       },
                       "nested": {
+                        "AncestorMode": {
+                          "values": {
+                            "ANCESTOR_MODE_UNSPECIFIED": 0,
+                            "NONE": 1,
+                            "ALL_ANCESTORS": 2
+                          }
+                        },
+                        "Direction": {
+                          "values": {
+                            "DIRECTION_UNSPECIFIED": 0,
+                            "ASCENDING": 1,
+                            "DESCENDING": 2
+                          }
+                        },
                         "IndexedProperty": {
                           "fields": {
                             "name": {
@@ -489,20 +515,6 @@
                             }
                           }
                         },
-                        "AncestorMode": {
-                          "values": {
-                            "ANCESTOR_MODE_UNSPECIFIED": 0,
-                            "NONE": 1,
-                            "ALL_ANCESTORS": 2
-                          }
-                        },
-                        "Direction": {
-                          "values": {
-                            "DIRECTION_UNSPECIFIED": 0,
-                            "ASCENDING": 1,
-                            "DESCENDING": 2
-                          }
-                        },
                         "State": {
                           "values": {
                             "STATE_UNSPECIFIED": 0,
@@ -512,6 +524,84 @@
                             "ERROR": 4
                           }
                         }
+                      }
+                    },
+                    "MigrationStateEvent": {
+                      "fields": {
+                        "state": {
+                          "type": "MigrationState",
+                          "id": 1
+                        }
+                      }
+                    },
+                    "MigrationProgressEvent": {
+                      "oneofs": {
+                        "stepDetails": {
+                          "oneof": [
+                            "prepareStepDetails",
+                            "redirectWritesStepDetails"
+                          ]
+                        }
+                      },
+                      "fields": {
+                        "step": {
+                          "type": "MigrationStep",
+                          "id": 1
+                        },
+                        "prepareStepDetails": {
+                          "type": "PrepareStepDetails",
+                          "id": 2
+                        },
+                        "redirectWritesStepDetails": {
+                          "type": "RedirectWritesStepDetails",
+                          "id": 3
+                        }
+                      },
+                      "nested": {
+                        "ConcurrencyMode": {
+                          "values": {
+                            "CONCURRENCY_MODE_UNSPECIFIED": 0,
+                            "PESSIMISTIC": 1,
+                            "OPTIMISTIC": 2,
+                            "OPTIMISTIC_WITH_ENTITY_GROUPS": 3
+                          }
+                        },
+                        "PrepareStepDetails": {
+                          "fields": {
+                            "concurrencyMode": {
+                              "type": "ConcurrencyMode",
+                              "id": 1
+                            }
+                          }
+                        },
+                        "RedirectWritesStepDetails": {
+                          "fields": {
+                            "concurrencyMode": {
+                              "type": "ConcurrencyMode",
+                              "id": 1
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "MigrationState": {
+                      "values": {
+                        "MIGRATION_STATE_UNSPECIFIED": 0,
+                        "RUNNING": 1,
+                        "PAUSED": 2,
+                        "COMPLETE": 3
+                      }
+                    },
+                    "MigrationStep": {
+                      "values": {
+                        "MIGRATION_STEP_UNSPECIFIED": 0,
+                        "PREPARE": 6,
+                        "START": 1,
+                        "APPLY_WRITES_SYNCHRONOUSLY": 7,
+                        "COPY_AND_VERIFY": 2,
+                        "REDIRECT_EVENTUALLY_CONSISTENT_READS": 3,
+                        "REDIRECT_STRONGLY_CONSISTENT_READS": 4,
+                        "REDIRECT_WRITES": 5
                       }
                     }
                   }
@@ -685,6 +775,10 @@
                         "(google.api.field_behavior)": "REQUIRED"
                       }
                     },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
+                    },
                     "readOptions": {
                       "type": "ReadOptions",
                       "id": 1
@@ -715,6 +809,10 @@
                       "rule": "repeated",
                       "type": "Key",
                       "id": 3
+                    },
+                    "readTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 7
                     }
                   }
                 },
@@ -734,6 +832,10 @@
                       "options": {
                         "(google.api.field_behavior)": "REQUIRED"
                       }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
                     },
                     "partitionId": {
                       "type": "PartitionId",
@@ -774,6 +876,10 @@
                         "(google.api.field_behavior)": "REQUIRED"
                       }
                     },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
+                    },
                     "transactionOptions": {
                       "type": "TransactionOptions",
                       "id": 10
@@ -796,6 +902,10 @@
                       "options": {
                         "(google.api.field_behavior)": "REQUIRED"
                       }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
                     },
                     "transaction": {
                       "type": "bytes",
@@ -824,6 +934,10 @@
                       "options": {
                         "(google.api.field_behavior)": "REQUIRED"
                       }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
                     },
                     "mode": {
                       "type": "Mode",
@@ -859,6 +973,10 @@
                     "indexUpdates": {
                       "type": "int32",
                       "id": 4
+                    },
+                    "commitTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 8
                     }
                   }
                 },
@@ -870,6 +988,10 @@
                       "options": {
                         "(google.api.field_behavior)": "REQUIRED"
                       }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
                     },
                     "keys": {
                       "rule": "repeated",
@@ -928,7 +1050,8 @@
                     },
                     "conflictDetectionStrategy": {
                       "oneof": [
-                        "baseVersion"
+                        "baseVersion",
+                        "updateTime"
                       ]
                     }
                   },
@@ -952,6 +1075,10 @@
                     "baseVersion": {
                       "type": "int64",
                       "id": 8
+                    },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 11
                     }
                   }
                 },
@@ -965,6 +1092,10 @@
                       "type": "int64",
                       "id": 4
                     },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 6
+                    },
                     "conflictDetected": {
                       "type": "bool",
                       "id": 5
@@ -976,7 +1107,8 @@
                     "consistencyType": {
                       "oneof": [
                         "readConsistency",
-                        "transaction"
+                        "transaction",
+                        "readTime"
                       ]
                     }
                   },
@@ -988,6 +1120,10 @@
                     "transaction": {
                       "type": "bytes",
                       "id": 2
+                    },
+                    "readTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 4
                     }
                   },
                   "nested": {
@@ -1029,7 +1165,12 @@
                       }
                     },
                     "ReadOnly": {
-                      "fields": {}
+                      "fields": {
+                        "readTime": {
+                          "type": "google.protobuf.Timestamp",
+                          "id": 1
+                        }
+                      }
                     }
                   }
                 },
@@ -1038,6 +1179,10 @@
                     "projectId": {
                       "type": "string",
                       "id": 2
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 3
                     },
                     "namespaceId": {
                       "type": "string",
@@ -1188,6 +1333,10 @@
                     "version": {
                       "type": "int64",
                       "id": 4
+                    },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 5
                     },
                     "cursor": {
                       "type": "bytes",
@@ -1359,7 +1508,10 @@
                         "GREATER_THAN": 3,
                         "GREATER_THAN_OR_EQUAL": 4,
                         "EQUAL": 5,
-                        "HAS_ANCESTOR": 11
+                        "IN": 6,
+                        "NOT_EQUAL": 9,
+                        "HAS_ANCESTOR": 11,
+                        "NOT_IN": 13
                       }
                     }
                   }
@@ -1436,6 +1588,10 @@
                     "snapshotVersion": {
                       "type": "int64",
                       "id": 7
+                    },
+                    "readTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 8
                     }
                   },
                   "nested": {
@@ -1581,7 +1737,8 @@
                 "OUTPUT_ONLY": 3,
                 "INPUT_ONLY": 4,
                 "IMMUTABLE": 5,
-                "UNORDERED_LIST": 6
+                "UNORDERED_LIST": 6,
+                "NON_EMPTY_DEFAULT": 7
               }
             }
           }
@@ -1668,6 +1825,10 @@
                 "syntax": {
                   "type": "string",
                   "id": 12
+                },
+                "edition": {
+                  "type": "string",
+                  "id": 13
                 }
               }
             },
@@ -2148,6 +2309,18 @@
               ],
               "reserved": [
                 [
+                  4,
+                  4
+                ],
+                [
+                  5,
+                  5
+                ],
+                [
+                  6,
+                  6
+                ],
+                [
                   8,
                   8
                 ],
@@ -2180,6 +2353,13 @@
                 "lazy": {
                   "type": "bool",
                   "id": 5,
+                  "options": {
+                    "default": false
+                  }
+                },
+                "unverifiedLazy": {
+                  "type": "bool",
+                  "id": 15,
                   "options": {
                     "default": false
                   }
@@ -2476,6 +2656,19 @@
                     "end": {
                       "type": "int32",
                       "id": 4
+                    },
+                    "semantic": {
+                      "type": "Semantic",
+                      "id": 5
+                    }
+                  },
+                  "nested": {
+                    "Semantic": {
+                      "values": {
+                        "NONE": 0,
+                        "SET": 1,
+                        "ALIAS": 2
+                      }
                     }
                   }
                 }
