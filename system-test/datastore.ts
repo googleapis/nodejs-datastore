@@ -794,27 +794,52 @@ describe('Datastore', () => {
         .hasAncestor(ancestor)
         .filter('family', 'Stark')
         .filter('appearances', '>=', 20);
-      // TODO: Remove later
-      const returnValue = await datastore.runQuery(q);
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });
-    // TODO: Remove only
-    it.only('should do a count aggregate filter', async () => {
+    describe('with a count filter', () => {
+      // TODO: Remove only
+      it('should do a count aggregate filter', async () => {
+        // TODO: count with alias & up_to and also multiple count filters
+        const q = datastore
+            .createQuery('Character')
+            .count();
+        const [results] = await datastore.runQuery(q);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].property_1, 8);
+      });
+      it.only('should do a count aggregate filter with other filters', async () => {
+        // TODO: count with alias & up_to and also multiple count filters
+        const q = datastore
+            .createQuery('Character')
+            .filter('family', 'Stark')
+            .filter('appearances', '>=', 20)
+            .count(null, 'total');
+        const [results] = await datastore.runQuery(q);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].total, 6);
+      });
       // TODO: count with alias & up_to and also multiple count filters
-      console.log('running stream');
-      const q = datastore
-          .createQuery('Character')
-          // .hasAncestor(ancestor)
-          // .filter('family', 'Stark')
-          // .filter('appearances', '>=', 20)
-          .count();
-      const result = await datastore.runQuery(q);
-      console.log('result');
-      console.log(JSON.stringify(result));
-      assert.strictEqual(result, 6);
+      // TODO: test with filters
+      it('should do a count aggregate filter with an alias', async () => {
+        const q = datastore
+            .createQuery('Character')
+            .count(null, 'total');
+        const [results] = await datastore.runQuery(q);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].total, 8);
+      });
+      it('should do multiple count filters', async () => {
+        const q = datastore
+            .createQuery('Character')
+            .count(4, 'total')
+            .count(4, 'total2');
+        const [results] = await datastore.runQuery(q);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].total, 8);
+        assert.strictEqual(results[0].total2, 8);
+      });
     });
-
     it('should filter by ancestor', async () => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
       const [entities] = await datastore.runQuery(q);

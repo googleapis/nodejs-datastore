@@ -167,9 +167,9 @@ class Query {
     this.aggregations = [];
   }
 
-  count(maximum?: number, alias?: string) {
+  count(maximum?: number | null, alias?: string) {
     const count = Object.assign({}, maximum ? {up_to: maximum} : null);
-    const aggregation = Object.assign({count}, alias ? {} : null)
+    const aggregation = Object.assign({count}, alias ? {alias} : null)
     this.aggregations.push(aggregation);
     return this;
   }

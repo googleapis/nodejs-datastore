@@ -759,8 +759,6 @@ class DatastoreRequest {
       if (query.aggregations.length === 0) {
         const reqOpts: RequestOptions = sharedQueryOpts;
         reqOpts.query = queryProto;
-        console.log('Non aggregate');
-        console.log(reqOpts);
         this.request_(
             {
               client: 'DatastoreClient',
@@ -777,14 +775,10 @@ class DatastoreRequest {
         };
         const reqOpts: RunAggregationQueryRequest = Object.assign(
           sharedQueryOpts,
-          // {query_type:
-            {
-              aggregationQuery: aggregationQueryOptions
-            }
-          // }
+          {
+            aggregationQuery: aggregationQueryOptions
+          }
         );
-        console.log('Aggregate');
-        console.log(reqOpts);
         this.request_(
             {
               client: 'DatastoreClient',
