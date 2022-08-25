@@ -15,6 +15,7 @@
  */
 
 import arrify = require('arrify');
+import * as Long from 'long';
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
@@ -168,7 +169,8 @@ class Query {
   }
 
   count(maximum?: number | null, alias?: string) {
-    const count = Object.assign({}, maximum ? {up_to: Buffer.from(maximum, 'base64')} : null);
+    const convertedMaximum = maximum ? {up_to: new Float64Array(Buffer.from(Long.fromNumber(maximum as number).toString(), 'base64'))} : null;
+    const count = Object.assign({}, convertedMaximum);
     const aggregation = Object.assign({count}, alias ? {alias} : null)
     this.aggregations.push(aggregation);
     return this;
