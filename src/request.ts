@@ -1158,9 +1158,7 @@ export interface RequestOptions extends SharedQueryOptions{
   entityFilter?: google.datastore.admin.v1.IEntityFilter;
 }
 export interface RunAggregationQueryRequest extends SharedQueryOptions{
-  // query_type: {
-    aggregationQuery: AggregationQueryOptions
-  // }
+  aggregationQuery: AggregationQueryOptions
 }
 export interface AggregationQueryOptions {
   nestedQuery: QueryProto,
