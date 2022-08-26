@@ -16,12 +16,11 @@
 // ** https://github.com/googleapis/gapic-generator-typescript **
 // ** All changes to this file may be overwritten. **
 
-
 /* eslint-disable node/no-missing-require, no-unused-vars */
 const datastore = require('@google-cloud/datastore');
 
 function main() {
-  const datastoreClient = new datastore.DatastoreClient();
+  const datastoreClient = new datastore.Datastore();
 }
 
 main();
