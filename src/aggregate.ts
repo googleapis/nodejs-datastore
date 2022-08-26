@@ -1,4 +1,3 @@
-import * as Long from 'long';
 
 abstract class AggregateField {
   alias_?: string;
