@@ -22,6 +22,7 @@ import {Entity} from './entity';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
+import {AggregateField} from './aggregate';
 
 export type Operator =
   | '='
@@ -168,11 +169,8 @@ class Query {
     this.aggregations = [];
   }
 
-  count(maximum?: number | null, alias?: string) {
-    const convertedMaximum = maximum ? {up_to: new Float64Array(Buffer.from(Long.fromNumber(maximum as number).toString(), 'base64'))} : null;
-    const count = Object.assign({}, convertedMaximum);
-    const aggregation = Object.assign({count}, alias ? {alias} : null)
-    this.aggregations.push(aggregation);
+  aggregate(aggregate: AggregateField) {
+    this.aggregations.push(aggregate.toProto());
     return this;
   }
 

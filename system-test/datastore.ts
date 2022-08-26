@@ -20,6 +20,7 @@ import * as yaml from 'js-yaml';
 import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
+import {AggregateField} from '../src/aggregate';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -798,45 +799,41 @@ describe('Datastore', () => {
       assert.strictEqual(entities!.length, 6);
     });
     describe('with a count filter', () => {
-      // TODO: Remove only
       it('should do a count aggregate filter', async () => {
         const q = datastore
             .createQuery('Character')
-            .count();
+            .aggregate(AggregateField.count());
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{property_1: 8}]);
       });
-      it.only('should do a count aggregate filter with a maximum', async () => {
+      it('should do a count aggregate filter with a maximum', async () => {
         const q = datastore
             .createQuery('Character')
-            .count(4, 'total');
+            .aggregate(AggregateField.count().maximum(4).alias('total'));
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{total: 4}]);
       });
       it('should do a count aggregate filter with other filters', async () => {
-        // TODO: count with alias & up_to and also multiple count filters
         const q = datastore
             .createQuery('Character')
             .filter('family', 'Stark')
             .filter('appearances', '>=', 20)
-            .count(null, 'total');
+            .aggregate(AggregateField.count().alias('total'));
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{total: 6}]);
       });
-      // TODO: count with alias & up_to and also multiple count filters
-      // TODO: test with filters
       it('should do a count aggregate filter with an alias', async () => {
         const q = datastore
             .createQuery('Character')
-            .count(null, 'total');
+            .aggregate(AggregateField.count().alias('total'));
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{total: 8}]);
       });
       it('should do multiple count filters', async () => {
         const q = datastore
             .createQuery('Character')
-            .count(4, 'total')
-            .count(4, 'total2');
+            .aggregate(AggregateField.count().alias('total'))
+            .aggregate(AggregateField.count().alias('total2'));
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{total: 8, total2: 8}]);
       });
