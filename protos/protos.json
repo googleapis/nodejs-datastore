@@ -613,35 +613,540 @@
                 "csharp_namespace": "Google.Cloud.Datastore.V1",
                 "go_package": "google.golang.org/genproto/googleapis/datastore/v1;datastore",
                 "java_multiple_files": true,
-                "java_outer_classname": "DatastoreProto",
+                "java_outer_classname": "QueryProto",
                 "java_package": "com.google.datastore.v1",
                 "php_namespace": "Google\\Cloud\\Datastore\\V1",
                 "ruby_package": "Google::Cloud::Datastore::V1"
               },
               "nested": {
-                "AggregationResult": {
+                "Datastore": {
+                  "options": {
+                    "(google.api.default_host)": "datastore.googleapis.com",
+                    "(google.api.oauth_scopes)": "https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/datastore"
+                  },
+                  "methods": {
+                    "Lookup": {
+                      "requestType": "LookupRequest",
+                      "responseType": "LookupResponse",
+                      "options": {
+                        "(google.api.http).post": "/v1/projects/{project_id}:lookup",
+                        "(google.api.http).body": "*",
+                        "(google.api.method_signature)": "project_id,read_options,keys"
+                      },
+                      "parsedOptions": [
+                        {
+                          "(google.api.http)": {
+                            "post": "/v1/projects/{project_id}:lookup",
+                            "body": "*"
+                          }
+                        },
+                        {
+                          "(google.api.method_signature)": "project_id,read_options,keys"
+                        }
+                      ]
+                    },
+                    "RunQuery": {
+                      "requestType": "RunQueryRequest",
+                      "responseType": "RunQueryResponse",
+                      "options": {
+                        "(google.api.http).post": "/v1/projects/{project_id}:runQuery",
+                        "(google.api.http).body": "*"
+                      },
+                      "parsedOptions": [
+                        {
+                          "(google.api.http)": {
+                            "post": "/v1/projects/{project_id}:runQuery",
+                            "body": "*"
+                          }
+                        }
+                      ]
+                    },
+                    "BeginTransaction": {
+                      "requestType": "BeginTransactionRequest",
+                      "responseType": "BeginTransactionResponse",
+                      "options": {
+                        "(google.api.http).post": "/v1/projects/{project_id}:beginTransaction",
+                        "(google.api.http).body": "*",
+                        "(google.api.method_signature)": "project_id"
+                      },
+                      "parsedOptions": [
+                        {
+                          "(google.api.http)": {
+                            "post": "/v1/projects/{project_id}:beginTransaction",
+                            "body": "*"
+                          }
+                        },
+                        {
+                          "(google.api.method_signature)": "project_id"
+                        }
+                      ]
+                    },
+                    "Commit": {
+                      "requestType": "CommitRequest",
+                      "responseType": "CommitResponse",
+                      "options": {
+                        "(google.api.http).post": "/v1/projects/{project_id}:commit",
+                        "(google.api.http).body": "*",
+                        "(google.api.method_signature)": "project_id,mode,mutations"
+                      },
+                      "parsedOptions": [
+                        {
+                          "(google.api.http)": {
+                            "post": "/v1/projects/{project_id}:commit",
+                            "body": "*"
+                          }
+                        },
+                        {
+                          "(google.api.method_signature)": "project_id,mode,transaction,mutations"
+                        },
+                        {
+                          "(google.api.method_signature)": "project_id,mode,mutations"
+                        }
+                      ]
+                    },
+                    "Rollback": {
+                      "requestType": "RollbackRequest",
+                      "responseType": "RollbackResponse",
+                      "options": {
+                        "(google.api.http).post": "/v1/projects/{project_id}:rollback",
+                        "(google.api.http).body": "*",
+                        "(google.api.method_signature)": "project_id,transaction"
+                      },
+                      "parsedOptions": [
+                        {
+                          "(google.api.http)": {
+                            "post": "/v1/projects/{project_id}:rollback",
+                            "body": "*"
+                          }
+                        },
+                        {
+                          "(google.api.method_signature)": "project_id,transaction"
+                        }
+                      ]
+                    },
+                    "AllocateIds": {
+                      "requestType": "AllocateIdsRequest",
+                      "responseType": "AllocateIdsResponse",
+                      "options": {
+                        "(google.api.http).post": "/v1/projects/{project_id}:allocateIds",
+                        "(google.api.http).body": "*",
+                        "(google.api.method_signature)": "project_id,keys"
+                      },
+                      "parsedOptions": [
+                        {
+                          "(google.api.http)": {
+                            "post": "/v1/projects/{project_id}:allocateIds",
+                            "body": "*"
+                          }
+                        },
+                        {
+                          "(google.api.method_signature)": "project_id,keys"
+                        }
+                      ]
+                    },
+                    "ReserveIds": {
+                      "requestType": "ReserveIdsRequest",
+                      "responseType": "ReserveIdsResponse",
+                      "options": {
+                        "(google.api.http).post": "/v1/projects/{project_id}:reserveIds",
+                        "(google.api.http).body": "*",
+                        "(google.api.method_signature)": "project_id,keys"
+                      },
+                      "parsedOptions": [
+                        {
+                          "(google.api.http)": {
+                            "post": "/v1/projects/{project_id}:reserveIds",
+                            "body": "*"
+                          }
+                        },
+                        {
+                          "(google.api.method_signature)": "project_id,keys"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "LookupRequest": {
                   "fields": {
-                    "aggregateProperties": {
-                      "keyType": "string",
-                      "type": "Value",
+                    "projectId": {
+                      "type": "string",
+                      "id": 8,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "readOptions": {
+                      "type": "ReadOptions",
+                      "id": 1
+                    },
+                    "keys": {
+                      "rule": "repeated",
+                      "type": "Key",
+                      "id": 3,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    }
+                  }
+                },
+                "LookupResponse": {
+                  "fields": {
+                    "found": {
+                      "rule": "repeated",
+                      "type": "EntityResult",
+                      "id": 1
+                    },
+                    "missing": {
+                      "rule": "repeated",
+                      "type": "EntityResult",
+                      "id": 2
+                    },
+                    "deferred": {
+                      "rule": "repeated",
+                      "type": "Key",
+                      "id": 3
+                    },
+                    "readTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 7
+                    }
+                  }
+                },
+                "RunQueryRequest": {
+                  "oneofs": {
+                    "queryType": {
+                      "oneof": [
+                        "query",
+                        "gqlQuery"
+                      ]
+                    }
+                  },
+                  "fields": {
+                    "projectId": {
+                      "type": "string",
+                      "id": 8,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "partitionId": {
+                      "type": "PartitionId",
+                      "id": 2
+                    },
+                    "readOptions": {
+                      "type": "ReadOptions",
+                      "id": 1
+                    },
+                    "query": {
+                      "type": "Query",
+                      "id": 3
+                    },
+                    "gqlQuery": {
+                      "type": "GqlQuery",
+                      "id": 7
+                    }
+                  }
+                },
+                "RunQueryResponse": {
+                  "fields": {
+                    "batch": {
+                      "type": "QueryResultBatch",
+                      "id": 1
+                    },
+                    "query": {
+                      "type": "Query",
                       "id": 2
                     }
                   }
                 },
-                "AggregationResultBatch": {
+                "BeginTransactionRequest": {
                   "fields": {
-                    "aggregationResults": {
-                      "rule": "repeated",
-                      "type": "AggregationResult",
+                    "projectId": {
+                      "type": "string",
+                      "id": 8,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "transactionOptions": {
+                      "type": "TransactionOptions",
+                      "id": 10
+                    }
+                  }
+                },
+                "BeginTransactionResponse": {
+                  "fields": {
+                    "transaction": {
+                      "type": "bytes",
+                      "id": 1
+                    }
+                  }
+                },
+                "RollbackRequest": {
+                  "fields": {
+                    "projectId": {
+                      "type": "string",
+                      "id": 8,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "transaction": {
+                      "type": "bytes",
+                      "id": 1,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    }
+                  }
+                },
+                "RollbackResponse": {
+                  "fields": {}
+                },
+                "CommitRequest": {
+                  "oneofs": {
+                    "transactionSelector": {
+                      "oneof": [
+                        "transaction"
+                      ]
+                    }
+                  },
+                  "fields": {
+                    "projectId": {
+                      "type": "string",
+                      "id": 8,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "mode": {
+                      "type": "Mode",
+                      "id": 5
+                    },
+                    "transaction": {
+                      "type": "bytes",
                       "id": 1
                     },
-                    "moreResults": {
-                      "type": "QueryResultBatch.MoreResultsType",
+                    "mutations": {
+                      "rule": "repeated",
+                      "type": "Mutation",
+                      "id": 6
+                    }
+                  },
+                  "nested": {
+                    "Mode": {
+                      "values": {
+                        "MODE_UNSPECIFIED": 0,
+                        "TRANSACTIONAL": 1,
+                        "NON_TRANSACTIONAL": 2
+                      }
+                    }
+                  }
+                },
+                "CommitResponse": {
+                  "fields": {
+                    "mutationResults": {
+                      "rule": "repeated",
+                      "type": "MutationResult",
+                      "id": 3
+                    },
+                    "indexUpdates": {
+                      "type": "int32",
+                      "id": 4
+                    },
+                    "commitTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 8
+                    }
+                  }
+                },
+                "AllocateIdsRequest": {
+                  "fields": {
+                    "projectId": {
+                      "type": "string",
+                      "id": 8,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "keys": {
+                      "rule": "repeated",
+                      "type": "Key",
+                      "id": 1,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    }
+                  }
+                },
+                "AllocateIdsResponse": {
+                  "fields": {
+                    "keys": {
+                      "rule": "repeated",
+                      "type": "Key",
+                      "id": 1
+                    }
+                  }
+                },
+                "ReserveIdsRequest": {
+                  "fields": {
+                    "projectId": {
+                      "type": "string",
+                      "id": 8,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
+                    },
+                    "keys": {
+                      "rule": "repeated",
+                      "type": "Key",
+                      "id": 1,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    }
+                  }
+                },
+                "ReserveIdsResponse": {
+                  "fields": {}
+                },
+                "Mutation": {
+                  "oneofs": {
+                    "operation": {
+                      "oneof": [
+                        "insert",
+                        "update",
+                        "upsert",
+                        "delete"
+                      ]
+                    },
+                    "conflictDetectionStrategy": {
+                      "oneof": [
+                        "baseVersion",
+                        "updateTime"
+                      ]
+                    }
+                  },
+                  "fields": {
+                    "insert": {
+                      "type": "Entity",
+                      "id": 4
+                    },
+                    "update": {
+                      "type": "Entity",
+                      "id": 5
+                    },
+                    "upsert": {
+                      "type": "Entity",
+                      "id": 6
+                    },
+                    "delete": {
+                      "type": "Key",
+                      "id": 7
+                    },
+                    "baseVersion": {
+                      "type": "int64",
+                      "id": 8
+                    },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 11
+                    }
+                  }
+                },
+                "MutationResult": {
+                  "fields": {
+                    "key": {
+                      "type": "Key",
+                      "id": 3
+                    },
+                    "version": {
+                      "type": "int64",
+                      "id": 4
+                    },
+                    "updateTime": {
+                      "type": "google.protobuf.Timestamp",
+                      "id": 6
+                    },
+                    "conflictDetected": {
+                      "type": "bool",
+                      "id": 5
+                    }
+                  }
+                },
+                "ReadOptions": {
+                  "oneofs": {
+                    "consistencyType": {
+                      "oneof": [
+                        "readConsistency",
+                        "transaction",
+                        "readTime"
+                      ]
+                    }
+                  },
+                  "fields": {
+                    "readConsistency": {
+                      "type": "ReadConsistency",
+                      "id": 1
+                    },
+                    "transaction": {
+                      "type": "bytes",
                       "id": 2
                     },
                     "readTime": {
                       "type": "google.protobuf.Timestamp",
-                      "id": 3
+                      "id": 4
+                    }
+                  },
+                  "nested": {
+                    "ReadConsistency": {
+                      "values": {
+                        "READ_CONSISTENCY_UNSPECIFIED": 0,
+                        "STRONG": 1,
+                        "EVENTUAL": 2
+                      }
+                    }
+                  }
+                },
+                "TransactionOptions": {
+                  "oneofs": {
+                    "mode": {
+                      "oneof": [
+                        "readWrite",
+                        "readOnly"
+                      ]
+                    }
+                  },
+                  "fields": {
+                    "readWrite": {
+                      "type": "ReadWrite",
+                      "id": 1
+                    },
+                    "readOnly": {
+                      "type": "ReadOnly",
+                      "id": 2
+                    }
+                  },
+                  "nested": {
+                    "ReadWrite": {
+                      "fields": {
+                        "previousTransaction": {
+                          "type": "bytes",
+                          "id": 1
+                        }
+                      }
+                    },
+                    "ReadOnly": {
+                      "fields": {
+                        "readTime": {
+                          "type": "google.protobuf.Timestamp",
+                          "id": 1
+                        }
+                      }
                     }
                   }
                 },
@@ -650,10 +1155,6 @@
                     "projectId": {
                       "type": "string",
                       "id": 2
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 3
                     },
                     "namespaceId": {
                       "type": "string",
@@ -869,66 +1370,6 @@
                     }
                   }
                 },
-                "AggregationQuery": {
-                  "oneofs": {
-                    "queryType": {
-                      "oneof": [
-                        "nestedQuery"
-                      ]
-                    }
-                  },
-                  "fields": {
-                    "nestedQuery": {
-                      "type": "Query",
-                      "id": 1
-                    },
-                    "aggregations": {
-                      "rule": "repeated",
-                      "type": "Aggregation",
-                      "id": 3,
-                      "options": {
-                        "(google.api.field_behavior)": "OPTIONAL"
-                      }
-                    }
-                  },
-                  "nested": {
-                    "Aggregation": {
-                      "oneofs": {
-                        "operator": {
-                          "oneof": [
-                            "count"
-                          ]
-                        }
-                      },
-                      "fields": {
-                        "count": {
-                          "type": "Count",
-                          "id": 1
-                        },
-                        "alias": {
-                          "type": "string",
-                          "id": 7,
-                          "options": {
-                            "(google.api.field_behavior)": "OPTIONAL"
-                          }
-                        }
-                      },
-                      "nested": {
-                        "Count": {
-                          "fields": {
-                            "upTo": {
-                              "type": "int32",
-                              "id": 1,
-                              "options": {
-                                "(google.api.field_behavior)": "OPTIONAL"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
                 "KindExpression": {
                   "fields": {
                     "name": {
@@ -1010,8 +1451,7 @@
                     "Operator": {
                       "values": {
                         "OPERATOR_UNSPECIFIED": 0,
-                        "AND": 1,
-                        "OR": 2
+                        "AND": 1
                       }
                     }
                   }
@@ -1134,628 +1574,6 @@
                         "MORE_RESULTS_AFTER_LIMIT": 2,
                         "MORE_RESULTS_AFTER_CURSOR": 4,
                         "NO_MORE_RESULTS": 3
-                      }
-                    }
-                  }
-                },
-                "Datastore": {
-                  "options": {
-                    "(google.api.default_host)": "datastore.googleapis.com",
-                    "(google.api.oauth_scopes)": "https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/datastore"
-                  },
-                  "methods": {
-                    "Lookup": {
-                      "requestType": "LookupRequest",
-                      "responseType": "LookupResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:lookup",
-                        "(google.api.http).body": "*",
-                        "(google.api.method_signature)": "project_id,read_options,keys"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:lookup",
-                            "body": "*"
-                          }
-                        },
-                        {
-                          "(google.api.method_signature)": "project_id,read_options,keys"
-                        }
-                      ]
-                    },
-                    "RunQuery": {
-                      "requestType": "RunQueryRequest",
-                      "responseType": "RunQueryResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:runQuery",
-                        "(google.api.http).body": "*"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:runQuery",
-                            "body": "*"
-                          }
-                        }
-                      ]
-                    },
-                    "RunAggregationQuery": {
-                      "requestType": "RunAggregationQueryRequest",
-                      "responseType": "RunAggregationQueryResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:runAggregationQuery",
-                        "(google.api.http).body": "*"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:runAggregationQuery",
-                            "body": "*"
-                          }
-                        }
-                      ]
-                    },
-                    "BeginTransaction": {
-                      "requestType": "BeginTransactionRequest",
-                      "responseType": "BeginTransactionResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:beginTransaction",
-                        "(google.api.http).body": "*",
-                        "(google.api.method_signature)": "project_id"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:beginTransaction",
-                            "body": "*"
-                          }
-                        },
-                        {
-                          "(google.api.method_signature)": "project_id"
-                        }
-                      ]
-                    },
-                    "Commit": {
-                      "requestType": "CommitRequest",
-                      "responseType": "CommitResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:commit",
-                        "(google.api.http).body": "*",
-                        "(google.api.method_signature)": "project_id,mode,mutations"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:commit",
-                            "body": "*"
-                          }
-                        },
-                        {
-                          "(google.api.method_signature)": "project_id,mode,transaction,mutations"
-                        },
-                        {
-                          "(google.api.method_signature)": "project_id,mode,mutations"
-                        }
-                      ]
-                    },
-                    "Rollback": {
-                      "requestType": "RollbackRequest",
-                      "responseType": "RollbackResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:rollback",
-                        "(google.api.http).body": "*",
-                        "(google.api.method_signature)": "project_id,transaction"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:rollback",
-                            "body": "*"
-                          }
-                        },
-                        {
-                          "(google.api.method_signature)": "project_id,transaction"
-                        }
-                      ]
-                    },
-                    "AllocateIds": {
-                      "requestType": "AllocateIdsRequest",
-                      "responseType": "AllocateIdsResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:allocateIds",
-                        "(google.api.http).body": "*",
-                        "(google.api.method_signature)": "project_id,keys"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:allocateIds",
-                            "body": "*"
-                          }
-                        },
-                        {
-                          "(google.api.method_signature)": "project_id,keys"
-                        }
-                      ]
-                    },
-                    "ReserveIds": {
-                      "requestType": "ReserveIdsRequest",
-                      "responseType": "ReserveIdsResponse",
-                      "options": {
-                        "(google.api.http).post": "/v1/projects/{project_id}:reserveIds",
-                        "(google.api.http).body": "*",
-                        "(google.api.method_signature)": "project_id,keys"
-                      },
-                      "parsedOptions": [
-                        {
-                          "(google.api.http)": {
-                            "post": "/v1/projects/{project_id}:reserveIds",
-                            "body": "*"
-                          }
-                        },
-                        {
-                          "(google.api.method_signature)": "project_id,keys"
-                        }
-                      ]
-                    }
-                  }
-                },
-                "LookupRequest": {
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "readOptions": {
-                      "type": "ReadOptions",
-                      "id": 1
-                    },
-                    "keys": {
-                      "rule": "repeated",
-                      "type": "Key",
-                      "id": 3,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    }
-                  }
-                },
-                "LookupResponse": {
-                  "fields": {
-                    "found": {
-                      "rule": "repeated",
-                      "type": "EntityResult",
-                      "id": 1
-                    },
-                    "missing": {
-                      "rule": "repeated",
-                      "type": "EntityResult",
-                      "id": 2
-                    },
-                    "deferred": {
-                      "rule": "repeated",
-                      "type": "Key",
-                      "id": 3
-                    },
-                    "readTime": {
-                      "type": "google.protobuf.Timestamp",
-                      "id": 7
-                    }
-                  }
-                },
-                "RunQueryRequest": {
-                  "oneofs": {
-                    "queryType": {
-                      "oneof": [
-                        "query",
-                        "gqlQuery"
-                      ]
-                    }
-                  },
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "partitionId": {
-                      "type": "PartitionId",
-                      "id": 2
-                    },
-                    "readOptions": {
-                      "type": "ReadOptions",
-                      "id": 1
-                    },
-                    "query": {
-                      "type": "Query",
-                      "id": 3
-                    },
-                    "gqlQuery": {
-                      "type": "GqlQuery",
-                      "id": 7
-                    }
-                  }
-                },
-                "RunQueryResponse": {
-                  "fields": {
-                    "batch": {
-                      "type": "QueryResultBatch",
-                      "id": 1
-                    },
-                    "query": {
-                      "type": "Query",
-                      "id": 2
-                    }
-                  }
-                },
-                "RunAggregationQueryRequest": {
-                  "oneofs": {
-                    "queryType": {
-                      "oneof": [
-                        "aggregationQuery",
-                        "gqlQuery"
-                      ]
-                    }
-                  },
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "partitionId": {
-                      "type": "PartitionId",
-                      "id": 2
-                    },
-                    "readOptions": {
-                      "type": "ReadOptions",
-                      "id": 1
-                    },
-                    "aggregationQuery": {
-                      "type": "AggregationQuery",
-                      "id": 3
-                    },
-                    "gqlQuery": {
-                      "type": "GqlQuery",
-                      "id": 7
-                    }
-                  }
-                },
-                "RunAggregationQueryResponse": {
-                  "fields": {
-                    "batch": {
-                      "type": "AggregationResultBatch",
-                      "id": 1
-                    },
-                    "query": {
-                      "type": "AggregationQuery",
-                      "id": 2
-                    }
-                  }
-                },
-                "BeginTransactionRequest": {
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "transactionOptions": {
-                      "type": "TransactionOptions",
-                      "id": 10
-                    }
-                  }
-                },
-                "BeginTransactionResponse": {
-                  "fields": {
-                    "transaction": {
-                      "type": "bytes",
-                      "id": 1
-                    }
-                  }
-                },
-                "RollbackRequest": {
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "transaction": {
-                      "type": "bytes",
-                      "id": 1,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    }
-                  }
-                },
-                "RollbackResponse": {
-                  "fields": {}
-                },
-                "CommitRequest": {
-                  "oneofs": {
-                    "transactionSelector": {
-                      "oneof": [
-                        "transaction"
-                      ]
-                    }
-                  },
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "mode": {
-                      "type": "Mode",
-                      "id": 5
-                    },
-                    "transaction": {
-                      "type": "bytes",
-                      "id": 1
-                    },
-                    "mutations": {
-                      "rule": "repeated",
-                      "type": "Mutation",
-                      "id": 6
-                    }
-                  },
-                  "nested": {
-                    "Mode": {
-                      "values": {
-                        "MODE_UNSPECIFIED": 0,
-                        "TRANSACTIONAL": 1,
-                        "NON_TRANSACTIONAL": 2
-                      }
-                    }
-                  }
-                },
-                "CommitResponse": {
-                  "fields": {
-                    "mutationResults": {
-                      "rule": "repeated",
-                      "type": "MutationResult",
-                      "id": 3
-                    },
-                    "indexUpdates": {
-                      "type": "int32",
-                      "id": 4
-                    },
-                    "commitTime": {
-                      "type": "google.protobuf.Timestamp",
-                      "id": 8
-                    }
-                  }
-                },
-                "AllocateIdsRequest": {
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "keys": {
-                      "rule": "repeated",
-                      "type": "Key",
-                      "id": 1,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    }
-                  }
-                },
-                "AllocateIdsResponse": {
-                  "fields": {
-                    "keys": {
-                      "rule": "repeated",
-                      "type": "Key",
-                      "id": 1
-                    }
-                  }
-                },
-                "ReserveIdsRequest": {
-                  "fields": {
-                    "projectId": {
-                      "type": "string",
-                      "id": 8,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    },
-                    "databaseId": {
-                      "type": "string",
-                      "id": 9
-                    },
-                    "keys": {
-                      "rule": "repeated",
-                      "type": "Key",
-                      "id": 1,
-                      "options": {
-                        "(google.api.field_behavior)": "REQUIRED"
-                      }
-                    }
-                  }
-                },
-                "ReserveIdsResponse": {
-                  "fields": {}
-                },
-                "Mutation": {
-                  "oneofs": {
-                    "operation": {
-                      "oneof": [
-                        "insert",
-                        "update",
-                        "upsert",
-                        "delete"
-                      ]
-                    },
-                    "conflictDetectionStrategy": {
-                      "oneof": [
-                        "baseVersion",
-                        "updateTime"
-                      ]
-                    }
-                  },
-                  "fields": {
-                    "insert": {
-                      "type": "Entity",
-                      "id": 4
-                    },
-                    "update": {
-                      "type": "Entity",
-                      "id": 5
-                    },
-                    "upsert": {
-                      "type": "Entity",
-                      "id": 6
-                    },
-                    "delete": {
-                      "type": "Key",
-                      "id": 7
-                    },
-                    "baseVersion": {
-                      "type": "int64",
-                      "id": 8
-                    },
-                    "updateTime": {
-                      "type": "google.protobuf.Timestamp",
-                      "id": 11
-                    }
-                  }
-                },
-                "MutationResult": {
-                  "fields": {
-                    "key": {
-                      "type": "Key",
-                      "id": 3
-                    },
-                    "version": {
-                      "type": "int64",
-                      "id": 4
-                    },
-                    "updateTime": {
-                      "type": "google.protobuf.Timestamp",
-                      "id": 6
-                    },
-                    "conflictDetected": {
-                      "type": "bool",
-                      "id": 5
-                    }
-                  }
-                },
-                "ReadOptions": {
-                  "oneofs": {
-                    "consistencyType": {
-                      "oneof": [
-                        "readConsistency",
-                        "transaction",
-                        "readTime"
-                      ]
-                    }
-                  },
-                  "fields": {
-                    "readConsistency": {
-                      "type": "ReadConsistency",
-                      "id": 1
-                    },
-                    "transaction": {
-                      "type": "bytes",
-                      "id": 2
-                    },
-                    "readTime": {
-                      "type": "google.protobuf.Timestamp",
-                      "id": 4
-                    }
-                  },
-                  "nested": {
-                    "ReadConsistency": {
-                      "values": {
-                        "READ_CONSISTENCY_UNSPECIFIED": 0,
-                        "STRONG": 1,
-                        "EVENTUAL": 2
-                      }
-                    }
-                  }
-                },
-                "TransactionOptions": {
-                  "oneofs": {
-                    "mode": {
-                      "oneof": [
-                        "readWrite",
-                        "readOnly"
-                      ]
-                    }
-                  },
-                  "fields": {
-                    "readWrite": {
-                      "type": "ReadWrite",
-                      "id": 1
-                    },
-                    "readOnly": {
-                      "type": "ReadOnly",
-                      "id": 2
-                    }
-                  },
-                  "nested": {
-                    "ReadWrite": {
-                      "fields": {
-                        "previousTransaction": {
-                          "type": "bytes",
-                          "id": 1
-                        }
-                      }
-                    },
-                    "ReadOnly": {
-                      "fields": {
-                        "readTime": {
-                          "type": "google.protobuf.Timestamp",
-                          "id": 1
-                        }
                       }
                     }
                   }
@@ -2503,13 +2321,6 @@
                 "lazy": {
                   "type": "bool",
                   "id": 5,
-                  "options": {
-                    "default": false
-                  }
-                },
-                "unverifiedLazy": {
-                  "type": "bool",
-                  "id": 15,
                   "options": {
                     "default": false
                   }
