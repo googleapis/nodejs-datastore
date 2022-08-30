@@ -15,16 +15,16 @@ abstract class AggregateField {
 }
 
 class Count extends AggregateField {
-  maximum_?: number
+  upTo_?: number
 
-  upTo(maximum: number): AggregateField {
-    this.maximum_ = maximum;
+  upTo(upTo: number): AggregateField {
+    this.upTo_ = upTo;
     return this;
   }
 
   toProto(): any {
-    const convertedMaximum = this.maximum_ ? {upTo: {value: this.maximum_}} : null;
-    const count = Object.assign({}, convertedMaximum);
+    const convertedUpTo = this.upTo_ ? {upTo: {value: this.upTo_}} : null;
+    const count = Object.assign({}, convertedUpTo);
     return Object.assign({count}, this.alias_ ? {alias: this.alias_} : null);
   }
 }
