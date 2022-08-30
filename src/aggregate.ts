@@ -17,7 +17,7 @@ abstract class AggregateField {
 class Count extends AggregateField {
   maximum_?: number
 
-  maximum(maximum: number): AggregateField {
+  upTo(maximum: number): AggregateField {
     this.maximum_ = maximum;
     return this;
   }

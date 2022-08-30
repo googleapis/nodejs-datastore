@@ -59,8 +59,8 @@ describe('Query', () => {
 
     it('should create a query with a count aggregation', () => {
       const query = new Query(['kind1'])
-          .aggregate(AggregateField.count().maximum(4).alias('total'))
-          .aggregate(AggregateField.count().maximum(6).alias('total2'));
+          .aggregate(AggregateField.count().upTo(4).alias('total'))
+          .aggregate(AggregateField.count().upTo(6).alias('total2'));
       assert.deepStrictEqual(query.aggregations, [
         {alias: 'total', count: {up_to: 4}},
         {alias: 'total2', count: {up_to: 6}}

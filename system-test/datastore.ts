@@ -809,7 +809,7 @@ describe('Datastore', () => {
       it.only('should run a count aggregation having a maximum', async () => {
         const q = datastore
             .createQuery('Character')
-            .aggregate(AggregateField.count().maximum(4).alias('total'));
+            .aggregate(AggregateField.count().upTo(4).alias('total'));
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{total: 4}]);
       });
