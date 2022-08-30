@@ -806,7 +806,7 @@ describe('Datastore', () => {
         const [results] = await datastore.runQuery(q);
         assert.deepStrictEqual(results, [{property_1: 8}]);
       });
-      it.only('should run a count aggregation having a maximum', async () => {
+      it('should run a count aggregation having a maximum', async () => {
         const q = datastore
             .createQuery('Character')
             .aggregate(AggregateField.count().upTo(4).alias('total'));
