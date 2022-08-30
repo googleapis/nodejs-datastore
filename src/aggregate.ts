@@ -24,7 +24,7 @@ class Count extends AggregateField {
   }
 
   toProto(): any {
-    const convertedMaximum = this.maximum_ ? {up_to: this.maximum_} : null;
+    const convertedMaximum = this.maximum_ ? {upTo: {value: this.maximum_}} : null;
     const count = Object.assign({}, convertedMaximum);
     return Object.assign({count}, this.alias_ ? {alias: this.alias_} : null);
   }
