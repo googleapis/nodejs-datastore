@@ -15,7 +15,6 @@
  */
 
 import arrify = require('arrify');
-import * as Long from 'long';
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
