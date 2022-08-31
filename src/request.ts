@@ -757,9 +757,19 @@ class DatastoreRequest {
       }
 
       if (query.aggregations.length === 0) {
+        runDataQuery(sharedQueryOpts, queryProto);
+      } else {
+        runAggregationQuery(sharedQueryOpts, queryProto);
+      }
+
+      const self = this;
+      function runDataQuery(
+        sharedQueryOpts: SharedQueryOptions,
+        queryProto: QueryProto
+      ) {
         const reqOpts: RequestOptions = sharedQueryOpts;
         reqOpts.query = queryProto;
-        this.request_(
+        self.request_(
           {
             client: 'DatastoreClient',
             method: 'runQuery',
@@ -768,7 +778,11 @@ class DatastoreRequest {
           },
           onResultSet
         );
-      } else {
+      }
+      function runAggregationQuery(
+        sharedQueryOpts: SharedQueryOptions,
+        queryProto: QueryProto
+      ) {
         const aggregationQueryOptions: AggregationQueryOptions = {
           nestedQuery: queryProto,
           aggregations: query.aggregations,
@@ -779,7 +793,7 @@ class DatastoreRequest {
             aggregationQuery: aggregationQueryOptions,
           }
         );
-        this.request_(
+        self.request_(
           {
             client: 'DatastoreClient',
             method: 'runAggregationQuery',
@@ -790,6 +804,7 @@ class DatastoreRequest {
         );
       }
     };
+
     function onAggregateResultSet(err?: Error | null, resp?: Entity) {
       if (err) {
         stream.destroy(err);
