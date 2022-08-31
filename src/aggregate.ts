@@ -11,11 +11,11 @@ abstract class AggregateField {
     return this;
   }
 
-  abstract toProto(): any
+  abstract toProto(): any;
 }
 
 class Count extends AggregateField {
-  upTo_?: number
+  upTo_?: number;
 
   upTo(upTo: number): AggregateField {
     this.upTo_ = upTo;
@@ -29,4 +29,4 @@ class Count extends AggregateField {
   }
 }
 
-export {AggregateField}
+export {AggregateField};

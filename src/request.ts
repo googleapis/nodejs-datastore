@@ -43,7 +43,8 @@ import {
   EntityProto,
   KeyProto,
   ResponseResult,
-  Entities, ValueProto,
+  Entities,
+  ValueProto,
 } from './entity';
 import {
   Query,
@@ -728,7 +729,6 @@ class DatastoreRequest {
    * ```
    */
   runQueryStream(query: Query, options: RunQueryStreamOptions = {}): Transform {
-
     query = extend(true, new Query(), query);
     const makeRequest = (query: Query) => {
       const sharedQueryOpts = {} as SharedQueryOptions;
@@ -760,33 +760,33 @@ class DatastoreRequest {
         const reqOpts: RequestOptions = sharedQueryOpts;
         reqOpts.query = queryProto;
         this.request_(
-            {
-              client: 'DatastoreClient',
-              method: 'runQuery',
-              reqOpts,
-              gaxOpts: options.gaxOptions,
-            },
-            onResultSet
+          {
+            client: 'DatastoreClient',
+            method: 'runQuery',
+            reqOpts,
+            gaxOpts: options.gaxOptions,
+          },
+          onResultSet
         );
       } else {
         const aggregationQueryOptions: AggregationQueryOptions = {
           nestedQuery: queryProto,
-          aggregations: query.aggregations
+          aggregations: query.aggregations,
         };
         const reqOpts: RunAggregationQueryRequest = Object.assign(
           sharedQueryOpts,
           {
-            aggregationQuery: aggregationQueryOptions
+            aggregationQuery: aggregationQueryOptions,
           }
         );
         this.request_(
-            {
-              client: 'DatastoreClient',
-              method: 'runAggregationQuery',
-              reqOpts,
-              gaxOpts: options.gaxOptions,
-            },
-            onAggregateResultSet
+          {
+            client: 'DatastoreClient',
+            method: 'runAggregationQuery',
+            reqOpts,
+            gaxOpts: options.gaxOptions,
+          },
+          onAggregateResultSet
         );
       }
     };
@@ -805,16 +805,19 @@ class DatastoreRequest {
         try {
           const results = resp.batch.aggregationResults;
           const finalResults = results
-              .map((aggregationResult: any) => aggregationResult.aggregateProperties)
-              .map((aggregateProperties: any) =>
-                Object.fromEntries(
-                  new Map(
-                    Object.keys(aggregateProperties).map(key =>
-                      [key, entity.decodeValueProto(aggregateProperties[key])]
-                    )
-                  )
+            .map(
+              (aggregationResult: any) => aggregationResult.aggregateProperties
+            )
+            .map((aggregateProperties: any) =>
+              Object.fromEntries(
+                new Map(
+                  Object.keys(aggregateProperties).map(key => [
+                    key,
+                    entity.decodeValueProto(aggregateProperties[key]),
+                  ])
                 )
-              );
+              )
+            );
           split(finalResults, stream).then(streamEnded => {
             if (streamEnded) {
               return;
@@ -1143,7 +1146,7 @@ export interface SharedQueryOptions {
     readTime?: ITimestamp;
   };
 }
-export interface RequestOptions extends SharedQueryOptions{
+export interface RequestOptions extends SharedQueryOptions {
   mutations?: google.datastore.v1.IMutation[];
   keys?: Entity;
   transactionOptions?: {
@@ -1157,12 +1160,12 @@ export interface RequestOptions extends SharedQueryOptions{
   indexId?: string;
   entityFilter?: google.datastore.admin.v1.IEntityFilter;
 }
-export interface RunAggregationQueryRequest extends SharedQueryOptions{
-  aggregationQuery: AggregationQueryOptions
+export interface RunAggregationQueryRequest extends SharedQueryOptions {
+  aggregationQuery: AggregationQueryOptions;
 }
 export interface AggregationQueryOptions {
-  nestedQuery: QueryProto,
-  aggregations: Array<any>
+  nestedQuery: QueryProto;
+  aggregations: Array<any>;
 }
 export type RunQueryStreamOptions = RunQueryOptions;
 export interface CommitCallback {
