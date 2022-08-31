@@ -62,8 +62,8 @@ describe('Query', () => {
         .aggregate(AggregateField.count().upTo(4).alias('total'))
         .aggregate(AggregateField.count().upTo(6).alias('total2'));
       assert.deepStrictEqual(query.aggregations, [
-        {alias: 'total', count: {up_to: 4}},
-        {alias: 'total2', count: {up_to: 6}},
+        {alias: 'total', count: {upTo: {value: 4}}},
+        {alias: 'total2', count: {upTo: {value: 6}}},
       ]);
     });
   });
