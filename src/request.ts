@@ -729,6 +729,7 @@ class DatastoreRequest {
    * ```
    */
   runQueryStream(query: Query, options: RunQueryStreamOptions = {}): Transform {
+    const self = this;
     query = extend(true, new Query(), query);
     const makeRequest = (query: Query) => {
       const sharedQueryOpts = {} as SharedQueryOptions;
@@ -762,7 +763,6 @@ class DatastoreRequest {
         runAggregationQuery(sharedQueryOpts, queryProto);
       }
 
-      const self = this;
       function runDataQuery(
         sharedQueryOpts: SharedQueryOptions,
         queryProto: QueryProto
