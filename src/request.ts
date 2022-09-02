@@ -614,7 +614,11 @@ class DatastoreRequest {
           gaxOpts: options.gaxOptions,
         },
         (err, res) => {
-          callback(err, res);
+          if (res && res.batch) {
+            callback(err, res.batch.aggregationResults);
+          } else {
+            callback(err, res);
+          }
         }
     );
   }
