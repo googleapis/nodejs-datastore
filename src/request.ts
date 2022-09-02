@@ -615,7 +615,22 @@ class DatastoreRequest {
         },
         (err, res) => {
           if (res && res.batch) {
-            callback(err, res.batch.aggregationResults);
+            const results = res.batch.aggregationResults;
+            const finalResults = results
+                .map(
+                    (aggregationResult: any) => aggregationResult.aggregateProperties
+                )
+                .map((aggregateProperties: any) =>
+                    Object.fromEntries(
+                        new Map(
+                            Object.keys(aggregateProperties).map(key => [
+                              key,
+                              entity.decodeValueProto(aggregateProperties[key]),
+                            ])
+                        )
+                    )
+                );
+            callback(err, finalResults);
           } else {
             callback(err, res);
           }
