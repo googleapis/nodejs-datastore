@@ -799,13 +799,13 @@ describe('Datastore', () => {
       assert.strictEqual(entities!.length, 6);
     });
     describe('with a count filter', () => {
-      it.only('should run a count aggregation', async () => {
+      it('should run a count aggregation', async () => {
         const q = datastore
           .createQuery('Character')
         const aggregateNoOver = datastore
             .aggregate(AggregateField.count())
         const aggregate = aggregateNoOver.over(q);
-        const results = await datastore.runAggregateQuery(aggregate);
+        const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{property_1: 8}]);
       });
       it('should run a count aggregation having a maximum', async () => {
@@ -814,7 +814,7 @@ describe('Datastore', () => {
         const aggregate = datastore
           .aggregate(AggregateField.count().upTo(4).alias('total'))
           .over(q);
-        const results = await datastore.runAggregateQuery(aggregate);
+        const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 4}]);
       });
       it('should run a count aggregation having other filters', async () => {
@@ -825,7 +825,7 @@ describe('Datastore', () => {
         const aggregate = datastore
           .aggregate(AggregateField.count().alias('total'))
           .over(q);
-        const results = await datastore.runAggregateQuery(aggregate);
+        const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 6}]);
       });
       it('should run a count aggregate filter with an alias', async () => {
@@ -834,7 +834,7 @@ describe('Datastore', () => {
         const aggregate = datastore
           .aggregate(AggregateField.count().alias('total'))
           .over(q);
-        const results = await datastore.runAggregateQuery(aggregate);
+        const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 8}]);
       });
       it('should do multiple count aggregations', async () => {
@@ -844,7 +844,7 @@ describe('Datastore', () => {
           .aggregate(AggregateField.count().alias('total'))
           .aggregate(AggregateField.count().alias('total2'))
           .over(q);
-        const results = await datastore.runAggregateQuery(aggregate);
+        const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 8, total2: 8}]);
       });
     });
