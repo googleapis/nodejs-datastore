@@ -511,6 +511,7 @@ class Datastore extends DatastoreRequest {
     this.auth = new GoogleAuth(this.options);
   }
 
+  // TODO: Change this to accept an array instead
   aggregate(aggregate: AggregateField): AggregateQuery {
     return new AggregateQuery(aggregate);
   }
