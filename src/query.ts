@@ -21,7 +21,7 @@ import {Entity} from './entity';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
-import {AggregateField} from './aggregate';
+import {AggregateField, AggregateQuery} from './aggregate';
 
 export type Operator =
   | '='
@@ -72,7 +72,6 @@ export interface Filter {
  * ```
  */
 class Query {
-  aggregations: Array<any>; // TODO: Replace type with aggregation
   scope?: Datastore | Transaction;
   namespace?: string | null;
   kinds: string[];
@@ -161,16 +160,6 @@ class Query {
      * @type {number}
      */
     this.offsetVal = -1;
-    /**
-     * @name Query#aggregations
-     * @type {array}
-     */
-    this.aggregations = [];
-  }
-
-  aggregate(aggregate: AggregateField) {
-    this.aggregations.push(aggregate.toProto());
-    return this;
   }
 
   /**
@@ -583,6 +572,8 @@ export interface RunQueryCallback {
 }
 
 export type RunQueryResponse = [Entity[], RunQueryInfo];
+
+export type RunAggregateQueryResponse = any;
 
 export interface RunQueryInfo {
   endCursor?: string;

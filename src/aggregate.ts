@@ -16,6 +16,33 @@
 // ** https://github.com/googleapis/gapic-generator-typescript **
 // ** All changes to this file may be overwritten. **
 
+import {Query} from './index';
+const AGGREGATE_QUERY = Symbol('AGGREGATE_QUERY');
+
+class AggregateQuery {
+  type = AGGREGATE_QUERY
+  aggregations: Array<AggregateField>
+  query: Query | undefined;
+
+  constructor(aggregate: AggregateField) {
+    this.aggregations = [aggregate];
+  }
+
+  aggregate(aggregate: AggregateField): AggregateQuery {
+    this.aggregations.push(aggregate);
+    return this;
+  }
+
+  over(query: Query): AggregateQuery {
+    this.query = query;
+    return this;
+  }
+
+  toProto(): any {
+    return this.aggregations.map(aggregation => aggregation.toProto())
+  }
+}
+
 abstract class AggregateField {
   alias_?: string;
 
@@ -46,4 +73,4 @@ class Count extends AggregateField {
   }
 }
 
-export {AggregateField};
+export {AggregateField, AggregateQuery, AGGREGATE_QUERY};
