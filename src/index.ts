@@ -512,8 +512,8 @@ class Datastore extends DatastoreRequest {
   }
 
   // TODO: Change this to accept an array instead
-  aggregate(aggregate: AggregateField): AggregateQuery {
-    return new AggregateQuery(aggregate);
+  aggregate_query(query: Query): AggregateQuery {
+    return new AggregateQuery(query);
   }
 
   /**

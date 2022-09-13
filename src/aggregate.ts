@@ -24,17 +24,13 @@ class AggregateQuery {
   aggregations: Array<AggregateField>
   query: Query | undefined;
 
-  constructor(aggregate: AggregateField) {
-    this.aggregations = [aggregate];
-  }
-
-  aggregate(aggregate: AggregateField): AggregateQuery {
-    this.aggregations.push(aggregate);
-    return this;
-  }
-
-  over(query: Query): AggregateQuery {
+  constructor(query: Query) {
     this.query = query;
+    this.aggregations = [];
+  }
+
+  aggregate(aggregates: AggregateField[]): AggregateQuery {
+    aggregates.forEach(aggregate => this.aggregations.push(aggregate));
     return this;
   }
 
