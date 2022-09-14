@@ -802,9 +802,9 @@ describe('Datastore', () => {
       it('should run a count aggregation', async () => {
         const q = datastore
           .createQuery('Character')
-        const aggregateNoOver = datastore
-            .aggregate(AggregateField.count())
-        const aggregate = aggregateNoOver.over(q);
+        const aggregate = datastore
+            .aggregate_query(q)
+            .aggregate([AggregateField.count()])
         const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{property_1: 8}]);
       });
@@ -812,8 +812,8 @@ describe('Datastore', () => {
         const q = datastore
           .createQuery('Character')
         const aggregate = datastore
-          .aggregate(AggregateField.count().upTo(4).alias('total'))
-          .over(q);
+          .aggregate_query(q)
+          .aggregate([AggregateField.count().upTo(4).alias('total')])
         const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 4}]);
       });
@@ -823,8 +823,8 @@ describe('Datastore', () => {
           .filter('family', 'Stark')
           .filter('appearances', '>=', 20)
         const aggregate = datastore
-          .aggregate(AggregateField.count().alias('total'))
-          .over(q);
+          .aggregate_query(q)
+          .aggregate([AggregateField.count().alias('total')])
         const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 6}]);
       });
@@ -832,8 +832,8 @@ describe('Datastore', () => {
         const q = datastore
           .createQuery('Character')
         const aggregate = datastore
-          .aggregate(AggregateField.count().alias('total'))
-          .over(q);
+          .aggregate_query(q)
+          .aggregate([AggregateField.count().alias('total')])
         const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 8}]);
       });
@@ -841,9 +841,8 @@ describe('Datastore', () => {
         const q = datastore
           .createQuery('Character')
         const aggregate = datastore
-          .aggregate(AggregateField.count().alias('total'))
-          .aggregate(AggregateField.count().alias('total2'))
-          .over(q);
+          .aggregate_query(q)
+          .aggregate([AggregateField.count().alias('total'), AggregateField.count().alias('total2')])
         const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 8, total2: 8}]);
       });
