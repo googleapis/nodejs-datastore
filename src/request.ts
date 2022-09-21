@@ -567,23 +567,26 @@ class DatastoreRequest {
   }
 
   // TODO Change RunQueryOptions, RunQueryCallback, RunQueryResponse to right interface
-  runAggregateQuery(query: AggregateQuery, options?: RunQueryOptions): Promise<RunQueryResponse>;
   runAggregateQuery(
-      query: AggregateQuery,
-      options: RunQueryOptions,
-      callback: RequestCallback
+    query: AggregateQuery,
+    options?: RunQueryOptions
+  ): Promise<RunQueryResponse>;
+  runAggregateQuery(
+    query: AggregateQuery,
+    options: RunQueryOptions,
+    callback: RequestCallback
   ): void;
   runAggregateQuery(query: AggregateQuery, callback: RequestCallback): void;
   runAggregateQuery(
-      query: AggregateQuery,
-      optionsOrCallback?: RunQueryOptions | RequestCallback,
-      cb?: RequestCallback
+    query: AggregateQuery,
+    optionsOrCallback?: RunQueryOptions | RequestCallback,
+    cb?: RequestCallback
   ): void | Promise<RunQueryResponse> {
     // TODO: Check that the query was provided in `over`.
     const options =
-        typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
+      typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
-        typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
     query.query = extend(true, new Query(), query.query);
     let queryProto: QueryProto;
@@ -600,41 +603,38 @@ class DatastoreRequest {
       nestedQuery: queryProto,
       aggregations: query.toProto(),
     };
-    const reqOpts: RunAggregationQueryRequest = Object.assign(
-        sharedQueryOpts,
-        {
-          aggregationQuery: aggregationQueryOptions,
-        }
-    );
+    const reqOpts: RunAggregationQueryRequest = Object.assign(sharedQueryOpts, {
+      aggregationQuery: aggregationQueryOptions,
+    });
     this.request_(
-        {
-          client: 'DatastoreClient',
-          method: 'runAggregationQuery',
-          reqOpts,
-          gaxOpts: options.gaxOptions,
-        },
-        (err, res) => {
-          if (res && res.batch) {
-            const results = res.batch.aggregationResults;
-            const finalResults = results
-                .map(
-                    (aggregationResult: any) => aggregationResult.aggregateProperties
+      {
+        client: 'DatastoreClient',
+        method: 'runAggregationQuery',
+        reqOpts,
+        gaxOpts: options.gaxOptions,
+      },
+      (err, res) => {
+        if (res && res.batch) {
+          const results = res.batch.aggregationResults;
+          const finalResults = results
+            .map(
+              (aggregationResult: any) => aggregationResult.aggregateProperties
+            )
+            .map((aggregateProperties: any) =>
+              Object.fromEntries(
+                new Map(
+                  Object.keys(aggregateProperties).map(key => [
+                    key,
+                    entity.decodeValueProto(aggregateProperties[key]),
+                  ])
                 )
-                .map((aggregateProperties: any) =>
-                    Object.fromEntries(
-                        new Map(
-                            Object.keys(aggregateProperties).map(key => [
-                              key,
-                              entity.decodeValueProto(aggregateProperties[key]),
-                            ])
-                        )
-                    )
-                );
-            callback(err, finalResults);
-          } else {
-            callback(err, res);
-          }
+              )
+            );
+          callback(err, finalResults);
+        } else {
+          callback(err, res);
         }
+      }
     );
   }
 
@@ -818,13 +818,13 @@ class DatastoreRequest {
       const reqOpts: RequestOptions = sharedQueryOpts;
       reqOpts.query = queryProto;
       this.request_(
-          {
-            client: 'DatastoreClient',
-            method: 'runQuery',
-            reqOpts,
-            gaxOpts: options.gaxOptions,
-          },
-          onResultSet
+        {
+          client: 'DatastoreClient',
+          method: 'runQuery',
+          reqOpts,
+          gaxOpts: options.gaxOptions,
+        },
+        onResultSet
       );
     };
 
@@ -889,7 +889,10 @@ class DatastoreRequest {
     return stream;
   }
 
-  private getSharedQueryOptions(query: Query, options: RunQueryStreamOptions = {}) : SharedQueryOptions {
+  private getSharedQueryOptions(
+    query: Query,
+    options: RunQueryStreamOptions = {}
+  ): SharedQueryOptions {
     const sharedQueryOpts = {} as SharedQueryOptions;
     if (options.consistency) {
       const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
@@ -1190,9 +1193,7 @@ export type DeleteResponse = CommitResponse;
  * that a callback is omitted.
  */
 promisifyAll(DatastoreRequest, {
-  exclude: [
-    'getSharedQueryOptions'
-  ]
+  exclude: ['getSharedQueryOptions'],
 });
 
 /**

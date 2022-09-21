@@ -58,11 +58,13 @@ describe('Query', () => {
     });
 
     it('should create a query with a count aggregation', () => {
-      const query = new Query(['kind1'])
+      const query = new Query(['kind1']);
       const firstAggregation = AggregateField.count().upTo(4).alias('total');
-      const secondAggregation = AggregateField.count().upTo(6).alias('total2')
-      const aggregate = new AggregateQuery(query)
-        .aggregate([firstAggregation, secondAggregation]);
+      const secondAggregation = AggregateField.count().upTo(6).alias('total2');
+      const aggregate = new AggregateQuery(query).aggregate([
+        firstAggregation,
+        secondAggregation,
+      ]);
       assert.deepStrictEqual(aggregate.aggregations, [
         firstAggregation,
         secondAggregation,

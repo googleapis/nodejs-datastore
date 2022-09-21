@@ -20,8 +20,8 @@ import {Query} from './index';
 const AGGREGATE_QUERY = Symbol('AGGREGATE_QUERY');
 
 class AggregateQuery {
-  type = AGGREGATE_QUERY
-  aggregations: Array<AggregateField>
+  type = AGGREGATE_QUERY;
+  aggregations: Array<AggregateField>;
   query: Query | undefined;
 
   constructor(query: Query) {
@@ -39,7 +39,7 @@ class AggregateQuery {
   }
 
   toProto(): any {
-    return this.aggregations.map(aggregation => aggregation.toProto())
+    return this.aggregations.map(aggregation => aggregation.toProto());
   }
 }
 
