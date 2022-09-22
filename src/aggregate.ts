@@ -29,8 +29,9 @@ class AggregateQuery {
     this.aggregations = [];
   }
 
-  count(alias: string, upTo: number) {
+  count(alias: string, upTo: number): AggregateQuery {
     this.aggregations.push(AggregateField.count().upTo(upTo).alias(alias));
+    return this;
   }
 
   aggregate(aggregates: AggregateField[]): AggregateQuery {
