@@ -775,6 +775,10 @@
                         "(google.api.field_behavior)": "REQUIRED"
                       }
                     },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
+                    },
                     "readOptions": {
                       "type": "ReadOptions",
                       "id": 1
@@ -829,6 +833,10 @@
                         "(google.api.field_behavior)": "REQUIRED"
                       }
                     },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
+                    },
                     "partitionId": {
                       "type": "PartitionId",
                       "id": 2
@@ -868,6 +876,10 @@
                         "(google.api.field_behavior)": "REQUIRED"
                       }
                     },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
+                    },
                     "transactionOptions": {
                       "type": "TransactionOptions",
                       "id": 10
@@ -890,6 +902,10 @@
                       "options": {
                         "(google.api.field_behavior)": "REQUIRED"
                       }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
                     },
                     "transaction": {
                       "type": "bytes",
@@ -918,6 +934,10 @@
                       "options": {
                         "(google.api.field_behavior)": "REQUIRED"
                       }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
                     },
                     "mode": {
                       "type": "Mode",
@@ -968,6 +988,10 @@
                       "options": {
                         "(google.api.field_behavior)": "REQUIRED"
                       }
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 9
                     },
                     "keys": {
                       "rule": "repeated",
@@ -1155,6 +1179,10 @@
                     "projectId": {
                       "type": "string",
                       "id": 2
+                    },
+                    "databaseId": {
+                      "type": "string",
+                      "id": 3
                     },
                     "namespaceId": {
                       "type": "string",
@@ -1797,6 +1825,10 @@
                 "syntax": {
                   "type": "string",
                   "id": 12
+                },
+                "edition": {
+                  "type": "string",
+                  "id": 13
                 }
               }
             },
@@ -2325,6 +2357,13 @@
                     "default": false
                   }
                 },
+                "unverifiedLazy": {
+                  "type": "bool",
+                  "id": 15,
+                  "options": {
+                    "default": false
+                  }
+                },
                 "deprecated": {
                   "type": "bool",
                   "id": 3,
@@ -2617,6 +2656,19 @@
                     "end": {
                       "type": "int32",
                       "id": 4
+                    },
+                    "semantic": {
+                      "type": "Semantic",
+                      "id": 5
+                    }
+                  },
+                  "nested": {
+                    "Semantic": {
+                      "values": {
+                        "NONE": 0,
+                        "SET": 1,
+                        "ALIAS": 2
+                      }
                     }
                   }
                 }

@@ -17,8 +17,14 @@
 // ** All changes to this file may be overwritten. **
 
 /* global window */
-import * as gax from 'google-gax';
-import {Callback, CallOptions, Descriptors, ClientOptions} from 'google-gax';
+import type * as gax from 'google-gax';
+import type {
+  Callback,
+  CallOptions,
+  Descriptors,
+  ClientOptions,
+  GrpcClientOptions,
+} from 'google-gax';
 
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
@@ -28,7 +34,6 @@ import jsonProtos = require('../../protos/protos.json');
  * This file defines retry strategy and timeouts for all API methods in this library.
  */
 import * as gapicConfig from './datastore_client_config.json';
-
 const version = require('../../../package.json').version;
 
 /**
@@ -59,6 +64,7 @@ export class DatastoreClient {
   };
   warn: (code: string, message: string, warnType?: string) => void;
   innerApiCalls: {[name: string]: Function};
+  operationsClient: gax.OperationsClient;
   datastoreStub?: Promise<{[name: string]: Function}>;
 
   /**
@@ -93,8 +99,18 @@ export class DatastoreClient {
    *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
+   * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
+   *     need to avoid loading the default gRPC version and want to use the fallback
+   *     HTTP implementation. Load only fallback version and pass it to the constructor:
+   *     ```
+   *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
+   *     const client = new DatastoreClient({fallback: 'rest'}, gax);
+   *     ```
    */
-  constructor(opts?: ClientOptions) {
+  constructor(
+    opts?: ClientOptions,
+    gaxInstance?: typeof gax | typeof gax.fallback
+  ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof DatastoreClient;
     const servicePath =
@@ -114,8 +130,13 @@ export class DatastoreClient {
       opts['scopes'] = staticMembers.scopes;
     }
 
+    // Load google-gax module synchronously if needed
+    if (!gaxInstance) {
+      gaxInstance = require('google-gax') as typeof gax;
+    }
+
     // Choose either gRPC or proto-over-HTTP implementation of google-gax.
-    this._gaxModule = opts.fallback ? gax.fallback : gax;
+    this._gaxModule = opts.fallback ? gaxInstance.fallback : gaxInstance;
 
     // Create a `gaxGrpc` object, with any grpc-specific options sent to the client.
     this._gaxGrpc = new this._gaxModule.GrpcClient(opts);
@@ -155,6 +176,41 @@ export class DatastoreClient {
     // Load the applicable protos.
     this._protos = this._gaxGrpc.loadProtoJSON(jsonProtos);
 
+    const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
+    // This API contains "long-running operations", which return a
+    // an Operation object that allows for tracking of the operation,
+    // rather than holding a request open.
+    const lroOptions: GrpcClientOptions = {
+      auth: this.auth,
+      grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
+    };
+    if (opts.fallback === 'rest') {
+      lroOptions.protoJson = protoFilesRoot;
+      lroOptions.httpRules = [
+        {
+          selector: 'google.longrunning.Operations.CancelOperation',
+          post: '/v1/{name=projects/*/operations/*}:cancel',
+        },
+        {
+          selector: 'google.longrunning.Operations.DeleteOperation',
+          delete: '/v1/{name=projects/*/operations/*}',
+        },
+        {
+          selector: 'google.longrunning.Operations.GetOperation',
+          get: '/v1/{name=projects/*/operations/*}',
+        },
+        {
+          selector: 'google.longrunning.Operations.ListOperations',
+          get: '/v1/{name=projects/*}/operations',
+        },
+      ];
+    }
+    this.operationsClient = this._gaxModule
+      .lro(lroOptions)
+      .operationsClient(opts);
+
+    this.descriptors.longrunning = {};
+
     // Put together the default options sent with requests.
     this._defaults = this._gaxGrpc.constructSettings(
       'google.datastore.v1.Datastore',
@@ -169,7 +225,7 @@ export class DatastoreClient {
     this.innerApiCalls = {};
 
     // Add a warn function to the client constructor so it can be easily tested.
-    this.warn = gax.warn;
+    this.warn = this._gaxModule.warn;
   }
 
   /**
@@ -232,7 +288,8 @@ export class DatastoreClient {
       const apiCall = this._gaxModule.createApiCall(
         callPromise,
         this._defaults[methodName],
-        descriptor
+        descriptor,
+        this._opts.fallback
       );
 
       this.innerApiCalls[methodName] = apiCall;
@@ -304,6 +361,11 @@ export class DatastoreClient {
    *   The request object that will be sent.
    * @param {string} request.projectId
    *   Required. The ID of the project against which to make the request.
+   * @param {string} request.databaseId
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
    * @param {google.datastore.v1.ReadOptions} request.readOptions
    *   The options for this lookup request.
    * @param {number[]} request.keys
@@ -378,8 +440,8 @@ export class DatastoreClient {
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        project_id: request.projectId || '',
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
       });
     this.initialize();
     return this.innerApiCalls.lookup(request, options, callback);
@@ -391,6 +453,11 @@ export class DatastoreClient {
    *   The request object that will be sent.
    * @param {string} request.projectId
    *   Required. The ID of the project against which to make the request.
+   * @param {string} request.databaseId
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
    * @param {google.datastore.v1.PartitionId} request.partitionId
    *   Entities are partitioned into subsets, identified by a partition ID.
    *   Queries are scoped to a single partition.
@@ -401,7 +468,7 @@ export class DatastoreClient {
    * @param {google.datastore.v1.Query} request.query
    *   The query to run.
    * @param {google.datastore.v1.GqlQuery} request.gqlQuery
-   *   The GQL query to run.
+   *   The GQL query to run. This query must be a non-aggregation query.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
@@ -472,8 +539,8 @@ export class DatastoreClient {
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        project_id: request.projectId || '',
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
       });
     this.initialize();
     return this.innerApiCalls.runQuery(request, options, callback);
@@ -485,6 +552,11 @@ export class DatastoreClient {
    *   The request object that will be sent.
    * @param {string} request.projectId
    *   Required. The ID of the project against which to make the request.
+   * @param {string} request.databaseId
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
    * @param {google.datastore.v1.TransactionOptions} request.transactionOptions
    *   Options for a new transaction.
    * @param {object} [options]
@@ -559,8 +631,8 @@ export class DatastoreClient {
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        project_id: request.projectId || '',
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
       });
     this.initialize();
     return this.innerApiCalls.beginTransaction(request, options, callback);
@@ -573,6 +645,11 @@ export class DatastoreClient {
    *   The request object that will be sent.
    * @param {string} request.projectId
    *   Required. The ID of the project against which to make the request.
+   * @param {string} request.databaseId
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
    * @param {google.datastore.v1.CommitRequest.Mode} request.mode
    *   The type of commit to perform. Defaults to `TRANSACTIONAL`.
    * @param {Buffer} request.transaction
@@ -663,8 +740,8 @@ export class DatastoreClient {
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        project_id: request.projectId || '',
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
       });
     this.initialize();
     return this.innerApiCalls.commit(request, options, callback);
@@ -676,6 +753,11 @@ export class DatastoreClient {
    *   The request object that will be sent.
    * @param {string} request.projectId
    *   Required. The ID of the project against which to make the request.
+   * @param {string} request.databaseId
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
    * @param {Buffer} request.transaction
    *   Required. The transaction identifier, returned by a call to
    *   {@link google.datastore.v1.Datastore.BeginTransaction|Datastore.BeginTransaction}.
@@ -749,8 +831,8 @@ export class DatastoreClient {
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        project_id: request.projectId || '',
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
       });
     this.initialize();
     return this.innerApiCalls.rollback(request, options, callback);
@@ -763,6 +845,11 @@ export class DatastoreClient {
    *   The request object that will be sent.
    * @param {string} request.projectId
    *   Required. The ID of the project against which to make the request.
+   * @param {string} request.databaseId
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
    * @param {number[]} request.keys
    *   Required. A list of keys with incomplete key paths for which to allocate IDs.
    *   No key may be reserved/read-only.
@@ -836,8 +923,8 @@ export class DatastoreClient {
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        project_id: request.projectId || '',
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
       });
     this.initialize();
     return this.innerApiCalls.allocateIds(request, options, callback);
@@ -851,7 +938,10 @@ export class DatastoreClient {
    * @param {string} request.projectId
    *   Required. The ID of the project against which to make the request.
    * @param {string} request.databaseId
-   *   If not empty, the ID of the database against which to make the request.
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
    * @param {number[]} request.keys
    *   Required. A list of keys with complete key paths whose numeric IDs should not be
    *   auto-allocated.
@@ -925,11 +1015,188 @@ export class DatastoreClient {
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers['x-goog-request-params'] =
-      gax.routingHeader.fromParams({
-        project_id: request.projectId || '',
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
       });
     this.initialize();
     return this.innerApiCalls.reserveIds(request, options, callback);
+  }
+
+  /**
+   * Gets the latest state of a long-running operation.  Clients can use this
+   * method to poll the operation result at intervals as recommended by the API
+   * service.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
+   *   details.
+   * @param {function(?Error, ?Object)=} callback
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing
+   * [google.longrunning.Operation]{@link
+   * external:"google.longrunning.Operation"}.
+   * @return {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   * [google.longrunning.Operation]{@link
+   * external:"google.longrunning.Operation"}. The promise has a method named
+   * "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * const name = '';
+   * const [response] = await client.getOperation({name});
+   * // doThingsWith(response)
+   * ```
+   */
+  getOperation(
+    request: protos.google.longrunning.GetOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.longrunning.Operation,
+          protos.google.longrunning.GetOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.longrunning.Operation,
+      protos.google.longrunning.GetOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<[protos.google.longrunning.Operation]> {
+    return this.operationsClient.getOperation(request, options, callback);
+  }
+  /**
+   * Lists operations that match the specified filter in the request. If the
+   * server doesn't support this method, it returns `UNIMPLEMENTED`. Returns an iterable object.
+   *
+   * For-await-of syntax is used with the iterable to recursively get response element on-demand.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation collection.
+   * @param {string} request.filter - The standard list filter.
+   * @param {number=} request.pageSize -
+   *   The maximum number of resources contained in the underlying API
+   *   response. If page streaming is performed per-resource, this
+   *   parameter does not affect the return value. If page streaming is
+   *   performed per-page, this determines the maximum number of
+   *   resources in a page.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
+   *   details.
+   * @returns {Object}
+   *   An iterable Object that conforms to @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * for await (const response of client.listOperationsAsync(request));
+   * // doThingsWith(response)
+   * ```
+   */
+  listOperationsAsync(
+    request: protos.google.longrunning.ListOperationsRequest,
+    options?: gax.CallOptions
+  ): AsyncIterable<protos.google.longrunning.ListOperationsResponse> {
+    return this.operationsClient.listOperationsAsync(request, options);
+  }
+  /**
+   * Starts asynchronous cancellation on a long-running operation.  The server
+   * makes a best effort to cancel the operation, but success is not
+   * guaranteed.  If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.  Clients can use
+   * {@link Operations.GetOperation} or
+   * other methods to check whether the cancellation succeeded or whether the
+   * operation completed despite cancellation. On successful cancellation,
+   * the operation is not deleted; instead, it becomes an operation with
+   * an {@link Operation.error} value with a {@link google.rpc.Status.code} of
+   * 1, corresponding to `Code.CANCELLED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be cancelled.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
+   * details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.cancelOperation({name: ''});
+   * ```
+   */
+  cancelOperation(
+    request: protos.google.longrunning.CancelOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.CancelOperationRequest,
+          {} | undefined | null
+        >,
+    callback?: Callback<
+      protos.google.longrunning.CancelOperationRequest,
+      protos.google.protobuf.Empty,
+      {} | undefined | null
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.cancelOperation(request, options, callback);
+  }
+
+  /**
+   * Deletes a long-running operation. This method indicates that the client is
+   * no longer interested in the operation result. It does not cancel the
+   * operation. If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be deleted.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
+   * details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.deleteOperation({name: ''});
+   * ```
+   */
+  deleteOperation(
+    request: protos.google.longrunning.DeleteOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.DeleteOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.protobuf.Empty,
+      protos.google.longrunning.DeleteOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.deleteOperation(request, options, callback);
   }
 
   /**
@@ -943,6 +1210,7 @@ export class DatastoreClient {
       return this.datastoreStub.then(stub => {
         this._terminated = true;
         stub.close();
+        this.operationsClient.close();
       });
     }
     return Promise.resolve();

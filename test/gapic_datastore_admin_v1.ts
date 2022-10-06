@@ -27,6 +27,21 @@ import {PassThrough} from 'stream';
 
 import {protobuf, LROperation, operationsProtos} from 'google-gax';
 
+// Dynamically loaded proto JSON is needed to get the type information
+// to fill in default values for request objects
+const root = protobuf.Root.fromJSON(
+  require('../protos/protos.json')
+).resolveAll();
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getTypeDefaultValue(typeName: string, fields: string[]) {
+  let type = root.lookupType(typeName) as protobuf.Type;
+  for (const field of fields.slice(0, -1)) {
+    type = type.fields[field]?.resolvedType as protobuf.Type;
+  }
+  return type.fields[fields[fields.length - 1]]?.defaultValue;
+}
+
 function generateSampleMessage<T extends object>(instance: T) {
   const filledObject = (
     instance.constructor as typeof protobuf.Message
@@ -145,101 +160,103 @@ function stubAsyncIterationCall<ResponseType>(
 }
 
 describe('v1.DatastoreAdminClient', () => {
-  it('has servicePath', () => {
-    const servicePath =
-      datastoreadminModule.v1.DatastoreAdminClient.servicePath;
-    assert(servicePath);
-  });
-
-  it('has apiEndpoint', () => {
-    const apiEndpoint =
-      datastoreadminModule.v1.DatastoreAdminClient.apiEndpoint;
-    assert(apiEndpoint);
-  });
-
-  it('has port', () => {
-    const port = datastoreadminModule.v1.DatastoreAdminClient.port;
-    assert(port);
-    assert(typeof port === 'number');
-  });
-
-  it('should create a client with no option', () => {
-    const client = new datastoreadminModule.v1.DatastoreAdminClient();
-    assert(client);
-  });
-
-  it('should create a client with gRPC fallback', () => {
-    const client = new datastoreadminModule.v1.DatastoreAdminClient({
-      fallback: true,
+  describe('Common methods', () => {
+    it('has servicePath', () => {
+      const servicePath =
+        datastoreadminModule.v1.DatastoreAdminClient.servicePath;
+      assert(servicePath);
     });
-    assert(client);
-  });
 
-  it('has initialize method and supports deferred initialization', async () => {
-    const client = new datastoreadminModule.v1.DatastoreAdminClient({
-      credentials: {client_email: 'bogus', private_key: 'bogus'},
-      projectId: 'bogus',
+    it('has apiEndpoint', () => {
+      const apiEndpoint =
+        datastoreadminModule.v1.DatastoreAdminClient.apiEndpoint;
+      assert(apiEndpoint);
     });
-    assert.strictEqual(client.datastoreAdminStub, undefined);
-    await client.initialize();
-    assert(client.datastoreAdminStub);
-  });
 
-  it('has close method for the initialized client', done => {
-    const client = new datastoreadminModule.v1.DatastoreAdminClient({
-      credentials: {client_email: 'bogus', private_key: 'bogus'},
-      projectId: 'bogus',
+    it('has port', () => {
+      const port = datastoreadminModule.v1.DatastoreAdminClient.port;
+      assert(port);
+      assert(typeof port === 'number');
     });
-    client.initialize();
-    assert(client.datastoreAdminStub);
-    client.close().then(() => {
-      done();
-    });
-  });
 
-  it('has close method for the non-initialized client', done => {
-    const client = new datastoreadminModule.v1.DatastoreAdminClient({
-      credentials: {client_email: 'bogus', private_key: 'bogus'},
-      projectId: 'bogus',
+    it('should create a client with no option', () => {
+      const client = new datastoreadminModule.v1.DatastoreAdminClient();
+      assert(client);
     });
-    assert.strictEqual(client.datastoreAdminStub, undefined);
-    client.close().then(() => {
-      done();
-    });
-  });
 
-  it('has getProjectId method', async () => {
-    const fakeProjectId = 'fake-project-id';
-    const client = new datastoreadminModule.v1.DatastoreAdminClient({
-      credentials: {client_email: 'bogus', private_key: 'bogus'},
-      projectId: 'bogus',
+    it('should create a client with gRPC fallback', () => {
+      const client = new datastoreadminModule.v1.DatastoreAdminClient({
+        fallback: true,
+      });
+      assert(client);
     });
-    client.auth.getProjectId = sinon.stub().resolves(fakeProjectId);
-    const result = await client.getProjectId();
-    assert.strictEqual(result, fakeProjectId);
-    assert((client.auth.getProjectId as SinonStub).calledWithExactly());
-  });
 
-  it('has getProjectId method with callback', async () => {
-    const fakeProjectId = 'fake-project-id';
-    const client = new datastoreadminModule.v1.DatastoreAdminClient({
-      credentials: {client_email: 'bogus', private_key: 'bogus'},
-      projectId: 'bogus',
+    it('has initialize method and supports deferred initialization', async () => {
+      const client = new datastoreadminModule.v1.DatastoreAdminClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      assert.strictEqual(client.datastoreAdminStub, undefined);
+      await client.initialize();
+      assert(client.datastoreAdminStub);
     });
-    client.auth.getProjectId = sinon
-      .stub()
-      .callsArgWith(0, null, fakeProjectId);
-    const promise = new Promise((resolve, reject) => {
-      client.getProjectId((err?: Error | null, projectId?: string | null) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(projectId);
-        }
+
+    it('has close method for the initialized client', done => {
+      const client = new datastoreadminModule.v1.DatastoreAdminClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      assert(client.datastoreAdminStub);
+      client.close().then(() => {
+        done();
       });
     });
-    const result = await promise;
-    assert.strictEqual(result, fakeProjectId);
+
+    it('has close method for the non-initialized client', done => {
+      const client = new datastoreadminModule.v1.DatastoreAdminClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      assert.strictEqual(client.datastoreAdminStub, undefined);
+      client.close().then(() => {
+        done();
+      });
+    });
+
+    it('has getProjectId method', async () => {
+      const fakeProjectId = 'fake-project-id';
+      const client = new datastoreadminModule.v1.DatastoreAdminClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.auth.getProjectId = sinon.stub().resolves(fakeProjectId);
+      const result = await client.getProjectId();
+      assert.strictEqual(result, fakeProjectId);
+      assert((client.auth.getProjectId as SinonStub).calledWithExactly());
+    });
+
+    it('has getProjectId method with callback', async () => {
+      const fakeProjectId = 'fake-project-id';
+      const client = new datastoreadminModule.v1.DatastoreAdminClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.auth.getProjectId = sinon
+        .stub()
+        .callsArgWith(0, null, fakeProjectId);
+      const promise = new Promise((resolve, reject) => {
+        client.getProjectId((err?: Error | null, projectId?: string | null) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(projectId);
+          }
+        });
+      });
+      const result = await promise;
+      assert.strictEqual(result, fakeProjectId);
+    });
   });
 
   describe('getIndex', () => {
@@ -252,27 +269,31 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.GetIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
-      const expectedHeaderRequestParams = 'project_id=&index_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.admin.v1.Index()
       );
       client.innerApiCalls.getIndex = stubSimpleCall(expectedResponse);
       const [response] = await client.getIndex(request);
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.getIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.getIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.getIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes getIndex without error using callback', async () => {
@@ -284,16 +305,17 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.GetIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
-      const expectedHeaderRequestParams = 'project_id=&index_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.admin.v1.Index()
       );
@@ -316,11 +338,14 @@ describe('v1.DatastoreAdminClient', () => {
       });
       const response = await promise;
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.getIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions /*, callback defined above */)
-      );
+      const actualRequest = (
+        client.innerApiCalls.getIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.getIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes getIndex with error', async () => {
@@ -332,24 +357,28 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.GetIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
-      const expectedHeaderRequestParams = 'project_id=&index_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.getIndex = stubSimpleCall(undefined, expectedError);
       await assert.rejects(client.getIndex(request), expectedError);
-      assert(
-        (client.innerApiCalls.getIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.getIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.getIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes getIndex with closed client', async () => {
@@ -361,8 +390,16 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.GetIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.GetIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
       const expectedError = new Error('The client has already been closed.');
       client.close();
       await assert.rejects(client.getIndex(request), expectedError);
@@ -379,15 +416,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ExportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ExportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -396,11 +430,14 @@ describe('v1.DatastoreAdminClient', () => {
       const [operation] = await client.exportEntities(request);
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.exportEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes exportEntities without error using callback', async () => {
@@ -412,15 +449,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ExportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ExportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -450,11 +484,14 @@ describe('v1.DatastoreAdminClient', () => {
       >;
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.exportEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions /*, callback defined above */)
-      );
+      const actualRequest = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes exportEntities with call error', async () => {
@@ -466,26 +503,26 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ExportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ExportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.exportEntities = stubLongRunningCall(
         undefined,
         expectedError
       );
       await assert.rejects(client.exportEntities(request), expectedError);
-      assert(
-        (client.innerApiCalls.exportEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes exportEntities with LRO error', async () => {
@@ -497,15 +534,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ExportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ExportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.exportEntities = stubLongRunningCall(
         undefined,
@@ -514,11 +548,14 @@ describe('v1.DatastoreAdminClient', () => {
       );
       const [operation] = await client.exportEntities(request);
       await assert.rejects(operation.promise(), expectedError);
-      assert(
-        (client.innerApiCalls.exportEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes checkExportEntitiesProgress without error', async () => {
@@ -573,15 +610,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ImportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ImportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -590,11 +624,14 @@ describe('v1.DatastoreAdminClient', () => {
       const [operation] = await client.importEntities(request);
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.importEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes importEntities without error using callback', async () => {
@@ -606,15 +643,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ImportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ImportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -644,11 +678,14 @@ describe('v1.DatastoreAdminClient', () => {
       >;
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.importEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions /*, callback defined above */)
-      );
+      const actualRequest = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes importEntities with call error', async () => {
@@ -660,26 +697,26 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ImportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ImportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.importEntities = stubLongRunningCall(
         undefined,
         expectedError
       );
       await assert.rejects(client.importEntities(request), expectedError);
-      assert(
-        (client.innerApiCalls.importEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes importEntities with LRO error', async () => {
@@ -691,15 +728,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ImportEntitiesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ImportEntitiesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.importEntities = stubLongRunningCall(
         undefined,
@@ -708,11 +742,14 @@ describe('v1.DatastoreAdminClient', () => {
       );
       const [operation] = await client.importEntities(request);
       await assert.rejects(operation.promise(), expectedError);
-      assert(
-        (client.innerApiCalls.importEntities as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importEntities as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes checkImportEntitiesProgress without error', async () => {
@@ -767,15 +804,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.CreateIndexRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.CreateIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -783,11 +817,14 @@ describe('v1.DatastoreAdminClient', () => {
       const [operation] = await client.createIndex(request);
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.createIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes createIndex without error using callback', async () => {
@@ -799,15 +836,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.CreateIndexRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.CreateIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -837,11 +871,14 @@ describe('v1.DatastoreAdminClient', () => {
       >;
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.createIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions /*, callback defined above */)
-      );
+      const actualRequest = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes createIndex with call error', async () => {
@@ -853,26 +890,26 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.CreateIndexRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.CreateIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.createIndex = stubLongRunningCall(
         undefined,
         expectedError
       );
       await assert.rejects(client.createIndex(request), expectedError);
-      assert(
-        (client.innerApiCalls.createIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes createIndex with LRO error', async () => {
@@ -884,15 +921,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.CreateIndexRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.CreateIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.createIndex = stubLongRunningCall(
         undefined,
@@ -901,11 +935,14 @@ describe('v1.DatastoreAdminClient', () => {
       );
       const [operation] = await client.createIndex(request);
       await assert.rejects(operation.promise(), expectedError);
-      assert(
-        (client.innerApiCalls.createIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.createIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes checkCreateIndexProgress without error', async () => {
@@ -957,16 +994,17 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.DeleteIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
-      const expectedHeaderRequestParams = 'project_id=&index_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -974,11 +1012,14 @@ describe('v1.DatastoreAdminClient', () => {
       const [operation] = await client.deleteIndex(request);
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.deleteIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes deleteIndex without error using callback', async () => {
@@ -990,16 +1031,17 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.DeleteIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
-      const expectedHeaderRequestParams = 'project_id=&index_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -1029,11 +1071,14 @@ describe('v1.DatastoreAdminClient', () => {
       >;
       const [response] = await operation.promise();
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.deleteIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions /*, callback defined above */)
-      );
+      const actualRequest = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes deleteIndex with call error', async () => {
@@ -1045,27 +1090,31 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.DeleteIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
-      const expectedHeaderRequestParams = 'project_id=&index_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.deleteIndex = stubLongRunningCall(
         undefined,
         expectedError
       );
       await assert.rejects(client.deleteIndex(request), expectedError);
-      assert(
-        (client.innerApiCalls.deleteIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes deleteIndex with LRO error', async () => {
@@ -1077,16 +1126,17 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.DeleteIndexRequest()
       );
-      request.projectId = '';
-      request.indexId = '';
-      const expectedHeaderRequestParams = 'project_id=&index_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const defaultValue2 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.DeleteIndexRequest',
+        ['indexId']
+      );
+      request.indexId = defaultValue2;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.deleteIndex = stubLongRunningCall(
         undefined,
@@ -1095,11 +1145,14 @@ describe('v1.DatastoreAdminClient', () => {
       );
       const [operation] = await client.deleteIndex(request);
       await assert.rejects(operation.promise(), expectedError);
-      assert(
-        (client.innerApiCalls.deleteIndex as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.deleteIndex as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes checkDeleteIndexProgress without error', async () => {
@@ -1151,15 +1204,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ListIndexesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ListIndexesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1168,11 +1218,14 @@ describe('v1.DatastoreAdminClient', () => {
       client.innerApiCalls.listIndexes = stubSimpleCall(expectedResponse);
       const [response] = await client.listIndexes(request);
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.listIndexes as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.listIndexes as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listIndexes as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes listIndexes without error using callback', async () => {
@@ -1184,15 +1237,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ListIndexesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ListIndexesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1217,11 +1267,14 @@ describe('v1.DatastoreAdminClient', () => {
       });
       const response = await promise;
       assert.deepStrictEqual(response, expectedResponse);
-      assert(
-        (client.innerApiCalls.listIndexes as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions /*, callback defined above */)
-      );
+      const actualRequest = (
+        client.innerApiCalls.listIndexes as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listIndexes as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes listIndexes with error', async () => {
@@ -1233,26 +1286,26 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ListIndexesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
-      const expectedOptions = {
-        otherArgs: {
-          headers: {
-            'x-goog-request-params': expectedHeaderRequestParams,
-          },
-        },
-      };
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ListIndexesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.listIndexes = stubSimpleCall(
         undefined,
         expectedError
       );
       await assert.rejects(client.listIndexes(request), expectedError);
-      assert(
-        (client.innerApiCalls.listIndexes as SinonStub)
-          .getCall(0)
-          .calledWith(request, expectedOptions, undefined)
-      );
+      const actualRequest = (
+        client.innerApiCalls.listIndexes as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listIndexes as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
     });
 
     it('invokes listIndexesStream without error', async () => {
@@ -1264,8 +1317,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ListIndexesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ListIndexesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1296,11 +1353,12 @@ describe('v1.DatastoreAdminClient', () => {
           .getCall(0)
           .calledWith(client.innerApiCalls.listIndexes, request)
       );
-      assert.strictEqual(
-        (client.descriptors.page.listIndexes.createStream as SinonStub).getCall(
-          0
-        ).args[2].otherArgs.headers['x-goog-request-params'],
-        expectedHeaderRequestParams
+      assert(
+        (client.descriptors.page.listIndexes.createStream as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
       );
     });
 
@@ -1313,8 +1371,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ListIndexesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ListIndexesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.descriptors.page.listIndexes.createStream = stubPageStreamingCall(
         undefined,
@@ -1342,11 +1404,12 @@ describe('v1.DatastoreAdminClient', () => {
           .getCall(0)
           .calledWith(client.innerApiCalls.listIndexes, request)
       );
-      assert.strictEqual(
-        (client.descriptors.page.listIndexes.createStream as SinonStub).getCall(
-          0
-        ).args[2].otherArgs.headers['x-goog-request-params'],
-        expectedHeaderRequestParams
+      assert(
+        (client.descriptors.page.listIndexes.createStream as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
       );
     });
 
@@ -1359,8 +1422,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ListIndexesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ListIndexesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1380,11 +1447,12 @@ describe('v1.DatastoreAdminClient', () => {
         ).args[1],
         request
       );
-      assert.strictEqual(
-        (client.descriptors.page.listIndexes.asyncIterate as SinonStub).getCall(
-          0
-        ).args[2].otherArgs.headers['x-goog-request-params'],
-        expectedHeaderRequestParams
+      assert(
+        (client.descriptors.page.listIndexes.asyncIterate as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
       );
     });
 
@@ -1397,8 +1465,12 @@ describe('v1.DatastoreAdminClient', () => {
       const request = generateSampleMessage(
         new protos.google.datastore.admin.v1.ListIndexesRequest()
       );
-      request.projectId = '';
-      const expectedHeaderRequestParams = 'project_id=';
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.admin.v1.ListIndexesRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
       const expectedError = new Error('expected');
       client.descriptors.page.listIndexes.asyncIterate = stubAsyncIterationCall(
         undefined,
@@ -1417,11 +1489,12 @@ describe('v1.DatastoreAdminClient', () => {
         ).args[1],
         request
       );
-      assert.strictEqual(
-        (client.descriptors.page.listIndexes.asyncIterate as SinonStub).getCall(
-          0
-        ).args[2].otherArgs.headers['x-goog-request-params'],
-        expectedHeaderRequestParams
+      assert(
+        (client.descriptors.page.listIndexes.asyncIterate as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
       );
     });
   });
