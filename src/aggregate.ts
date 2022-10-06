@@ -29,8 +29,8 @@ class AggregateQuery {
     this.aggregations = [];
   }
 
-  count(alias: string, upTo: number): AggregateQuery {
-    this.aggregations.push(AggregateField.count().upTo(upTo).alias(alias));
+  count(alias: string): AggregateQuery {
+    this.aggregations.push(AggregateField.count().alias(alias));
     return this;
   }
 
@@ -60,16 +60,8 @@ abstract class AggregateField {
 }
 
 class Count extends AggregateField {
-  upTo_?: number;
-
-  upTo(upTo: number): AggregateField {
-    this.upTo_ = upTo;
-    return this;
-  }
-
   toProto(): any {
-    const convertedUpTo = this.upTo_ ? {upTo: {value: this.upTo_}} : null;
-    const count = Object.assign({}, convertedUpTo);
+    const count = Object.assign({});
     return Object.assign({count}, this.alias_ ? {alias: this.alias_} : null);
   }
 }

@@ -811,7 +811,7 @@ describe('Datastore', () => {
         const q = datastore.createQuery('Character');
         const aggregate = datastore
           .aggregate_query(q)
-          .aggregate([AggregateField.count().upTo(4).alias('total')]);
+          .aggregate([AggregateField.count().alias('total')]);
         const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 4}]);
       });
