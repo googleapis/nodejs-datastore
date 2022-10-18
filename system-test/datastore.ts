@@ -807,14 +807,6 @@ describe('Datastore', () => {
         const [results] = await datastore.runAggregateQuery(aggregate);
         assert.deepStrictEqual(results, [{property_1: 8}]);
       });
-      it('should run a count aggregation having a maximum', async () => {
-        const q = datastore.createQuery('Character');
-        const aggregate = datastore
-          .aggregate_query(q)
-          .aggregate([AggregateField.count().alias('total')]);
-        const [results] = await datastore.runAggregateQuery(aggregate);
-        assert.deepStrictEqual(results, [{total: 4}]);
-      });
       it('should run a count aggregation having other filters', async () => {
         const q = datastore
           .createQuery('Character')

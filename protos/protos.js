@@ -580,6 +580,12 @@
                                 message.endTime = $root.google.protobuf.Timestamp.fromObject(object.endTime);
                             }
                             switch (object.operationType) {
+                            default:
+                                if (typeof object.operationType === "number") {
+                                    message.operationType = object.operationType;
+                                    break;
+                                }
+                                break;
                             case "OPERATION_TYPE_UNSPECIFIED":
                             case 0:
                                 message.operationType = 0;
@@ -609,6 +615,12 @@
                                     message.labels[keys[i]] = String(object.labels[keys[i]]);
                             }
                             switch (object.state) {
+                            default:
+                                if (typeof object.state === "number") {
+                                    message.state = object.state;
+                                    break;
+                                }
+                                break;
                             case "STATE_UNSPECIFIED":
                             case 0:
                                 message.state = 0;
@@ -671,7 +683,7 @@
                             if (message.endTime != null && message.hasOwnProperty("endTime"))
                                 object.endTime = $root.google.protobuf.Timestamp.toObject(message.endTime, options);
                             if (message.operationType != null && message.hasOwnProperty("operationType"))
-                                object.operationType = options.enums === String ? $root.google.datastore.admin.v1.OperationType[message.operationType] : message.operationType;
+                                object.operationType = options.enums === String ? $root.google.datastore.admin.v1.OperationType[message.operationType] === undefined ? message.operationType : $root.google.datastore.admin.v1.OperationType[message.operationType] : message.operationType;
                             var keys2;
                             if (message.labels && (keys2 = Object.keys(message.labels)).length) {
                                 object.labels = {};
@@ -679,7 +691,7 @@
                                     object.labels[keys2[j]] = message.labels[keys2[j]];
                             }
                             if (message.state != null && message.hasOwnProperty("state"))
-                                object.state = options.enums === String ? $root.google.datastore.admin.v1.CommonMetadata.State[message.state] : message.state;
+                                object.state = options.enums === String ? $root.google.datastore.admin.v1.CommonMetadata.State[message.state] === undefined ? message.state : $root.google.datastore.admin.v1.CommonMetadata.State[message.state] : message.state;
                             return object;
                         };
     
@@ -4368,6 +4380,12 @@
                                 return object;
                             var message = new $root.google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata();
                             switch (object.migrationState) {
+                            default:
+                                if (typeof object.migrationState === "number") {
+                                    message.migrationState = object.migrationState;
+                                    break;
+                                }
+                                break;
                             case "MIGRATION_STATE_UNSPECIFIED":
                             case 0:
                                 message.migrationState = 0;
@@ -4386,6 +4404,12 @@
                                 break;
                             }
                             switch (object.migrationStep) {
+                            default:
+                                if (typeof object.migrationStep === "number") {
+                                    message.migrationStep = object.migrationStep;
+                                    break;
+                                }
+                                break;
                             case "MIGRATION_STEP_UNSPECIFIED":
                             case 0:
                                 message.migrationStep = 0;
@@ -4440,9 +4464,9 @@
                                 object.migrationStep = options.enums === String ? "MIGRATION_STEP_UNSPECIFIED" : 0;
                             }
                             if (message.migrationState != null && message.hasOwnProperty("migrationState"))
-                                object.migrationState = options.enums === String ? $root.google.datastore.admin.v1.MigrationState[message.migrationState] : message.migrationState;
+                                object.migrationState = options.enums === String ? $root.google.datastore.admin.v1.MigrationState[message.migrationState] === undefined ? message.migrationState : $root.google.datastore.admin.v1.MigrationState[message.migrationState] : message.migrationState;
                             if (message.migrationStep != null && message.hasOwnProperty("migrationStep"))
-                                object.migrationStep = options.enums === String ? $root.google.datastore.admin.v1.MigrationStep[message.migrationStep] : message.migrationStep;
+                                object.migrationStep = options.enums === String ? $root.google.datastore.admin.v1.MigrationStep[message.migrationStep] === undefined ? message.migrationStep : $root.google.datastore.admin.v1.MigrationStep[message.migrationStep] : message.migrationStep;
                             return object;
                         };
     
@@ -4765,6 +4789,12 @@
                             if (object.kind != null)
                                 message.kind = String(object.kind);
                             switch (object.ancestor) {
+                            default:
+                                if (typeof object.ancestor === "number") {
+                                    message.ancestor = object.ancestor;
+                                    break;
+                                }
+                                break;
                             case "ANCESTOR_MODE_UNSPECIFIED":
                             case 0:
                                 message.ancestor = 0;
@@ -4789,6 +4819,12 @@
                                 }
                             }
                             switch (object.state) {
+                            default:
+                                if (typeof object.state === "number") {
+                                    message.state = object.state;
+                                    break;
+                                }
+                                break;
                             case "STATE_UNSPECIFIED":
                             case 0:
                                 message.state = 0;
@@ -4842,14 +4878,14 @@
                             if (message.kind != null && message.hasOwnProperty("kind"))
                                 object.kind = message.kind;
                             if (message.ancestor != null && message.hasOwnProperty("ancestor"))
-                                object.ancestor = options.enums === String ? $root.google.datastore.admin.v1.Index.AncestorMode[message.ancestor] : message.ancestor;
+                                object.ancestor = options.enums === String ? $root.google.datastore.admin.v1.Index.AncestorMode[message.ancestor] === undefined ? message.ancestor : $root.google.datastore.admin.v1.Index.AncestorMode[message.ancestor] : message.ancestor;
                             if (message.properties && message.properties.length) {
                                 object.properties = [];
                                 for (var j = 0; j < message.properties.length; ++j)
                                     object.properties[j] = $root.google.datastore.admin.v1.Index.IndexedProperty.toObject(message.properties[j], options);
                             }
                             if (message.state != null && message.hasOwnProperty("state"))
-                                object.state = options.enums === String ? $root.google.datastore.admin.v1.Index.State[message.state] : message.state;
+                                object.state = options.enums === String ? $root.google.datastore.admin.v1.Index.State[message.state] === undefined ? message.state : $root.google.datastore.admin.v1.Index.State[message.state] : message.state;
                             return object;
                         };
     
@@ -5087,6 +5123,12 @@
                                 if (object.name != null)
                                     message.name = String(object.name);
                                 switch (object.direction) {
+                                default:
+                                    if (typeof object.direction === "number") {
+                                        message.direction = object.direction;
+                                        break;
+                                    }
+                                    break;
                                 case "DIRECTION_UNSPECIFIED":
                                 case 0:
                                     message.direction = 0;
@@ -5123,7 +5165,7 @@
                                 if (message.name != null && message.hasOwnProperty("name"))
                                     object.name = message.name;
                                 if (message.direction != null && message.hasOwnProperty("direction"))
-                                    object.direction = options.enums === String ? $root.google.datastore.admin.v1.Index.Direction[message.direction] : message.direction;
+                                    object.direction = options.enums === String ? $root.google.datastore.admin.v1.Index.Direction[message.direction] === undefined ? message.direction : $root.google.datastore.admin.v1.Index.Direction[message.direction] : message.direction;
                                 return object;
                             };
     
@@ -5336,6 +5378,12 @@
                                 return object;
                             var message = new $root.google.datastore.admin.v1.MigrationStateEvent();
                             switch (object.state) {
+                            default:
+                                if (typeof object.state === "number") {
+                                    message.state = object.state;
+                                    break;
+                                }
+                                break;
                             case "MIGRATION_STATE_UNSPECIFIED":
                             case 0:
                                 message.state = 0;
@@ -5372,7 +5420,7 @@
                             if (options.defaults)
                                 object.state = options.enums === String ? "MIGRATION_STATE_UNSPECIFIED" : 0;
                             if (message.state != null && message.hasOwnProperty("state"))
-                                object.state = options.enums === String ? $root.google.datastore.admin.v1.MigrationState[message.state] : message.state;
+                                object.state = options.enums === String ? $root.google.datastore.admin.v1.MigrationState[message.state] === undefined ? message.state : $root.google.datastore.admin.v1.MigrationState[message.state] : message.state;
                             return object;
                         };
     
@@ -5629,6 +5677,12 @@
                                 return object;
                             var message = new $root.google.datastore.admin.v1.MigrationProgressEvent();
                             switch (object.step) {
+                            default:
+                                if (typeof object.step === "number") {
+                                    message.step = object.step;
+                                    break;
+                                }
+                                break;
                             case "MIGRATION_STEP_UNSPECIFIED":
                             case 0:
                                 message.step = 0;
@@ -5691,7 +5745,7 @@
                             if (options.defaults)
                                 object.step = options.enums === String ? "MIGRATION_STEP_UNSPECIFIED" : 0;
                             if (message.step != null && message.hasOwnProperty("step"))
-                                object.step = options.enums === String ? $root.google.datastore.admin.v1.MigrationStep[message.step] : message.step;
+                                object.step = options.enums === String ? $root.google.datastore.admin.v1.MigrationStep[message.step] === undefined ? message.step : $root.google.datastore.admin.v1.MigrationStep[message.step] : message.step;
                             if (message.prepareStepDetails != null && message.hasOwnProperty("prepareStepDetails")) {
                                 object.prepareStepDetails = $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails.toObject(message.prepareStepDetails, options);
                                 if (options.oneofs)
@@ -5906,6 +5960,12 @@
                                     return object;
                                 var message = new $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails();
                                 switch (object.concurrencyMode) {
+                                default:
+                                    if (typeof object.concurrencyMode === "number") {
+                                        message.concurrencyMode = object.concurrencyMode;
+                                        break;
+                                    }
+                                    break;
                                 case "CONCURRENCY_MODE_UNSPECIFIED":
                                 case 0:
                                     message.concurrencyMode = 0;
@@ -5942,7 +6002,7 @@
                                 if (options.defaults)
                                     object.concurrencyMode = options.enums === String ? "CONCURRENCY_MODE_UNSPECIFIED" : 0;
                                 if (message.concurrencyMode != null && message.hasOwnProperty("concurrencyMode"))
-                                    object.concurrencyMode = options.enums === String ? $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] : message.concurrencyMode;
+                                    object.concurrencyMode = options.enums === String ? $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] === undefined ? message.concurrencyMode : $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] : message.concurrencyMode;
                                 return object;
                             };
     
@@ -6132,6 +6192,12 @@
                                     return object;
                                 var message = new $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails();
                                 switch (object.concurrencyMode) {
+                                default:
+                                    if (typeof object.concurrencyMode === "number") {
+                                        message.concurrencyMode = object.concurrencyMode;
+                                        break;
+                                    }
+                                    break;
                                 case "CONCURRENCY_MODE_UNSPECIFIED":
                                 case 0:
                                     message.concurrencyMode = 0;
@@ -6168,7 +6234,7 @@
                                 if (options.defaults)
                                     object.concurrencyMode = options.enums === String ? "CONCURRENCY_MODE_UNSPECIFIED" : 0;
                                 if (message.concurrencyMode != null && message.hasOwnProperty("concurrencyMode"))
-                                    object.concurrencyMode = options.enums === String ? $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] : message.concurrencyMode;
+                                    object.concurrencyMode = options.enums === String ? $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] === undefined ? message.concurrencyMode : $root.google.datastore.admin.v1.MigrationProgressEvent.ConcurrencyMode[message.concurrencyMode] : message.concurrencyMode;
                                 return object;
                             };
     
@@ -6360,26 +6426,2499 @@
                             var tag = reader.uint32();
                             switch (tag >>> 3) {
                             case 2: {
-                                    if (message.aggregateProperties === $util.emptyObject)
-                                        message.aggregateProperties = {};
-                                    var end2 = reader.uint32() + reader.pos;
-                                    key = "";
-                                    value = null;
-                                    while (reader.pos < end2) {
-                                        var tag2 = reader.uint32();
-                                        switch (tag2 >>> 3) {
-                                        case 1:
-                                            key = reader.string();
-                                            break;
-                                        case 2:
-                                            value = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
-                                            break;
-                                        default:
-                                            reader.skipType(tag2 & 7);
-                                            break;
-                                        }
-                                    }
-                                    message.aggregateProperties[key] = value;
+                                    if (!(message.missing && message.missing.length))
+                                        message.missing = [];
+                                    message.missing.push($root.google.datastore.v1.EntityResult.decode(reader, reader.uint32()));
+                                    break;
+                                }
+                            case 3: {
+                                    if (!(message.deferred && message.deferred.length))
+                                        message.deferred = [];
+                                    message.deferred.push($root.google.datastore.v1.Key.decode(reader, reader.uint32()));
+                                    break;
+                                }
+                            case 7: {
+                                    message.readTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a LookupResponse message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.LookupResponse} LookupResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LookupResponse.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a LookupResponse message.
+                     * @function verify
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    LookupResponse.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.found != null && message.hasOwnProperty("found")) {
+                            if (!Array.isArray(message.found))
+                                return "found: array expected";
+                            for (var i = 0; i < message.found.length; ++i) {
+                                var error = $root.google.datastore.v1.EntityResult.verify(message.found[i]);
+                                if (error)
+                                    return "found." + error;
+                            }
+                        }
+                        if (message.missing != null && message.hasOwnProperty("missing")) {
+                            if (!Array.isArray(message.missing))
+                                return "missing: array expected";
+                            for (var i = 0; i < message.missing.length; ++i) {
+                                var error = $root.google.datastore.v1.EntityResult.verify(message.missing[i]);
+                                if (error)
+                                    return "missing." + error;
+                            }
+                        }
+                        if (message.deferred != null && message.hasOwnProperty("deferred")) {
+                            if (!Array.isArray(message.deferred))
+                                return "deferred: array expected";
+                            for (var i = 0; i < message.deferred.length; ++i) {
+                                var error = $root.google.datastore.v1.Key.verify(message.deferred[i]);
+                                if (error)
+                                    return "deferred." + error;
+                            }
+                        }
+                        if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                            var error = $root.google.protobuf.Timestamp.verify(message.readTime);
+                            if (error)
+                                return "readTime." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a LookupResponse message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.LookupResponse} LookupResponse
+                     */
+                    LookupResponse.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.LookupResponse)
+                            return object;
+                        var message = new $root.google.datastore.v1.LookupResponse();
+                        if (object.found) {
+                            if (!Array.isArray(object.found))
+                                throw TypeError(".google.datastore.v1.LookupResponse.found: array expected");
+                            message.found = [];
+                            for (var i = 0; i < object.found.length; ++i) {
+                                if (typeof object.found[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.LookupResponse.found: object expected");
+                                message.found[i] = $root.google.datastore.v1.EntityResult.fromObject(object.found[i]);
+                            }
+                        }
+                        if (object.missing) {
+                            if (!Array.isArray(object.missing))
+                                throw TypeError(".google.datastore.v1.LookupResponse.missing: array expected");
+                            message.missing = [];
+                            for (var i = 0; i < object.missing.length; ++i) {
+                                if (typeof object.missing[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.LookupResponse.missing: object expected");
+                                message.missing[i] = $root.google.datastore.v1.EntityResult.fromObject(object.missing[i]);
+                            }
+                        }
+                        if (object.deferred) {
+                            if (!Array.isArray(object.deferred))
+                                throw TypeError(".google.datastore.v1.LookupResponse.deferred: array expected");
+                            message.deferred = [];
+                            for (var i = 0; i < object.deferred.length; ++i) {
+                                if (typeof object.deferred[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.LookupResponse.deferred: object expected");
+                                message.deferred[i] = $root.google.datastore.v1.Key.fromObject(object.deferred[i]);
+                            }
+                        }
+                        if (object.readTime != null) {
+                            if (typeof object.readTime !== "object")
+                                throw TypeError(".google.datastore.v1.LookupResponse.readTime: object expected");
+                            message.readTime = $root.google.protobuf.Timestamp.fromObject(object.readTime);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a LookupResponse message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @static
+                     * @param {google.datastore.v1.LookupResponse} message LookupResponse
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    LookupResponse.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.arrays || options.defaults) {
+                            object.found = [];
+                            object.missing = [];
+                            object.deferred = [];
+                        }
+                        if (options.defaults)
+                            object.readTime = null;
+                        if (message.found && message.found.length) {
+                            object.found = [];
+                            for (var j = 0; j < message.found.length; ++j)
+                                object.found[j] = $root.google.datastore.v1.EntityResult.toObject(message.found[j], options);
+                        }
+                        if (message.missing && message.missing.length) {
+                            object.missing = [];
+                            for (var j = 0; j < message.missing.length; ++j)
+                                object.missing[j] = $root.google.datastore.v1.EntityResult.toObject(message.missing[j], options);
+                        }
+                        if (message.deferred && message.deferred.length) {
+                            object.deferred = [];
+                            for (var j = 0; j < message.deferred.length; ++j)
+                                object.deferred[j] = $root.google.datastore.v1.Key.toObject(message.deferred[j], options);
+                        }
+                        if (message.readTime != null && message.hasOwnProperty("readTime"))
+                            object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this LookupResponse to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    LookupResponse.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for LookupResponse
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    LookupResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.LookupResponse";
+                    };
+    
+                    return LookupResponse;
+                })();
+    
+                v1.RunQueryRequest = (function() {
+    
+                    /**
+                     * Properties of a RunQueryRequest.
+                     * @memberof google.datastore.v1
+                     * @interface IRunQueryRequest
+                     * @property {string|null} [projectId] RunQueryRequest projectId
+                     * @property {string|null} [databaseId] RunQueryRequest databaseId
+                     * @property {google.datastore.v1.IPartitionId|null} [partitionId] RunQueryRequest partitionId
+                     * @property {google.datastore.v1.IReadOptions|null} [readOptions] RunQueryRequest readOptions
+                     * @property {google.datastore.v1.IQuery|null} [query] RunQueryRequest query
+                     * @property {google.datastore.v1.IGqlQuery|null} [gqlQuery] RunQueryRequest gqlQuery
+                     */
+    
+                    /**
+                     * Constructs a new RunQueryRequest.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a RunQueryRequest.
+                     * @implements IRunQueryRequest
+                     * @constructor
+                     * @param {google.datastore.v1.IRunQueryRequest=} [properties] Properties to set
+                     */
+                    function RunQueryRequest(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * RunQueryRequest projectId.
+                     * @member {string} projectId
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     */
+                    RunQueryRequest.prototype.projectId = "";
+    
+                    /**
+                     * RunQueryRequest databaseId.
+                     * @member {string} databaseId
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     */
+                    RunQueryRequest.prototype.databaseId = "";
+    
+                    /**
+                     * RunQueryRequest partitionId.
+                     * @member {google.datastore.v1.IPartitionId|null|undefined} partitionId
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     */
+                    RunQueryRequest.prototype.partitionId = null;
+    
+                    /**
+                     * RunQueryRequest readOptions.
+                     * @member {google.datastore.v1.IReadOptions|null|undefined} readOptions
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     */
+                    RunQueryRequest.prototype.readOptions = null;
+    
+                    /**
+                     * RunQueryRequest query.
+                     * @member {google.datastore.v1.IQuery|null|undefined} query
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     */
+                    RunQueryRequest.prototype.query = null;
+    
+                    /**
+                     * RunQueryRequest gqlQuery.
+                     * @member {google.datastore.v1.IGqlQuery|null|undefined} gqlQuery
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     */
+                    RunQueryRequest.prototype.gqlQuery = null;
+    
+                    // OneOf field names bound to virtual getters and setters
+                    var $oneOfFields;
+    
+                    /**
+                     * RunQueryRequest queryType.
+                     * @member {"query"|"gqlQuery"|undefined} queryType
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     */
+                    Object.defineProperty(RunQueryRequest.prototype, "queryType", {
+                        get: $util.oneOfGetter($oneOfFields = ["query", "gqlQuery"]),
+                        set: $util.oneOfSetter($oneOfFields)
+                    });
+    
+                    /**
+                     * Creates a new RunQueryRequest instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {google.datastore.v1.IRunQueryRequest=} [properties] Properties to set
+                     * @returns {google.datastore.v1.RunQueryRequest} RunQueryRequest instance
+                     */
+                    RunQueryRequest.create = function create(properties) {
+                        return new RunQueryRequest(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified RunQueryRequest message. Does not implicitly {@link google.datastore.v1.RunQueryRequest.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {google.datastore.v1.IRunQueryRequest} message RunQueryRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RunQueryRequest.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.readOptions != null && Object.hasOwnProperty.call(message, "readOptions"))
+                            $root.google.datastore.v1.ReadOptions.encode(message.readOptions, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.partitionId != null && Object.hasOwnProperty.call(message, "partitionId"))
+                            $root.google.datastore.v1.PartitionId.encode(message.partitionId, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.query != null && Object.hasOwnProperty.call(message, "query"))
+                            $root.google.datastore.v1.Query.encode(message.query, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.gqlQuery != null && Object.hasOwnProperty.call(message, "gqlQuery"))
+                            $root.google.datastore.v1.GqlQuery.encode(message.gqlQuery, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                        if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                            writer.uint32(/* id 8, wireType 2 =*/66).string(message.projectId);
+                        if (message.databaseId != null && Object.hasOwnProperty.call(message, "databaseId"))
+                            writer.uint32(/* id 9, wireType 2 =*/74).string(message.databaseId);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified RunQueryRequest message, length delimited. Does not implicitly {@link google.datastore.v1.RunQueryRequest.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {google.datastore.v1.IRunQueryRequest} message RunQueryRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RunQueryRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a RunQueryRequest message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.RunQueryRequest} RunQueryRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RunQueryRequest.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RunQueryRequest();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 8: {
+                                    message.projectId = reader.string();
+                                    break;
+                                }
+                            case 9: {
+                                    message.databaseId = reader.string();
+                                    break;
+                                }
+                            case 2: {
+                                    message.partitionId = $root.google.datastore.v1.PartitionId.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 1: {
+                                    message.readOptions = $root.google.datastore.v1.ReadOptions.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 3: {
+                                    message.query = $root.google.datastore.v1.Query.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 7: {
+                                    message.gqlQuery = $root.google.datastore.v1.GqlQuery.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a RunQueryRequest message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.RunQueryRequest} RunQueryRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RunQueryRequest.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a RunQueryRequest message.
+                     * @function verify
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    RunQueryRequest.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        var properties = {};
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            if (!$util.isString(message.projectId))
+                                return "projectId: string expected";
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            if (!$util.isString(message.databaseId))
+                                return "databaseId: string expected";
+                        if (message.partitionId != null && message.hasOwnProperty("partitionId")) {
+                            var error = $root.google.datastore.v1.PartitionId.verify(message.partitionId);
+                            if (error)
+                                return "partitionId." + error;
+                        }
+                        if (message.readOptions != null && message.hasOwnProperty("readOptions")) {
+                            var error = $root.google.datastore.v1.ReadOptions.verify(message.readOptions);
+                            if (error)
+                                return "readOptions." + error;
+                        }
+                        if (message.query != null && message.hasOwnProperty("query")) {
+                            properties.queryType = 1;
+                            {
+                                var error = $root.google.datastore.v1.Query.verify(message.query);
+                                if (error)
+                                    return "query." + error;
+                            }
+                        }
+                        if (message.gqlQuery != null && message.hasOwnProperty("gqlQuery")) {
+                            if (properties.queryType === 1)
+                                return "queryType: multiple values";
+                            properties.queryType = 1;
+                            {
+                                var error = $root.google.datastore.v1.GqlQuery.verify(message.gqlQuery);
+                                if (error)
+                                    return "gqlQuery." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a RunQueryRequest message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.RunQueryRequest} RunQueryRequest
+                     */
+                    RunQueryRequest.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.RunQueryRequest)
+                            return object;
+                        var message = new $root.google.datastore.v1.RunQueryRequest();
+                        if (object.projectId != null)
+                            message.projectId = String(object.projectId);
+                        if (object.databaseId != null)
+                            message.databaseId = String(object.databaseId);
+                        if (object.partitionId != null) {
+                            if (typeof object.partitionId !== "object")
+                                throw TypeError(".google.datastore.v1.RunQueryRequest.partitionId: object expected");
+                            message.partitionId = $root.google.datastore.v1.PartitionId.fromObject(object.partitionId);
+                        }
+                        if (object.readOptions != null) {
+                            if (typeof object.readOptions !== "object")
+                                throw TypeError(".google.datastore.v1.RunQueryRequest.readOptions: object expected");
+                            message.readOptions = $root.google.datastore.v1.ReadOptions.fromObject(object.readOptions);
+                        }
+                        if (object.query != null) {
+                            if (typeof object.query !== "object")
+                                throw TypeError(".google.datastore.v1.RunQueryRequest.query: object expected");
+                            message.query = $root.google.datastore.v1.Query.fromObject(object.query);
+                        }
+                        if (object.gqlQuery != null) {
+                            if (typeof object.gqlQuery !== "object")
+                                throw TypeError(".google.datastore.v1.RunQueryRequest.gqlQuery: object expected");
+                            message.gqlQuery = $root.google.datastore.v1.GqlQuery.fromObject(object.gqlQuery);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a RunQueryRequest message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {google.datastore.v1.RunQueryRequest} message RunQueryRequest
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    RunQueryRequest.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.readOptions = null;
+                            object.partitionId = null;
+                            object.projectId = "";
+                            object.databaseId = "";
+                        }
+                        if (message.readOptions != null && message.hasOwnProperty("readOptions"))
+                            object.readOptions = $root.google.datastore.v1.ReadOptions.toObject(message.readOptions, options);
+                        if (message.partitionId != null && message.hasOwnProperty("partitionId"))
+                            object.partitionId = $root.google.datastore.v1.PartitionId.toObject(message.partitionId, options);
+                        if (message.query != null && message.hasOwnProperty("query")) {
+                            object.query = $root.google.datastore.v1.Query.toObject(message.query, options);
+                            if (options.oneofs)
+                                object.queryType = "query";
+                        }
+                        if (message.gqlQuery != null && message.hasOwnProperty("gqlQuery")) {
+                            object.gqlQuery = $root.google.datastore.v1.GqlQuery.toObject(message.gqlQuery, options);
+                            if (options.oneofs)
+                                object.queryType = "gqlQuery";
+                        }
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            object.projectId = message.projectId;
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            object.databaseId = message.databaseId;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this RunQueryRequest to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    RunQueryRequest.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for RunQueryRequest
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.RunQueryRequest
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    RunQueryRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.RunQueryRequest";
+                    };
+    
+                    return RunQueryRequest;
+                })();
+    
+                v1.RunQueryResponse = (function() {
+    
+                    /**
+                     * Properties of a RunQueryResponse.
+                     * @memberof google.datastore.v1
+                     * @interface IRunQueryResponse
+                     * @property {google.datastore.v1.IQueryResultBatch|null} [batch] RunQueryResponse batch
+                     * @property {google.datastore.v1.IQuery|null} [query] RunQueryResponse query
+                     */
+    
+                    /**
+                     * Constructs a new RunQueryResponse.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a RunQueryResponse.
+                     * @implements IRunQueryResponse
+                     * @constructor
+                     * @param {google.datastore.v1.IRunQueryResponse=} [properties] Properties to set
+                     */
+                    function RunQueryResponse(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * RunQueryResponse batch.
+                     * @member {google.datastore.v1.IQueryResultBatch|null|undefined} batch
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @instance
+                     */
+                    RunQueryResponse.prototype.batch = null;
+    
+                    /**
+                     * RunQueryResponse query.
+                     * @member {google.datastore.v1.IQuery|null|undefined} query
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @instance
+                     */
+                    RunQueryResponse.prototype.query = null;
+    
+                    /**
+                     * Creates a new RunQueryResponse instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {google.datastore.v1.IRunQueryResponse=} [properties] Properties to set
+                     * @returns {google.datastore.v1.RunQueryResponse} RunQueryResponse instance
+                     */
+                    RunQueryResponse.create = function create(properties) {
+                        return new RunQueryResponse(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified RunQueryResponse message. Does not implicitly {@link google.datastore.v1.RunQueryResponse.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {google.datastore.v1.IRunQueryResponse} message RunQueryResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RunQueryResponse.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.batch != null && Object.hasOwnProperty.call(message, "batch"))
+                            $root.google.datastore.v1.QueryResultBatch.encode(message.batch, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.query != null && Object.hasOwnProperty.call(message, "query"))
+                            $root.google.datastore.v1.Query.encode(message.query, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified RunQueryResponse message, length delimited. Does not implicitly {@link google.datastore.v1.RunQueryResponse.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {google.datastore.v1.IRunQueryResponse} message RunQueryResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RunQueryResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a RunQueryResponse message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.RunQueryResponse} RunQueryResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RunQueryResponse.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RunQueryResponse();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.batch = $root.google.datastore.v1.QueryResultBatch.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.query = $root.google.datastore.v1.Query.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a RunQueryResponse message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.RunQueryResponse} RunQueryResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RunQueryResponse.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a RunQueryResponse message.
+                     * @function verify
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    RunQueryResponse.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.batch != null && message.hasOwnProperty("batch")) {
+                            var error = $root.google.datastore.v1.QueryResultBatch.verify(message.batch);
+                            if (error)
+                                return "batch." + error;
+                        }
+                        if (message.query != null && message.hasOwnProperty("query")) {
+                            var error = $root.google.datastore.v1.Query.verify(message.query);
+                            if (error)
+                                return "query." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a RunQueryResponse message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.RunQueryResponse} RunQueryResponse
+                     */
+                    RunQueryResponse.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.RunQueryResponse)
+                            return object;
+                        var message = new $root.google.datastore.v1.RunQueryResponse();
+                        if (object.batch != null) {
+                            if (typeof object.batch !== "object")
+                                throw TypeError(".google.datastore.v1.RunQueryResponse.batch: object expected");
+                            message.batch = $root.google.datastore.v1.QueryResultBatch.fromObject(object.batch);
+                        }
+                        if (object.query != null) {
+                            if (typeof object.query !== "object")
+                                throw TypeError(".google.datastore.v1.RunQueryResponse.query: object expected");
+                            message.query = $root.google.datastore.v1.Query.fromObject(object.query);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a RunQueryResponse message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {google.datastore.v1.RunQueryResponse} message RunQueryResponse
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    RunQueryResponse.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.batch = null;
+                            object.query = null;
+                        }
+                        if (message.batch != null && message.hasOwnProperty("batch"))
+                            object.batch = $root.google.datastore.v1.QueryResultBatch.toObject(message.batch, options);
+                        if (message.query != null && message.hasOwnProperty("query"))
+                            object.query = $root.google.datastore.v1.Query.toObject(message.query, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this RunQueryResponse to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    RunQueryResponse.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for RunQueryResponse
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    RunQueryResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.RunQueryResponse";
+                    };
+    
+                    return RunQueryResponse;
+                })();
+    
+                v1.BeginTransactionRequest = (function() {
+    
+                    /**
+                     * Properties of a BeginTransactionRequest.
+                     * @memberof google.datastore.v1
+                     * @interface IBeginTransactionRequest
+                     * @property {string|null} [projectId] BeginTransactionRequest projectId
+                     * @property {string|null} [databaseId] BeginTransactionRequest databaseId
+                     * @property {google.datastore.v1.ITransactionOptions|null} [transactionOptions] BeginTransactionRequest transactionOptions
+                     */
+    
+                    /**
+                     * Constructs a new BeginTransactionRequest.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a BeginTransactionRequest.
+                     * @implements IBeginTransactionRequest
+                     * @constructor
+                     * @param {google.datastore.v1.IBeginTransactionRequest=} [properties] Properties to set
+                     */
+                    function BeginTransactionRequest(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * BeginTransactionRequest projectId.
+                     * @member {string} projectId
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @instance
+                     */
+                    BeginTransactionRequest.prototype.projectId = "";
+    
+                    /**
+                     * BeginTransactionRequest databaseId.
+                     * @member {string} databaseId
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @instance
+                     */
+                    BeginTransactionRequest.prototype.databaseId = "";
+    
+                    /**
+                     * BeginTransactionRequest transactionOptions.
+                     * @member {google.datastore.v1.ITransactionOptions|null|undefined} transactionOptions
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @instance
+                     */
+                    BeginTransactionRequest.prototype.transactionOptions = null;
+    
+                    /**
+                     * Creates a new BeginTransactionRequest instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {google.datastore.v1.IBeginTransactionRequest=} [properties] Properties to set
+                     * @returns {google.datastore.v1.BeginTransactionRequest} BeginTransactionRequest instance
+                     */
+                    BeginTransactionRequest.create = function create(properties) {
+                        return new BeginTransactionRequest(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified BeginTransactionRequest message. Does not implicitly {@link google.datastore.v1.BeginTransactionRequest.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {google.datastore.v1.IBeginTransactionRequest} message BeginTransactionRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    BeginTransactionRequest.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                            writer.uint32(/* id 8, wireType 2 =*/66).string(message.projectId);
+                        if (message.databaseId != null && Object.hasOwnProperty.call(message, "databaseId"))
+                            writer.uint32(/* id 9, wireType 2 =*/74).string(message.databaseId);
+                        if (message.transactionOptions != null && Object.hasOwnProperty.call(message, "transactionOptions"))
+                            $root.google.datastore.v1.TransactionOptions.encode(message.transactionOptions, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified BeginTransactionRequest message, length delimited. Does not implicitly {@link google.datastore.v1.BeginTransactionRequest.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {google.datastore.v1.IBeginTransactionRequest} message BeginTransactionRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    BeginTransactionRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a BeginTransactionRequest message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.BeginTransactionRequest} BeginTransactionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    BeginTransactionRequest.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.BeginTransactionRequest();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 8: {
+                                    message.projectId = reader.string();
+                                    break;
+                                }
+                            case 9: {
+                                    message.databaseId = reader.string();
+                                    break;
+                                }
+                            case 10: {
+                                    message.transactionOptions = $root.google.datastore.v1.TransactionOptions.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a BeginTransactionRequest message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.BeginTransactionRequest} BeginTransactionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    BeginTransactionRequest.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a BeginTransactionRequest message.
+                     * @function verify
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    BeginTransactionRequest.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            if (!$util.isString(message.projectId))
+                                return "projectId: string expected";
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            if (!$util.isString(message.databaseId))
+                                return "databaseId: string expected";
+                        if (message.transactionOptions != null && message.hasOwnProperty("transactionOptions")) {
+                            var error = $root.google.datastore.v1.TransactionOptions.verify(message.transactionOptions);
+                            if (error)
+                                return "transactionOptions." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a BeginTransactionRequest message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.BeginTransactionRequest} BeginTransactionRequest
+                     */
+                    BeginTransactionRequest.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.BeginTransactionRequest)
+                            return object;
+                        var message = new $root.google.datastore.v1.BeginTransactionRequest();
+                        if (object.projectId != null)
+                            message.projectId = String(object.projectId);
+                        if (object.databaseId != null)
+                            message.databaseId = String(object.databaseId);
+                        if (object.transactionOptions != null) {
+                            if (typeof object.transactionOptions !== "object")
+                                throw TypeError(".google.datastore.v1.BeginTransactionRequest.transactionOptions: object expected");
+                            message.transactionOptions = $root.google.datastore.v1.TransactionOptions.fromObject(object.transactionOptions);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a BeginTransactionRequest message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {google.datastore.v1.BeginTransactionRequest} message BeginTransactionRequest
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    BeginTransactionRequest.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.projectId = "";
+                            object.databaseId = "";
+                            object.transactionOptions = null;
+                        }
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            object.projectId = message.projectId;
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            object.databaseId = message.databaseId;
+                        if (message.transactionOptions != null && message.hasOwnProperty("transactionOptions"))
+                            object.transactionOptions = $root.google.datastore.v1.TransactionOptions.toObject(message.transactionOptions, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this BeginTransactionRequest to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    BeginTransactionRequest.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for BeginTransactionRequest
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.BeginTransactionRequest
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    BeginTransactionRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.BeginTransactionRequest";
+                    };
+    
+                    return BeginTransactionRequest;
+                })();
+    
+                v1.BeginTransactionResponse = (function() {
+    
+                    /**
+                     * Properties of a BeginTransactionResponse.
+                     * @memberof google.datastore.v1
+                     * @interface IBeginTransactionResponse
+                     * @property {Uint8Array|null} [transaction] BeginTransactionResponse transaction
+                     */
+    
+                    /**
+                     * Constructs a new BeginTransactionResponse.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a BeginTransactionResponse.
+                     * @implements IBeginTransactionResponse
+                     * @constructor
+                     * @param {google.datastore.v1.IBeginTransactionResponse=} [properties] Properties to set
+                     */
+                    function BeginTransactionResponse(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * BeginTransactionResponse transaction.
+                     * @member {Uint8Array} transaction
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @instance
+                     */
+                    BeginTransactionResponse.prototype.transaction = $util.newBuffer([]);
+    
+                    /**
+                     * Creates a new BeginTransactionResponse instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {google.datastore.v1.IBeginTransactionResponse=} [properties] Properties to set
+                     * @returns {google.datastore.v1.BeginTransactionResponse} BeginTransactionResponse instance
+                     */
+                    BeginTransactionResponse.create = function create(properties) {
+                        return new BeginTransactionResponse(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified BeginTransactionResponse message. Does not implicitly {@link google.datastore.v1.BeginTransactionResponse.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {google.datastore.v1.IBeginTransactionResponse} message BeginTransactionResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    BeginTransactionResponse.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.transaction);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified BeginTransactionResponse message, length delimited. Does not implicitly {@link google.datastore.v1.BeginTransactionResponse.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {google.datastore.v1.IBeginTransactionResponse} message BeginTransactionResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    BeginTransactionResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a BeginTransactionResponse message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.BeginTransactionResponse} BeginTransactionResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    BeginTransactionResponse.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.BeginTransactionResponse();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.transaction = reader.bytes();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a BeginTransactionResponse message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.BeginTransactionResponse} BeginTransactionResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    BeginTransactionResponse.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a BeginTransactionResponse message.
+                     * @function verify
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    BeginTransactionResponse.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
+                                return "transaction: buffer expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a BeginTransactionResponse message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.BeginTransactionResponse} BeginTransactionResponse
+                     */
+                    BeginTransactionResponse.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.BeginTransactionResponse)
+                            return object;
+                        var message = new $root.google.datastore.v1.BeginTransactionResponse();
+                        if (object.transaction != null)
+                            if (typeof object.transaction === "string")
+                                $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
+                            else if (object.transaction.length >= 0)
+                                message.transaction = object.transaction;
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a BeginTransactionResponse message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {google.datastore.v1.BeginTransactionResponse} message BeginTransactionResponse
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    BeginTransactionResponse.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            if (options.bytes === String)
+                                object.transaction = "";
+                            else {
+                                object.transaction = [];
+                                if (options.bytes !== Array)
+                                    object.transaction = $util.newBuffer(object.transaction);
+                            }
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this BeginTransactionResponse to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    BeginTransactionResponse.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for BeginTransactionResponse
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.BeginTransactionResponse
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    BeginTransactionResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.BeginTransactionResponse";
+                    };
+    
+                    return BeginTransactionResponse;
+                })();
+    
+                v1.RollbackRequest = (function() {
+    
+                    /**
+                     * Properties of a RollbackRequest.
+                     * @memberof google.datastore.v1
+                     * @interface IRollbackRequest
+                     * @property {string|null} [projectId] RollbackRequest projectId
+                     * @property {string|null} [databaseId] RollbackRequest databaseId
+                     * @property {Uint8Array|null} [transaction] RollbackRequest transaction
+                     */
+    
+                    /**
+                     * Constructs a new RollbackRequest.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a RollbackRequest.
+                     * @implements IRollbackRequest
+                     * @constructor
+                     * @param {google.datastore.v1.IRollbackRequest=} [properties] Properties to set
+                     */
+                    function RollbackRequest(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * RollbackRequest projectId.
+                     * @member {string} projectId
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @instance
+                     */
+                    RollbackRequest.prototype.projectId = "";
+    
+                    /**
+                     * RollbackRequest databaseId.
+                     * @member {string} databaseId
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @instance
+                     */
+                    RollbackRequest.prototype.databaseId = "";
+    
+                    /**
+                     * RollbackRequest transaction.
+                     * @member {Uint8Array} transaction
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @instance
+                     */
+                    RollbackRequest.prototype.transaction = $util.newBuffer([]);
+    
+                    /**
+                     * Creates a new RollbackRequest instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {google.datastore.v1.IRollbackRequest=} [properties] Properties to set
+                     * @returns {google.datastore.v1.RollbackRequest} RollbackRequest instance
+                     */
+                    RollbackRequest.create = function create(properties) {
+                        return new RollbackRequest(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified RollbackRequest message. Does not implicitly {@link google.datastore.v1.RollbackRequest.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {google.datastore.v1.IRollbackRequest} message RollbackRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RollbackRequest.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.transaction);
+                        if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                            writer.uint32(/* id 8, wireType 2 =*/66).string(message.projectId);
+                        if (message.databaseId != null && Object.hasOwnProperty.call(message, "databaseId"))
+                            writer.uint32(/* id 9, wireType 2 =*/74).string(message.databaseId);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified RollbackRequest message, length delimited. Does not implicitly {@link google.datastore.v1.RollbackRequest.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {google.datastore.v1.IRollbackRequest} message RollbackRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RollbackRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a RollbackRequest message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.RollbackRequest} RollbackRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RollbackRequest.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RollbackRequest();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 8: {
+                                    message.projectId = reader.string();
+                                    break;
+                                }
+                            case 9: {
+                                    message.databaseId = reader.string();
+                                    break;
+                                }
+                            case 1: {
+                                    message.transaction = reader.bytes();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a RollbackRequest message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.RollbackRequest} RollbackRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RollbackRequest.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a RollbackRequest message.
+                     * @function verify
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    RollbackRequest.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            if (!$util.isString(message.projectId))
+                                return "projectId: string expected";
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            if (!$util.isString(message.databaseId))
+                                return "databaseId: string expected";
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
+                                return "transaction: buffer expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a RollbackRequest message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.RollbackRequest} RollbackRequest
+                     */
+                    RollbackRequest.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.RollbackRequest)
+                            return object;
+                        var message = new $root.google.datastore.v1.RollbackRequest();
+                        if (object.projectId != null)
+                            message.projectId = String(object.projectId);
+                        if (object.databaseId != null)
+                            message.databaseId = String(object.databaseId);
+                        if (object.transaction != null)
+                            if (typeof object.transaction === "string")
+                                $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
+                            else if (object.transaction.length >= 0)
+                                message.transaction = object.transaction;
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a RollbackRequest message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {google.datastore.v1.RollbackRequest} message RollbackRequest
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    RollbackRequest.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            if (options.bytes === String)
+                                object.transaction = "";
+                            else {
+                                object.transaction = [];
+                                if (options.bytes !== Array)
+                                    object.transaction = $util.newBuffer(object.transaction);
+                            }
+                            object.projectId = "";
+                            object.databaseId = "";
+                        }
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            object.projectId = message.projectId;
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            object.databaseId = message.databaseId;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this RollbackRequest to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    RollbackRequest.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for RollbackRequest
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.RollbackRequest
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    RollbackRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.RollbackRequest";
+                    };
+    
+                    return RollbackRequest;
+                })();
+    
+                v1.RollbackResponse = (function() {
+    
+                    /**
+                     * Properties of a RollbackResponse.
+                     * @memberof google.datastore.v1
+                     * @interface IRollbackResponse
+                     */
+    
+                    /**
+                     * Constructs a new RollbackResponse.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a RollbackResponse.
+                     * @implements IRollbackResponse
+                     * @constructor
+                     * @param {google.datastore.v1.IRollbackResponse=} [properties] Properties to set
+                     */
+                    function RollbackResponse(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * Creates a new RollbackResponse instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {google.datastore.v1.IRollbackResponse=} [properties] Properties to set
+                     * @returns {google.datastore.v1.RollbackResponse} RollbackResponse instance
+                     */
+                    RollbackResponse.create = function create(properties) {
+                        return new RollbackResponse(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified RollbackResponse message. Does not implicitly {@link google.datastore.v1.RollbackResponse.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {google.datastore.v1.IRollbackResponse} message RollbackResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RollbackResponse.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified RollbackResponse message, length delimited. Does not implicitly {@link google.datastore.v1.RollbackResponse.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {google.datastore.v1.IRollbackResponse} message RollbackResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    RollbackResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a RollbackResponse message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.RollbackResponse} RollbackResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RollbackResponse.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RollbackResponse();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a RollbackResponse message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.RollbackResponse} RollbackResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    RollbackResponse.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a RollbackResponse message.
+                     * @function verify
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    RollbackResponse.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a RollbackResponse message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.RollbackResponse} RollbackResponse
+                     */
+                    RollbackResponse.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.RollbackResponse)
+                            return object;
+                        return new $root.google.datastore.v1.RollbackResponse();
+                    };
+    
+                    /**
+                     * Creates a plain object from a RollbackResponse message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {google.datastore.v1.RollbackResponse} message RollbackResponse
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    RollbackResponse.toObject = function toObject() {
+                        return {};
+                    };
+    
+                    /**
+                     * Converts this RollbackResponse to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    RollbackResponse.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for RollbackResponse
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.RollbackResponse
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    RollbackResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.RollbackResponse";
+                    };
+    
+                    return RollbackResponse;
+                })();
+    
+                v1.CommitRequest = (function() {
+    
+                    /**
+                     * Properties of a CommitRequest.
+                     * @memberof google.datastore.v1
+                     * @interface ICommitRequest
+                     * @property {string|null} [projectId] CommitRequest projectId
+                     * @property {string|null} [databaseId] CommitRequest databaseId
+                     * @property {google.datastore.v1.CommitRequest.Mode|null} [mode] CommitRequest mode
+                     * @property {Uint8Array|null} [transaction] CommitRequest transaction
+                     * @property {Array.<google.datastore.v1.IMutation>|null} [mutations] CommitRequest mutations
+                     */
+    
+                    /**
+                     * Constructs a new CommitRequest.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a CommitRequest.
+                     * @implements ICommitRequest
+                     * @constructor
+                     * @param {google.datastore.v1.ICommitRequest=} [properties] Properties to set
+                     */
+                    function CommitRequest(properties) {
+                        this.mutations = [];
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * CommitRequest projectId.
+                     * @member {string} projectId
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     */
+                    CommitRequest.prototype.projectId = "";
+    
+                    /**
+                     * CommitRequest databaseId.
+                     * @member {string} databaseId
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     */
+                    CommitRequest.prototype.databaseId = "";
+    
+                    /**
+                     * CommitRequest mode.
+                     * @member {google.datastore.v1.CommitRequest.Mode} mode
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     */
+                    CommitRequest.prototype.mode = 0;
+    
+                    /**
+                     * CommitRequest transaction.
+                     * @member {Uint8Array|null|undefined} transaction
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     */
+                    CommitRequest.prototype.transaction = null;
+    
+                    /**
+                     * CommitRequest mutations.
+                     * @member {Array.<google.datastore.v1.IMutation>} mutations
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     */
+                    CommitRequest.prototype.mutations = $util.emptyArray;
+    
+                    // OneOf field names bound to virtual getters and setters
+                    var $oneOfFields;
+    
+                    /**
+                     * CommitRequest transactionSelector.
+                     * @member {"transaction"|undefined} transactionSelector
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     */
+                    Object.defineProperty(CommitRequest.prototype, "transactionSelector", {
+                        get: $util.oneOfGetter($oneOfFields = ["transaction"]),
+                        set: $util.oneOfSetter($oneOfFields)
+                    });
+    
+                    /**
+                     * Creates a new CommitRequest instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {google.datastore.v1.ICommitRequest=} [properties] Properties to set
+                     * @returns {google.datastore.v1.CommitRequest} CommitRequest instance
+                     */
+                    CommitRequest.create = function create(properties) {
+                        return new CommitRequest(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified CommitRequest message. Does not implicitly {@link google.datastore.v1.CommitRequest.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {google.datastore.v1.ICommitRequest} message CommitRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    CommitRequest.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.transaction);
+                        if (message.mode != null && Object.hasOwnProperty.call(message, "mode"))
+                            writer.uint32(/* id 5, wireType 0 =*/40).int32(message.mode);
+                        if (message.mutations != null && message.mutations.length)
+                            for (var i = 0; i < message.mutations.length; ++i)
+                                $root.google.datastore.v1.Mutation.encode(message.mutations[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                        if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                            writer.uint32(/* id 8, wireType 2 =*/66).string(message.projectId);
+                        if (message.databaseId != null && Object.hasOwnProperty.call(message, "databaseId"))
+                            writer.uint32(/* id 9, wireType 2 =*/74).string(message.databaseId);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified CommitRequest message, length delimited. Does not implicitly {@link google.datastore.v1.CommitRequest.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {google.datastore.v1.ICommitRequest} message CommitRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    CommitRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a CommitRequest message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.CommitRequest} CommitRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    CommitRequest.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.CommitRequest();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 8: {
+                                    message.projectId = reader.string();
+                                    break;
+                                }
+                            case 9: {
+                                    message.databaseId = reader.string();
+                                    break;
+                                }
+                            case 5: {
+                                    message.mode = reader.int32();
+                                    break;
+                                }
+                            case 1: {
+                                    message.transaction = reader.bytes();
+                                    break;
+                                }
+                            case 6: {
+                                    if (!(message.mutations && message.mutations.length))
+                                        message.mutations = [];
+                                    message.mutations.push($root.google.datastore.v1.Mutation.decode(reader, reader.uint32()));
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a CommitRequest message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.CommitRequest} CommitRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    CommitRequest.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a CommitRequest message.
+                     * @function verify
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    CommitRequest.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        var properties = {};
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            if (!$util.isString(message.projectId))
+                                return "projectId: string expected";
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            if (!$util.isString(message.databaseId))
+                                return "databaseId: string expected";
+                        if (message.mode != null && message.hasOwnProperty("mode"))
+                            switch (message.mode) {
+                            default:
+                                return "mode: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                                break;
+                            }
+                        if (message.transaction != null && message.hasOwnProperty("transaction")) {
+                            properties.transactionSelector = 1;
+                            if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
+                                return "transaction: buffer expected";
+                        }
+                        if (message.mutations != null && message.hasOwnProperty("mutations")) {
+                            if (!Array.isArray(message.mutations))
+                                return "mutations: array expected";
+                            for (var i = 0; i < message.mutations.length; ++i) {
+                                var error = $root.google.datastore.v1.Mutation.verify(message.mutations[i]);
+                                if (error)
+                                    return "mutations." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a CommitRequest message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.CommitRequest} CommitRequest
+                     */
+                    CommitRequest.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.CommitRequest)
+                            return object;
+                        var message = new $root.google.datastore.v1.CommitRequest();
+                        if (object.projectId != null)
+                            message.projectId = String(object.projectId);
+                        if (object.databaseId != null)
+                            message.databaseId = String(object.databaseId);
+                        switch (object.mode) {
+                        default:
+                            if (typeof object.mode === "number") {
+                                message.mode = object.mode;
+                                break;
+                            }
+                            break;
+                        case "MODE_UNSPECIFIED":
+                        case 0:
+                            message.mode = 0;
+                            break;
+                        case "TRANSACTIONAL":
+                        case 1:
+                            message.mode = 1;
+                            break;
+                        case "NON_TRANSACTIONAL":
+                        case 2:
+                            message.mode = 2;
+                            break;
+                        }
+                        if (object.transaction != null)
+                            if (typeof object.transaction === "string")
+                                $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
+                            else if (object.transaction.length >= 0)
+                                message.transaction = object.transaction;
+                        if (object.mutations) {
+                            if (!Array.isArray(object.mutations))
+                                throw TypeError(".google.datastore.v1.CommitRequest.mutations: array expected");
+                            message.mutations = [];
+                            for (var i = 0; i < object.mutations.length; ++i) {
+                                if (typeof object.mutations[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.CommitRequest.mutations: object expected");
+                                message.mutations[i] = $root.google.datastore.v1.Mutation.fromObject(object.mutations[i]);
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a CommitRequest message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {google.datastore.v1.CommitRequest} message CommitRequest
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    CommitRequest.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.arrays || options.defaults)
+                            object.mutations = [];
+                        if (options.defaults) {
+                            object.mode = options.enums === String ? "MODE_UNSPECIFIED" : 0;
+                            object.projectId = "";
+                            object.databaseId = "";
+                        }
+                        if (message.transaction != null && message.hasOwnProperty("transaction")) {
+                            object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
+                            if (options.oneofs)
+                                object.transactionSelector = "transaction";
+                        }
+                        if (message.mode != null && message.hasOwnProperty("mode"))
+                            object.mode = options.enums === String ? $root.google.datastore.v1.CommitRequest.Mode[message.mode] === undefined ? message.mode : $root.google.datastore.v1.CommitRequest.Mode[message.mode] : message.mode;
+                        if (message.mutations && message.mutations.length) {
+                            object.mutations = [];
+                            for (var j = 0; j < message.mutations.length; ++j)
+                                object.mutations[j] = $root.google.datastore.v1.Mutation.toObject(message.mutations[j], options);
+                        }
+                        if (message.projectId != null && message.hasOwnProperty("projectId"))
+                            object.projectId = message.projectId;
+                        if (message.databaseId != null && message.hasOwnProperty("databaseId"))
+                            object.databaseId = message.databaseId;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this CommitRequest to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    CommitRequest.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for CommitRequest
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    CommitRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.CommitRequest";
+                    };
+    
+                    /**
+                     * Mode enum.
+                     * @name google.datastore.v1.CommitRequest.Mode
+                     * @enum {number}
+                     * @property {number} MODE_UNSPECIFIED=0 MODE_UNSPECIFIED value
+                     * @property {number} TRANSACTIONAL=1 TRANSACTIONAL value
+                     * @property {number} NON_TRANSACTIONAL=2 NON_TRANSACTIONAL value
+                     */
+                    CommitRequest.Mode = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "MODE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "TRANSACTIONAL"] = 1;
+                        values[valuesById[2] = "NON_TRANSACTIONAL"] = 2;
+                        return values;
+                    })();
+    
+                    return CommitRequest;
+                })();
+    
+                v1.CommitResponse = (function() {
+    
+                    /**
+                     * Properties of a CommitResponse.
+                     * @memberof google.datastore.v1
+                     * @interface ICommitResponse
+                     * @property {Array.<google.datastore.v1.IMutationResult>|null} [mutationResults] CommitResponse mutationResults
+                     * @property {number|null} [indexUpdates] CommitResponse indexUpdates
+                     * @property {google.protobuf.ITimestamp|null} [commitTime] CommitResponse commitTime
+                     */
+    
+                    /**
+                     * Constructs a new CommitResponse.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a CommitResponse.
+                     * @implements ICommitResponse
+                     * @constructor
+                     * @param {google.datastore.v1.ICommitResponse=} [properties] Properties to set
+                     */
+                    function CommitResponse(properties) {
+                        this.mutationResults = [];
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * CommitResponse mutationResults.
+                     * @member {Array.<google.datastore.v1.IMutationResult>} mutationResults
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @instance
+                     */
+                    CommitResponse.prototype.mutationResults = $util.emptyArray;
+    
+                    /**
+                     * CommitResponse indexUpdates.
+                     * @member {number} indexUpdates
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @instance
+                     */
+                    CommitResponse.prototype.indexUpdates = 0;
+    
+                    /**
+                     * CommitResponse commitTime.
+                     * @member {google.protobuf.ITimestamp|null|undefined} commitTime
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @instance
+                     */
+                    CommitResponse.prototype.commitTime = null;
+    
+                    /**
+                     * Creates a new CommitResponse instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {google.datastore.v1.ICommitResponse=} [properties] Properties to set
+                     * @returns {google.datastore.v1.CommitResponse} CommitResponse instance
+                     */
+                    CommitResponse.create = function create(properties) {
+                        return new CommitResponse(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified CommitResponse message. Does not implicitly {@link google.datastore.v1.CommitResponse.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {google.datastore.v1.ICommitResponse} message CommitResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    CommitResponse.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.mutationResults != null && message.mutationResults.length)
+                            for (var i = 0; i < message.mutationResults.length; ++i)
+                                $root.google.datastore.v1.MutationResult.encode(message.mutationResults[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.indexUpdates != null && Object.hasOwnProperty.call(message, "indexUpdates"))
+                            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.indexUpdates);
+                        if (message.commitTime != null && Object.hasOwnProperty.call(message, "commitTime"))
+                            $root.google.protobuf.Timestamp.encode(message.commitTime, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified CommitResponse message, length delimited. Does not implicitly {@link google.datastore.v1.CommitResponse.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {google.datastore.v1.ICommitResponse} message CommitResponse message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    CommitResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a CommitResponse message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.CommitResponse} CommitResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    CommitResponse.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.CommitResponse();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    if (!(message.mutationResults && message.mutationResults.length))
+                                        message.mutationResults = [];
+                                    message.mutationResults.push($root.google.datastore.v1.MutationResult.decode(reader, reader.uint32()));
+                                    break;
+                                }
+                            case 4: {
+                                    message.indexUpdates = reader.int32();
+                                    break;
+                                }
+                            case 8: {
+                                    message.commitTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a CommitResponse message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.CommitResponse} CommitResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    CommitResponse.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a CommitResponse message.
+                     * @function verify
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    CommitResponse.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.mutationResults != null && message.hasOwnProperty("mutationResults")) {
+                            if (!Array.isArray(message.mutationResults))
+                                return "mutationResults: array expected";
+                            for (var i = 0; i < message.mutationResults.length; ++i) {
+                                var error = $root.google.datastore.v1.MutationResult.verify(message.mutationResults[i]);
+                                if (error)
+                                    return "mutationResults." + error;
+                            }
+                        }
+                        if (message.indexUpdates != null && message.hasOwnProperty("indexUpdates"))
+                            if (!$util.isInteger(message.indexUpdates))
+                                return "indexUpdates: integer expected";
+                        if (message.commitTime != null && message.hasOwnProperty("commitTime")) {
+                            var error = $root.google.protobuf.Timestamp.verify(message.commitTime);
+                            if (error)
+                                return "commitTime." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a CommitResponse message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.CommitResponse} CommitResponse
+                     */
+                    CommitResponse.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.CommitResponse)
+                            return object;
+                        var message = new $root.google.datastore.v1.CommitResponse();
+                        if (object.mutationResults) {
+                            if (!Array.isArray(object.mutationResults))
+                                throw TypeError(".google.datastore.v1.CommitResponse.mutationResults: array expected");
+                            message.mutationResults = [];
+                            for (var i = 0; i < object.mutationResults.length; ++i) {
+                                if (typeof object.mutationResults[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.CommitResponse.mutationResults: object expected");
+                                message.mutationResults[i] = $root.google.datastore.v1.MutationResult.fromObject(object.mutationResults[i]);
+                            }
+                        }
+                        if (object.indexUpdates != null)
+                            message.indexUpdates = object.indexUpdates | 0;
+                        if (object.commitTime != null) {
+                            if (typeof object.commitTime !== "object")
+                                throw TypeError(".google.datastore.v1.CommitResponse.commitTime: object expected");
+                            message.commitTime = $root.google.protobuf.Timestamp.fromObject(object.commitTime);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a CommitResponse message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {google.datastore.v1.CommitResponse} message CommitResponse
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    CommitResponse.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.arrays || options.defaults)
+                            object.mutationResults = [];
+                        if (options.defaults) {
+                            object.indexUpdates = 0;
+                            object.commitTime = null;
+                        }
+                        if (message.mutationResults && message.mutationResults.length) {
+                            object.mutationResults = [];
+                            for (var j = 0; j < message.mutationResults.length; ++j)
+                                object.mutationResults[j] = $root.google.datastore.v1.MutationResult.toObject(message.mutationResults[j], options);
+                        }
+                        if (message.indexUpdates != null && message.hasOwnProperty("indexUpdates"))
+                            object.indexUpdates = message.indexUpdates;
+                        if (message.commitTime != null && message.hasOwnProperty("commitTime"))
+                            object.commitTime = $root.google.protobuf.Timestamp.toObject(message.commitTime, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this CommitResponse to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    CommitResponse.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for CommitResponse
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.CommitResponse
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    CommitResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.CommitResponse";
+                    };
+    
+                    return CommitResponse;
+                })();
+    
+                v1.AllocateIdsRequest = (function() {
+    
+                    /**
+                     * Properties of an AllocateIdsRequest.
+                     * @memberof google.datastore.v1
+                     * @interface IAllocateIdsRequest
+                     * @property {string|null} [projectId] AllocateIdsRequest projectId
+                     * @property {string|null} [databaseId] AllocateIdsRequest databaseId
+                     * @property {Array.<google.datastore.v1.IKey>|null} [keys] AllocateIdsRequest keys
+                     */
+    
+                    /**
+                     * Constructs a new AllocateIdsRequest.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents an AllocateIdsRequest.
+                     * @implements IAllocateIdsRequest
+                     * @constructor
+                     * @param {google.datastore.v1.IAllocateIdsRequest=} [properties] Properties to set
+                     */
+                    function AllocateIdsRequest(properties) {
+                        this.keys = [];
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * AllocateIdsRequest projectId.
+                     * @member {string} projectId
+                     * @memberof google.datastore.v1.AllocateIdsRequest
+                     * @instance
+                     */
+                    AllocateIdsRequest.prototype.projectId = "";
+    
+                    /**
+                     * AllocateIdsRequest databaseId.
+                     * @member {string} databaseId
+                     * @memberof google.datastore.v1.AllocateIdsRequest
+                     * @instance
+                     */
+                    AllocateIdsRequest.prototype.databaseId = "";
+    
+                    /**
+                     * AllocateIdsRequest keys.
+                     * @member {Array.<google.datastore.v1.IKey>} keys
+                     * @memberof google.datastore.v1.AllocateIdsRequest
+                     * @instance
+                     */
+                    AllocateIdsRequest.prototype.keys = $util.emptyArray;
+    
+                    /**
+                     * Creates a new AllocateIdsRequest instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.AllocateIdsRequest
+                     * @static
+                     * @param {google.datastore.v1.IAllocateIdsRequest=} [properties] Properties to set
+                     * @returns {google.datastore.v1.AllocateIdsRequest} AllocateIdsRequest instance
+                     */
+                    AllocateIdsRequest.create = function create(properties) {
+                        return new AllocateIdsRequest(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified AllocateIdsRequest message. Does not implicitly {@link google.datastore.v1.AllocateIdsRequest.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.AllocateIdsRequest
+                     * @static
+                     * @param {google.datastore.v1.IAllocateIdsRequest} message AllocateIdsRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AllocateIdsRequest.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.keys != null && message.keys.length)
+                            for (var i = 0; i < message.keys.length; ++i)
+                                $root.google.datastore.v1.Key.encode(message.keys[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                            writer.uint32(/* id 8, wireType 2 =*/66).string(message.projectId);
+                        if (message.databaseId != null && Object.hasOwnProperty.call(message, "databaseId"))
+                            writer.uint32(/* id 9, wireType 2 =*/74).string(message.databaseId);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified AllocateIdsRequest message, length delimited. Does not implicitly {@link google.datastore.v1.AllocateIdsRequest.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.AllocateIdsRequest
+                     * @static
+                     * @param {google.datastore.v1.IAllocateIdsRequest} message AllocateIdsRequest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    AllocateIdsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an AllocateIdsRequest message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.AllocateIdsRequest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.AllocateIdsRequest} AllocateIdsRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    AllocateIdsRequest.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AllocateIdsRequest();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 8: {
+                                    message.projectId = reader.string();
+                                    break;
+                                }
+                            case 9: {
+                                    message.databaseId = reader.string();
+                                    break;
+                                }
+                            case 1: {
+                                    if (!(message.keys && message.keys.length))
+                                        message.keys = [];
+                                    message.keys.push($root.google.datastore.v1.Key.decode(reader, reader.uint32()));
                                     break;
                                 }
                             default:
@@ -6712,19 +9251,15 @@
                     AggregationResultBatch.fromObject = function fromObject(object) {
                         if (object instanceof $root.google.datastore.v1.AggregationResultBatch)
                             return object;
-                        var message = new $root.google.datastore.v1.AggregationResultBatch();
-                        if (object.aggregationResults) {
-                            if (!Array.isArray(object.aggregationResults))
-                                throw TypeError(".google.datastore.v1.AggregationResultBatch.aggregationResults: array expected");
-                            message.aggregationResults = [];
-                            for (var i = 0; i < object.aggregationResults.length; ++i) {
-                                if (typeof object.aggregationResults[i] !== "object")
-                                    throw TypeError(".google.datastore.v1.AggregationResultBatch.aggregationResults: object expected");
-                                message.aggregationResults[i] = $root.google.datastore.v1.AggregationResult.fromObject(object.aggregationResults[i]);
+                        var message = new $root.google.datastore.v1.ReadOptions();
+                        switch (object.readConsistency) {
+                        default:
+                            if (typeof object.readConsistency === "number") {
+                                message.readConsistency = object.readConsistency;
+                                break;
                             }
-                        }
-                        switch (object.moreResults) {
-                        case "MORE_RESULTS_TYPE_UNSPECIFIED":
+                            break;
+                        case "READ_CONSISTENCY_UNSPECIFIED":
                         case 0:
                             message.moreResults = 0;
                             break;
@@ -6736,22 +9271,725 @@
                         case 2:
                             message.moreResults = 2;
                             break;
-                        case "MORE_RESULTS_AFTER_CURSOR":
-                        case 4:
-                            message.moreResults = 4;
-                            break;
-                        case "NO_MORE_RESULTS":
-                        case 3:
-                            message.moreResults = 3;
-                            break;
                         }
+                        if (object.transaction != null)
+                            if (typeof object.transaction === "string")
+                                $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
+                            else if (object.transaction.length >= 0)
+                                message.transaction = object.transaction;
                         if (object.readTime != null) {
                             if (typeof object.readTime !== "object")
-                                throw TypeError(".google.datastore.v1.AggregationResultBatch.readTime: object expected");
+                                throw TypeError(".google.datastore.v1.ReadOptions.readTime: object expected");
                             message.readTime = $root.google.protobuf.Timestamp.fromObject(object.readTime);
                         }
                         return message;
                     };
+    
+                    /**
+                     * Creates a plain object from a ReadOptions message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.ReadOptions
+                     * @static
+                     * @param {google.datastore.v1.ReadOptions} message ReadOptions
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    ReadOptions.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (message.readConsistency != null && message.hasOwnProperty("readConsistency")) {
+                            object.readConsistency = options.enums === String ? $root.google.datastore.v1.ReadOptions.ReadConsistency[message.readConsistency] === undefined ? message.readConsistency : $root.google.datastore.v1.ReadOptions.ReadConsistency[message.readConsistency] : message.readConsistency;
+                            if (options.oneofs)
+                                object.consistencyType = "readConsistency";
+                        }
+                        if (message.transaction != null && message.hasOwnProperty("transaction")) {
+                            object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
+                            if (options.oneofs)
+                                object.consistencyType = "transaction";
+                        }
+                        if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                            object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);
+                            if (options.oneofs)
+                                object.consistencyType = "readTime";
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this ReadOptions to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.ReadOptions
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    ReadOptions.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for ReadOptions
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.ReadOptions
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    ReadOptions.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.ReadOptions";
+                    };
+    
+                    /**
+                     * ReadConsistency enum.
+                     * @name google.datastore.v1.ReadOptions.ReadConsistency
+                     * @enum {number}
+                     * @property {number} READ_CONSISTENCY_UNSPECIFIED=0 READ_CONSISTENCY_UNSPECIFIED value
+                     * @property {number} STRONG=1 STRONG value
+                     * @property {number} EVENTUAL=2 EVENTUAL value
+                     */
+                    ReadOptions.ReadConsistency = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "READ_CONSISTENCY_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "STRONG"] = 1;
+                        values[valuesById[2] = "EVENTUAL"] = 2;
+                        return values;
+                    })();
+    
+                    return ReadOptions;
+                })();
+    
+                v1.TransactionOptions = (function() {
+    
+                    /**
+                     * Properties of a TransactionOptions.
+                     * @memberof google.datastore.v1
+                     * @interface ITransactionOptions
+                     * @property {google.datastore.v1.TransactionOptions.IReadWrite|null} [readWrite] TransactionOptions readWrite
+                     * @property {google.datastore.v1.TransactionOptions.IReadOnly|null} [readOnly] TransactionOptions readOnly
+                     */
+    
+                    /**
+                     * Constructs a new TransactionOptions.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a TransactionOptions.
+                     * @implements ITransactionOptions
+                     * @constructor
+                     * @param {google.datastore.v1.ITransactionOptions=} [properties] Properties to set
+                     */
+                    function TransactionOptions(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * TransactionOptions readWrite.
+                     * @member {google.datastore.v1.TransactionOptions.IReadWrite|null|undefined} readWrite
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @instance
+                     */
+                    TransactionOptions.prototype.readWrite = null;
+    
+                    /**
+                     * TransactionOptions readOnly.
+                     * @member {google.datastore.v1.TransactionOptions.IReadOnly|null|undefined} readOnly
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @instance
+                     */
+                    TransactionOptions.prototype.readOnly = null;
+    
+                    // OneOf field names bound to virtual getters and setters
+                    var $oneOfFields;
+    
+                    /**
+                     * TransactionOptions mode.
+                     * @member {"readWrite"|"readOnly"|undefined} mode
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @instance
+                     */
+                    Object.defineProperty(TransactionOptions.prototype, "mode", {
+                        get: $util.oneOfGetter($oneOfFields = ["readWrite", "readOnly"]),
+                        set: $util.oneOfSetter($oneOfFields)
+                    });
+    
+                    /**
+                     * Creates a new TransactionOptions instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {google.datastore.v1.ITransactionOptions=} [properties] Properties to set
+                     * @returns {google.datastore.v1.TransactionOptions} TransactionOptions instance
+                     */
+                    TransactionOptions.create = function create(properties) {
+                        return new TransactionOptions(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified TransactionOptions message. Does not implicitly {@link google.datastore.v1.TransactionOptions.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {google.datastore.v1.ITransactionOptions} message TransactionOptions message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    TransactionOptions.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.readWrite != null && Object.hasOwnProperty.call(message, "readWrite"))
+                            $root.google.datastore.v1.TransactionOptions.ReadWrite.encode(message.readWrite, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.readOnly != null && Object.hasOwnProperty.call(message, "readOnly"))
+                            $root.google.datastore.v1.TransactionOptions.ReadOnly.encode(message.readOnly, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified TransactionOptions message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {google.datastore.v1.ITransactionOptions} message TransactionOptions message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    TransactionOptions.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a TransactionOptions message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.TransactionOptions} TransactionOptions
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    TransactionOptions.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.TransactionOptions();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.readWrite = $root.google.datastore.v1.TransactionOptions.ReadWrite.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.readOnly = $root.google.datastore.v1.TransactionOptions.ReadOnly.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a TransactionOptions message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.TransactionOptions} TransactionOptions
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    TransactionOptions.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a TransactionOptions message.
+                     * @function verify
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    TransactionOptions.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        var properties = {};
+                        if (message.readWrite != null && message.hasOwnProperty("readWrite")) {
+                            properties.mode = 1;
+                            {
+                                var error = $root.google.datastore.v1.TransactionOptions.ReadWrite.verify(message.readWrite);
+                                if (error)
+                                    return "readWrite." + error;
+                            }
+                        }
+                        if (message.readOnly != null && message.hasOwnProperty("readOnly")) {
+                            if (properties.mode === 1)
+                                return "mode: multiple values";
+                            properties.mode = 1;
+                            {
+                                var error = $root.google.datastore.v1.TransactionOptions.ReadOnly.verify(message.readOnly);
+                                if (error)
+                                    return "readOnly." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a TransactionOptions message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.TransactionOptions} TransactionOptions
+                     */
+                    TransactionOptions.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.TransactionOptions)
+                            return object;
+                        var message = new $root.google.datastore.v1.TransactionOptions();
+                        if (object.readWrite != null) {
+                            if (typeof object.readWrite !== "object")
+                                throw TypeError(".google.datastore.v1.TransactionOptions.readWrite: object expected");
+                            message.readWrite = $root.google.datastore.v1.TransactionOptions.ReadWrite.fromObject(object.readWrite);
+                        }
+                        if (object.readOnly != null) {
+                            if (typeof object.readOnly !== "object")
+                                throw TypeError(".google.datastore.v1.TransactionOptions.readOnly: object expected");
+                            message.readOnly = $root.google.datastore.v1.TransactionOptions.ReadOnly.fromObject(object.readOnly);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a TransactionOptions message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {google.datastore.v1.TransactionOptions} message TransactionOptions
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    TransactionOptions.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (message.readWrite != null && message.hasOwnProperty("readWrite")) {
+                            object.readWrite = $root.google.datastore.v1.TransactionOptions.ReadWrite.toObject(message.readWrite, options);
+                            if (options.oneofs)
+                                object.mode = "readWrite";
+                        }
+                        if (message.readOnly != null && message.hasOwnProperty("readOnly")) {
+                            object.readOnly = $root.google.datastore.v1.TransactionOptions.ReadOnly.toObject(message.readOnly, options);
+                            if (options.oneofs)
+                                object.mode = "readOnly";
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this TransactionOptions to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    TransactionOptions.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for TransactionOptions
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.TransactionOptions
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    TransactionOptions.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.TransactionOptions";
+                    };
+    
+                    TransactionOptions.ReadWrite = (function() {
+    
+                        /**
+                         * Properties of a ReadWrite.
+                         * @memberof google.datastore.v1.TransactionOptions
+                         * @interface IReadWrite
+                         * @property {Uint8Array|null} [previousTransaction] ReadWrite previousTransaction
+                         */
+    
+                        /**
+                         * Constructs a new ReadWrite.
+                         * @memberof google.datastore.v1.TransactionOptions
+                         * @classdesc Represents a ReadWrite.
+                         * @implements IReadWrite
+                         * @constructor
+                         * @param {google.datastore.v1.TransactionOptions.IReadWrite=} [properties] Properties to set
+                         */
+                        function ReadWrite(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ReadWrite previousTransaction.
+                         * @member {Uint8Array} previousTransaction
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @instance
+                         */
+                        ReadWrite.prototype.previousTransaction = $util.newBuffer([]);
+    
+                        /**
+                         * Creates a new ReadWrite instance using the specified properties.
+                         * @function create
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {google.datastore.v1.TransactionOptions.IReadWrite=} [properties] Properties to set
+                         * @returns {google.datastore.v1.TransactionOptions.ReadWrite} ReadWrite instance
+                         */
+                        ReadWrite.create = function create(properties) {
+                            return new ReadWrite(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ReadWrite message. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadWrite.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {google.datastore.v1.TransactionOptions.IReadWrite} message ReadWrite message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ReadWrite.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.previousTransaction != null && Object.hasOwnProperty.call(message, "previousTransaction"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.previousTransaction);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ReadWrite message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadWrite.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {google.datastore.v1.TransactionOptions.IReadWrite} message ReadWrite message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ReadWrite.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ReadWrite message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.datastore.v1.TransactionOptions.ReadWrite} ReadWrite
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ReadWrite.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.TransactionOptions.ReadWrite();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.previousTransaction = reader.bytes();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ReadWrite message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.datastore.v1.TransactionOptions.ReadWrite} ReadWrite
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ReadWrite.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ReadWrite message.
+                         * @function verify
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ReadWrite.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.previousTransaction != null && message.hasOwnProperty("previousTransaction"))
+                                if (!(message.previousTransaction && typeof message.previousTransaction.length === "number" || $util.isString(message.previousTransaction)))
+                                    return "previousTransaction: buffer expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ReadWrite message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.datastore.v1.TransactionOptions.ReadWrite} ReadWrite
+                         */
+                        ReadWrite.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.datastore.v1.TransactionOptions.ReadWrite)
+                                return object;
+                            var message = new $root.google.datastore.v1.TransactionOptions.ReadWrite();
+                            if (object.previousTransaction != null)
+                                if (typeof object.previousTransaction === "string")
+                                    $util.base64.decode(object.previousTransaction, message.previousTransaction = $util.newBuffer($util.base64.length(object.previousTransaction)), 0);
+                                else if (object.previousTransaction.length >= 0)
+                                    message.previousTransaction = object.previousTransaction;
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a ReadWrite message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {google.datastore.v1.TransactionOptions.ReadWrite} message ReadWrite
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ReadWrite.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                if (options.bytes === String)
+                                    object.previousTransaction = "";
+                                else {
+                                    object.previousTransaction = [];
+                                    if (options.bytes !== Array)
+                                        object.previousTransaction = $util.newBuffer(object.previousTransaction);
+                                }
+                            if (message.previousTransaction != null && message.hasOwnProperty("previousTransaction"))
+                                object.previousTransaction = options.bytes === String ? $util.base64.encode(message.previousTransaction, 0, message.previousTransaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.previousTransaction) : message.previousTransaction;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ReadWrite to JSON.
+                         * @function toJSON
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ReadWrite.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for ReadWrite
+                         * @function getTypeUrl
+                         * @memberof google.datastore.v1.TransactionOptions.ReadWrite
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        ReadWrite.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.datastore.v1.TransactionOptions.ReadWrite";
+                        };
+    
+                        return ReadWrite;
+                    })();
+    
+                    TransactionOptions.ReadOnly = (function() {
+    
+                        /**
+                         * Properties of a ReadOnly.
+                         * @memberof google.datastore.v1.TransactionOptions
+                         * @interface IReadOnly
+                         * @property {google.protobuf.ITimestamp|null} [readTime] ReadOnly readTime
+                         */
+    
+                        /**
+                         * Constructs a new ReadOnly.
+                         * @memberof google.datastore.v1.TransactionOptions
+                         * @classdesc Represents a ReadOnly.
+                         * @implements IReadOnly
+                         * @constructor
+                         * @param {google.datastore.v1.TransactionOptions.IReadOnly=} [properties] Properties to set
+                         */
+                        function ReadOnly(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ReadOnly readTime.
+                         * @member {google.protobuf.ITimestamp|null|undefined} readTime
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @instance
+                         */
+                        ReadOnly.prototype.readTime = null;
+    
+                        /**
+                         * Creates a new ReadOnly instance using the specified properties.
+                         * @function create
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @static
+                         * @param {google.datastore.v1.TransactionOptions.IReadOnly=} [properties] Properties to set
+                         * @returns {google.datastore.v1.TransactionOptions.ReadOnly} ReadOnly instance
+                         */
+                        ReadOnly.create = function create(properties) {
+                            return new ReadOnly(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ReadOnly message. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadOnly.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @static
+                         * @param {google.datastore.v1.TransactionOptions.IReadOnly} message ReadOnly message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ReadOnly.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.readTime != null && Object.hasOwnProperty.call(message, "readTime"))
+                                $root.google.protobuf.Timestamp.encode(message.readTime, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ReadOnly message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadOnly.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @static
+                         * @param {google.datastore.v1.TransactionOptions.IReadOnly} message ReadOnly message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ReadOnly.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ReadOnly message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.datastore.v1.TransactionOptions.ReadOnly} ReadOnly
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ReadOnly.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.TransactionOptions.ReadOnly();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.readTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ReadOnly message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.datastore.v1.TransactionOptions.ReadOnly} ReadOnly
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ReadOnly.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ReadOnly message.
+                         * @function verify
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ReadOnly.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.readTime != null && message.hasOwnProperty("readTime")) {
+                                var error = $root.google.protobuf.Timestamp.verify(message.readTime);
+                                if (error)
+                                    return "readTime." + error;
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ReadOnly message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.datastore.v1.TransactionOptions.ReadOnly
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.datastore.v1.TransactionOptions.ReadOnly} ReadOnly
+                         */
+                        ReadOnly.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.datastore.v1.TransactionOptions.ReadOnly)
+                                return object;
+                            var message = new $root.google.datastore.v1.TransactionOptions.ReadOnly();
+                            if (object.readTime != null) {
+                                if (typeof object.readTime !== "object")
+                                    throw TypeError(".google.datastore.v1.TransactionOptions.ReadOnly.readTime: object expected");
+                                message.readTime = $root.google.protobuf.Timestamp.fromObject(object.readTime);
+                            }
+                            return message;
+                        };
     
                     /**
                      * Creates a plain object from an AggregationResultBatch message. Also converts values to other types if specified.
@@ -8266,6 +11504,12 @@
                             return object;
                         var message = new $root.google.datastore.v1.Value();
                         switch (object.nullValue) {
+                        default:
+                            if (typeof object.nullValue === "number") {
+                                message.nullValue = object.nullValue;
+                                break;
+                            }
+                            break;
                         case "NULL_VALUE":
                         case 0:
                             message.nullValue = 0;
@@ -8384,7 +11628,7 @@
                                 object.valueType = "timestampValue";
                         }
                         if (message.nullValue != null && message.hasOwnProperty("nullValue")) {
-                            object.nullValue = options.enums === String ? $root.google.protobuf.NullValue[message.nullValue] : message.nullValue;
+                            object.nullValue = options.enums === String ? $root.google.protobuf.NullValue[message.nullValue] === undefined ? message.nullValue : $root.google.protobuf.NullValue[message.nullValue] : message.nullValue;
                             if (options.oneofs)
                                 object.valueType = "nullValue";
                         }
@@ -11060,6 +14304,12 @@
                             message.property = $root.google.datastore.v1.PropertyReference.fromObject(object.property);
                         }
                         switch (object.direction) {
+                        default:
+                            if (typeof object.direction === "number") {
+                                message.direction = object.direction;
+                                break;
+                            }
+                            break;
                         case "DIRECTION_UNSPECIFIED":
                         case 0:
                             message.direction = 0;
@@ -11096,7 +14346,7 @@
                         if (message.property != null && message.hasOwnProperty("property"))
                             object.property = $root.google.datastore.v1.PropertyReference.toObject(message.property, options);
                         if (message.direction != null && message.hasOwnProperty("direction"))
-                            object.direction = options.enums === String ? $root.google.datastore.v1.PropertyOrder.Direction[message.direction] : message.direction;
+                            object.direction = options.enums === String ? $root.google.datastore.v1.PropertyOrder.Direction[message.direction] === undefined ? message.direction : $root.google.datastore.v1.PropertyOrder.Direction[message.direction] : message.direction;
                         return object;
                     };
     
@@ -11590,6 +14840,12 @@
                             return object;
                         var message = new $root.google.datastore.v1.CompositeFilter();
                         switch (object.op) {
+                        default:
+                            if (typeof object.op === "number") {
+                                message.op = object.op;
+                                break;
+                            }
+                            break;
                         case "OPERATOR_UNSPECIFIED":
                         case 0:
                             message.op = 0;
@@ -11630,7 +14886,7 @@
                         if (options.defaults)
                             object.op = options.enums === String ? "OPERATOR_UNSPECIFIED" : 0;
                         if (message.op != null && message.hasOwnProperty("op"))
-                            object.op = options.enums === String ? $root.google.datastore.v1.CompositeFilter.Operator[message.op] : message.op;
+                            object.op = options.enums === String ? $root.google.datastore.v1.CompositeFilter.Operator[message.op] === undefined ? message.op : $root.google.datastore.v1.CompositeFilter.Operator[message.op] : message.op;
                         if (message.filters && message.filters.length) {
                             object.filters = [];
                             for (var j = 0; j < message.filters.length; ++j)
@@ -11890,6 +15146,12 @@
                             message.property = $root.google.datastore.v1.PropertyReference.fromObject(object.property);
                         }
                         switch (object.op) {
+                        default:
+                            if (typeof object.op === "number") {
+                                message.op = object.op;
+                                break;
+                            }
+                            break;
                         case "OPERATOR_UNSPECIFIED":
                         case 0:
                             message.op = 0;
@@ -11960,7 +15222,7 @@
                         if (message.property != null && message.hasOwnProperty("property"))
                             object.property = $root.google.datastore.v1.PropertyReference.toObject(message.property, options);
                         if (message.op != null && message.hasOwnProperty("op"))
-                            object.op = options.enums === String ? $root.google.datastore.v1.PropertyFilter.Operator[message.op] : message.op;
+                            object.op = options.enums === String ? $root.google.datastore.v1.PropertyFilter.Operator[message.op] === undefined ? message.op : $root.google.datastore.v1.PropertyFilter.Operator[message.op] : message.op;
                         if (message.value != null && message.hasOwnProperty("value"))
                             object.value = $root.google.datastore.v1.Value.toObject(message.value, options);
                         return object;
@@ -12932,6 +16194,12 @@
                             else if (object.skippedCursor.length >= 0)
                                 message.skippedCursor = object.skippedCursor;
                         switch (object.entityResultType) {
+                        default:
+                            if (typeof object.entityResultType === "number") {
+                                message.entityResultType = object.entityResultType;
+                                break;
+                            }
+                            break;
                         case "RESULT_TYPE_UNSPECIFIED":
                         case 0:
                             message.entityResultType = 0;
@@ -12965,6 +16233,12 @@
                             else if (object.endCursor.length >= 0)
                                 message.endCursor = object.endCursor;
                         switch (object.moreResults) {
+                        default:
+                            if (typeof object.moreResults === "number") {
+                                message.moreResults = object.moreResults;
+                                break;
+                            }
+                            break;
                         case "MORE_RESULTS_TYPE_UNSPECIFIED":
                         case 0:
                             message.moreResults = 0;
@@ -13044,7 +16318,7 @@
                             object.readTime = null;
                         }
                         if (message.entityResultType != null && message.hasOwnProperty("entityResultType"))
-                            object.entityResultType = options.enums === String ? $root.google.datastore.v1.EntityResult.ResultType[message.entityResultType] : message.entityResultType;
+                            object.entityResultType = options.enums === String ? $root.google.datastore.v1.EntityResult.ResultType[message.entityResultType] === undefined ? message.entityResultType : $root.google.datastore.v1.EntityResult.ResultType[message.entityResultType] : message.entityResultType;
                         if (message.entityResults && message.entityResults.length) {
                             object.entityResults = [];
                             for (var j = 0; j < message.entityResults.length; ++j)
@@ -13055,7 +16329,7 @@
                         if (message.endCursor != null && message.hasOwnProperty("endCursor"))
                             object.endCursor = options.bytes === String ? $util.base64.encode(message.endCursor, 0, message.endCursor.length) : options.bytes === Array ? Array.prototype.slice.call(message.endCursor) : message.endCursor;
                         if (message.moreResults != null && message.hasOwnProperty("moreResults"))
-                            object.moreResults = options.enums === String ? $root.google.datastore.v1.QueryResultBatch.MoreResultsType[message.moreResults] : message.moreResults;
+                            object.moreResults = options.enums === String ? $root.google.datastore.v1.QueryResultBatch.MoreResultsType[message.moreResults] === undefined ? message.moreResults : $root.google.datastore.v1.QueryResultBatch.MoreResultsType[message.moreResults] : message.moreResults;
                         if (message.skippedResults != null && message.hasOwnProperty("skippedResults"))
                             object.skippedResults = message.skippedResults;
                         if (message.snapshotVersion != null && message.hasOwnProperty("snapshotVersion"))
@@ -22999,6 +26273,12 @@
                     if (object.number != null)
                         message.number = object.number | 0;
                     switch (object.label) {
+                    default:
+                        if (typeof object.label === "number") {
+                            message.label = object.label;
+                            break;
+                        }
+                        break;
                     case "LABEL_OPTIONAL":
                     case 1:
                         message.label = 1;
@@ -23013,6 +26293,12 @@
                         break;
                     }
                     switch (object.type) {
+                    default:
+                        if (typeof object.type === "number") {
+                            message.type = object.type;
+                            break;
+                        }
+                        break;
                     case "TYPE_DOUBLE":
                     case 1:
                         message.type = 1;
@@ -23139,9 +26425,9 @@
                     if (message.number != null && message.hasOwnProperty("number"))
                         object.number = message.number;
                     if (message.label != null && message.hasOwnProperty("label"))
-                        object.label = options.enums === String ? $root.google.protobuf.FieldDescriptorProto.Label[message.label] : message.label;
+                        object.label = options.enums === String ? $root.google.protobuf.FieldDescriptorProto.Label[message.label] === undefined ? message.label : $root.google.protobuf.FieldDescriptorProto.Label[message.label] : message.label;
                     if (message.type != null && message.hasOwnProperty("type"))
-                        object.type = options.enums === String ? $root.google.protobuf.FieldDescriptorProto.Type[message.type] : message.type;
+                        object.type = options.enums === String ? $root.google.protobuf.FieldDescriptorProto.Type[message.type] === undefined ? message.type : $root.google.protobuf.FieldDescriptorProto.Type[message.type] : message.type;
                     if (message.typeName != null && message.hasOwnProperty("typeName"))
                         object.typeName = message.typeName;
                     if (message.defaultValue != null && message.hasOwnProperty("defaultValue"))
@@ -25460,6 +28746,12 @@
                     if (object.javaStringCheckUtf8 != null)
                         message.javaStringCheckUtf8 = Boolean(object.javaStringCheckUtf8);
                     switch (object.optimizeFor) {
+                    default:
+                        if (typeof object.optimizeFor === "number") {
+                            message.optimizeFor = object.optimizeFor;
+                            break;
+                        }
+                        break;
                     case "SPEED":
                     case 1:
                         message.optimizeFor = 1;
@@ -25556,7 +28848,7 @@
                     if (message.javaOuterClassname != null && message.hasOwnProperty("javaOuterClassname"))
                         object.javaOuterClassname = message.javaOuterClassname;
                     if (message.optimizeFor != null && message.hasOwnProperty("optimizeFor"))
-                        object.optimizeFor = options.enums === String ? $root.google.protobuf.FileOptions.OptimizeMode[message.optimizeFor] : message.optimizeFor;
+                        object.optimizeFor = options.enums === String ? $root.google.protobuf.FileOptions.OptimizeMode[message.optimizeFor] === undefined ? message.optimizeFor : $root.google.protobuf.FileOptions.OptimizeMode[message.optimizeFor] : message.optimizeFor;
                     if (message.javaMultipleFiles != null && message.hasOwnProperty("javaMultipleFiles"))
                         object.javaMultipleFiles = message.javaMultipleFiles;
                     if (message.goPackage != null && message.hasOwnProperty("goPackage"))
@@ -26305,6 +29597,12 @@
                         return object;
                     var message = new $root.google.protobuf.FieldOptions();
                     switch (object.ctype) {
+                    default:
+                        if (typeof object.ctype === "number") {
+                            message.ctype = object.ctype;
+                            break;
+                        }
+                        break;
                     case "STRING":
                     case 0:
                         message.ctype = 0;
@@ -26321,6 +29619,12 @@
                     if (object.packed != null)
                         message.packed = Boolean(object.packed);
                     switch (object.jstype) {
+                    default:
+                        if (typeof object.jstype === "number") {
+                            message.jstype = object.jstype;
+                            break;
+                        }
+                        break;
                     case "JS_NORMAL":
                     case 0:
                         message.jstype = 0;
@@ -26359,6 +29663,10 @@
                         for (var i = 0; i < object[".google.api.fieldBehavior"].length; ++i)
                             switch (object[".google.api.fieldBehavior"][i]) {
                             default:
+                                if (typeof object[".google.api.fieldBehavior"][i] === "number") {
+                                    message[".google.api.fieldBehavior"][i] = object[".google.api.fieldBehavior"][i];
+                                    break;
+                                }
                             case "FIELD_BEHAVIOR_UNSPECIFIED":
                             case 0:
                                 message[".google.api.fieldBehavior"][i] = 0;
@@ -26423,7 +29731,7 @@
                         object.unverifiedLazy = false;
                     }
                     if (message.ctype != null && message.hasOwnProperty("ctype"))
-                        object.ctype = options.enums === String ? $root.google.protobuf.FieldOptions.CType[message.ctype] : message.ctype;
+                        object.ctype = options.enums === String ? $root.google.protobuf.FieldOptions.CType[message.ctype] === undefined ? message.ctype : $root.google.protobuf.FieldOptions.CType[message.ctype] : message.ctype;
                     if (message.packed != null && message.hasOwnProperty("packed"))
                         object.packed = message.packed;
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
@@ -26431,7 +29739,7 @@
                     if (message.lazy != null && message.hasOwnProperty("lazy"))
                         object.lazy = message.lazy;
                     if (message.jstype != null && message.hasOwnProperty("jstype"))
-                        object.jstype = options.enums === String ? $root.google.protobuf.FieldOptions.JSType[message.jstype] : message.jstype;
+                        object.jstype = options.enums === String ? $root.google.protobuf.FieldOptions.JSType[message.jstype] === undefined ? message.jstype : $root.google.protobuf.FieldOptions.JSType[message.jstype] : message.jstype;
                     if (message.weak != null && message.hasOwnProperty("weak"))
                         object.weak = message.weak;
                     if (message.unverifiedLazy != null && message.hasOwnProperty("unverifiedLazy"))
@@ -26444,7 +29752,7 @@
                     if (message[".google.api.fieldBehavior"] && message[".google.api.fieldBehavior"].length) {
                         object[".google.api.fieldBehavior"] = [];
                         for (var j = 0; j < message[".google.api.fieldBehavior"].length; ++j)
-                            object[".google.api.fieldBehavior"][j] = options.enums === String ? $root.google.api.FieldBehavior[message[".google.api.fieldBehavior"][j]] : message[".google.api.fieldBehavior"][j];
+                            object[".google.api.fieldBehavior"][j] = options.enums === String ? $root.google.api.FieldBehavior[message[".google.api.fieldBehavior"][j]] === undefined ? message[".google.api.fieldBehavior"][j] : $root.google.api.FieldBehavior[message[".google.api.fieldBehavior"][j]] : message[".google.api.fieldBehavior"][j];
                     }
                     return object;
                 };
@@ -27819,6 +31127,12 @@
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     switch (object.idempotencyLevel) {
+                    default:
+                        if (typeof object.idempotencyLevel === "number") {
+                            message.idempotencyLevel = object.idempotencyLevel;
+                            break;
+                        }
+                        break;
                     case "IDEMPOTENCY_UNKNOWN":
                     case 0:
                         message.idempotencyLevel = 0;
@@ -27888,7 +31202,7 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
                     if (message.idempotencyLevel != null && message.hasOwnProperty("idempotencyLevel"))
-                        object.idempotencyLevel = options.enums === String ? $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] : message.idempotencyLevel;
+                        object.idempotencyLevel = options.enums === String ? $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] === undefined ? message.idempotencyLevel : $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] : message.idempotencyLevel;
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -29643,6 +32957,12 @@
                         if (object.end != null)
                             message.end = object.end | 0;
                         switch (object.semantic) {
+                        default:
+                            if (typeof object.semantic === "number") {
+                                message.semantic = object.semantic;
+                                break;
+                            }
+                            break;
                         case "NONE":
                         case 0:
                             message.semantic = 0;
@@ -29692,7 +33012,7 @@
                         if (message.end != null && message.hasOwnProperty("end"))
                             object.end = message.end;
                         if (message.semantic != null && message.hasOwnProperty("semantic"))
-                            object.semantic = options.enums === String ? $root.google.protobuf.GeneratedCodeInfo.Annotation.Semantic[message.semantic] : message.semantic;
+                            object.semantic = options.enums === String ? $root.google.protobuf.GeneratedCodeInfo.Annotation.Semantic[message.semantic] === undefined ? message.semantic : $root.google.protobuf.GeneratedCodeInfo.Annotation.Semantic[message.semantic] : message.semantic;
                         return object;
                     };
     
@@ -31169,6 +34489,12 @@
                         return object;
                     var message = new $root.google.protobuf.Value();
                     switch (object.nullValue) {
+                    default:
+                        if (typeof object.nullValue === "number") {
+                            message.nullValue = object.nullValue;
+                            break;
+                        }
+                        break;
                     case "NULL_VALUE":
                     case 0:
                         message.nullValue = 0;
@@ -31207,7 +34533,7 @@
                         options = {};
                     var object = {};
                     if (message.nullValue != null && message.hasOwnProperty("nullValue")) {
-                        object.nullValue = options.enums === String ? $root.google.protobuf.NullValue[message.nullValue] : message.nullValue;
+                        object.nullValue = options.enums === String ? $root.google.protobuf.NullValue[message.nullValue] === undefined ? message.nullValue : $root.google.protobuf.NullValue[message.nullValue] : message.nullValue;
                         if (options.oneofs)
                             object.kind = "nullValue";
                     }
