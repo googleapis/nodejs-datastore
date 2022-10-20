@@ -41,6 +41,7 @@ class AggregateQuery {
     return this;
   }
 
+  // eslint-disable-next-line
   toProto(): any {
     return this.aggregations.map(aggregation => aggregation.toProto());
   }
@@ -58,10 +59,12 @@ abstract class AggregateField {
     return this;
   }
 
+  // eslint-disable-next-line
   abstract toProto(): any;
 }
 
 class Count extends AggregateField {
+  // eslint-disable-next-line
   toProto(): any {
     const count = Object.assign({});
     return Object.assign({count}, this.alias_ ? {alias: this.alias_} : null);
