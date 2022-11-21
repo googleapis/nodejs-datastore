@@ -263,6 +263,7 @@ export class DatastoreClient {
     const datastoreStubMethods = [
       'lookup',
       'runQuery',
+      'runAggregationQuery',
       'beginTransaction',
       'commit',
       'rollback',
@@ -544,6 +545,107 @@ export class DatastoreClient {
       });
     this.initialize();
     return this.innerApiCalls.runQuery(request, options, callback);
+  }
+  /**
+   * Runs an aggregation query.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.projectId
+   *   Required. The ID of the project against which to make the request.
+   * @param {string} request.databaseId
+   *   The ID of the database against which to make the request.
+   *
+   *   '(default)' is not allowed; please use empty string '' to refer the default
+   *   database.
+   * @param {google.datastore.v1.PartitionId} request.partitionId
+   *   Entities are partitioned into subsets, identified by a partition ID.
+   *   Queries are scoped to a single partition.
+   *   This partition ID is normalized with the standard default context
+   *   partition ID.
+   * @param {google.datastore.v1.ReadOptions} request.readOptions
+   *   The options for this query.
+   * @param {google.datastore.v1.AggregationQuery} request.aggregationQuery
+   *   The query to run.
+   * @param {google.datastore.v1.GqlQuery} request.gqlQuery
+   *   The GQL query to run. This query must be an aggregation query.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [RunAggregationQueryResponse]{@link google.datastore.v1.RunAggregationQueryResponse}.
+   *   Please see the
+   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/datastore.run_aggregation_query.js</caption>
+   * region_tag:datastore_v1_generated_Datastore_RunAggregationQuery_async
+   */
+  runAggregationQuery(
+    request?: protos.google.datastore.v1.IRunAggregationQueryRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.datastore.v1.IRunAggregationQueryResponse,
+      protos.google.datastore.v1.IRunAggregationQueryRequest | undefined,
+      {} | undefined
+    ]
+  >;
+  runAggregationQuery(
+    request: protos.google.datastore.v1.IRunAggregationQueryRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.datastore.v1.IRunAggregationQueryResponse,
+      protos.google.datastore.v1.IRunAggregationQueryRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  runAggregationQuery(
+    request: protos.google.datastore.v1.IRunAggregationQueryRequest,
+    callback: Callback<
+      protos.google.datastore.v1.IRunAggregationQueryResponse,
+      protos.google.datastore.v1.IRunAggregationQueryRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  runAggregationQuery(
+    request?: protos.google.datastore.v1.IRunAggregationQueryRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.datastore.v1.IRunAggregationQueryResponse,
+          | protos.google.datastore.v1.IRunAggregationQueryRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.datastore.v1.IRunAggregationQueryResponse,
+      protos.google.datastore.v1.IRunAggregationQueryRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.datastore.v1.IRunAggregationQueryResponse,
+      protos.google.datastore.v1.IRunAggregationQueryRequest | undefined,
+      {} | undefined
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        project_id: request.projectId ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.runAggregationQuery(request, options, callback);
   }
   /**
    * Begins a new transaction.

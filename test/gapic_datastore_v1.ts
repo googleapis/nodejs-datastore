@@ -439,6 +439,137 @@ describe('v1.DatastoreClient', () => {
     });
   });
 
+  describe('runAggregationQuery', () => {
+    it('invokes runAggregationQuery without error', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.RunAggregationQueryRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.v1.RunAggregationQueryRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.datastore.v1.RunAggregationQueryResponse()
+      );
+      client.innerApiCalls.runAggregationQuery =
+        stubSimpleCall(expectedResponse);
+      const [response] = await client.runAggregationQuery(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.runAggregationQuery as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.runAggregationQuery as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes runAggregationQuery without error using callback', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.RunAggregationQueryRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.v1.RunAggregationQueryRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.datastore.v1.RunAggregationQueryResponse()
+      );
+      client.innerApiCalls.runAggregationQuery =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.runAggregationQuery(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.datastore.v1.IRunAggregationQueryResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.runAggregationQuery as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.runAggregationQuery as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes runAggregationQuery with error', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.RunAggregationQueryRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.v1.RunAggregationQueryRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.runAggregationQuery = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.runAggregationQuery(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.runAggregationQuery as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.runAggregationQuery as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes runAggregationQuery with closed client', async () => {
+      const client = new datastoreModule.v1.DatastoreClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.datastore.v1.RunAggregationQueryRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.datastore.v1.RunAggregationQueryRequest',
+        ['projectId']
+      );
+      request.projectId = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.runAggregationQuery(request), expectedError);
+    });
+  });
+
   describe('beginTransaction', () => {
     it('invokes beginTransaction without error', async () => {
       const client = new datastoreModule.v1.DatastoreClient({
