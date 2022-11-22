@@ -61,7 +61,7 @@ describe('Query', () => {
       const query = new Query(['kind1']);
       const firstAggregation = AggregateField.count().alias('total');
       const secondAggregation = AggregateField.count().alias('total2');
-      const aggregate = new AggregateQuery(query).aggregate([
+      const aggregate = new AggregateQuery(query).addAggregations([
         firstAggregation,
         secondAggregation,
       ]);

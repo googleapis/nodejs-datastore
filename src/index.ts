@@ -510,8 +510,7 @@ class Datastore extends DatastoreRequest {
     this.auth = new GoogleAuth(this.options);
   }
 
-  // TODO: Change this to accept an array instead
-  aggregate_query(query: Query): AggregateQuery {
+  createAggregationQuery(query: Query): AggregateQuery {
     return new AggregateQuery(query);
   }
 
@@ -1803,7 +1802,7 @@ class Datastore extends DatastoreRequest {
  */
 promisifyAll(Datastore, {
   exclude: [
-    'aggregate',
+    'createAggregationQuery',
     'double',
     'isDouble',
     'geoPoint',

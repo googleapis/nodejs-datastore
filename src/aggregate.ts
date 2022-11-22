@@ -34,9 +34,14 @@ class AggregateQuery {
     return this;
   }
 
-  aggregate(aggregates: AggregateField[]): AggregateQuery {
-    for (const aggregate of aggregates) {
-      this.aggregations.push(aggregate);
+  addAggregation(aggregation: AggregateField): AggregateQuery {
+    this.aggregations.push(aggregation);
+    return this;
+  }
+
+  addAggregations(aggregations: AggregateField[]): AggregateQuery {
+    for (const aggregation of aggregations) {
+      this.aggregations.push(aggregation);
     }
     return this;
   }

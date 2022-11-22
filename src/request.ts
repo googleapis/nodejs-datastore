@@ -567,17 +567,17 @@ class DatastoreRequest {
   }
 
   // TODO Change RunQueryOptions, RunQueryCallback, RunQueryResponse to right interface
-  runAggregateQuery(
+  runAggregationQuery(
     query: AggregateQuery,
     options?: RunQueryOptions
   ): Promise<RunQueryResponse>;
-  runAggregateQuery(
+  runAggregationQuery(
     query: AggregateQuery,
     options: RunQueryOptions,
     callback: RequestCallback
   ): void;
-  runAggregateQuery(query: AggregateQuery, callback: RequestCallback): void;
-  runAggregateQuery(
+  runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
+  runAggregationQuery(
     query: AggregateQuery,
     optionsOrCallback?: RunQueryOptions | RequestCallback,
     cb?: RequestCallback
