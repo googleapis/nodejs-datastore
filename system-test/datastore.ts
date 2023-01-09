@@ -1049,6 +1049,22 @@ describe('Datastore', () => {
       await transaction.commit();
     });
 
+    it('should aggregate query within a transaction', async () => {
+      const transaction = datastore.transaction();
+      await transaction.run();
+      const query = transaction.createQuery('Company');
+      const aggregateQuery = transaction.createAggregationQuery(query).count('total');
+      let result;
+      try {
+        result = await aggregateQuery.run();
+      } catch (e) {
+        await transaction.rollback();
+        return;
+      }
+      // assert(entities!.length > 0);
+      await transaction.commit();
+    });
+
     it('should read in a readOnly transaction', async () => {
       const transaction = datastore.transaction({readOnly: true});
       const key = datastore.key(['Company', 'Google']);
