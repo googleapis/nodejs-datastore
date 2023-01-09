@@ -1056,12 +1056,12 @@ describe('Datastore', () => {
       const aggregateQuery = transaction.createAggregationQuery(query).count('total');
       let result;
       try {
-        result = await aggregateQuery.run();
+        [result] = await aggregateQuery.run();
       } catch (e) {
         await transaction.rollback();
         return;
       }
-      // assert(entities!.length > 0);
+      assert.deepStrictEqual(result, [{'total': 2}]);
       await transaction.commit();
     });
 
