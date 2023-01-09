@@ -17,6 +17,8 @@
 // ** All changes to this file may be overwritten. **
 
 import {Query} from './index';
+import {RunQueryOptions, RunQueryResponse} from './query';
+import {RequestCallback} from './request';
 const AGGREGATE_QUERY = Symbol('AGGREGATE_QUERY');
 
 class AggregateQuery {
@@ -44,6 +46,19 @@ class AggregateQuery {
       this.aggregations.push(aggregation);
     }
     return this;
+  }
+
+  run(
+      optionsOrCallback?: RunQueryOptions | RequestCallback,
+      cb?: RequestCallback
+  ): void | Promise<RunQueryResponse> {
+    const options =
+        typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
+    const callback =
+        typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    const scope = this.query!.scope;
+    const runAggregationQuery = scope!.runAggregationQuery.bind(scope);
+    return runAggregationQuery(this, options, callback);
   }
 
   // eslint-disable-next-line

@@ -30,6 +30,7 @@ import {
   RequestOptions,
   PrepareEntityObjectResponse,
 } from './request';
+import {AggregateQuery} from './aggregate';
 
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
@@ -339,6 +340,15 @@ class Transaction extends DatastoreRequest {
       namespaceOrKind as string,
       kind as string[]
     );
+  }
+
+  /**
+   * Create an aggregation query from the query specified. See {module:datastore/query} for all
+   * of the available methods.
+   *
+   */
+  createAggregationQuery(query: Query): AggregateQuery {
+    return new AggregateQuery(query);
   }
 
   /**

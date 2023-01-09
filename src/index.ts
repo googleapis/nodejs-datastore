@@ -510,6 +510,11 @@ class Datastore extends DatastoreRequest {
     this.auth = new GoogleAuth(this.options);
   }
 
+  /**
+   * Create an aggregation query from a Query.
+   *
+   * @param {Query} query A Query object.
+   */
   createAggregationQuery(query: Query): AggregateQuery {
     return new AggregateQuery(query);
   }
