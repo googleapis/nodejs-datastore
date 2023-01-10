@@ -566,7 +566,6 @@ class DatastoreRequest {
       );
   }
 
-  // TODO Change RunQueryOptions, RunQueryCallback, RunQueryResponse to right interface
   runAggregationQuery(
     query: AggregateQuery,
     options?: RunQueryOptions
@@ -582,7 +581,6 @@ class DatastoreRequest {
     optionsOrCallback?: RunQueryOptions | RequestCallback,
     cb?: RequestCallback
   ): void | Promise<RunQueryResponse> {
-    // TODO: Check that the query was provided in `over`.
     const options =
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
