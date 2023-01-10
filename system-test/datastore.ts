@@ -1053,7 +1053,9 @@ describe('Datastore', () => {
       const transaction = datastore.transaction();
       await transaction.run();
       const query = transaction.createQuery('Company');
-      const aggregateQuery = transaction.createAggregationQuery(query).count('total');
+      const aggregateQuery = transaction
+        .createAggregationQuery(query)
+        .count('total');
       let result;
       try {
         [result] = await aggregateQuery.run();
@@ -1061,7 +1063,7 @@ describe('Datastore', () => {
         await transaction.rollback();
         return;
       }
-      assert.deepStrictEqual(result, [{'total': 2}]);
+      assert.deepStrictEqual(result, [{total: 2}]);
       await transaction.commit();
     });
 

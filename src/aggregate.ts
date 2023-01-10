@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,13 +49,13 @@ class AggregateQuery {
   }
 
   run(
-      optionsOrCallback?: RunQueryOptions | RequestCallback,
-      cb?: RequestCallback
+    optionsOrCallback?: RunQueryOptions | RequestCallback,
+    cb?: RequestCallback
   ): void | Promise<RunQueryResponse> {
     const options =
-        typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
+      typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
-        typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     const scope = this.query!.scope;
     const runAggregationQuery = scope!.runAggregationQuery.bind(scope);
     return runAggregationQuery(this, options, callback);

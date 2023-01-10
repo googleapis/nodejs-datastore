@@ -348,10 +348,7 @@ class Transaction extends DatastoreRequest {
    *
    */
   createAggregationQuery(query: Query): AggregateQuery {
-    return this.datastore.createAggregationQuery.call(
-      this,
-      query
-    );
+    return this.datastore.createAggregationQuery.call(this, query);
   }
 
   /**
@@ -808,7 +805,15 @@ export interface RunOptions {
  * that a callback is omitted.
  */
 promisifyAll(Transaction, {
-  exclude: ['createAggregationQuery', 'createQuery', 'delete', 'insert', 'save', 'update', 'upsert'],
+  exclude: [
+    'createAggregationQuery',
+    'createQuery',
+    'delete',
+    'insert',
+    'save',
+    'update',
+    'upsert',
+  ],
 });
 
 /**
