@@ -845,6 +845,24 @@ describe('Datastore', () => {
         const [results] = await datastore.runAggregationQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 8, total2: 8}]);
       });
+      it('should run a count aggregation filter with a limit', async () => {
+        const q = datastore.createQuery('Character').limit(5);
+        const aggregate = datastore
+            .createAggregationQuery(q)
+            .addAggregation(AggregateField.count());
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 5}]);
+      });
+      it('should run a count aggregate filter with a limit and an alias', async () => {
+        const q = datastore.createQuery('Character').limit(7);
+        const aggregate = datastore
+            .createAggregationQuery(q)
+            .addAggregations([
+              AggregateField.count().alias('total')
+            ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{total: 7}]);
+      });
     });
     it('should filter by ancestor', async () => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
