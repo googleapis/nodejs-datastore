@@ -443,10 +443,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.lookup(request, options, callback);
   }
@@ -542,10 +561,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.runQuery(request, options, callback);
   }
@@ -643,10 +681,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.runAggregationQuery(request, options, callback);
   }
@@ -735,10 +792,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.beginTransaction(request, options, callback);
   }
@@ -844,10 +920,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.commit(request, options, callback);
   }
@@ -935,10 +1030,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.rollback(request, options, callback);
   }
@@ -956,8 +1070,8 @@ export class DatastoreClient {
    *   '(default)' is not allowed; please use empty string '' to refer the default
    *   database.
    * @param {number[]} request.keys
-   *   Required. A list of keys with incomplete key paths for which to allocate IDs.
-   *   No key may be reserved/read-only.
+   *   Required. A list of keys with incomplete key paths for which to allocate
+   *   IDs. No key may be reserved/read-only.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
@@ -1027,10 +1141,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.allocateIds(request, options, callback);
   }
@@ -1048,8 +1181,8 @@ export class DatastoreClient {
    *   '(default)' is not allowed; please use empty string '' to refer the default
    *   database.
    * @param {number[]} request.keys
-   *   Required. A list of keys with complete key paths whose numeric IDs should not be
-   *   auto-allocated.
+   *   Required. A list of keys with complete key paths whose numeric IDs should
+   *   not be auto-allocated.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
@@ -1119,10 +1252,29 @@ export class DatastoreClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.projectId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<project_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['project_id'] ?? fieldValue;
+          Object.assign(routingParameter, {project_id: parameterValue});
+        }
+      }
+    }
+    {
+      const fieldValue = request.databaseId;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue.toString().match(RegExp('(?<database_id>.*)'));
+        if (match) {
+          const parameterValue = match.groups?.['database_id'] ?? fieldValue;
+          Object.assign(routingParameter, {database_id: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.reserveIds(request, options, callback);
   }
