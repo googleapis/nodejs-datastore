@@ -92,6 +92,14 @@ describe('concepts', () => {
   it('performs a query with multi sort', () => query.testMultiSort());
   it('performs a kindless query', () => query.testKindlessQuery());
   it('performs a projection query', () => {
+    const priorities = transaction.datastore.int({
+      integerValue: 4,
+      propertyName: 'priority',
+    });
+    const percentCompletes = transaction.datastore.int({
+      integerValue: 10,
+      propertyName: 'percent_complete',
+    });
     return entity
       .testProperties()
       .then(() => {
@@ -103,8 +111,8 @@ describe('concepts', () => {
       })
       .then(results => {
         assert.deepStrictEqual(results, {
-          priorities: [4],
-          percentCompletes: [10],
+          priorities: [priorities],
+          percentCompletes: [percentCompletes],
         });
       });
   });

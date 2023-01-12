@@ -52,7 +52,7 @@ export namespace entity {
    * provided.
    *
    * @class
-   * @param {number} value The double value.
+   * @param {number|string} value The double value.
    *
    * @example
    * ```
@@ -61,20 +61,38 @@ export namespace entity {
    * const aDouble = datastore.double(7.3);
    * ```
    */
-  export class Double {
+  export class Double extends Number {
+    private _entityPropertyName: string | undefined;
     type: string;
     value: number;
-    constructor(value: number) {
+    constructor(value: number | string | ValueProto) {
+      const inferredValue =
+        typeof value === 'object' ? value.doubleValue : value;
+      super(inferredValue);
+
       /**
        * @name Double#type
        * @type {string}
        */
       this.type = 'DatastoreDouble';
+
+      this._entityPropertyName =
+        typeof value === 'object' ? value.propertyName : undefined;
+
       /**
        * @name Double#value
        * @type {number}
        */
-      this.value = value;
+      this.value = Number(inferredValue);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    valueOf(): any {
+      return Number(this.value);
+    }
+
+    toJSON(): any {
+      return {type: this.type, value: this.value};
     }
   }
 
@@ -499,7 +517,7 @@ export namespace entity {
    *
    * @private
    * @param {object} valueProto The protobuf Value message to convert.
-   * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=false] Wrap values of integerValue type in
+   * @param {boolean | IntegerTypeCastOptions} [wrapNumbers=true] Wrap values of integerValue type in
    *     {@link Datastore#Int} objects.
    *     If a `boolean`, this will wrap values in {@link Datastore#Int} objects.
    *     If an `object`, this will return a value returned by
@@ -549,10 +567,21 @@ export namespace entity {
       }
 
       case 'doubleValue': {
+        if (wrapNumbers === undefined) {
+          wrapNumbers = true;
+        }
+
+        if (wrapNumbers) {
+          return new entity.Double(valueProto);
+        }
         return Number(value);
       }
 
       case 'integerValue': {
+        if (wrapNumbers === undefined) {
+          wrapNumbers = true;
+        }
+
         return wrapNumbers
           ? typeof wrapNumbers === 'object'
             ? new entity.Int(valueProto, wrapNumbers).valueOf()
@@ -608,23 +637,6 @@ export namespace entity {
       return valueProto;
     }
 
-    if (typeof value === 'number') {
-      if (Number.isInteger(value)) {
-        if (!Number.isSafeInteger(value)) {
-          process.emitWarning(
-            'IntegerOutOfBoundsWarning: ' +
-              "the value for '" +
-              property +
-              "' property is outside of bounds of a JavaScript Number.\n" +
-              "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload."
-          );
-        }
-        value = new entity.Int(value);
-      } else {
-        value = new entity.Double(value);
-      }
-    }
-
     if (isDsInt(value)) {
       valueProto.integerValue = value.value;
       return valueProto;
@@ -633,6 +645,40 @@ export namespace entity {
     if (isDsDouble(value)) {
       valueProto.doubleValue = value.value;
       return valueProto;
+    }
+
+    if (typeof value === 'number') {
+      const integerOutOfBoundsWarning =
+        "IntegerOutOfBoundsWarning: the value for '" +
+        property +
+        "' property is outside of bounds of a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
+
+      const typeCastWarning =
+        "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
+
+      if (Number.isInteger(value)) {
+        if (!Number.isSafeInteger(value)) {
+          process.emitWarning(integerOutOfBoundsWarning);
+        } else {
+          warn('TypeCastWarning', typeCastWarning);
+        }
+        value = new entity.Int(value);
+        valueProto.integerValue = value.value;
+        return valueProto;
+      } else {
+        warn('TypeCastWarning', typeCastWarning);
+        value = new entity.Double(value);
+        valueProto.doubleValue = value.value;
+        return valueProto;
+      }
     }
 
     if (isDsGeoPoint(value)) {
@@ -694,6 +740,14 @@ export namespace entity {
 
     throw new Error('Unsupported field value, ' + value + ', was provided.');
   }
+
+  const warningTypesIssued = new Set<string>();
+  const warn = (warningName: string, warningMessage: string) => {
+    if (!warningTypesIssued.has(warningName)) {
+      warningTypesIssued.add(warningName);
+      process.emitWarning(warningMessage);
+    }
+  };
 
   /**
    * Convert any entity protocol to a plain object.

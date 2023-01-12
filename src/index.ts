@@ -1369,11 +1369,11 @@ class Datastore extends DatastoreRequest {
    * ]);
    * ```
    */
-  static int(value: number | string) {
+  static int(value: number | string | ValueProto) {
     return new entity.Int(value);
   }
 
-  int(value: number | string) {
+  int(value: number | string | ValueProto) {
     return Datastore.int(value);
   }
 

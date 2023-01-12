@@ -1020,6 +1020,14 @@ class Transaction extends TestHelper {
 
     // Overwrite so the real Datastore instance is used in `transferFunds`.
     datastore = this.datastore;
+    const beforeBalance = datastore.int({
+      propertyName: 'balance',
+      integerValue: originalBalance - amountToTransfer,
+    });
+    const afterBalance = datastore.int({
+      propertyName: 'balance',
+      integerValue: originalBalance + amountToTransfer,
+    });
     try {
       await this.restoreBankAccountBalances({
         keys: [fromKey, toKey],
@@ -1033,14 +1041,8 @@ class Transaction extends TestHelper {
       const accounts = results.map(result => result[0]);
       // Restore `datastore` to the mock API.
       datastore = datastoreMock;
-      assert.strictEqual(
-        accounts[0].balance,
-        originalBalance - amountToTransfer
-      );
-      assert.strictEqual(
-        accounts[1].balance,
-        originalBalance + amountToTransfer
-      );
+      assert.deepStrictEqual(accounts[0].balance, beforeBalance);
+      assert.deepStrictEqual(accounts[1].balance, afterBalance);
     } catch (err) {
       datastore = datastoreMock;
       throw err;

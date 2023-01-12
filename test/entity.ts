@@ -17,7 +17,7 @@ import {beforeEach, afterEach, describe, it} from 'mocha';
 import * as extend from 'extend';
 import * as sinon from 'sinon';
 import {Datastore} from '../src';
-import {Entity} from '../src/entity';
+import {entity, Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
 
 export function outOfBoundsError(opts: {
@@ -54,11 +54,44 @@ describe('entity', () => {
   });
 
   describe('Double', () => {
+    function checkDouble(double: entity.Double, comparisonValue: number) {
+      assert.strictEqual(double.value, comparisonValue);
+      assert.strictEqual(double.valueOf(), comparisonValue);
+      assert.deepStrictEqual(double.toJSON(), {
+        type: 'DatastoreDouble',
+        value: comparisonValue,
+      });
+    }
     it('should store the value', () => {
       const value = 8.3;
-
       const double = new entity.Double(value);
-      assert.strictEqual(double.value, value);
+      checkDouble(double, value);
+    });
+    it('should store the rounded value', () => {
+      const value = 8.0;
+      const double = new entity.Double(value);
+      checkDouble(double, value);
+    });
+    it('should store the stringified value', () => {
+      const value = '8.3';
+      const double = new entity.Double(value);
+      checkDouble(double, 8.3);
+    });
+    it('should store from a value proto', () => {
+      const valueProto = {
+        valueType: 'doubleValue',
+        doubleValue: 8,
+      };
+      const double = new entity.Double(valueProto);
+      checkDouble(double, 8);
+    });
+    it('should store from a value proto with a stringified value', () => {
+      const valueProto = {
+        valueType: 'doubleValue',
+        doubleValue: '8',
+      };
+      const double = new entity.Double(valueProto);
+      checkDouble(double, 8);
     });
   });
 
@@ -428,7 +461,7 @@ describe('entity', () => {
         );
       });
 
-      it('should not wrap numbers by default', () => {
+      it('should wrap numbers by default', () => {
         const decodeValueProto = entity.decodeValueProto;
         entity.decodeValueProto = (
           valueProto: {},
@@ -439,7 +472,25 @@ describe('entity', () => {
           return decodeValueProto(valueProto, wrapNumbers);
         };
 
-        assert.deepStrictEqual(entity.decodeValueProto(valueProto), [intValue]);
+        assert.deepStrictEqual(entity.decodeValueProto(valueProto), [
+          new entity.Int(intValue),
+        ]);
+      });
+
+      it('should not wrap numbers with option', () => {
+        const decodeValueProto = entity.decodeValueProto;
+        entity.decodeValueProto = (
+          valueProto: {},
+          wrapNumbers?: boolean | {}
+        ) => {
+          assert.strictEqual(wrapNumbers, false);
+
+          return decodeValueProto(valueProto, wrapNumbers);
+        };
+
+        assert.deepStrictEqual(entity.decodeValueProto(valueProto, false), [
+          intValue,
+        ]);
       });
 
       it('should wrap numbers with an option', () => {
@@ -551,14 +602,18 @@ describe('entity', () => {
       };
 
       describe('default `wrapNumbers: undefined`', () => {
-        it('should not wrap ints by default', () => {
-          assert.strictEqual(
-            typeof entity.decodeValueProto(valueProto),
-            'number'
-          );
+        it('should wrap ints by default', () => {
+          const decoded = entity.decodeValueProto(valueProto);
+          assert.strictEqual(typeof decoded, 'object');
+          assert.strictEqual(typeof decoded.value, 'string');
+          assert.strictEqual(typeof decoded.valueOf(), 'number');
+        });
+        it('should not wrap ints', () => {
+          const decoded = entity.decodeValueProto(valueProto, false);
+          assert.strictEqual(decoded, 8);
         });
 
-        it('should throw if integer value is outside of bounds', () => {
+        it('should throw if integer value is outside of bounds and unwrapping', () => {
           const largeIntegerValue = Number.MAX_SAFE_INTEGER + 1;
           const smallIntegerValue = Number.MIN_SAFE_INTEGER - 1;
 
@@ -575,11 +630,11 @@ describe('entity', () => {
           };
 
           assert.throws(() => {
-            entity.decodeValueProto(valueProto);
+            entity.decodeValueProto(valueProto, false);
           }, outOfBoundsError(valueProto));
 
           assert.throws(() => {
-            entity.decodeValueProto(valueProto2);
+            entity.decodeValueProto(valueProto2, false);
           }, outOfBoundsError(valueProto2));
         });
       });
@@ -661,16 +716,28 @@ describe('entity', () => {
       const decodedValue = entity.decodeValueProto(valueProto);
       assert.deepStrictEqual(decodedValue, expectedValue);
     });
-
-    it('should decode doubles', () => {
-      const expectedValue = 8.3;
+    describe('doubleValues', () => {
+      const expectedDecodedValue = 8.3;
 
       const valueProto = {
         valueType: 'doubleValue',
-        doubleValue: expectedValue,
+        doubleValue: expectedDecodedValue,
       };
 
-      assert.strictEqual(entity.decodeValueProto(valueProto), expectedValue);
+      it('should wrap doubles by default', () => {
+        const decoded = entity.decodeValueProto(valueProto);
+        const decodedWithWrapping = entity.decodeValueProto(valueProto, true);
+        assert.deepStrictEqual(decoded, decodedWithWrapping);
+        assert.strictEqual(typeof decoded, 'object');
+        assert.strictEqual(decoded.valueOf(), expectedDecodedValue);
+        assert.strictEqual(decoded.value, expectedDecodedValue);
+      });
+      it('should not wrap doubles', () => {
+        assert.strictEqual(
+          entity.decodeValueProto(valueProto, false),
+          expectedDecodedValue
+        );
+      });
     });
 
     it('should decode keys', () => {
@@ -723,6 +790,51 @@ describe('entity', () => {
     });
   });
 
+  describe('encode for request', () => {
+    it('request should receive doubleValue', done => {
+      const datastore = new Datastore({});
+      const key = new entity.Key({
+        namespace: 'namespace',
+        path: ['Company', 123],
+      });
+      const points = Datastore.double(2);
+      const entities = [
+        {
+          key,
+          data: {points},
+        },
+      ];
+
+      datastore.request_ = (data: any) => {
+        // By the time the request is made, the original object has already been
+        // transformed into a raw request.
+        assert.deepStrictEqual(data, {
+          client: 'DatastoreClient',
+          method: 'commit',
+          reqOpts: {
+            mutations: [
+              {
+                upsert: {
+                  key: {
+                    path: [{kind: 'Company', id: 123}],
+                    partitionId: {namespaceId: 'namespace'},
+                  },
+                  properties: {
+                    points: {doubleValue: 2},
+                  },
+                },
+              },
+            ],
+          },
+          gaxOpts: {},
+        });
+        done();
+      };
+
+      datastore.save(entities, assert.ifError);
+    });
+  });
+
   describe('encodeValue', () => {
     it('should encode a boolean', () => {
       const value = true;
@@ -744,12 +856,25 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should encode an int', () => {
+    it('should encode an int', done => {
       const value = 8;
 
       const expectedValueProto = {
         integerValue: value,
       };
+
+      const property = 'undefined';
+      const expectedWarning =
+        "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
+      process.once('warning', warning => {
+        assert.strictEqual(warning.message, expectedWarning);
+        done();
+      });
 
       entity.Int = function (value_: {}) {
         assert.strictEqual(value_, value);
@@ -759,17 +884,49 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should emit warning on out of bounce int', done => {
+    it('should encode an int but only warn once', done => {
+      const value = 8;
+
+      const expectedValueProto = {
+        integerValue: value,
+      };
+
+      const property = 'undefined';
+      const expectedWarning =
+        "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
+      process.once('warning', warning => {
+        assert.strictEqual(warning.message, expectedWarning);
+        done();
+      });
+
+      entity.Int = function (value_: {}) {
+        assert.strictEqual(value_, value);
+        this.value = value_;
+      };
+
+      assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
+      // if an error is reported on this, done() is called more than once and
+      // should cause failure.
+      assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
+    });
+
+    it('should emit warning on out of bounds int', done => {
       const largeIntValue = 9223372036854775807;
       const property = 'largeInt';
       const expectedWarning =
-        'IntegerOutOfBoundsWarning: ' +
-        "the value for '" +
+        "IntegerOutOfBoundsWarning: the value for '" +
         property +
         "' property is outside of bounds of a JavaScript Number.\n" +
-        "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload.";
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
 
-      process.on('warning', warning => {
+      process.once('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
         done();
       });
@@ -786,12 +943,26 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
     });
 
-    it('should encode a double', () => {
+    it('should encode a double', done => {
       const value = 8.3;
 
       const expectedValueProto = {
         doubleValue: value,
       };
+
+      const property = 'undefined';
+      const expectedWarning =
+        "TypeCastWarning: the value for '" +
+        property +
+        "' property is a JavaScript Number.\n" +
+        "Use 'Datastore.int(<integer_value_as_string>)' or " +
+        "'Datastore.double(<double_value_as_string>)' to preserve consistent " +
+        'Datastore types in your database.';
+
+      process.once('warning', warning => {
+        assert.strictEqual(warning.message, expectedWarning);
+        done();
+      });
 
       entity.Double = function (value_: {}) {
         assert.strictEqual(value_, value);

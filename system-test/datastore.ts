@@ -20,6 +20,7 @@ import * as yaml from 'js-yaml';
 import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
+import {entity} from '../src/entity';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -72,11 +73,11 @@ describe('Datastore', () => {
       publishedAt: new Date(),
       author: 'Silvano',
       isDraft: false,
-      wordCount: 400,
-      rating: 5.0,
+      wordCount: new entity.Int({propertyName: 'wordCount', integerValue: 400}),
+      rating: new entity.Double({propertyName: 'rating', doubleValue: 5.0}),
       likes: null,
       metadata: {
-        views: 100,
+        views: new entity.Int({propertyName: 'views', integerValue: 100}),
       },
     };
 
@@ -270,6 +271,40 @@ describe('Datastore', () => {
       const [entity] = await datastore.get(postKey, {wrapNumbers: true});
       assert.strictEqual(entity.points.value, largeIntValueAsString);
       assert.throws(() => entity.points.valueOf());
+      await datastore.delete(postKey);
+    });
+
+    it('should save/get an int-able double value via Datastore.', async () => {
+      const postKey = datastore.key('Team');
+      const points = Datastore.double(2);
+      await datastore.save({key: postKey, data: {points}});
+      let [entity] = await datastore.get(postKey, {wrapNumbers: true});
+      // Expect content is stored in datastore as a double with wrapping to
+      // return a wrapped double
+      assert.strictEqual(entity.points.type, 'DatastoreDouble');
+      assert.strictEqual(entity.points.value, 2);
+
+      [entity] = await datastore.get(postKey, {wrapNumbers: false});
+      // Verify that when requested with wrapNumbers false, we get a plain
+      // javascript Number 2.
+      assert.strictEqual(entity.points, 2);
+
+      [entity] = await datastore.get(postKey);
+      // Expect without any options, a wrapped double to be returned.
+      assert.strictEqual(entity.points.type, 'DatastoreDouble');
+      assert.strictEqual(entity.points.value, 2);
+
+      // Save the data again, get again, ensuring that along the way it isn't
+      // somehow changed to another numeric type.
+      await datastore.save(entity);
+      [entity] = await datastore.get(postKey);
+      // expect as we saved, that this property is still a DatastoreDouble.
+      assert.strictEqual(entity.points.type, 'DatastoreDouble');
+      assert.strictEqual(entity.points.value, 2);
+
+      // Verify that DatastoreDouble implement Number behavior
+      assert.strictEqual(entity.points + 1, 3);
+
       await datastore.delete(postKey);
     });
 
@@ -554,7 +589,7 @@ describe('Datastore', () => {
           },
         });
         const [entity] = await datastore.get(key);
-        assert.strictEqual(entity.year, integerValue);
+        assert.strictEqual(entity.year.valueOf(), integerValue);
       });
 
       it('should save and decode a double', async () => {
@@ -568,7 +603,7 @@ describe('Datastore', () => {
           },
         });
         const [entity] = await datastore.get(key);
-        assert.strictEqual(entity.nines, doubleValue);
+        assert.strictEqual(entity.nines.valueOf(), doubleValue);
       });
 
       it('should save and decode a geo point', async () => {
@@ -953,7 +988,7 @@ describe('Datastore', () => {
         datastore.get(key),
       ]);
       assert.strictEqual(typeof deletedEntity, 'undefined');
-      assert.strictEqual(fetchedEntity.rating, 10);
+      assert.strictEqual(fetchedEntity.rating.valueOf(), 10);
     });
 
     it('should use the last modification to a key', async () => {
