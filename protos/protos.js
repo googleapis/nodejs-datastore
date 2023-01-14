@@ -13833,6 +13833,7 @@
                      * @property {Array.<google.datastore.v1.IEntityResult>|null} [found] LookupResponse found
                      * @property {Array.<google.datastore.v1.IEntityResult>|null} [missing] LookupResponse missing
                      * @property {Array.<google.datastore.v1.IKey>|null} [deferred] LookupResponse deferred
+                     * @property {Uint8Array|null} [transaction] LookupResponse transaction
                      * @property {google.protobuf.ITimestamp|null} [readTime] LookupResponse readTime
                      */
     
@@ -13879,6 +13880,14 @@
                     LookupResponse.prototype.deferred = $util.emptyArray;
     
                     /**
+                     * LookupResponse transaction.
+                     * @member {Uint8Array} transaction
+                     * @memberof google.datastore.v1.LookupResponse
+                     * @instance
+                     */
+                    LookupResponse.prototype.transaction = $util.newBuffer([]);
+    
+                    /**
                      * LookupResponse readTime.
                      * @member {google.protobuf.ITimestamp|null|undefined} readTime
                      * @memberof google.datastore.v1.LookupResponse
@@ -13919,6 +13928,8 @@
                         if (message.deferred != null && message.deferred.length)
                             for (var i = 0; i < message.deferred.length; ++i)
                                 $root.google.datastore.v1.Key.encode(message.deferred[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.transaction);
                         if (message.readTime != null && Object.hasOwnProperty.call(message, "readTime"))
                             $root.google.protobuf.Timestamp.encode(message.readTime, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                         return writer;
@@ -13971,6 +13982,10 @@
                                     if (!(message.deferred && message.deferred.length))
                                         message.deferred = [];
                                     message.deferred.push($root.google.datastore.v1.Key.decode(reader, reader.uint32()));
+                                    break;
+                                }
+                            case 5: {
+                                    message.transaction = reader.bytes();
                                     break;
                                 }
                             case 7: {
@@ -14039,6 +14054,9 @@
                                     return "deferred." + error;
                             }
                         }
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
+                                return "transaction: buffer expected";
                         if (message.readTime != null && message.hasOwnProperty("readTime")) {
                             var error = $root.google.protobuf.Timestamp.verify(message.readTime);
                             if (error)
@@ -14089,6 +14107,11 @@
                                 message.deferred[i] = $root.google.datastore.v1.Key.fromObject(object.deferred[i]);
                             }
                         }
+                        if (object.transaction != null)
+                            if (typeof object.transaction === "string")
+                                $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
+                            else if (object.transaction.length >= 0)
+                                message.transaction = object.transaction;
                         if (object.readTime != null) {
                             if (typeof object.readTime !== "object")
                                 throw TypeError(".google.datastore.v1.LookupResponse.readTime: object expected");
@@ -14115,8 +14138,16 @@
                             object.missing = [];
                             object.deferred = [];
                         }
-                        if (options.defaults)
+                        if (options.defaults) {
+                            if (options.bytes === String)
+                                object.transaction = "";
+                            else {
+                                object.transaction = [];
+                                if (options.bytes !== Array)
+                                    object.transaction = $util.newBuffer(object.transaction);
+                            }
                             object.readTime = null;
+                        }
                         if (message.found && message.found.length) {
                             object.found = [];
                             for (var j = 0; j < message.found.length; ++j)
@@ -14132,6 +14163,8 @@
                             for (var j = 0; j < message.deferred.length; ++j)
                                 object.deferred[j] = $root.google.datastore.v1.Key.toObject(message.deferred[j], options);
                         }
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
                         if (message.readTime != null && message.hasOwnProperty("readTime"))
                             object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);
                         return object;
@@ -14540,6 +14573,7 @@
                      * @interface IRunQueryResponse
                      * @property {google.datastore.v1.IQueryResultBatch|null} [batch] RunQueryResponse batch
                      * @property {google.datastore.v1.IQuery|null} [query] RunQueryResponse query
+                     * @property {Uint8Array|null} [transaction] RunQueryResponse transaction
                      */
     
                     /**
@@ -14574,6 +14608,14 @@
                     RunQueryResponse.prototype.query = null;
     
                     /**
+                     * RunQueryResponse transaction.
+                     * @member {Uint8Array} transaction
+                     * @memberof google.datastore.v1.RunQueryResponse
+                     * @instance
+                     */
+                    RunQueryResponse.prototype.transaction = $util.newBuffer([]);
+    
+                    /**
                      * Creates a new RunQueryResponse instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.RunQueryResponse
@@ -14601,6 +14643,8 @@
                             $root.google.datastore.v1.QueryResultBatch.encode(message.batch, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                         if (message.query != null && Object.hasOwnProperty.call(message, "query"))
                             $root.google.datastore.v1.Query.encode(message.query, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.transaction);
                         return writer;
                     };
     
@@ -14641,6 +14685,10 @@
                                 }
                             case 2: {
                                     message.query = $root.google.datastore.v1.Query.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 5: {
+                                    message.transaction = reader.bytes();
                                     break;
                                 }
                             default:
@@ -14688,6 +14736,9 @@
                             if (error)
                                 return "query." + error;
                         }
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
+                                return "transaction: buffer expected";
                         return null;
                     };
     
@@ -14713,6 +14764,11 @@
                                 throw TypeError(".google.datastore.v1.RunQueryResponse.query: object expected");
                             message.query = $root.google.datastore.v1.Query.fromObject(object.query);
                         }
+                        if (object.transaction != null)
+                            if (typeof object.transaction === "string")
+                                $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
+                            else if (object.transaction.length >= 0)
+                                message.transaction = object.transaction;
                         return message;
                     };
     
@@ -14732,11 +14788,20 @@
                         if (options.defaults) {
                             object.batch = null;
                             object.query = null;
+                            if (options.bytes === String)
+                                object.transaction = "";
+                            else {
+                                object.transaction = [];
+                                if (options.bytes !== Array)
+                                    object.transaction = $util.newBuffer(object.transaction);
+                            }
                         }
                         if (message.batch != null && message.hasOwnProperty("batch"))
                             object.batch = $root.google.datastore.v1.QueryResultBatch.toObject(message.batch, options);
                         if (message.query != null && message.hasOwnProperty("query"))
                             object.query = $root.google.datastore.v1.Query.toObject(message.query, options);
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
                         return object;
                     };
     
@@ -15143,6 +15208,7 @@
                      * @interface IRunAggregationQueryResponse
                      * @property {google.datastore.v1.IAggregationResultBatch|null} [batch] RunAggregationQueryResponse batch
                      * @property {google.datastore.v1.IAggregationQuery|null} [query] RunAggregationQueryResponse query
+                     * @property {Uint8Array|null} [transaction] RunAggregationQueryResponse transaction
                      */
     
                     /**
@@ -15177,6 +15243,14 @@
                     RunAggregationQueryResponse.prototype.query = null;
     
                     /**
+                     * RunAggregationQueryResponse transaction.
+                     * @member {Uint8Array} transaction
+                     * @memberof google.datastore.v1.RunAggregationQueryResponse
+                     * @instance
+                     */
+                    RunAggregationQueryResponse.prototype.transaction = $util.newBuffer([]);
+    
+                    /**
                      * Creates a new RunAggregationQueryResponse instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.RunAggregationQueryResponse
@@ -15204,6 +15278,8 @@
                             $root.google.datastore.v1.AggregationResultBatch.encode(message.batch, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                         if (message.query != null && Object.hasOwnProperty.call(message, "query"))
                             $root.google.datastore.v1.AggregationQuery.encode(message.query, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.transaction);
                         return writer;
                     };
     
@@ -15244,6 +15320,10 @@
                                 }
                             case 2: {
                                     message.query = $root.google.datastore.v1.AggregationQuery.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 5: {
+                                    message.transaction = reader.bytes();
                                     break;
                                 }
                             default:
@@ -15291,6 +15371,9 @@
                             if (error)
                                 return "query." + error;
                         }
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
+                                return "transaction: buffer expected";
                         return null;
                     };
     
@@ -15316,6 +15399,11 @@
                                 throw TypeError(".google.datastore.v1.RunAggregationQueryResponse.query: object expected");
                             message.query = $root.google.datastore.v1.AggregationQuery.fromObject(object.query);
                         }
+                        if (object.transaction != null)
+                            if (typeof object.transaction === "string")
+                                $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
+                            else if (object.transaction.length >= 0)
+                                message.transaction = object.transaction;
                         return message;
                     };
     
@@ -15335,11 +15423,20 @@
                         if (options.defaults) {
                             object.batch = null;
                             object.query = null;
+                            if (options.bytes === String)
+                                object.transaction = "";
+                            else {
+                                object.transaction = [];
+                                if (options.bytes !== Array)
+                                    object.transaction = $util.newBuffer(object.transaction);
+                            }
                         }
                         if (message.batch != null && message.hasOwnProperty("batch"))
                             object.batch = $root.google.datastore.v1.AggregationResultBatch.toObject(message.batch, options);
                         if (message.query != null && message.hasOwnProperty("query"))
                             object.query = $root.google.datastore.v1.AggregationQuery.toObject(message.query, options);
+                        if (message.transaction != null && message.hasOwnProperty("transaction"))
+                            object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
                         return object;
                     };
     
@@ -16283,6 +16380,7 @@
                      * @property {string|null} [databaseId] CommitRequest databaseId
                      * @property {google.datastore.v1.CommitRequest.Mode|null} [mode] CommitRequest mode
                      * @property {Uint8Array|null} [transaction] CommitRequest transaction
+                     * @property {google.datastore.v1.ITransactionOptions|null} [singleUseTransaction] CommitRequest singleUseTransaction
                      * @property {Array.<google.datastore.v1.IMutation>|null} [mutations] CommitRequest mutations
                      */
     
@@ -16335,6 +16433,14 @@
                     CommitRequest.prototype.transaction = null;
     
                     /**
+                     * CommitRequest singleUseTransaction.
+                     * @member {google.datastore.v1.ITransactionOptions|null|undefined} singleUseTransaction
+                     * @memberof google.datastore.v1.CommitRequest
+                     * @instance
+                     */
+                    CommitRequest.prototype.singleUseTransaction = null;
+    
+                    /**
                      * CommitRequest mutations.
                      * @member {Array.<google.datastore.v1.IMutation>} mutations
                      * @memberof google.datastore.v1.CommitRequest
@@ -16347,12 +16453,12 @@
     
                     /**
                      * CommitRequest transactionSelector.
-                     * @member {"transaction"|undefined} transactionSelector
+                     * @member {"transaction"|"singleUseTransaction"|undefined} transactionSelector
                      * @memberof google.datastore.v1.CommitRequest
                      * @instance
                      */
                     Object.defineProperty(CommitRequest.prototype, "transactionSelector", {
-                        get: $util.oneOfGetter($oneOfFields = ["transaction"]),
+                        get: $util.oneOfGetter($oneOfFields = ["transaction", "singleUseTransaction"]),
                         set: $util.oneOfSetter($oneOfFields)
                     });
     
@@ -16391,6 +16497,8 @@
                             writer.uint32(/* id 8, wireType 2 =*/66).string(message.projectId);
                         if (message.databaseId != null && Object.hasOwnProperty.call(message, "databaseId"))
                             writer.uint32(/* id 9, wireType 2 =*/74).string(message.databaseId);
+                        if (message.singleUseTransaction != null && Object.hasOwnProperty.call(message, "singleUseTransaction"))
+                            $root.google.datastore.v1.TransactionOptions.encode(message.singleUseTransaction, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
                         return writer;
                     };
     
@@ -16439,6 +16547,10 @@
                                 }
                             case 1: {
                                     message.transaction = reader.bytes();
+                                    break;
+                                }
+                            case 10: {
+                                    message.singleUseTransaction = $root.google.datastore.v1.TransactionOptions.decode(reader, reader.uint32());
                                     break;
                                 }
                             case 6: {
@@ -16503,6 +16615,16 @@
                             if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
                                 return "transaction: buffer expected";
                         }
+                        if (message.singleUseTransaction != null && message.hasOwnProperty("singleUseTransaction")) {
+                            if (properties.transactionSelector === 1)
+                                return "transactionSelector: multiple values";
+                            properties.transactionSelector = 1;
+                            {
+                                var error = $root.google.datastore.v1.TransactionOptions.verify(message.singleUseTransaction);
+                                if (error)
+                                    return "singleUseTransaction." + error;
+                            }
+                        }
                         if (message.mutations != null && message.hasOwnProperty("mutations")) {
                             if (!Array.isArray(message.mutations))
                                 return "mutations: array expected";
@@ -16556,6 +16678,11 @@
                                 $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
                             else if (object.transaction.length >= 0)
                                 message.transaction = object.transaction;
+                        if (object.singleUseTransaction != null) {
+                            if (typeof object.singleUseTransaction !== "object")
+                                throw TypeError(".google.datastore.v1.CommitRequest.singleUseTransaction: object expected");
+                            message.singleUseTransaction = $root.google.datastore.v1.TransactionOptions.fromObject(object.singleUseTransaction);
+                        }
                         if (object.mutations) {
                             if (!Array.isArray(object.mutations))
                                 throw TypeError(".google.datastore.v1.CommitRequest.mutations: array expected");
@@ -16605,6 +16732,11 @@
                             object.projectId = message.projectId;
                         if (message.databaseId != null && message.hasOwnProperty("databaseId"))
                             object.databaseId = message.databaseId;
+                        if (message.singleUseTransaction != null && message.hasOwnProperty("singleUseTransaction")) {
+                            object.singleUseTransaction = $root.google.datastore.v1.TransactionOptions.toObject(message.singleUseTransaction, options);
+                            if (options.oneofs)
+                                object.transactionSelector = "singleUseTransaction";
+                        }
                         return object;
                     };
     
@@ -18593,6 +18725,7 @@
                      * @interface IReadOptions
                      * @property {google.datastore.v1.ReadOptions.ReadConsistency|null} [readConsistency] ReadOptions readConsistency
                      * @property {Uint8Array|null} [transaction] ReadOptions transaction
+                     * @property {google.datastore.v1.ITransactionOptions|null} [newTransaction] ReadOptions newTransaction
                      * @property {google.protobuf.ITimestamp|null} [readTime] ReadOptions readTime
                      */
     
@@ -18628,6 +18761,14 @@
                     ReadOptions.prototype.transaction = null;
     
                     /**
+                     * ReadOptions newTransaction.
+                     * @member {google.datastore.v1.ITransactionOptions|null|undefined} newTransaction
+                     * @memberof google.datastore.v1.ReadOptions
+                     * @instance
+                     */
+                    ReadOptions.prototype.newTransaction = null;
+    
+                    /**
                      * ReadOptions readTime.
                      * @member {google.protobuf.ITimestamp|null|undefined} readTime
                      * @memberof google.datastore.v1.ReadOptions
@@ -18640,12 +18781,12 @@
     
                     /**
                      * ReadOptions consistencyType.
-                     * @member {"readConsistency"|"transaction"|"readTime"|undefined} consistencyType
+                     * @member {"readConsistency"|"transaction"|"newTransaction"|"readTime"|undefined} consistencyType
                      * @memberof google.datastore.v1.ReadOptions
                      * @instance
                      */
                     Object.defineProperty(ReadOptions.prototype, "consistencyType", {
-                        get: $util.oneOfGetter($oneOfFields = ["readConsistency", "transaction", "readTime"]),
+                        get: $util.oneOfGetter($oneOfFields = ["readConsistency", "transaction", "newTransaction", "readTime"]),
                         set: $util.oneOfSetter($oneOfFields)
                     });
     
@@ -18677,6 +18818,8 @@
                             writer.uint32(/* id 1, wireType 0 =*/8).int32(message.readConsistency);
                         if (message.transaction != null && Object.hasOwnProperty.call(message, "transaction"))
                             writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.transaction);
+                        if (message.newTransaction != null && Object.hasOwnProperty.call(message, "newTransaction"))
+                            $root.google.datastore.v1.TransactionOptions.encode(message.newTransaction, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                         if (message.readTime != null && Object.hasOwnProperty.call(message, "readTime"))
                             $root.google.protobuf.Timestamp.encode(message.readTime, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                         return writer;
@@ -18719,6 +18862,10 @@
                                 }
                             case 2: {
                                     message.transaction = reader.bytes();
+                                    break;
+                                }
+                            case 3: {
+                                    message.newTransaction = $root.google.datastore.v1.TransactionOptions.decode(reader, reader.uint32());
                                     break;
                                 }
                             case 4: {
@@ -18779,6 +18926,16 @@
                             if (!(message.transaction && typeof message.transaction.length === "number" || $util.isString(message.transaction)))
                                 return "transaction: buffer expected";
                         }
+                        if (message.newTransaction != null && message.hasOwnProperty("newTransaction")) {
+                            if (properties.consistencyType === 1)
+                                return "consistencyType: multiple values";
+                            properties.consistencyType = 1;
+                            {
+                                var error = $root.google.datastore.v1.TransactionOptions.verify(message.newTransaction);
+                                if (error)
+                                    return "newTransaction." + error;
+                            }
+                        }
                         if (message.readTime != null && message.hasOwnProperty("readTime")) {
                             if (properties.consistencyType === 1)
                                 return "consistencyType: multiple values";
@@ -18829,6 +18986,11 @@
                                 $util.base64.decode(object.transaction, message.transaction = $util.newBuffer($util.base64.length(object.transaction)), 0);
                             else if (object.transaction.length >= 0)
                                 message.transaction = object.transaction;
+                        if (object.newTransaction != null) {
+                            if (typeof object.newTransaction !== "object")
+                                throw TypeError(".google.datastore.v1.ReadOptions.newTransaction: object expected");
+                            message.newTransaction = $root.google.datastore.v1.TransactionOptions.fromObject(object.newTransaction);
+                        }
                         if (object.readTime != null) {
                             if (typeof object.readTime !== "object")
                                 throw TypeError(".google.datastore.v1.ReadOptions.readTime: object expected");
@@ -18859,6 +19021,11 @@
                             object.transaction = options.bytes === String ? $util.base64.encode(message.transaction, 0, message.transaction.length) : options.bytes === Array ? Array.prototype.slice.call(message.transaction) : message.transaction;
                             if (options.oneofs)
                                 object.consistencyType = "transaction";
+                        }
+                        if (message.newTransaction != null && message.hasOwnProperty("newTransaction")) {
+                            object.newTransaction = $root.google.datastore.v1.TransactionOptions.toObject(message.newTransaction, options);
+                            if (options.oneofs)
+                                object.consistencyType = "newTransaction";
                         }
                         if (message.readTime != null && message.hasOwnProperty("readTime")) {
                             object.readTime = $root.google.protobuf.Timestamp.toObject(message.readTime, options);

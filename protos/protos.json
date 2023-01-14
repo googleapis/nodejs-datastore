@@ -1448,6 +1448,10 @@
                       "type": "Key",
                       "id": 3
                     },
+                    "transaction": {
+                      "type": "bytes",
+                      "id": 5
+                    },
                     "readTime": {
                       "type": "google.protobuf.Timestamp",
                       "id": 7
@@ -1502,6 +1506,10 @@
                     "query": {
                       "type": "Query",
                       "id": 2
+                    },
+                    "transaction": {
+                      "type": "bytes",
+                      "id": 5
                     }
                   }
                 },
@@ -1553,6 +1561,10 @@
                     "query": {
                       "type": "AggregationQuery",
                       "id": 2
+                    },
+                    "transaction": {
+                      "type": "bytes",
+                      "id": 5
                     }
                   }
                 },
@@ -1612,7 +1624,8 @@
                   "oneofs": {
                     "transactionSelector": {
                       "oneof": [
-                        "transaction"
+                        "transaction",
+                        "singleUseTransaction"
                       ]
                     }
                   },
@@ -1635,6 +1648,10 @@
                     "transaction": {
                       "type": "bytes",
                       "id": 1
+                    },
+                    "singleUseTransaction": {
+                      "type": "TransactionOptions",
+                      "id": 10
                     },
                     "mutations": {
                       "rule": "repeated",
@@ -1797,6 +1814,7 @@
                       "oneof": [
                         "readConsistency",
                         "transaction",
+                        "newTransaction",
                         "readTime"
                       ]
                     }
@@ -1809,6 +1827,10 @@
                     "transaction": {
                       "type": "bytes",
                       "id": 2
+                    },
+                    "newTransaction": {
+                      "type": "TransactionOptions",
+                      "id": 3
                     },
                     "readTime": {
                       "type": "google.protobuf.Timestamp",

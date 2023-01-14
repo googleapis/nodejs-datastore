@@ -5460,6 +5460,9 @@ export namespace google {
                 /** LookupResponse deferred */
                 deferred?: (google.datastore.v1.IKey[]|null);
 
+                /** LookupResponse transaction */
+                transaction?: (Uint8Array|string|null);
+
                 /** LookupResponse readTime */
                 readTime?: (google.protobuf.ITimestamp|null);
             }
@@ -5481,6 +5484,9 @@ export namespace google {
 
                 /** LookupResponse deferred. */
                 public deferred: google.datastore.v1.IKey[];
+
+                /** LookupResponse transaction. */
+                public transaction: (Uint8Array|string);
 
                 /** LookupResponse readTime. */
                 public readTime?: (google.protobuf.ITimestamp|null);
@@ -5701,6 +5707,9 @@ export namespace google {
 
                 /** RunQueryResponse query */
                 query?: (google.datastore.v1.IQuery|null);
+
+                /** RunQueryResponse transaction */
+                transaction?: (Uint8Array|string|null);
             }
 
             /** Represents a RunQueryResponse. */
@@ -5717,6 +5726,9 @@ export namespace google {
 
                 /** RunQueryResponse query. */
                 public query?: (google.datastore.v1.IQuery|null);
+
+                /** RunQueryResponse transaction. */
+                public transaction: (Uint8Array|string);
 
                 /**
                  * Creates a new RunQueryResponse instance using the specified properties.
@@ -5934,6 +5946,9 @@ export namespace google {
 
                 /** RunAggregationQueryResponse query */
                 query?: (google.datastore.v1.IAggregationQuery|null);
+
+                /** RunAggregationQueryResponse transaction */
+                transaction?: (Uint8Array|string|null);
             }
 
             /** Represents a RunAggregationQueryResponse. */
@@ -5950,6 +5965,9 @@ export namespace google {
 
                 /** RunAggregationQueryResponse query. */
                 public query?: (google.datastore.v1.IAggregationQuery|null);
+
+                /** RunAggregationQueryResponse transaction. */
+                public transaction: (Uint8Array|string);
 
                 /**
                  * Creates a new RunAggregationQueryResponse instance using the specified properties.
@@ -6450,6 +6468,9 @@ export namespace google {
                 /** CommitRequest transaction */
                 transaction?: (Uint8Array|string|null);
 
+                /** CommitRequest singleUseTransaction */
+                singleUseTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
                 /** CommitRequest mutations */
                 mutations?: (google.datastore.v1.IMutation[]|null);
             }
@@ -6475,11 +6496,14 @@ export namespace google {
                 /** CommitRequest transaction. */
                 public transaction?: (Uint8Array|string|null);
 
+                /** CommitRequest singleUseTransaction. */
+                public singleUseTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
                 /** CommitRequest mutations. */
                 public mutations: google.datastore.v1.IMutation[];
 
                 /** CommitRequest transactionSelector. */
-                public transactionSelector?: "transaction";
+                public transactionSelector?: ("transaction"|"singleUseTransaction");
 
                 /**
                  * Creates a new CommitRequest instance using the specified properties.
@@ -7341,6 +7365,9 @@ export namespace google {
                 /** ReadOptions transaction */
                 transaction?: (Uint8Array|string|null);
 
+                /** ReadOptions newTransaction */
+                newTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
                 /** ReadOptions readTime */
                 readTime?: (google.protobuf.ITimestamp|null);
             }
@@ -7360,11 +7387,14 @@ export namespace google {
                 /** ReadOptions transaction. */
                 public transaction?: (Uint8Array|string|null);
 
+                /** ReadOptions newTransaction. */
+                public newTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
                 /** ReadOptions readTime. */
                 public readTime?: (google.protobuf.ITimestamp|null);
 
                 /** ReadOptions consistencyType. */
-                public consistencyType?: ("readConsistency"|"transaction"|"readTime");
+                public consistencyType?: ("readConsistency"|"transaction"|"newTransaction"|"readTime");
 
                 /**
                  * Creates a new ReadOptions instance using the specified properties.
