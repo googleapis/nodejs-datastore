@@ -21,7 +21,7 @@ import {PathType} from '.';
 import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
-import {Filter, PropertyFilter} from './filter';
+import {Filter, isFilter, PropertyFilter} from './filter';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -1252,7 +1252,9 @@ export namespace entity {
 
     if (query.filters.length > 0) {
       const filters = query.filters.map(filter => {
-        return (new PropertyFilter(filter.name, filter.op, filter.val))
+        return isFilter(filter) ?
+            filter :
+            new PropertyFilter(filter.name, filter.op, filter.val)
       });
       queryProto.filter = Filter.AND(filters).toProto();
     }

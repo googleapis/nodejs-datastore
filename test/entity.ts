@@ -1891,6 +1891,28 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
+    it('should support the setFilter method', () => {
+      const ancestorKey = new entity.Key({
+        path: ['Kind2', 'somename'],
+      });
+
+      const ds = new Datastore({projectId: 'project-id'});
+
+      const query = ds
+          .createQuery('Kind1')
+          .filter('name', 'John')
+          .start('start')
+          .end('end')
+          .groupBy(['name'])
+          .order('name')
+          .select('name')
+          .limit(1)
+          .offset(1)
+          .hasAncestor(ancestorKey);
+
+      assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
+    });
+
     it('should handle buffer start and end values', () => {
       const ds = new Datastore({projectId: 'project-id'});
       const startVal = Buffer.from('start');

@@ -144,3 +144,7 @@ class CompositeFilter extends Filter {
     }
   }
 }
+
+export function isFilter(filter: any): filter is Filter {
+  return (filter as Filter).toProto !== undefined
+}
