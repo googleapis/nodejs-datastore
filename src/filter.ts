@@ -35,11 +35,11 @@ const OP_TO_OPERATOR = new Map([
  *
  */
 export abstract class Filter {
-  AND(filters: Filter[]): CompositeFilter {
+  static AND(filters: Filter[]): CompositeFilter {
     return new CompositeFilter(filters, 'AND');
   }
 
-  OR(filters: Filter[]): CompositeFilter {
+  static OR(filters: Filter[]): CompositeFilter {
     return new CompositeFilter(filters, 'OR');
   }
   /**
