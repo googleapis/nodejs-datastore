@@ -75,8 +75,7 @@ class Query {
   scope?: Datastore | Transaction;
   namespace?: string | null;
   kinds: string[];
-  filters: Filter[];
-  newFilter: NewFilter | undefined;
+  filters: (Filter | NewFilter)[];
   orders: Order[];
   groupByVal: Array<{}>;
   selectVal: Array<{}>;
@@ -340,7 +339,7 @@ class Query {
    * ```
    */
   setFilter(filter: NewFilter) {
-    this.newFilter = filter;
+    this.filters.push(filter);
   }
 
   /**

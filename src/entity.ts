@@ -1242,14 +1242,6 @@ export namespace entity {
       queryProto.startCursor = query.startVal;
     }
 
-    if (query.newFilter && query.filters.length > 0) {
-      throw new Error('setFilter and filter functions cannot both be used on one query.');
-    }
-
-    if (query.newFilter) {
-      queryProto.filter = query.newFilter.toProto();
-    }
-
     if (query.filters.length > 0) {
       const filters = query.filters.map(filter => {
         return isFilter(filter) ?
