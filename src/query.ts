@@ -18,10 +18,10 @@ import arrify = require('arrify');
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
+import {Filter as NewFilter} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
-import {AggregateField, AggregateQuery} from './aggregate';
 
 export type Operator =
   | '='
@@ -76,6 +76,7 @@ class Query {
   namespace?: string | null;
   kinds: string[];
   filters: Filter[];
+  newFilter: NewFilter | undefined;
   orders: Order[];
   groupByVal: Array<{}>;
   selectVal: Array<{}>;
@@ -318,6 +319,28 @@ class Query {
   select(fieldNames: string | string[]) {
     this.selectVal = arrify(fieldNames);
     return this;
+  }
+
+  /**
+   * Set the filter that this query is going to process.
+   *
+   * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#filters| Filters Reference}
+   *
+   * @param {NewFilter} filter The filter that will be applied to the query
+   *
+   * @example
+   * ```
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const companyQuery = datastore.createQuery('Company');
+   * const filter = new PropertyFilter('state', '=', 'CA');
+   *
+   * // Set the filter.
+   * const filteredQuery = companyQuery.setFilter(filter);
+   * ```
+   */
+  setFilter(filter: NewFilter) {
+    this.newFilter = filter;
   }
 
   /**

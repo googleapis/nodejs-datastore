@@ -21,6 +21,7 @@ import {PathType} from '.';
 import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
+import {PropertyFilter} from './filter';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -1186,17 +1187,6 @@ export namespace entity {
    * ```
    */
   export function queryToQueryProto(query: Query): QueryProto {
-    const OP_TO_OPERATOR = {
-      '=': 'EQUAL',
-      '>': 'GREATER_THAN',
-      '>=': 'GREATER_THAN_OR_EQUAL',
-      '<': 'LESS_THAN',
-      '<=': 'LESS_THAN_OR_EQUAL',
-      HAS_ANCESTOR: 'HAS_ANCESTOR',
-      '!=': 'NOT_EQUAL',
-      IN: 'IN',
-      NOT_IN: 'NOT_IN',
-    };
 
     const SIGN_TO_ORDER = {
       '-': 'DESCENDING',
@@ -1252,28 +1242,19 @@ export namespace entity {
       queryProto.startCursor = query.startVal;
     }
 
+    if (query.newFilter && query.filters.length > 0) {
+      throw new Error('setFilter and filter functions cannot both be used on one query.');
+    }
+
+    if (query.newFilter) {
+      queryProto.filter = query.newFilter.toProto();
+    }
+
     if (query.filters.length > 0) {
       const filters = query.filters.map(filter => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let value: any = {};
-
-        if (filter.name === '__key__') {
-          value.keyValue = entity.keyToKeyProto(filter.val);
-        } else {
-          value = entity.encodeValue(filter.val, filter.name);
-        }
-
-        return {
-          propertyFilter: {
-            property: {
-              name: filter.name,
-            },
-            op: OP_TO_OPERATOR[filter.op],
-            value,
-          },
-        };
+        return (new PropertyFilter(filter.name, filter.op, filter.val))
+            .toProto();
       });
-
       queryProto.filter = {
         compositeFilter: {
           filters,

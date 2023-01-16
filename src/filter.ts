@@ -12,6 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {Operator, Filter as IFilter} from './query';
+import {entity} from './entity';
+
+const OP_TO_OPERATOR = new Map([
+  ['=', 'EQUAL'],
+  ['>', 'GREATER_THAN'],
+  ['>=', 'GREATER_THAN_OR_EQUAL'],
+  ['<', 'LESS_THAN'],
+  ['<=', 'LESS_THAN_OR_EQUAL'],
+  ['HAS_ANCESTOR', 'HAS_ANCESTOR'],
+  ['!=', 'NOT_EQUAL'],
+  ['IN', 'IN'],
+  ['NOT_IN', 'NOT_IN'],
+]);
+
 /**
  * A Filter is a class that contains data for a filter that can be translated
  * into a proto when needed.
@@ -19,7 +34,14 @@
  * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#filters| Filters Reference}
  *
  */
-abstract class Filter {
+export abstract class Filter {
+  AND(filters: Filter[]): CompositeFilter {
+    return new CompositeFilter(filters, 'AND');
+  }
+
+  OR(filters: Filter[]): CompositeFilter {
+    return new CompositeFilter(filters, 'OR');
+  }
   /**
    * Gets the proto for the filter.
    *
@@ -35,8 +57,54 @@ abstract class Filter {
  *
  * @class
  */
-class PropertyFilter {
+export class PropertyFilter extends Filter implements IFilter {
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  val: any;
+  op: Operator;
 
+  /**
+   * Build a Property Filter object.
+   *
+   * @param {string} Property
+   * @param {Operator} operator
+   * @param {any} val
+   */
+  constructor(property: string, operator: Operator, val: any) {
+    super();
+    this.name = property;
+    this.op = operator;
+    this.val = val;
+  }
+
+  private encodedValue(): any {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let value: any = {};
+    if (this.name === '__key__') {
+      value.keyValue = entity.keyToKeyProto(this.val);
+    } else {
+      value = entity.encodeValue(this.val, this.name);
+    }
+    return value;
+  }
+
+  /**
+   * Gets the proto for the filter.
+   *
+   */
+  // eslint-disable-next-line
+  toProto(): any {
+    const value = (new PropertyFilter(this.name, this.op, this.val)).encodedValue();
+    return {
+      propertyFilter: {
+        property: {
+          name: this.name,
+        },
+        op: OP_TO_OPERATOR.get(this.op),
+        value
+      }
+    }
+  }
 }
 
 /**
@@ -47,6 +115,32 @@ class PropertyFilter {
  *
  * @class
  */
-class CompositeFilter {
+class CompositeFilter extends Filter {
+  filters: Filter[];
+  op: string;
 
+  /**
+   * Build a Composite Filter object.
+   *
+   * @param {Filter[]} filters
+   */
+  constructor(filters: Filter[], op: string) {
+    super();
+    this.filters = filters;
+    this.op = op;
+  }
+
+  /**
+   * Gets the proto for the filter.
+   *
+   */
+  // eslint-disable-next-line
+  toProto(): any {
+    return {
+      compositeFilter: {
+        filters: this.filters.map(filter => filter.toProto()),
+        op: this.op
+      }
+    }
+  }
 }
