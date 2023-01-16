@@ -19,6 +19,7 @@ const {Query} = require('../src/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
+import {PropertyFilter} from '../src/filter';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -164,6 +165,19 @@ describe('Query', () => {
       assert.strictEqual(filter.val, 'Stephen');
     });
   });
+
+  describe('addFilter', () => {
+    it('should support addFilter', () => {
+      const now = new Date();
+      const query = new Query(['kind1'])
+          .addFilter(new PropertyFilter('date', '<=', now));
+      const filter = query.filters[0];
+
+      assert.strictEqual(filter.name, 'date');
+      assert.strictEqual(filter.op, '<=');
+      assert.strictEqual(filter.val, now);
+    });
+  })
 
   describe('hasAncestor', () => {
     it('should support ancestor filtering', () => {
