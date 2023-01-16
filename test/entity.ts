@@ -19,6 +19,7 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
+import {PropertyFilter} from '../src/filter';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
@@ -1900,7 +1901,7 @@ describe('entity', () => {
 
       const query = ds
           .createQuery('Kind1')
-          .filter('name', 'John')
+          .addFilter(new PropertyFilter('name', '=', 'John'))
           .start('start')
           .end('end')
           .groupBy(['name'])
@@ -1909,7 +1910,6 @@ describe('entity', () => {
           .limit(1)
           .offset(1)
           .hasAncestor(ancestorKey);
-
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
