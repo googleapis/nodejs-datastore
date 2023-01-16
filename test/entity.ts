@@ -1891,7 +1891,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
-    it('should support the setFilter method', () => {
+    it('should support the addFilter method', () => {
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
       });

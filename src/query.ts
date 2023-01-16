@@ -321,7 +321,7 @@ class Query {
   }
 
   /**
-   * Set the filter that this query is going to process.
+   * Add a filter that this query is going to process.
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#filters| Filters Reference}
    *
@@ -335,11 +335,12 @@ class Query {
    * const filter = new PropertyFilter('state', '=', 'CA');
    *
    * // Set the filter.
-   * const filteredQuery = companyQuery.setFilter(filter);
+   * const filteredQuery = companyQuery.addFilter(filter);
    * ```
    */
-  setFilter(filter: NewFilter) {
+  addFilter(filter: NewFilter) {
     this.filters.push(filter);
+    return this;
   }
 
   /**
