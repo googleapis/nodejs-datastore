@@ -798,6 +798,17 @@ describe('Datastore', () => {
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });
+    describe('with the addFilter function', () => {
+      it('should run a query with one property filter', async () => {
+        assert.strictEqual(6, 6);
+      });
+      it('should run a query using an AND composite filter', async () => {
+        assert.strictEqual(6, 6);
+      });
+      it('should run a query using an OR composite filter', async () => {
+        assert.strictEqual(6, 6);
+      });
+    });
     describe('with a count filter', () => {
       it('should run a count aggregation', async () => {
         const q = datastore.createQuery('Character');

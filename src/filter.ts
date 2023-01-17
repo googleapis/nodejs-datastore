@@ -94,16 +94,20 @@ export class PropertyFilter extends Filter implements IFilter {
    */
   // eslint-disable-next-line
   toProto(): any {
-    const value = (new PropertyFilter(this.name, this.op, this.val)).encodedValue();
+    const value = new PropertyFilter(
+      this.name,
+      this.op,
+      this.val
+    ).encodedValue();
     return {
       propertyFilter: {
         property: {
           name: this.name,
         },
         op: OP_TO_OPERATOR.get(this.op),
-        value
-      }
-    }
+        value,
+      },
+    };
   }
 }
 
@@ -139,12 +143,12 @@ class CompositeFilter extends Filter {
     return {
       compositeFilter: {
         filters: this.filters.map(filter => filter.toProto()),
-        op: this.op
-      }
-    }
+        op: this.op,
+      },
+    };
   }
 }
 
 export function isFilter(filter: any): filter is Filter {
-  return (filter as Filter).toProto !== undefined
+  return (filter as Filter).toProto !== undefined;
 }

@@ -1187,7 +1187,6 @@ export namespace entity {
    * ```
    */
   export function queryToQueryProto(query: Query): QueryProto {
-
     const SIGN_TO_ORDER = {
       '-': 'DESCENDING',
       '+': 'ASCENDING',
@@ -1244,9 +1243,9 @@ export namespace entity {
 
     if (query.filters.length > 0) {
       const filters = query.filters.map(filter => {
-        return isFilter(filter) ?
-            filter :
-            new PropertyFilter(filter.name, filter.op, filter.val)
+        return isFilter(filter)
+          ? filter
+          : new PropertyFilter(filter.name, filter.op, filter.val);
       });
       queryProto.filter = Filter.AND(filters).toProto();
     }

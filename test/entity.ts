@@ -1900,16 +1900,16 @@ describe('entity', () => {
       const ds = new Datastore({projectId: 'project-id'});
 
       const query = ds
-          .createQuery('Kind1')
-          .addFilter(new PropertyFilter('name', '=', 'John'))
-          .start('start')
-          .end('end')
-          .groupBy(['name'])
-          .order('name')
-          .select('name')
-          .limit(1)
-          .offset(1)
-          .hasAncestor(ancestorKey);
+        .createQuery('Kind1')
+        .addFilter(new PropertyFilter('name', '=', 'John'))
+        .start('start')
+        .end('end')
+        .groupBy(['name'])
+        .order('name')
+        .select('name')
+        .limit(1)
+        .offset(1)
+        .hasAncestor(ancestorKey);
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 

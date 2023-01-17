@@ -169,15 +169,16 @@ describe('Query', () => {
   describe('addFilter', () => {
     it('should support addFilter', () => {
       const now = new Date();
-      const query = new Query(['kind1'])
-          .addFilter(new PropertyFilter('date', '<=', now));
+      const query = new Query(['kind1']).addFilter(
+        new PropertyFilter('date', '<=', now)
+      );
       const filter = query.filters[0];
 
       assert.strictEqual(filter.name, 'date');
       assert.strictEqual(filter.op, '<=');
       assert.strictEqual(filter.val, now);
     });
-  })
+  });
 
   describe('hasAncestor', () => {
     it('should support ancestor filtering', () => {
