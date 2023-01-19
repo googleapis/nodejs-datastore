@@ -801,9 +801,10 @@ describe('Datastore', () => {
     });
     describe('with the addFilter function', () => {
       it('should run a query with one property filter', async () => {
+        const filter = new PropertyFilter('family', '=', 'Stark');
         const q = datastore
           .createQuery('Character')
-          .addFilter(new PropertyFilter('family', '=', 'Stark'))
+          .addFilter(filter)
           .hasAncestor(ancestor);
         const [entities] = await datastore.runQuery(q);
         assert.strictEqual(entities!.length, 8);

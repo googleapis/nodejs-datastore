@@ -15,18 +15,6 @@
 import {Operator, Filter as IFilter} from './query';
 import {entity} from './entity';
 
-const OP_TO_OPERATOR = new Map([
-  ['=', 'EQUAL'],
-  ['>', 'GREATER_THAN'],
-  ['>=', 'GREATER_THAN_OR_EQUAL'],
-  ['<', 'LESS_THAN'],
-  ['<=', 'LESS_THAN_OR_EQUAL'],
-  ['HAS_ANCESTOR', 'HAS_ANCESTOR'],
-  ['!=', 'NOT_EQUAL'],
-  ['IN', 'IN'],
-  ['NOT_IN', 'NOT_IN'],
-]);
-
 /**
  * A Filter is a class that contains data for a filter that can be translated
  * into a proto when needed.
@@ -94,6 +82,17 @@ export class PropertyFilter extends Filter implements IFilter {
    */
   // eslint-disable-next-line
   toProto(): any {
+    const OP_TO_OPERATOR = new Map([
+      ['=', 'EQUAL'],
+      ['>', 'GREATER_THAN'],
+      ['>=', 'GREATER_THAN_OR_EQUAL'],
+      ['<', 'LESS_THAN'],
+      ['<=', 'LESS_THAN_OR_EQUAL'],
+      ['HAS_ANCESTOR', 'HAS_ANCESTOR'],
+      ['!=', 'NOT_EQUAL'],
+      ['IN', 'IN'],
+      ['NOT_IN', 'NOT_IN'],
+    ]);
     const value = new PropertyFilter(
       this.name,
       this.op,
