@@ -19,7 +19,7 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
-import {PropertyFilter} from '../src/filter';
+import {PropertyFilter, Filter} from '../src/filter';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
@@ -1911,6 +1911,34 @@ describe('entity', () => {
         .offset(1)
         .hasAncestor(ancestorKey);
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
+    });
+
+    it('should support the addFilter method with AND', () => {
+      const ancestorKey = new entity.Key({
+        path: ['Kind2', 'somename'],
+      });
+
+      const ds = new Datastore({projectId: 'project-id'});
+
+      const query = ds
+        .createQuery('Kind1')
+        .addFilter(
+          Filter.AND([
+            new PropertyFilter('name', '=', 'John'),
+            new PropertyFilter('__key__', 'HAS_ANCESTOR', ancestorKey),
+          ])
+        )
+        .start('start')
+        .end('end')
+        .groupBy(['name'])
+        .order('name')
+        .select('name')
+        .limit(1)
+        .offset(1);
+      const testFilters = queryProto.filter;
+      const computedFilters =
+        entity.queryToQueryProto(query).filter.compositeFilter.filters[0];
+      assert.deepStrictEqual(computedFilters, testFilters);
     });
 
     it('should handle buffer start and end values', () => {
