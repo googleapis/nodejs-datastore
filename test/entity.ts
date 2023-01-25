@@ -1892,7 +1892,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
-    it('should support the addFilter method', () => {
+    it('should support the filter method with Filter objects', () => {
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
       });
@@ -1901,7 +1901,7 @@ describe('entity', () => {
 
       const query = ds
         .createQuery('Kind1')
-        .addFilter(new PropertyFilter('name', '=', 'John'))
+        .filter(new PropertyFilter('name', '=', 'John'))
         .start('start')
         .end('end')
         .groupBy(['name'])
@@ -1913,7 +1913,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
-    it('should support the addFilter method with AND', () => {
+    it('should support the filter method with AND', () => {
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
       });
@@ -1922,7 +1922,7 @@ describe('entity', () => {
 
       const query = ds
         .createQuery('Kind1')
-        .addFilter(
+        .filter(
           Filter.AND([
             new PropertyFilter('name', '=', 'John'),
             new PropertyFilter('__key__', 'HAS_ANCESTOR', ancestorKey),

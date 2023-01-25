@@ -15,6 +15,11 @@
 import {Operator, Filter as IFilter} from './query';
 import {entity} from './entity';
 
+enum CompositeOperator {
+  AND = 'AND',
+  OR = 'OR',
+}
+
 /**
  * A Filter is a class that contains data for a filter that can be translated
  * into a proto when needed.
@@ -24,11 +29,11 @@ import {entity} from './entity';
  */
 export abstract class Filter {
   static AND(filters: Filter[]): CompositeFilter {
-    return new CompositeFilter(filters, 'AND');
+    return new CompositeFilter(filters, CompositeOperator.AND);
   }
 
   static OR(filters: Filter[]): CompositeFilter {
-    return new CompositeFilter(filters, 'OR');
+    return new CompositeFilter(filters, CompositeOperator.OR);
   }
   /**
    * Gets the proto for the filter.
@@ -127,7 +132,7 @@ class CompositeFilter extends Filter {
    *
    * @param {Filter[]} filters
    */
-  constructor(filters: Filter[], op: string) {
+  constructor(filters: Filter[], op: CompositeOperator) {
     super();
     this.filters = filters;
     this.op = op;

@@ -166,10 +166,10 @@ describe('Query', () => {
     });
   });
 
-  describe('addFilter', () => {
-    it('should support addFilter', () => {
+  describe('filter with Filter class', () => {
+    it('should support filter with Filter', () => {
       const now = new Date();
-      const query = new Query(['kind1']).addFilter(
+      const query = new Query(['kind1']).filter(
         new PropertyFilter('date', '<=', now)
       );
       const filter = query.filters[0];
@@ -178,9 +178,9 @@ describe('Query', () => {
       assert.strictEqual(filter.op, '<=');
       assert.strictEqual(filter.val, now);
     });
-    it('should support addFilter with OR', () => {
+    it('should support filter with OR', () => {
       const now = new Date();
-      const query = new Query(['kind1']).addFilter(
+      const query = new Query(['kind1']).filter(
         Filter.OR([
           new PropertyFilter('date', '<=', now),
           new PropertyFilter('name', '=', 'Stephen'),

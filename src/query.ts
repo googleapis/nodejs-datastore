@@ -18,10 +18,11 @@ import arrify = require('arrify');
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
-import {Filter as NewFilter} from './filter';
+import {Filter as NewFilter, isFilter} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
+import {string} from 'is';
 
 export type Operator =
   | '='
@@ -170,7 +171,7 @@ class Query {
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#datastore-property-filter-nodejs| Datastore Filters}
    *
-   * @param {string} property The field name.
+   * @param {string | NewFilter} propertyOrFilter The field name.
    * @param {string} [operator="="] Operator (=, <, >, <=, >=).
    * @param {*} value Value to compare property to.
    * @returns {Query}
@@ -201,20 +202,29 @@ class Query {
    * const keyQuery = query.filter('__key__', key);
    * ```
    */
-  filter(property: string, value: {}): Query;
-  filter(property: string, operator: Operator, value: {}): Query;
-  filter(property: string, operatorOrValue: Operator, value?: {}): Query {
-    let operator = operatorOrValue as Operator;
-    if (arguments.length === 2) {
-      value = operatorOrValue as {};
-      operator = '=';
-    }
+  filter(propertyOrFilter: string | NewFilter, value?: {}): Query;
+  filter(propertyOrFilter: string, operator: Operator, value: {}): Query;
+  filter(
+    propertyOrFilter: string | NewFilter,
+    operatorOrValue?: Operator,
+    value?: {}
+  ): Query {
+    if (isFilter(propertyOrFilter)) {
+      this.filters.push(propertyOrFilter);
+      return this;
+    } else {
+      let operator = operatorOrValue as Operator;
+      if (arguments.length === 2) {
+        value = operatorOrValue as {};
+        operator = '=';
+      }
 
-    this.filters.push({
-      name: property.trim(),
-      op: operator.trim() as Operator,
-      val: value,
-    });
+      this.filters.push({
+        name: (propertyOrFilter as String).trim(),
+        op: operator.trim() as Operator,
+        val: value,
+      });
+    }
     return this;
   }
 
@@ -317,29 +327,6 @@ class Query {
    */
   select(fieldNames: string | string[]) {
     this.selectVal = arrify(fieldNames);
-    return this;
-  }
-
-  /**
-   * Add a filter that this query is going to process.
-   *
-   * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#filters| Filters Reference}
-   *
-   * @param {NewFilter} filter The filter that will be applied to the query
-   *
-   * @example
-   * ```
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const companyQuery = datastore.createQuery('Company');
-   * const filter = new PropertyFilter('state', '=', 'CA');
-   *
-   * // Set the filter.
-   * const filteredQuery = companyQuery.addFilter(filter);
-   * ```
-   */
-  addFilter(filter: NewFilter) {
-    this.filters.push(filter);
     return this;
   }
 
