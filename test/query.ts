@@ -164,6 +164,19 @@ describe('Query', () => {
       assert.strictEqual(filter.op, '=');
       assert.strictEqual(filter.val, 'Stephen');
     });
+
+    it('should issue a warning when a Filter instance is not provided', done => {
+      const onWarning = (warning: {message: unknown}) => {
+        assert.strictEqual(
+          warning.message,
+          'Providing Filter objects is recommended when using .filter'
+        );
+        process.removeListener('warning', onWarning);
+        done();
+      };
+      process.on('warning', onWarning);
+      new Query(['kind1']).filter('name', 'Stephen');
+    });
   });
 
   describe('filter with Filter class', () => {
