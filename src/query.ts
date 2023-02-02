@@ -21,7 +21,6 @@ import {Entity} from './entity';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
-import {AggregateField, AggregateQuery} from './aggregate';
 
 export type Operator =
   | '='
@@ -142,12 +141,12 @@ class Query {
     // pagination
     /**
      * @name Query#startVal
-     * @type {?number}
+     * @type {string | Buffer | null}
      */
     this.startVal = null;
     /**
      * @name Query#endVal
-     * @type {?number}
+     * @type {string | Buffer | null}
      */
     this.endVal = null;
     /**
@@ -325,7 +324,7 @@ class Query {
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#cursors_limits_and_offsets| Query Cursors}
    *
-   * @param {string} cursorToken The starting cursor token.
+   * @param {string | Buffer | null} cursorToken The starting cursor token.
    * @returns {Query}
    *
    * @example
@@ -340,7 +339,7 @@ class Query {
    * const startQuery = companyQuery.start(cursorToken);
    * ```
    */
-  start(start: string | Buffer) {
+  start(start: string | Buffer | null) {
     this.startVal = start;
     return this;
   }
@@ -350,7 +349,7 @@ class Query {
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#Datastore_Query_cursors| Query Cursors}
    *
-   * @param {string} cursorToken The ending cursor token.
+   * @param {string | Buffer | null} cursorToken The ending cursor token.
    * @returns {Query}
    *
    * @example
@@ -365,7 +364,7 @@ class Query {
    * const endQuery = companyQuery.end(cursorToken);
    * ```
    */
-  end(end: string | Buffer) {
+  end(end: string | Buffer | null) {
     this.endVal = end;
     return this;
   }
