@@ -1247,6 +1247,11 @@ export namespace entity {
           ? filter
           : new PropertyFilter(filter.name, filter.op, filter.val);
       });
+      if (typeof query.ancestor !== 'undefined') {
+        filters.push(
+          new PropertyFilter('__key__', 'HAS_ANCESTOR', query.ancestor)
+        );
+      }
       queryProto.filter = Filter.AND(filters).toProto();
     }
 
