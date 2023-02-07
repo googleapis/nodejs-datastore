@@ -178,7 +178,13 @@ describe('Query', () => {
       new Query(['kind1']).filter('name', 'Stephen');
     });
   });
-
+  describe('setAncestor', () => {
+    it('should set the ancestor for the query to search against', done => {
+      const key = ['kind2', 123];
+      const query = new Query(['kind1']).setAncestor(key);
+      assert.deepStrictEqual(query.ancestor, key);
+    });
+  });
   describe('filter with Filter class', () => {
     it('should support filter with Filter', () => {
       const now = new Date();
