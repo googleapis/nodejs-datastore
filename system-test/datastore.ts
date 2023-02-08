@@ -847,7 +847,7 @@ describe('Datastore', () => {
             ])
           );
         const [entities] = await datastore.runQuery(q);
-        assert.strictEqual(entities!.length, 6);
+        assert.strictEqual(entities!.length, 8);
       });
       describe('using hasAncestor and Filter class', () => {
         const secondAncestor = datastore.key([
