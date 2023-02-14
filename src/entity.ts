@@ -1253,26 +1253,15 @@ export namespace entity {
     }
 
     if (query.filters.length > 0) {
-      const filters = query.filters.map(filter => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let value: any = {};
-
-        if (filter.name === '__key__') {
-          value.keyValue = entity.keyToKeyProto(filter.val);
-        } else {
-          value = entity.encodeValue(filter.val, filter.name);
-        }
-
-        return {
-          propertyFilter: {
-            property: {
-              name: filter.name,
-            },
-            op: OP_TO_OPERATOR[filter.op],
-            value,
+      const filters = query.filters.map(filter => ({
+        propertyFilter: {
+          property: {
+            name: filter.name,
           },
-        };
-      });
+          op: OP_TO_OPERATOR[filter.op],
+          value: entity.encodeValue(filter.val, filter.name),
+        },
+      }));
 
       queryProto.filter = {
         compositeFilter: {

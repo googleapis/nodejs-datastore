@@ -1847,6 +1847,30 @@ describe('entity', () => {
             },
             {
               propertyFilter: {
+                op: 'IN',
+                property: {
+                  name: '__key__',
+                },
+                value: {
+                  arrayValue: {
+                    values: [
+                      {
+                        keyValue: {
+                          path: [
+                            {
+                              kind: 'Kind1',
+                              name: 'key1',
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            {
+              propertyFilter: {
                 property: {
                   name: '__key__',
                 },
@@ -1879,6 +1903,7 @@ describe('entity', () => {
       const query = ds
         .createQuery('Kind1')
         .filter('name', 'John')
+        .filter('__key__', 'IN', [new entity.Key({path: ['Kind1', 'key1']})])
         .start('start')
         .end('end')
         .groupBy(['name'])
