@@ -840,8 +840,7 @@ export class DatastoreClient {
    * @param {google.datastore.v1.TransactionOptions} request.singleUseTransaction
    *   Options for beginning a new transaction for this request.
    *   The transaction is committed when the request completes. If specified,
-   *   {@link google.datastore.v1.TransactionOptions.mode|TransactionOptions.mode}
-   *   must be
+   *   {@link google.datastore.v1.TransactionOptions|TransactionOptions.mode} must be
    *   {@link google.datastore.v1.TransactionOptions.ReadWrite|TransactionOptions.ReadWrite}.
    * @param {number[]} request.mutations
    *   The mutations to perform.

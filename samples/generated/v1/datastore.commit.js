@@ -51,8 +51,7 @@ function main(projectId) {
   /**
    *  Options for beginning a new transaction for this request.
    *  The transaction is committed when the request completes. If specified,
-   *  TransactionOptions.mode google.datastore.v1.TransactionOptions.mode 
-   *  must be
+   *  TransactionOptions.mode google.datastore.v1.TransactionOptions  must be
    *  TransactionOptions.ReadWrite google.datastore.v1.TransactionOptions.ReadWrite.
    */
   // const singleUseTransaction = {}
