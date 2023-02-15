@@ -868,6 +868,10 @@ describe('Datastore', () => {
       assert.strictEqual(entities.length, characters.length);
     });
 
+    it('should construct filters by null status', async () => {
+      datastore.createQuery('Character').filter('status', null);
+      datastore.createQuery('Character').filter('status', '=', null);
+    });
     it('should filter by key', async () => {
       const key = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
       const q = datastore
