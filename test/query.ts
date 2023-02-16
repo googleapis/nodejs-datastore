@@ -179,7 +179,7 @@ describe('Query', () => {
     });
   });
   describe('setAncestor', () => {
-    it('should set the ancestor for the query to search against', done => {
+    it('should set the ancestor for the query to search against', () => {
       const key = ['kind2', 123];
       const query = new Query(['kind1']).setAncestor(key);
       assert.deepStrictEqual(query.ancestor, key);
