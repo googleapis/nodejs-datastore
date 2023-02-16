@@ -869,17 +869,17 @@ describe('Datastore', () => {
     });
 
     it('should construct filters by null status', async () => {
-      const filtersNoEqual = datastore
+      const filterNoEqual = datastore
         .createQuery('Character')
         .filter('status', null)
         .filters.pop();
-      assert.strictEqual(filtersNoEqual ? filtersNoEqual.val : undefined, null);
-      const filtersWithEqual = datastore
+      assert.strictEqual(filterNoEqual ? filterNoEqual.val : undefined, null);
+      const filterWithEqual = datastore
         .createQuery('Character')
         .filter('status', '=', null)
         .filters.pop();
       assert.strictEqual(
-        filtersWithEqual ? filtersWithEqual.val : undefined,
+        filterWithEqual ? filterWithEqual.val : undefined,
         null
       );
     });

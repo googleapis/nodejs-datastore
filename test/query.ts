@@ -164,8 +164,17 @@ describe('Query', () => {
       assert.strictEqual(filter.val, 'Stephen');
     });
     it('should accept null as value', () => {
-      new Query(['kind1']).filter('status', null);
-      new Query(['kind1']).filter('status', '=', null);
+      const filterNoEqual = new Query(['kind1'])
+        .filter('status', null)
+        .filters.pop();
+      assert.strictEqual(filterNoEqual ? filterNoEqual.val : undefined, null);
+      const filterWithEqual = new Query(['kind1'])
+        .filter('status', '=', null)
+        .filters.pop();
+      assert.strictEqual(
+        filterWithEqual ? filterWithEqual.val : undefined,
+        null
+      );
     });
   });
 
