@@ -869,16 +869,18 @@ describe('Datastore', () => {
     });
 
     it('should construct filters by null status', async () => {
-      const filterNoEqual = datastore
-        .createQuery('Character')
-        .filter('status', null)
-        .filters.pop();
-      assert.strictEqual(filterNoEqual?.val, null);
-      const filterWithEqual = datastore
-        .createQuery('Character')
-        .filter('status', '=', null)
-        .filters.pop();
-      assert.strictEqual(filterWithEqual?.val, null);
+      assert.strictEqual(
+        datastore.createQuery('Character').filter('status', null).filters.pop()
+          ?.val,
+        null
+      );
+      assert.strictEqual(
+        datastore
+          .createQuery('Character')
+          .filter('status', '=', null)
+          .filters.pop()?.val,
+        null
+      );
     });
     it('should filter by key', async () => {
       const key = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
