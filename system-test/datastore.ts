@@ -873,15 +873,12 @@ describe('Datastore', () => {
         .createQuery('Character')
         .filter('status', null)
         .filters.pop();
-      assert.strictEqual(filterNoEqual ? filterNoEqual.val : undefined, null);
+      assert.strictEqual(filterNoEqual?.val, null);
       const filterWithEqual = datastore
         .createQuery('Character')
         .filter('status', '=', null)
         .filters.pop();
-      assert.strictEqual(
-        filterWithEqual ? filterWithEqual.val : undefined,
-        null
-      );
+      assert.strictEqual(filterWithEqual?.val, null);
     });
     it('should filter by key', async () => {
       const key = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
