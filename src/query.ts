@@ -203,12 +203,12 @@ class Query {
    * const keyQuery = query.filter('__key__', key);
    * ```
    */
-  filter(propertyOrFilter: string | NewFilter, value?: {}): Query;
-  filter(propertyOrFilter: string, operator: Operator, value: {}): Query;
+  filter(propertyOrFilter: string | NewFilter, value?: {} | null): Query;
+  filter(propertyOrFilter: string, operator: Operator, value: {} | null): Query;
   filter(
     propertyOrFilter: string | NewFilter,
     operatorOrValue?: Operator,
-    value?: {}
+    value?: {} | null
   ): Query {
     if (isFilter(propertyOrFilter)) {
       this.filters.push(propertyOrFilter);

@@ -217,6 +217,16 @@ describe('Query', () => {
       assert.strictEqual(filters[1].op, '=');
       assert.strictEqual(filters[1].val, 'Stephen');
     });
+    it('should accept null as value', () => {
+      assert.strictEqual(
+        new Query(['kind1']).filter('status', null).filters.pop()?.val,
+        null
+      );
+      assert.strictEqual(
+        new Query(['kind1']).filter('status', '=', null).filters.pop()?.val,
+        null
+      );
+    });
   });
 
   describe('hasAncestor', () => {

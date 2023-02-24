@@ -852,7 +852,7 @@ describe('entity', () => {
       const value = Buffer.from('Hi');
 
       const expectedValueProto = {
-        blobValue: value.toString('base64'),
+        blobValue: value,
       };
 
       assert.deepStrictEqual(entity.encodeValue(value), expectedValueProto);
