@@ -73,7 +73,6 @@ export interface Filter {
  * ```
  */
 class Query {
-  ancestor?: Key;
   scope?: Datastore | Transaction;
   namespace?: string | null;
   kinds: string[];
@@ -247,33 +246,9 @@ class Query {
    * const query = datastore.createQuery('MyKind');
    * const ancestoryQuery = query.hasAncestor(datastore.key(['Parent', 123]));
    * ```
-   *
-   * @deprecated Use setAncestor().
    */
   hasAncestor(key: Key) {
     this.filters.push({name: '__key__', op: 'HAS_ANCESTOR', val: key});
-    return this;
-  }
-
-  /**
-   * Filter a query by ancestors.
-   *
-   * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#datastore-ancestor-query-nodejs| Datastore Ancestor Filters}
-   *
-   * @param {Key} key Key object to filter by.
-   * @returns {Query}
-   *
-   * @example
-   * ```
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const query = datastore.createQuery('MyKind');
-   * const ancestorQuery = query.setAncestor(datastore.key(['Parent', 123]));
-   * ```
-   *
-   */
-  setAncestor(key: Key) {
-    this.ancestor = key;
     return this;
   }
 
