@@ -1238,13 +1238,12 @@ export namespace entity {
       queryProto.startCursor = query.startVal;
     }
 
-    if (query.filters.length > 0) {
-      const filters = query.filters.map(filter => {
-        return isFilter(filter)
-          ? filter
-          : new PropertyFilter(filter.name, filter.op, filter.val);
-      });
-      queryProto.filter = Filter.AND(filters).toProto();
+    if (query.filters.length > 0 || query.newFilters.length > 0) {
+      const filters = query.filters.map(
+        filter => new PropertyFilter(filter.name, filter.op, filter.val)
+      );
+      const newFilters = query.newFilters;
+      queryProto.filter = Filter.AND(newFilters.concat(filters)).toProto();
     }
 
     return queryProto;

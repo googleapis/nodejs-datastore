@@ -185,7 +185,7 @@ describe('Query', () => {
       const query = new Query(['kind1']).filter(
         new PropertyFilter('date', '<=', now)
       );
-      const filter = query.filters[0];
+      const filter = query.newFilters[0];
 
       assert.strictEqual(filter.name, 'date');
       assert.strictEqual(filter.op, '<=');
@@ -199,7 +199,7 @@ describe('Query', () => {
           new PropertyFilter('name', '=', 'Stephen'),
         ])
       );
-      const filter = query.filters[0];
+      const filter = query.newFilters[0];
       assert.strictEqual(filter.op, 'OR');
       // Check filters
       const filters = filter.filters;

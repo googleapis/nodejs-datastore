@@ -76,7 +76,8 @@ class Query {
   scope?: Datastore | Transaction;
   namespace?: string | null;
   kinds: string[];
-  filters: (Filter | NewFilter)[];
+  filters: Filter[];
+  newFilters: NewFilter[];
   orders: Order[];
   groupByVal: Array<{}>;
   selectVal: Array<{}>;
@@ -124,6 +125,11 @@ class Query {
      * @type {array}
      */
     this.filters = [];
+    /**
+     * @name Query#newFilters
+     * @type {array}
+     */
+    this.newFilters = [];
     /**
      * @name Query#orders
      * @type {array}
@@ -210,7 +216,7 @@ class Query {
     value?: {} | null
   ): Query {
     if (isFilter(propertyOrFilter)) {
-      this.filters.push(propertyOrFilter);
+      this.newFilters.push(propertyOrFilter);
       return this;
     } else {
       process.emitWarning(
