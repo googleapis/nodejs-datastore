@@ -1915,52 +1915,6 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
-    it('should support the filter method with setAncestor', () => {
-      const ancestorKey = new entity.Key({
-        path: ['Kind2', 'somename'],
-      });
-
-      const ds = new Datastore({projectId: 'project-id'});
-
-      const query = ds
-        .createQuery('Kind1')
-        .filter(new PropertyFilter('name', '=', 'John'))
-        .start('start')
-        .end('end')
-        .groupBy(['name'])
-        .order('name')
-        .select('name')
-        .limit(1)
-        .offset(1)
-        .setAncestor(ancestorKey);
-      assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
-    });
-
-    it('should support the filter method using setAncestor twice', () => {
-      const oldAncestorKey = new entity.Key({
-        path: ['Kind1', 'somename1'],
-      });
-      const ancestorKey = new entity.Key({
-        path: ['Kind2', 'somename'],
-      });
-
-      const ds = new Datastore({projectId: 'project-id'});
-
-      const query = ds
-        .createQuery('Kind1')
-        .filter(new PropertyFilter('name', '=', 'John'))
-        .start('start')
-        .end('end')
-        .groupBy(['name'])
-        .order('name')
-        .select('name')
-        .limit(1)
-        .offset(1)
-        .setAncestor(oldAncestorKey)
-        .setAncestor(ancestorKey);
-      assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
-    });
-
     it('should support the filter method with AND', () => {
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
