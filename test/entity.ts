@@ -770,12 +770,10 @@ describe('entity', () => {
         "' property is outside of bounds of a JavaScript Number.\n" +
         "Use 'Datastore.int(<integer_value_as_string>)' to preserve accuracy during the upload.";
 
-      const onWarning = (warning: {message: unknown}) => {
+      process.on('warning', warning => {
         assert.strictEqual(warning.message, expectedWarning);
-        process.removeListener('warning', onWarning);
         done();
-      };
-      process.on('warning', onWarning);
+      });
       entity.encodeValue(largeIntValue, property);
     });
 

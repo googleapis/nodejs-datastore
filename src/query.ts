@@ -218,9 +218,6 @@ class Query {
       this.newFilters.push(propertyOrFilter);
       return this;
     } else {
-      process.emitWarning(
-        'Providing Filter objects is recommended when using .filter'
-      );
       let operator = operatorOrValue as Operator;
       if (arguments.length === 2) {
         value = operatorOrValue as {};
