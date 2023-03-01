@@ -22,7 +22,6 @@ import {Filter as NewFilter, isFilter} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
-import {string} from 'is';
 
 export type Operator =
   | '='
