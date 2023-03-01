@@ -19,7 +19,7 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
-import {PropertyFilter, Filter} from '../src/filter';
+import {PropertyFilter, Filter, AND} from '../src/filter';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
@@ -1925,7 +1925,7 @@ describe('entity', () => {
       const query = ds
         .createQuery('Kind1')
         .filter(
-          Filter.AND([
+          AND([
             new PropertyFilter('name', '=', 'John'),
             new PropertyFilter('__key__', 'HAS_ANCESTOR', ancestorKey),
           ])

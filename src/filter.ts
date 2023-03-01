@@ -20,6 +20,14 @@ enum CompositeOperator {
   OR = 'OR',
 }
 
+export function AND(filters: Filter[]): CompositeFilter {
+  return new CompositeFilter(filters, CompositeOperator.AND);
+}
+
+export function OR(filters: Filter[]): CompositeFilter {
+  return new CompositeFilter(filters, CompositeOperator.OR);
+}
+
 /**
  * A Filter is a class that contains data for a filter that can be translated
  * into a proto when needed.
@@ -28,13 +36,6 @@ enum CompositeOperator {
  *
  */
 export abstract class Filter {
-  static AND(filters: Filter[]): CompositeFilter {
-    return new CompositeFilter(filters, CompositeOperator.AND);
-  }
-
-  static OR(filters: Filter[]): CompositeFilter {
-    return new CompositeFilter(filters, CompositeOperator.OR);
-  }
   /**
    * Gets the proto for the filter.
    *

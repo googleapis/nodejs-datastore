@@ -19,7 +19,7 @@ const {Query} = require('../src/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
-import {PropertyFilter, Filter} from '../src/filter';
+import {PropertyFilter, Filter, OR} from '../src/filter';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -194,7 +194,7 @@ describe('Query', () => {
     it('should support filter with OR', () => {
       const now = new Date();
       const query = new Query(['kind1']).filter(
-        Filter.OR([
+        OR([
           new PropertyFilter('date', '<=', now),
           new PropertyFilter('name', '=', 'Stephen'),
         ])
