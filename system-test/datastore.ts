@@ -543,6 +543,19 @@ describe('Datastore', () => {
       await datastore.delete(personKey);
     });
 
+    it('should save with an empty buffer', async () => {
+      const key = datastore.key(['TEST']);
+      const result = await datastore.save({
+        key: key,
+        data: {
+          name: 'test',
+          blob: Buffer.from([]),
+        },
+      });
+      const mutationResult = result.pop()?.mutationResults?.pop();
+      assert.strictEqual(mutationResult?.key?.path?.pop()?.kind, 'TEST');
+    });
+
     describe('entity types', () => {
       it('should save and decode an int', async () => {
         const integerValue = 2015;
@@ -868,6 +881,20 @@ describe('Datastore', () => {
       assert.strictEqual(entities.length, characters.length);
     });
 
+    it('should construct filters by null status', async () => {
+      assert.strictEqual(
+        datastore.createQuery('Character').filter('status', null).filters.pop()
+          ?.val,
+        null
+      );
+      assert.strictEqual(
+        datastore
+          .createQuery('Character')
+          .filter('status', '=', null)
+          .filters.pop()?.val,
+        null
+      );
+    });
     it('should filter by key', async () => {
       const key = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
       const q = datastore
