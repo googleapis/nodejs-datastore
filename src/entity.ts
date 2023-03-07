@@ -1239,12 +1239,12 @@ export namespace entity {
     }
 
     // Check to see if there is at least one type of legacy filter or new filter.
-    if (query.filters.length > 0 || query.newFilters.length > 0) {
+    if (query.filters.length > 0 || query.entityFilters.length > 0) {
       // Convert all legacy filters into new property filter objects
       const filters = query.filters.map(
         filter => new PropertyFilter(filter.name, filter.op, filter.val)
       );
-      const newFilters = query.newFilters;
+      const newFilters = query.entityFilters;
       const allFilters = newFilters.concat(filters);
       /*
         To be consistent with prior implementation, apply an AND composite filter

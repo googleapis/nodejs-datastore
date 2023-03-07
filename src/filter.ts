@@ -20,11 +20,11 @@ enum CompositeOperator {
   OR = 'OR',
 }
 
-export function AND(filters: Filter[]): CompositeFilter {
+export function AND(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.AND);
 }
 
-export function OR(filters: Filter[]): CompositeFilter {
+export function OR(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.OR);
 }
 
@@ -35,7 +35,7 @@ export function OR(filters: Filter[]): CompositeFilter {
  * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#filters| Filters Reference}
  *
  */
-export abstract class Filter {
+export abstract class EntityFilter {
   /**
    * Gets the proto for the filter.
    *
@@ -51,7 +51,7 @@ export abstract class Filter {
  *
  * @class
  */
-export class PropertyFilter extends Filter implements IFilter {
+export class PropertyFilter extends EntityFilter implements IFilter {
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   val: any;
@@ -124,16 +124,16 @@ export class PropertyFilter extends Filter implements IFilter {
  *
  * @class
  */
-class CompositeFilter extends Filter {
-  filters: Filter[];
+class CompositeFilter extends EntityFilter {
+  filters: EntityFilter[];
   op: string;
 
   /**
    * Build a Composite Filter object.
    *
-   * @param {Filter[]} filters
+   * @param {EntityFilter[]} filters
    */
-  constructor(filters: Filter[], op: CompositeOperator) {
+  constructor(filters: EntityFilter[], op: CompositeOperator) {
     super();
     this.filters = filters;
     this.op = op;
@@ -154,6 +154,6 @@ class CompositeFilter extends Filter {
   }
 }
 
-export function isFilter(filter: any): filter is Filter {
-  return (filter as Filter).toProto !== undefined;
+export function isFilter(filter: any): filter is EntityFilter {
+  return (filter as EntityFilter).toProto !== undefined;
 }

@@ -21,7 +21,7 @@ import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
-import {PropertyFilter, Filter, AND, OR} from '../src/filter';
+import {PropertyFilter, EntityFilter, AND, OR} from '../src/filter';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];

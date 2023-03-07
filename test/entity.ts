@@ -19,7 +19,7 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
-import {PropertyFilter, Filter, AND} from '../src/filter';
+import {PropertyFilter, EntityFilter, AND} from '../src/filter';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
