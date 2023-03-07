@@ -898,7 +898,7 @@ describe('Datastore', () => {
           'Character',
           'Eddard',
         ]);
-        it('should run a query using hasAncestor first', async () => {
+        it('should run a query using hasAncestor last', async () => {
           const q = datastore
             .createQuery('Character')
             .filter(new PropertyFilter('appearances', '<', 30))
@@ -906,7 +906,7 @@ describe('Datastore', () => {
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 3);
         });
-        it('should run a query using hasAncestor last', async () => {
+        it('should run a query using hasAncestor first', async () => {
           const q = datastore
             .createQuery('Character')
             .hasAncestor(secondAncestor)
