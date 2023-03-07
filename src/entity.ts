@@ -1238,12 +1238,20 @@ export namespace entity {
       queryProto.startCursor = query.startVal;
     }
 
+    // Check to see if there is at least one type of legacy filter or new filter.
     if (query.filters.length > 0 || query.newFilters.length > 0) {
+      // Convert all legacy filters into new property filter objects
       const filters = query.filters.map(
         filter => new PropertyFilter(filter.name, filter.op, filter.val)
       );
       const newFilters = query.newFilters;
-      queryProto.filter = AND(newFilters.concat(filters)).toProto();
+      const allFilters = newFilters.concat(filters);
+      /*
+        To be consistent with prior implementation, apply an AND composite filter
+        to the collection of Filter objects. Then, set the filter property as before
+        to the output of the toProto method.
+       */
+      queryProto.filter = AND(allFilters).toProto();
     }
 
     return queryProto;
