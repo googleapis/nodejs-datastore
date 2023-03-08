@@ -21,7 +21,7 @@ import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
-import {PropertyFilter, EntityFilter, AND, OR} from '../src/filter';
+import {PropertyFilter, EntityFilter, and, or} from '../src/filter';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -850,7 +850,7 @@ describe('Datastore', () => {
         const q = datastore
           .createQuery('Character')
           .filter(
-            AND([
+            and([
               new PropertyFilter('family', '=', 'Stark'),
               new PropertyFilter('appearances', '>=', 20),
             ])
@@ -870,7 +870,7 @@ describe('Datastore', () => {
         const q = datastore
           .createQuery('Character')
           .filter(
-            OR([
+            or([
               new PropertyFilter('family', '=', 'Stark'),
               new PropertyFilter('appearances', '>=', 20),
             ])

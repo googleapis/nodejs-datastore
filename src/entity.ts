@@ -21,7 +21,7 @@ import {PathType} from '.';
 import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
-import {AND, PropertyFilter} from './filter';
+import {and, PropertyFilter} from './filter';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -1251,7 +1251,7 @@ export namespace entity {
         to the collection of Filter objects. Then, set the filter property as before
         to the output of the toProto method.
        */
-      queryProto.filter = AND(allFilters).toProto();
+      queryProto.filter = and(allFilters).toProto();
     }
 
     return queryProto;

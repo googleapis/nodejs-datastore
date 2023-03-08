@@ -15,16 +15,28 @@
 import {Operator, Filter as IFilter} from './query';
 import {entity} from './entity';
 
+const OP_TO_OPERATOR = new Map([
+  ['=', 'EQUAL'],
+  ['>', 'GREATER_THAN'],
+  ['>=', 'GREATER_THAN_OR_EQUAL'],
+  ['<', 'LESS_THAN'],
+  ['<=', 'LESS_THAN_OR_EQUAL'],
+  ['HAS_ANCESTOR', 'HAS_ANCESTOR'],
+  ['!=', 'NOT_EQUAL'],
+  ['IN', 'IN'],
+  ['NOT_IN', 'NOT_IN'],
+]);
+
 enum CompositeOperator {
   AND = 'AND',
   OR = 'OR',
 }
 
-export function AND(filters: EntityFilter[]): CompositeFilter {
+export function and(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.AND);
 }
 
-export function OR(filters: EntityFilter[]): CompositeFilter {
+export function or(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.OR);
 }
 
@@ -88,17 +100,6 @@ export class PropertyFilter extends EntityFilter implements IFilter {
    */
   // eslint-disable-next-line
   toProto(): any {
-    const OP_TO_OPERATOR = new Map([
-      ['=', 'EQUAL'],
-      ['>', 'GREATER_THAN'],
-      ['>=', 'GREATER_THAN_OR_EQUAL'],
-      ['<', 'LESS_THAN'],
-      ['<=', 'LESS_THAN_OR_EQUAL'],
-      ['HAS_ANCESTOR', 'HAS_ANCESTOR'],
-      ['!=', 'NOT_EQUAL'],
-      ['IN', 'IN'],
-      ['NOT_IN', 'NOT_IN'],
-    ]);
     const value = new PropertyFilter(
       this.name,
       this.op,
