@@ -176,7 +176,7 @@ class Query {
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#datastore-property-filter-nodejs| Datastore Filters}
    *
-   * @param {string | NewFilter} propertyOrFilter The field name.
+   * @param {string | EntityFilter} propertyOrFilter The field name.
    * @param {string} [operator="="] Operator (=, <, >, <=, >=).
    * @param {*} value Value to compare property to.
    * @returns {Query}
