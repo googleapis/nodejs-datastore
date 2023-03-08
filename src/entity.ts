@@ -1244,8 +1244,8 @@ export namespace entity {
       const filters = query.filters.map(
         filter => new PropertyFilter(filter.name, filter.op, filter.val)
       );
-      const newFilters = query.entityFilters;
-      const allFilters = newFilters.concat(filters);
+      const entityFilters = query.entityFilters;
+      const allFilters = entityFilters.concat(filters);
       /*
         To be consistent with prior implementation, apply an AND composite filter
         to the collection of Filter objects. Then, set the filter property as before
