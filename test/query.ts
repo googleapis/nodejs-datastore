@@ -169,7 +169,7 @@ describe('Query', () => {
     const onWarning = (warning: {message: unknown}) => {
       assert.strictEqual(
         warning.message,
-        'Providing Filter objects is recommended when using .filter'
+        'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
       );
       process.removeListener('warning', onWarning);
       done();

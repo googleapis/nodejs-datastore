@@ -219,7 +219,7 @@ class Query {
       return this;
     } else {
       process.emitWarning(
-        'Providing Filter objects is recommended when using .filter'
+        'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
       );
       let operator = operatorOrValue as Operator;
       if (arguments.length === 2) {
