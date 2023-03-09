@@ -18,7 +18,7 @@ import arrify = require('arrify');
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
-import {Filter as NewFilter, isFilter} from './filter';
+import {EntityFilter, isFilter} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
@@ -76,7 +76,7 @@ class Query {
   namespace?: string | null;
   kinds: string[];
   filters: Filter[];
-  newFilters: NewFilter[];
+  entityFilters: EntityFilter[];
   orders: Order[];
   groupByVal: Array<{}>;
   selectVal: Array<{}>;
@@ -125,10 +125,10 @@ class Query {
      */
     this.filters = [];
     /**
-     * @name Query#newFilters
+     * @name Query#entityFilters
      * @type {array}
      */
-    this.newFilters = [];
+    this.entityFilters = [];
     /**
      * @name Query#orders
      * @type {array}
@@ -176,7 +176,7 @@ class Query {
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#datastore-property-filter-nodejs| Datastore Filters}
    *
-   * @param {string | NewFilter} propertyOrFilter The field name.
+   * @param {string | EntityFilter} propertyOrFilter The field name.
    * @param {string} [operator="="] Operator (=, <, >, <=, >=).
    * @param {*} value Value to compare property to.
    * @returns {Query}
@@ -207,15 +207,15 @@ class Query {
    * const keyQuery = query.filter('__key__', key);
    * ```
    */
-  filter(propertyOrFilter: string | NewFilter, value?: {} | null): Query;
+  filter(propertyOrFilter: string | EntityFilter, value?: {} | null): Query;
   filter(propertyOrFilter: string, operator: Operator, value: {} | null): Query;
   filter(
-    propertyOrFilter: string | NewFilter,
+    propertyOrFilter: string | EntityFilter,
     operatorOrValue?: Operator,
     value?: {} | null
   ): Query {
     if (isFilter(propertyOrFilter)) {
-      this.newFilters.push(propertyOrFilter);
+      this.entityFilters.push(propertyOrFilter);
       return this;
     } else {
       process.emitWarning(

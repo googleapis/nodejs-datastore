@@ -19,7 +19,7 @@ const {Query} = require('../src/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
-import {PropertyFilter, Filter, OR} from '../src/filter';
+import {PropertyFilter, EntityFilter, or} from '../src/filter';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -164,28 +164,26 @@ describe('Query', () => {
       assert.strictEqual(filter.op, '=');
       assert.strictEqual(filter.val, 'Stephen');
     });
-
-    it('should issue a warning when a Filter instance is not provided', done => {
-      const onWarning = (warning: {message: unknown}) => {
-        assert.strictEqual(
-          warning.message,
-          'Providing Filter objects is recommended when using .filter'
-        );
-        process.removeListener('warning', onWarning);
-        done();
-      };
-      process.on('warning', onWarning);
-      new Query(['kind1']).filter('name', 'Stephen');
-    });
   });
-
+  it('should issue a warning when a Filter instance is not provided', done => {
+    const onWarning = (warning: {message: unknown}) => {
+      assert.strictEqual(
+        warning.message,
+        'Providing Filter objects is recommended when using .filter'
+      );
+      process.removeListener('warning', onWarning);
+      done();
+    };
+    process.on('warning', onWarning);
+    new Query(['kind1']).filter('name', 'Stephen');
+  });
   describe('filter with Filter class', () => {
     it('should support filter with Filter', () => {
       const now = new Date();
       const query = new Query(['kind1']).filter(
         new PropertyFilter('date', '<=', now)
       );
-      const filter = query.newFilters[0];
+      const filter = query.entityFilters[0];
 
       assert.strictEqual(filter.name, 'date');
       assert.strictEqual(filter.op, '<=');
@@ -194,12 +192,12 @@ describe('Query', () => {
     it('should support filter with OR', () => {
       const now = new Date();
       const query = new Query(['kind1']).filter(
-        OR([
+        or([
           new PropertyFilter('date', '<=', now),
           new PropertyFilter('name', '=', 'Stephen'),
         ])
       );
-      const filter = query.newFilters[0];
+      const filter = query.entityFilters[0];
       assert.strictEqual(filter.op, 'OR');
       // Check filters
       const filters = filter.filters;

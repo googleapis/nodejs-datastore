@@ -21,7 +21,7 @@ import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
-import {PropertyFilter, Filter, AND, OR} from '../src/filter';
+import {PropertyFilter, EntityFilter, and, or} from '../src/filter';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -837,30 +837,57 @@ describe('Datastore', () => {
           .filter(new PropertyFilter('appearances', '>=', 20));
         const [entities] = await datastore.runQuery(q);
         assert.strictEqual(entities!.length, 6);
+        for (const entity of entities) {
+          if (Array.isArray(entity.family)) {
+            assert.strictEqual(entity.family[0], 'Stark');
+          } else {
+            assert.strictEqual(entity.family, 'Stark');
+          }
+          assert(entity.appearances >= 20);
+        }
       });
       it('should run a query using an AND composite filter', async () => {
         const q = datastore
           .createQuery('Character')
           .filter(
-            AND([
+            and([
               new PropertyFilter('family', '=', 'Stark'),
               new PropertyFilter('appearances', '>=', 20),
             ])
           );
         const [entities] = await datastore.runQuery(q);
         assert.strictEqual(entities!.length, 6);
+        for (const entity of entities) {
+          if (Array.isArray(entity.family)) {
+            assert.strictEqual(entity.family[0], 'Stark');
+          } else {
+            assert.strictEqual(entity.family, 'Stark');
+          }
+          assert(entity.appearances >= 20);
+        }
       });
       it('should run a query using an OR composite filter', async () => {
         const q = datastore
           .createQuery('Character')
           .filter(
-            OR([
+            or([
               new PropertyFilter('family', '=', 'Stark'),
               new PropertyFilter('appearances', '>=', 20),
             ])
           );
         const [entities] = await datastore.runQuery(q);
         assert.strictEqual(entities!.length, 8);
+        let atLeastOne = false;
+        for (const entity of entities) {
+          const familyHasStark = Array.isArray(entity.family)
+            ? entity.family[0] === 'Stark'
+            : entity.family === 'Stark';
+          const hasEnoughAppearances = entity.appearances >= 20;
+          if (familyHasStark && !hasEnoughAppearances) {
+            atLeastOne = true;
+          }
+        }
+        assert(atLeastOne);
       });
       describe('using hasAncestor and Filter class', () => {
         const secondAncestor = datastore.key([
@@ -871,7 +898,7 @@ describe('Datastore', () => {
           'Character',
           'Eddard',
         ]);
-        it('should run a query using hasAncestor first', async () => {
+        it('should run a query using hasAncestor last', async () => {
           const q = datastore
             .createQuery('Character')
             .filter(new PropertyFilter('appearances', '<', 30))
@@ -879,7 +906,7 @@ describe('Datastore', () => {
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 3);
         });
-        it('should run a query using hasAncestor last', async () => {
+        it('should run a query using hasAncestor first', async () => {
           const q = datastore
             .createQuery('Character')
             .hasAncestor(secondAncestor)
