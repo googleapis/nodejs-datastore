@@ -21,7 +21,7 @@ import {PathType} from '.';
 import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
-import {AND, PropertyFilter} from './filter';
+import {and, PropertyFilter} from './filter';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -1238,12 +1238,20 @@ export namespace entity {
       queryProto.startCursor = query.startVal;
     }
 
-    if (query.filters.length > 0 || query.newFilters.length > 0) {
+    // Check to see if there is at least one type of legacy filter or new filter.
+    if (query.filters.length > 0 || query.entityFilters.length > 0) {
+      // Convert all legacy filters into new property filter objects
       const filters = query.filters.map(
         filter => new PropertyFilter(filter.name, filter.op, filter.val)
       );
-      const newFilters = query.newFilters;
-      queryProto.filter = AND(newFilters.concat(filters)).toProto();
+      const entityFilters = query.entityFilters;
+      const allFilters = entityFilters.concat(filters);
+      /*
+        To be consistent with prior implementation, apply an AND composite filter
+        to the collection of Filter objects. Then, set the filter property as before
+        to the output of the toProto method.
+       */
+      queryProto.filter = and(allFilters).toProto();
     }
 
     return queryProto;
