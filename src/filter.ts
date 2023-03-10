@@ -84,14 +84,7 @@ export class PropertyFilter extends EntityFilter implements IFilter {
   }
 
   private encodedValue(): any {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let value: any = {};
-    if (this.name === '__key__') {
-      value.keyValue = entity.keyToKeyProto(this.val);
-    } else {
-      value = entity.encodeValue(this.val, this.name);
-    }
-    return value;
+    return entity.encodeValue(this.val, this.name);
   }
 
   /**
