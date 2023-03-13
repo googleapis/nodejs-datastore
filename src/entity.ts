@@ -370,6 +370,10 @@ export namespace entity {
     parent?: Key;
     path!: Array<string | number>;
 
+    isKey() {
+      return true;
+    }
+
     constructor(options: KeyOptions) {
       /**
        * @name Key#namespace
@@ -457,7 +461,7 @@ export namespace entity {
    * @returns {boolean}
    */
   export function isDsKey(value?: {}): value is entity.Key {
-    return value instanceof entity.Key;
+    return value && 'isKey' in value && value.isKey();
   }
 
   /**
