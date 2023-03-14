@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Operator, Filter as IFilter} from './query';
-import {entity} from './entity';
+import {entity, ValueProto} from './entity';
 
 const OP_TO_OPERATOR = new Map([
   ['=', 'EQUAL'],
@@ -64,11 +64,6 @@ export abstract class EntityFilter {
  * @class
  */
 export class PropertyFilter extends EntityFilter implements IFilter {
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  val: any;
-  op: Operator;
-
   /**
    * Build a Property Filter object.
    *
@@ -76,16 +71,13 @@ export class PropertyFilter extends EntityFilter implements IFilter {
    * @param {Operator} operator
    * @param {any} val
    */
-  constructor(property: string, operator: Operator, val: any) {
+  constructor(public name: string, public op: Operator, public val: any) {
     super();
-    this.name = property;
-    this.op = operator;
-    this.val = val;
   }
 
-  private encodedValue(): any {
+  private encodedValue: () => ValueProto = () => {
     return entity.encodeValue(this.val, this.name);
-  }
+  };
 
   /**
    * Gets the proto for the filter.
@@ -93,11 +85,7 @@ export class PropertyFilter extends EntityFilter implements IFilter {
    */
   // eslint-disable-next-line
   toProto(): any {
-    const value = new PropertyFilter(
-      this.name,
-      this.op,
-      this.val
-    ).encodedValue();
+    const value = this.encodedValue();
     return {
       propertyFilter: {
         property: {
