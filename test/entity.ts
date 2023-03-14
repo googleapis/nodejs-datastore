@@ -1872,6 +1872,31 @@ describe('entity', () => {
       },
     };
 
+    const keyWithInFilter = {
+      propertyFilter: {
+        op: 'IN',
+        property: {
+          name: '__key__',
+        },
+        value: {
+          arrayValue: {
+            values: [
+              {
+                keyValue: {
+                  path: [
+                    {
+                      kind: 'Kind1',
+                      name: 'key1',
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    };
+
     it('should support all configurations of a query', () => {
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
@@ -1882,6 +1907,32 @@ describe('entity', () => {
       const query = ds
         .createQuery('Kind1')
         .filter('name', 'John')
+        .start('start')
+        .end('end')
+        .groupBy(['name'])
+        .order('name')
+        .select('name')
+        .limit(1)
+        .offset(1)
+        .hasAncestor(ancestorKey);
+
+      assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
+    });
+
+    it.only('should support using key with IN', () => {
+      const ancestorKey = new entity.Key({
+        path: ['Kind2', 'somename'],
+      });
+
+      const newQueryProto = Object.assign({}, queryProto);
+      const ds = new Datastore({projectId: 'project-id'});
+
+      newQueryProto.filter.compositeFilter.filters.push(keyWithInFilter);
+
+      const query = ds
+        .createQuery('Kind1')
+        .filter('name', 'John')
+        .filter('__key__', 'IN', [new entity.Key({path: ['Kind1', 'key1']})])
         .start('start')
         .end('end')
         .groupBy(['name'])
