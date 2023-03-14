@@ -75,17 +75,13 @@ export class PropertyFilter extends EntityFilter implements IFilter {
     super();
   }
 
-  private encodedValue: () => ValueProto = () => {
-    return entity.encodeValue(this.val, this.name);
-  };
-
   /**
    * Gets the proto for the filter.
    *
    */
   // eslint-disable-next-line
   toProto(): any {
-    const value = this.encodedValue();
+    const value = entity.encodeValue(this.val, this.name);
     return {
       propertyFilter: {
         property: {
