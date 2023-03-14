@@ -599,6 +599,7 @@ export namespace entity {
   export function encodeValue(value: any, property: string): ValueProto {
     const valueProto: ValueProto = {};
 
+    debugger;
     if (is.boolean(value)) {
       valueProto.booleanValue = value;
       return valueProto;
@@ -669,10 +670,13 @@ export namespace entity {
       return valueProto;
     }
 
+    debugger;
     if (isDsKey(value)) {
+      debugger;
       valueProto.keyValue = entity.keyToKeyProto(value);
       return valueProto;
     }
+    debugger;
 
     if (is.object(value)) {
       if (!is.empty(value)) {

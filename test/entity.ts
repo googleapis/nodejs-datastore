@@ -1874,8 +1874,9 @@ describe('entity', () => {
       },
     };
 
-    it('should support all configurations of a query', () => {
+    it.only('should support all configurations of a query', () => {
       const ancestorKey = new entity.Key({
+        namespace: 'My-NS',
         path: ['Kind2', 'somename'],
       });
 
