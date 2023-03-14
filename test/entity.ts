@@ -17,7 +17,7 @@ import {beforeEach, afterEach, describe, it} from 'mocha';
 import * as extend from 'extend';
 import * as sinon from 'sinon';
 import {Datastore} from '../src';
-import {Entity} from '../src/entity';
+import {Entity, entity as globalEntity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
 import {PropertyFilter, EntityFilter, and} from '../src/filter';
 
@@ -1873,7 +1873,7 @@ describe('entity', () => {
     };
 
     it('should support all configurations of a query', () => {
-      const ancestorKey = new entity.Key({
+      const ancestorKey = new globalEntity.Key({
         path: ['Kind2', 'somename'],
       });
 
@@ -1895,7 +1895,7 @@ describe('entity', () => {
     });
 
     it('should support the filter method with Filter objects', () => {
-      const ancestorKey = new entity.Key({
+      const ancestorKey = new globalEntity.Key({
         path: ['Kind2', 'somename'],
       });
 
@@ -1916,7 +1916,7 @@ describe('entity', () => {
     });
 
     it('should support the filter method with AND', () => {
-      const ancestorKey = new entity.Key({
+      const ancestorKey = new globalEntity.Key({
         path: ['Kind2', 'somename'],
       });
 
