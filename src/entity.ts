@@ -416,6 +416,10 @@ export namespace entity {
       });
     }
 
+    isKey() {
+      return true;
+    }
+
     /**
      * Access the `serialized` property for a library-compatible way to re-use a
      * key.
@@ -457,7 +461,11 @@ export namespace entity {
    * @returns {boolean}
    */
   export function isDsKey(value?: {}): value is entity.Key {
-    return value instanceof entity.Key;
+    const valueToCheck = value as Key;
+    if (value) {
+      return value && 'isKey' in value && valueToCheck.isKey();
+    }
+    return false;
   }
 
   /**
