@@ -1872,7 +1872,7 @@ describe('entity', () => {
       },
     };
 
-    const keyWithInFilter = {
+    const keyWithInQuery = {
       distinctOn: [],
       filter: {
         compositeFilter: {
@@ -1937,20 +1937,13 @@ describe('entity', () => {
     });
 
     it('should support using key with IN', () => {
-      /*
-      const ancestorKey = new entity.Key({
-        path: ['Kind2', 'somename'],
-      });
-
-      const newQueryProto = Object.assign({}, queryProto);
-      */
       const ds = new Datastore({projectId: 'project-id'});
 
       const query = ds
         .createQuery('Kind1')
         .filter('__key__', 'IN', [new entity.Key({path: ['Kind1', 'key1']})]);
 
-      assert.deepStrictEqual(entity.queryToQueryProto(query), keyWithInFilter);
+      assert.deepStrictEqual(entity.queryToQueryProto(query), keyWithInQuery);
     });
 
     it('should support the filter method with Filter objects', () => {
