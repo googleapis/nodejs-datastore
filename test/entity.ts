@@ -1873,28 +1873,45 @@ describe('entity', () => {
     };
 
     const keyWithInFilter = {
-      propertyFilter: {
-        op: 'IN',
-        property: {
-          name: '__key__',
-        },
-        value: {
-          arrayValue: {
-            values: [
-              {
-                keyValue: {
-                  path: [
-                    {
-                      kind: 'Kind1',
-                      name: 'key1',
-                    },
-                  ],
+      distinctOn: [],
+      filter: {
+        compositeFilter: {
+          filters: [
+            {
+              propertyFilter: {
+                op: 'IN',
+                property: {
+                  name: '__key__',
+                },
+                value: {
+                  arrayValue: {
+                    values: [
+                      {
+                        keyValue: {
+                          path: [
+                            {
+                              kind: 'Kind1',
+                              name: 'key1',
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
                 },
               },
-            ],
-          },
+            },
+          ],
+          op: 'AND',
         },
       },
+      kind: [
+        {
+          name: 'Kind1',
+        },
+      ],
+      order: [],
+      projection: [],
     };
 
     it('should support all configurations of a query', () => {
@@ -1919,30 +1936,21 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
-    it.only('should support using key with IN', () => {
+    it('should support using key with IN', () => {
+      /*
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
       });
 
       const newQueryProto = Object.assign({}, queryProto);
+      */
       const ds = new Datastore({projectId: 'project-id'});
-
-      newQueryProto.filter.compositeFilter.filters.push(keyWithInFilter);
 
       const query = ds
         .createQuery('Kind1')
-        .filter('name', 'John')
-        .filter('__key__', 'IN', [new entity.Key({path: ['Kind1', 'key1']})])
-        .start('start')
-        .end('end')
-        .groupBy(['name'])
-        .order('name')
-        .select('name')
-        .limit(1)
-        .offset(1)
-        .hasAncestor(ancestorKey);
+        .filter('__key__', 'IN', [new entity.Key({path: ['Kind1', 'key1']})]);
 
-      assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
+      assert.deepStrictEqual(entity.queryToQueryProto(query), keyWithInFilter);
     });
 
     it('should support the filter method with Filter objects', () => {
