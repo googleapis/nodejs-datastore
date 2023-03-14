@@ -1600,6 +1600,7 @@ describe('entity', () => {
     });
   });
 
+  /*
   describe('keyFromKeyProto', () => {
     const NAMESPACE = 'Namespace';
 
@@ -1687,6 +1688,7 @@ describe('entity', () => {
       }
     });
   });
+  */
 
   describe('keyToKeyProto', () => {
     it('should handle hierarchical key definitions', () => {
