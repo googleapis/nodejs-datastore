@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Operator, Filter as IFilter} from './query';
-import {entity, ValueProto} from './entity';
+import {entity} from './entity';
 
 const OP_TO_OPERATOR = new Map([
   ['=', 'EQUAL'],
@@ -81,14 +81,13 @@ export class PropertyFilter extends EntityFilter implements IFilter {
    */
   // eslint-disable-next-line
   toProto(): any {
-    const value = entity.encodeValue(this.val, this.name);
     return {
       propertyFilter: {
         property: {
           name: this.name,
         },
         op: OP_TO_OPERATOR.get(this.op),
-        value,
+        value: entity.encodeValue(this.val, this.name),
       },
     };
   }

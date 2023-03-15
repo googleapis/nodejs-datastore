@@ -1894,7 +1894,7 @@ describe('entity', () => {
       assert.deepStrictEqual(entity.queryToQueryProto(query), queryProto);
     });
 
-    it('should support using key with IN', () => {
+    it('should support using __key__ with array as value', () => {
       const keyWithInQuery = {
         distinctOn: [],
         filter: {
