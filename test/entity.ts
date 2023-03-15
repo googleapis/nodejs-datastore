@@ -1872,48 +1872,6 @@ describe('entity', () => {
       },
     };
 
-    const keyWithInQuery = {
-      distinctOn: [],
-      filter: {
-        compositeFilter: {
-          filters: [
-            {
-              propertyFilter: {
-                op: 'IN',
-                property: {
-                  name: '__key__',
-                },
-                value: {
-                  arrayValue: {
-                    values: [
-                      {
-                        keyValue: {
-                          path: [
-                            {
-                              kind: 'Kind1',
-                              name: 'key1',
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-              },
-            },
-          ],
-          op: 'AND',
-        },
-      },
-      kind: [
-        {
-          name: 'Kind1',
-        },
-      ],
-      order: [],
-      projection: [],
-    };
-
     it('should support all configurations of a query', () => {
       const ancestorKey = new globalEntity.Key({
         path: ['Kind2', 'somename'],
@@ -1937,6 +1895,48 @@ describe('entity', () => {
     });
 
     it('should support using key with IN', () => {
+      const keyWithInQuery = {
+        distinctOn: [],
+        filter: {
+          compositeFilter: {
+            filters: [
+              {
+                propertyFilter: {
+                  op: 'IN',
+                  property: {
+                    name: '__key__',
+                  },
+                  value: {
+                    arrayValue: {
+                      values: [
+                        {
+                          keyValue: {
+                            path: [
+                              {
+                                kind: 'Kind1',
+                                name: 'key1',
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            ],
+            op: 'AND',
+          },
+        },
+        kind: [
+          {
+            name: 'Kind1',
+          },
+        ],
+        order: [],
+        projection: [],
+      };
+
       const ds = new Datastore({projectId: 'project-id'});
 
       const query = ds
