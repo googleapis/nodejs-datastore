@@ -71,7 +71,7 @@ export class PropertyFilter extends EntityFilter implements IFilter {
    * @param {Operator} operator
    * @param {any} val
    */
-  constructor(public name: string, public op: Operator, public val: any) {
+  constructor(public name: string, public op: Operator, public val: unknown) {
     super();
   }
 
