@@ -14,6 +14,7 @@
 
 import {Operator, Filter as IFilter} from './query';
 import {entity} from './entity';
+import Key = entity.Key;
 
 const OP_TO_OPERATOR = new Map([
   ['=', 'EQUAL'],
@@ -56,6 +57,8 @@ export abstract class EntityFilter {
   abstract toProto(): any;
 }
 
+type restrictedValueType<T> = T extends '__key__' ? Key | Key[] : unknown;
+
 /**
  * A PropertyFilter is a filter that gets applied to a query directly.
  *
@@ -63,7 +66,10 @@ export abstract class EntityFilter {
  *
  * @class
  */
-export class PropertyFilter extends EntityFilter implements IFilter {
+export class PropertyFilter<T extends string>
+  extends EntityFilter
+  implements IFilter
+{
   /**
    * Build a Property Filter object.
    *
@@ -71,7 +77,11 @@ export class PropertyFilter extends EntityFilter implements IFilter {
    * @param {Operator} operator
    * @param {any} val
    */
-  constructor(public name: string, public op: Operator, public val: unknown) {
+  constructor(
+    public name: T,
+    public op: Operator,
+    public val: restrictedValueType<T>
+  ) {
     super();
   }
 
