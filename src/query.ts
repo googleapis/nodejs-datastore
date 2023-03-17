@@ -18,7 +18,7 @@ import arrify = require('arrify');
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
-import {EntityFilter, isFilter} from './filter';
+import {EntityFilter, isFilter, restrictedValueType} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
@@ -207,12 +207,19 @@ class Query {
    * const keyQuery = query.filter('__key__', key);
    * ```
    */
-  filter(propertyOrFilter: string | EntityFilter, value?: {} | null): Query;
-  filter(propertyOrFilter: string, operator: Operator, value: {} | null): Query;
-  filter(
-    propertyOrFilter: string | EntityFilter,
+  filter<T extends string>(
+    propertyOrFilter: T | EntityFilter,
+    value?: restrictedValueType<T> | null
+  ): Query;
+  filter<T extends string>(
+    propertyOrFilter: T,
+    operator: Operator,
+    value: restrictedValueType<T> | null
+  ): Query;
+  filter<T extends string>(
+    propertyOrFilter: T | EntityFilter,
     operatorOrValue?: Operator,
-    value?: {} | null
+    value?: restrictedValueType<T> | null
   ): Query {
     if (isFilter(propertyOrFilter)) {
       this.entityFilters.push(propertyOrFilter);
@@ -223,7 +230,7 @@ class Query {
       );
       let operator = operatorOrValue as Operator;
       if (arguments.length === 2) {
-        value = operatorOrValue as {};
+        value = operatorOrValue as restrictedValueType<T>;
         operator = '=';
       }
 

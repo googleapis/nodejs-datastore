@@ -57,7 +57,9 @@ export abstract class EntityFilter {
   abstract toProto(): any;
 }
 
-type restrictedValueType<T> = T extends '__key__' ? Key | Key[] : unknown;
+export type restrictedValueType<T> = T extends '__key__'
+  ? Key | Key[]
+  : unknown;
 
 /**
  * A PropertyFilter is a filter that gets applied to a query directly.
