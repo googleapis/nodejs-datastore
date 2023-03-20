@@ -20,6 +20,7 @@ const {Query} = require('../src/query');
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, or} from '../src/filter';
+import {entity} from '../src/entity';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -431,5 +432,34 @@ describe('Query', () => {
       const results = query.runStream(options);
       assert.strictEqual(results, runQueryReturnValue);
     });
+  });
+
+  it('should pass the database id to the generated layer', async () => {
+    const otherDatastore = new Datastore({
+      namespace: `${Date.now()}`,
+      databaseId: 'foo2',
+    });
+    const postKey = new entity.Key({path: ['Post', 'post1']});
+    // Call get to initialize the data client:
+    await otherDatastore.get(postKey);
+    const dataClient = otherDatastore.clients_.get('DatastoreClient');
+    const projectId = await otherDatastore.getProjectId();
+    if (dataClient) {
+      dataClient['commit'] = (
+        request: any,
+        options: any,
+        callback: () => void
+      ) => {
+        assert.strictEqual(request.databaseId, 'foo2');
+        assert.strictEqual(request.projectId, projectId);
+        assert.deepStrictEqual(options, {
+          headers: {
+            'google-cloud-resource-prefix': `projects/${projectId}`,
+          },
+        });
+        callback();
+      };
+    }
+    await otherDatastore.save({key: postKey, data: {title: 'test'}});
   });
 });
