@@ -995,7 +995,7 @@ class DatastoreRequest {
       }
     }
 
-    if (datastore.options.databaseId) {
+    if (datastore.options && datastore.options.databaseId) {
       reqOpts.databaseId = datastore.options.databaseId;
     }
 
