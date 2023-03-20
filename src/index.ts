@@ -693,6 +693,10 @@ class Datastore extends DatastoreRequest {
     );
   }
 
+  getDatabaseId(): string | undefined {
+    return this.options.databaseId;
+  }
+
   getProjectId(): Promise<string> {
     return this.auth.getProjectId();
   }
@@ -1811,6 +1815,7 @@ promisifyAll(Datastore, {
     'double',
     'isDouble',
     'geoPoint',
+    'getDatabaseId',
     'getProjectId',
     'getSharedQueryOptions',
     'isGeoPoint',

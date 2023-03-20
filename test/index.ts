@@ -19,7 +19,7 @@ import * as proxyquire from 'proxyquire';
 import {PassThrough, Readable} from 'stream';
 
 import * as ds from '../src';
-import {DatastoreOptions} from '../src';
+import {Datastore, DatastoreOptions} from '../src';
 import {entity, Entity, EntityProto, EntityObject} from '../src/entity';
 import {RequestConfig} from '../src/request';
 import * as is from 'is';
@@ -2150,6 +2150,16 @@ describe('Datastore', () => {
       const key = datastore.keyFromLegacyUrlsafe(encodedKey);
       assert.strictEqual(key.kind, 'Task');
       assert.strictEqual(key.name, 'Test');
+    });
+  });
+
+  describe('multi-db support', () => {
+    it('should get the database id from the client', async () => {
+      const otherDatastore = new Datastore({
+        namespace: `${Date.now()}`,
+        databaseId: 'foo2',
+      });
+      assert.strictEqual(otherDatastore.getDatabaseId(), 'foo2');
     });
   });
 });
