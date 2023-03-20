@@ -311,7 +311,7 @@ describe('Datastore', () => {
     });
 
     describe('multi-db support for read and write operations', () => {
-      it.only('should run a query with another database', async () => {
+      it('should run a query with another database', async () => {
         // First verify that a record gets written to datastore
         const postKey = datastore.key(['Post', 'post1']);
         await datastore.save({key: postKey, data: post});
@@ -329,6 +329,27 @@ describe('Datastore', () => {
         assert.strictEqual(secondDatastoreResults.length, 0);
         const [otherEntity] = await otherDatastore.get(postKey);
         assert(typeof otherEntity === 'undefined');
+        // Cleanup
+        await datastore.delete(postKey);
+      });
+      it('should ensure save works with another database', async () => {
+        // First verify that the default database is empty
+        const postKey = datastore.key(['Post', 'post1']);
+        const query = datastore.createQuery('Post').hasAncestor(postKey);
+        const [defaultDatastoreResults] = await datastore.runQuery(query);
+        assert.strictEqual(defaultDatastoreResults.length, 0);
+        const [entity] = await datastore.get(postKey);
+        assert(typeof entity === 'undefined');
+        // With another database, verify that saving to the database works
+        const otherDatastore = new Datastore({
+          namespace: `${Date.now()}`,
+          databaseId: 'foo2',
+        });
+        await otherDatastore.save({key: postKey, data: post});
+        const [secondDatastoreResults] = await otherDatastore.runQuery(query);
+        assert.strictEqual(secondDatastoreResults.length, 1);
+        const [otherEntity] = await otherDatastore.get(postKey);
+        assert.strictEqual(otherEntity.author, 'Silvano');
         // Cleanup
         await datastore.delete(postKey);
       });
