@@ -1892,6 +1892,7 @@ export interface DatastoreOptions extends GoogleAuthOptions {
   namespace?: string;
   apiEndpoint?: string;
   sslCreds?: ChannelCredentials;
+  databaseId?: string;
 }
 
 export interface KeyToLegacyUrlSafeCallback {
