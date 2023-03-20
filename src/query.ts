@@ -207,19 +207,22 @@ class Query {
    * const keyQuery = query.filter('__key__', key);
    * ```
    */
+  /*
   filter<T extends string>(
-    propertyOrFilter: T | EntityFilter,
-    value?: restrictedValueType<T> | null
+    propertyOrFilter: T,
+    value?: restrictedValueType<T>
   ): Query;
   filter<T extends string>(
     propertyOrFilter: T,
     operator: Operator,
-    value: restrictedValueType<T> | null
+    value: restrictedValueType<T>
   ): Query;
+  /*
+   */
   filter<T extends string>(
-    propertyOrFilter: T | EntityFilter,
-    operatorOrValue?: Operator,
-    value?: restrictedValueType<T> | null
+    propertyOrFilter: T,
+    operatorOrValue: Operator,
+    value: restrictedValueType<T>
   ): Query {
     if (isFilter(propertyOrFilter)) {
       this.entityFilters.push(propertyOrFilter);

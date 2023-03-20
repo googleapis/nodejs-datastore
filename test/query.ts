@@ -20,6 +20,7 @@ const {Query} = require('../src/query');
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, or} from '../src/filter';
+import {entity} from '../src/entity';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -90,6 +91,8 @@ describe('Query', () => {
 
     it('should recognize all the different operators', () => {
       const now = new Date();
+      const aKey = '__key__';
+      const aValue = 'bob';
       const query = new Query(['kind1'])
         .filter('date', '<=', now)
         .filter('name', '=', 'Title')
@@ -98,7 +101,9 @@ describe('Query', () => {
         .filter('something', '>=', 11)
         .filter('neProperty', '!=', 12)
         .filter('inProperty', 'IN', 13)
-        .filter('notInProperty', 'NOT_IN', 14);
+        .filter('notInProperty', 'NOT_IN', 14)
+        .filter('__key__', 'IN', new entity.Key({path: ['test']}))
+        .filter(aKey, 'IN', aValue);
 
       assert.strictEqual(query.filters[0].name, 'date');
       assert.strictEqual(query.filters[0].op, '<=');
