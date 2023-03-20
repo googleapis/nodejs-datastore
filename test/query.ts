@@ -435,14 +435,20 @@ describe('Query', () => {
   });
 
   it('should pass the database id to the generated layer', async () => {
-    const otherDatastore = new Datastore({
+    const options = {
       namespace: `${Date.now()}`,
       databaseId: 'foo2',
-    });
+      projectId: 'test-project-id',
+    };
+    const clientName = 'DatastoreClient';
+    const otherDatastore = new Datastore(options);
     const postKey = new entity.Key({path: ['Post', 'post1']});
-    // Call get to initialize the data client:
-    await otherDatastore.get(postKey);
-    const dataClient = otherDatastore.clients_.get('DatastoreClient');
+    // Initialize the generated client so that we can mock it out
+    const gapic = Object.freeze({
+      v1: require('../src/v1'),
+    });
+    otherDatastore.clients_.set(clientName, new gapic.v1[clientName](options));
+    const dataClient = otherDatastore.clients_.get(clientName);
     const projectId = await otherDatastore.getProjectId();
     if (dataClient) {
       dataClient['commit'] = (
