@@ -18,7 +18,7 @@ import arrify = require('arrify');
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
-import {EntityFilter, isFilter, restrictedValueType} from './filter';
+import {EntityFilter, isFilter, allowedFilterValueType} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
@@ -208,16 +208,16 @@ class Query {
    * ```
    */
   filter(filter: EntityFilter): Query;
-  filter<T extends string>(property: T, value: restrictedValueType<T>): Query;
+  filter<T extends string>(property: T, value: allowedFilterValueType<T>): Query;
   filter<T extends string>(
     property: T,
     operator: Operator,
-    value: restrictedValueType<T>
+    value: allowedFilterValueType<T>
   ): Query;
   filter<T extends string>(
     propertyOrFilter: T | EntityFilter,
-    operatorOrValue?: Operator | restrictedValueType<T>,
-    value?: restrictedValueType<T>
+    operatorOrValue?: Operator | allowedFilterValueType<T>,
+    value?: allowedFilterValueType<T>
   ): Query {
     if (isFilter(propertyOrFilter)) {
       this.entityFilters.push(propertyOrFilter);
@@ -228,7 +228,7 @@ class Query {
       );
       let operator = operatorOrValue as Operator;
       if (arguments.length === 2) {
-        value = operatorOrValue as restrictedValueType<T>;
+        value = operatorOrValue as allowedFilterValueType<T>;
         operator = '=';
       }
 
