@@ -351,7 +351,7 @@ describe('Datastore', () => {
         const [otherEntity] = await otherDatastore.get(postKey);
         assert.strictEqual(otherEntity.author, 'Silvano');
         // Cleanup
-        await datastore.delete(postKey);
+        await otherDatastore.delete(postKey);
       });
     });
 
