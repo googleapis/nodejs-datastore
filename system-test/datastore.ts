@@ -310,6 +310,32 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
+    it.only('should run a query with another database', async () => {
+      // First verify that a record gets written to datastore
+      const postKey = datastore.key(['Post', 'post1']);
+      await datastore.save({key: postKey, data: post});
+      const query = datastore.createQuery('Post').hasAncestor(postKey);
+      const [defaultDatastoreResults] = await datastore.runQuery(query);
+      assert.strictEqual(defaultDatastoreResults.length, 1);
+      // With another database, verify that a query returns no results
+      const foo2Datastore = new Datastore({
+        namespace: `${Date.now()}`,
+        databaseId: 'foo2',
+      });
+      const [secondDatastoreResults] = await foo2Datastore.runQuery(query);
+      assert.strictEqual(secondDatastoreResults.length, 0);
+      // Cleanup
+      await datastore.delete(postKey);
+      /*
+      await datastore.save({key: postKey, data: post});
+      const [entity] = await datastore.get(postKey);
+      assert.deepStrictEqual(entity[datastore.KEY], postKey);
+      delete entity[datastore.KEY];
+      assert.deepStrictEqual(entity, post);
+      await datastore.delete(postKey);
+      */
+    });
+
     it('should save/get/delete from a snapshot', async () => {
       function sleep(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
