@@ -144,5 +144,5 @@ class CompositeFilter extends EntityFilter {
 }
 
 export function isFilter(filter: any): filter is EntityFilter {
-  return (filter as EntityFilter).toProto !== undefined;
+  return filter instanceof EntityFilter;
 }

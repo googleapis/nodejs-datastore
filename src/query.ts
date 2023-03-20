@@ -208,7 +208,10 @@ class Query {
    * ```
    */
   filter(filter: EntityFilter): Query;
-  filter<T extends string>(property: T, value: AllowedFilterValueType<T>): Query;
+  filter<T extends string>(
+    property: T,
+    value: AllowedFilterValueType<T>
+  ): Query;
   filter<T extends string>(
     property: T,
     operator: Operator,
