@@ -57,7 +57,7 @@ export abstract class EntityFilter {
   abstract toProto(): any;
 }
 
-export type allowedFilterValueType<T> = T extends '__key__'
+export type AllowedFilterValueType<T> = T extends '__key__'
   ? Key | Key[]
   : unknown;
 
@@ -82,7 +82,7 @@ export class PropertyFilter<T extends string>
   constructor(
     public name: T,
     public op: Operator,
-    public val: allowedFilterValueType<T>
+    public val: AllowedFilterValueType<T>
   ) {
     super();
   }
