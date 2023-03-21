@@ -21,6 +21,7 @@ import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, or} from '../src/filter';
 import {entity} from '../src/entity';
+import {SECOND_DATABASE_ID} from './index';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -437,7 +438,7 @@ describe('Query', () => {
   it('should pass the database id to the generated layer', async () => {
     const options = {
       namespace: `${Date.now()}`,
-      databaseId: 'foo2',
+      databaseId: SECOND_DATABASE_ID,
       projectId: 'test-project-id',
     };
     const clientName = 'DatastoreClient';
@@ -456,7 +457,7 @@ describe('Query', () => {
         options: any,
         callback: () => void
       ) => {
-        assert.strictEqual(request.databaseId, 'foo2');
+        assert.strictEqual(request.databaseId, SECOND_DATABASE_ID);
         assert.strictEqual(request.projectId, projectId);
         assert.deepStrictEqual(options, {
           headers: {

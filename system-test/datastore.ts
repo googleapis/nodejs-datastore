@@ -22,6 +22,7 @@ import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, and, or} from '../src/filter';
+import {SECOND_DATABASE_ID} from '../test';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -323,7 +324,7 @@ describe('Datastore', () => {
         // With another database, verify that a query returns no results
         const otherDatastore = new Datastore({
           namespace: `${Date.now()}`,
-          databaseId: 'foo2',
+          databaseId: SECOND_DATABASE_ID,
         });
         const [secondDatastoreResults] = await otherDatastore.runQuery(query);
         assert.strictEqual(secondDatastoreResults.length, 0);
@@ -343,7 +344,7 @@ describe('Datastore', () => {
         // With another database, verify that saving to the database works
         const otherDatastore = new Datastore({
           namespace: `${Date.now()}`,
-          databaseId: 'foo2',
+          databaseId: SECOND_DATABASE_ID,
         });
         await otherDatastore.save({key: postKey, data: post});
         const [secondDatastoreResults] = await otherDatastore.runQuery(query);

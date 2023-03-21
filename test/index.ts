@@ -89,6 +89,10 @@ function fakeGoogleAuth(...args: Array<{}>) {
 
 let createInsecureOverride: Function | null;
 
+const SECOND_DATABASE_ID = 'foo';
+
+export {SECOND_DATABASE_ID};
+
 const fakeGoogleGax = {
   GoogleAuth: fakeGoogleAuth,
   GrpcClient: class extends gax.GrpcClient {
@@ -2157,16 +2161,16 @@ describe('Datastore', () => {
     it('should get the database id from the client', async () => {
       const otherDatastore = new Datastore({
         namespace: `${Date.now()}`,
-        databaseId: 'foo2',
+        databaseId: SECOND_DATABASE_ID,
       });
-      assert.strictEqual(otherDatastore.getDatabaseId(), 'foo2');
+      assert.strictEqual(otherDatastore.getDatabaseId(), SECOND_DATABASE_ID);
     });
     it('should get the database id from the client when the databaseId is set', async () => {
       const otherDatastore = new Datastore({
         namespace: `${Date.now()}`,
       });
-      otherDatastore.setDatabaseId('foo2');
-      assert.strictEqual(otherDatastore.getDatabaseId(), 'foo2');
+      otherDatastore.setDatabaseId(SECOND_DATABASE_ID);
+      assert.strictEqual(otherDatastore.getDatabaseId(), SECOND_DATABASE_ID);
     });
   });
 });
