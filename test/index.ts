@@ -89,7 +89,7 @@ function fakeGoogleAuth(...args: Array<{}>) {
 
 let createInsecureOverride: Function | null;
 
-const SECOND_DATABASE_ID = 'foo';
+const SECOND_DATABASE_ID = 'foo2';
 
 export {SECOND_DATABASE_ID};
 
