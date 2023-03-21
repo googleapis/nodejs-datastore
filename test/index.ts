@@ -2161,5 +2161,12 @@ describe('Datastore', () => {
       });
       assert.strictEqual(otherDatastore.getDatabaseId(), 'foo2');
     });
+    it('should get the database id from the client when the databaseId is set', async () => {
+      const otherDatastore = new Datastore({
+        namespace: `${Date.now()}`,
+      });
+      otherDatastore.setDatabaseId('foo2');
+      assert.strictEqual(otherDatastore.getDatabaseId(), 'foo2');
+    });
   });
 });

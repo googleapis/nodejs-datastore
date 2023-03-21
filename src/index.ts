@@ -693,6 +693,12 @@ class Datastore extends DatastoreRequest {
     );
   }
 
+  /**
+   * Gets the database id that all requests will be run against.
+   *
+   * @returns {string} The database id that the current client is set to that
+   *    requests will run against.
+   */
   getDatabaseId(): string | undefined {
     return this.options.databaseId;
   }
@@ -1190,6 +1196,15 @@ class Datastore extends DatastoreRequest {
       },
       onCommit
     );
+  }
+
+  /**
+   * Set the databaseId that this client will make requests against.
+   *
+   * @param {databaseId} string Sets the databaseId that requests will be run against.
+   */
+  setDatabaseId(databaseId: string): void {
+    this.options.databaseId = databaseId;
   }
 
   /**
