@@ -995,7 +995,7 @@ class DatastoreRequest {
       }
     }
 
-    datastore.getRequestWithDatabaseId(reqOpts);
+    datastore.addDatabaseIdToRequest(reqOpts);
 
     if (method === 'rollback') {
       reqOpts.transaction = this.id;

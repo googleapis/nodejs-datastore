@@ -65,7 +65,7 @@ import {Transaction} from './transaction';
 import {promisifyAll} from '@google-cloud/promisify';
 import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
-import { getRequestWithDatabaseId } from './util';
+import { addDatabaseIdToRequest } from './util';
 
 const {grpc} = new GrpcClient();
 
@@ -708,8 +708,8 @@ class Datastore extends DatastoreRequest {
     return this.auth.getProjectId();
   }
 
-  getRequestWithDatabaseId(reqOpts: any): void {
-    getRequestWithDatabaseId(this, reqOpts);
+  addDatabaseIdToRequest(reqOpts: any): void {
+    addDatabaseIdToRequest(this, reqOpts);
   }
 
   /**
