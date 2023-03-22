@@ -23,6 +23,7 @@ import {Datastore, DatastoreRequest, Query, TransactionOptions} from '../src';
 import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
+import {addDatabaseIdToRequest} from '../src/util';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -61,6 +62,9 @@ describe('Transaction', () => {
     request_() {},
     projectId: PROJECT_ID,
     namespace: NAMESPACE,
+    addDatabaseIdToRequest(d: any, r: any) {
+      addDatabaseIdToRequest(d, r);
+    },
   } as {} as Datastore;
 
   function key(path: Path) {
