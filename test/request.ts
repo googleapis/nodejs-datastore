@@ -266,11 +266,6 @@ describe('Request', () => {
   describe('createReadStream', () => {
     beforeEach(() => {
       request.request_ = () => {};
-      request.datastore = {
-        addDatabaseIdToRequest(d: any, r: any) {
-          addDatabaseIdToRequest(d, r);
-        },
-      };
     });
 
     it('should throw if no keys are provided', () => {
