@@ -852,6 +852,11 @@ describe('Request', () => {
   describe('runQueryStream', () => {
     beforeEach(() => {
       request.request_ = () => {};
+      request.datastore = {
+        addDatabaseIdToRequest(d: any, r: any) {
+          addDatabaseIdToRequest(d, r);
+        },
+      };
     });
 
     it('should clone the query', done => {
