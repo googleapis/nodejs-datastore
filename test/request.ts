@@ -88,6 +88,11 @@ describe('Request', () => {
     });
     v1FakeClientOverride = null;
     request = new Request();
+    request.datastore = {
+      addDatabaseIdToRequest(d: any, r: any) {
+        addDatabaseIdToRequest(d, r);
+      },
+    };
   });
 
   afterEach(() => sandbox.restore());
