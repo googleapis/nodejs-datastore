@@ -230,6 +230,8 @@ class Transaction extends DatastoreRequest {
         ),
     };
 
+    // this.datastore.addDatabaseIdToRequest(reqOpts);
+
     this.request_(
       {
         client: 'DatastoreClient',
@@ -468,11 +470,14 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
 
+    // const reqOpts = {};
+    // this.datastore.addDatabaseIdToRequest(reqOpts);
     this.request_(
       {
         client: 'DatastoreClient',
         method: 'rollback',
         gaxOpts: gaxOptions || {},
+        // reqOpts,
       },
       (err, resp) => {
         this.skipCommit = true;
@@ -548,6 +553,7 @@ class Transaction extends DatastoreRequest {
     const reqOpts = {
       transactionOptions: {},
     } as RequestOptions;
+    // this.datastore.addDatabaseIdToRequest(reqOpts);
 
     if (options.readOnly || this.readOnly) {
       reqOpts.transactionOptions!.readOnly = {};
