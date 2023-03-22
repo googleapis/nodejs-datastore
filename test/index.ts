@@ -152,6 +152,7 @@ describe('Datastore', () => {
   const DATASTORE_PROJECT_ID_CACHED = process.env.DATASTORE_PROJECT_ID;
 
   const OPTIONS = {
+    databaseId: SECOND_DATABASE_ID,
     projectId: PROJECT_ID,
     apiEndpoint: 'http://endpoint',
     credentials: {},
@@ -180,6 +181,7 @@ describe('Datastore', () => {
 
     datastore = new Datastore({
       projectId: PROJECT_ID,
+      databaseId: SECOND_DATABASE_ID,
       namespace: NAMESPACE,
     });
   });
@@ -217,6 +219,10 @@ describe('Datastore', () => {
 
     it('should localize the projectId', () => {
       assert.strictEqual(datastore.options.projectId, PROJECT_ID);
+    });
+
+    it('should localize the databaseId', () => {
+      assert.strictEqual(datastore.options.databaseId, SECOND_DATABASE_ID);
     });
 
     it('should not default options.projectId to placeholder', () => {
@@ -1246,6 +1252,7 @@ describe('Datastore', () => {
 
     it('should save with keys', done => {
       const expectedReq = {
+        databaseId: SECOND_DATABASE_ID,
         mutations: [
           {
             upsert: {
