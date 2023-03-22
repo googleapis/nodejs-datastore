@@ -36,6 +36,7 @@ import {
   GetResponse,
   RequestCallback,
 } from '../src/request';
+import {getRequestWithDatabaseId} from '../src/util';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -1624,6 +1625,9 @@ describe('Request', () => {
           getProjectId(callback: Function) {
             callback(null, PROJECT_ID);
           },
+        },
+        getRequestWithDatabaseId(d: any, r: any) {
+          getRequestWithDatabaseId(d, r);
         },
       };
     });
