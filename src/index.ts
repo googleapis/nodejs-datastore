@@ -65,7 +65,7 @@ import {Transaction} from './transaction';
 import {promisifyAll} from '@google-cloud/promisify';
 import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
-import { addDatabaseIdToRequest } from './util';
+import {addDatabaseIdToRequest} from './util';
 
 const {grpc} = new GrpcClient();
 
