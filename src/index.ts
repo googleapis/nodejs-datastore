@@ -1192,7 +1192,6 @@ class Datastore extends DatastoreRequest {
       return;
     }
 
-    this.addDatabaseIdToRequest(reqOpts);
     this.request_(
       {
         client: 'DatastoreClient',
