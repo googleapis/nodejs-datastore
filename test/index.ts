@@ -153,7 +153,6 @@ describe('Datastore', () => {
   const DATASTORE_PROJECT_ID_CACHED = process.env.DATASTORE_PROJECT_ID;
 
   const DEFAULT_OPTIONS = {
-    databaseId: SECOND_DATABASE_ID,
     projectId: PROJECT_ID,
     apiEndpoint: 'http://endpoint',
     credentials: {},
@@ -164,10 +163,11 @@ describe('Datastore', () => {
 
   async.each(
     [
-      DEFAULT_OPTIONS,
-      Object.assign({databaseId: SECOND_DATABASE_ID}, DEFAULT_OPTIONS),
+      {},
+      {databaseId: SECOND_DATABASE_ID},
     ],
-    (clientOptions: DatastoreOptions) => {
+    (extraOptions: any) => {
+      const clientOptions: DatastoreOptions = Object.assign(extraOptions, DEFAULT_OPTIONS)
       const OPTIONS = clientOptions;
 
       before(() => {
