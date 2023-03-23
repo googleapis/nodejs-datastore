@@ -220,12 +220,6 @@ class DatastoreRequest {
     }
     options = typeof options === 'number' ? {allocations: options} : options;
 
-    /*
-    const reqOpts = {
-      keys: new Array(options.allocations).fill(entity.keyToKeyProto(key)),
-    };
-    */
-    // this.datastore.addDatabaseIdToRequest(reqOpts);
     this.request_(
       {
         client: 'DatastoreClient',
@@ -285,7 +279,6 @@ class DatastoreRequest {
       const reqOpts: RequestOptions = {
         keys,
       };
-      // this.datastore.addDatabaseIdToRequest(reqOpts);
 
       if (options.consistency) {
         const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
@@ -611,7 +604,6 @@ class DatastoreRequest {
     const reqOpts: RunAggregationQueryRequest = Object.assign(sharedQueryOpts, {
       aggregationQuery: aggregationQueryOptions,
     });
-    // this.datastore.addDatabaseIdToRequest(reqOpts);
     this.request_(
       {
         client: 'DatastoreClient',
@@ -823,7 +815,6 @@ class DatastoreRequest {
 
       const reqOpts: RequestOptions = sharedQueryOpts;
       reqOpts.query = queryProto;
-      // this.datastore.addDatabaseIdToRequest(reqOpts);
       this.request_(
         {
           client: 'DatastoreClient',
