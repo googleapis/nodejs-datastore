@@ -37,7 +37,6 @@ async.each(
     },
   ],
   (clientOptions: DatastoreOptions) => {
-    console.log(`Running tests with databaseId set to ${SECOND_DATABASE_ID}`);
     describe('Datastore', () => {
       const testKinds: string[] = [];
       const datastore = new Datastore(clientOptions);
@@ -57,6 +56,12 @@ async.each(
 
       // TODO/DX ensure indexes before testing, and maybe? cleanup indexes after
       //  possible implications with kokoro project
+
+      before(async () => {
+        console.log(
+          `Running tests with databaseId set to ${clientOptions.databaseId}`
+        );
+      });
 
       after(async () => {
         async function deleteEntities(kind: string) {
