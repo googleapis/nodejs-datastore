@@ -26,8 +26,7 @@ async function main() {
   // const projectId = "your Google Cloud project id";
 
   // Imports the Cloud Datastore
-  const {Datastore} = require('@google-cloud/datastore');
-  const {PropertyFilter, or} = Datastore.filter;
+  const {Datastore, PropertyFilter, or} = require('@google-cloud/datastore');
 
   async function queryFilterOr() {
     // Instantiate the Datastore
@@ -43,7 +42,7 @@ async function main() {
 
     const [entities] = await datastore.runQuery(query);
     for (const entity of entities) {
-      console.log(`Entity found: ${entity}`);
+      console.log(`Entity found: ${entity['description']}`);
     }
   }
 
