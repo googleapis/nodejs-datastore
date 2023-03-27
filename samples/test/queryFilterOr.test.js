@@ -23,7 +23,7 @@ const sinon = require('sinon');
 const {Datastore} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 
-const {queryFilterOr} = require('../queryFilterOr')
+const {queryFilterOr} = require('../queryFilterOr');
 let taskKey1, taskKey2;
 
 describe('Creating a union query', () => {
@@ -36,25 +36,25 @@ describe('Creating a union query', () => {
     console.log.restore();
     console.error.restore();
   };
-  
+
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
   before(async () => {
-    taskKey1 = datastore.key("Task");
+    taskKey1 = datastore.key('Task');
     const entity1 = {
       key: taskKey1,
       data: {
-        description: "Buy milk"
-      }
+        description: 'Buy milk',
+      },
     };
 
-    taskKey2 = datastore.key("Task");
+    taskKey2 = datastore.key('Task');
     const entity2 = {
       key: taskKey2,
       data: {
-        description: "Feed cats"
-      }
+        description: 'Feed cats',
+      },
     };
 
     await datastore.upsert(entity1);
