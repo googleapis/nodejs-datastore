@@ -52,6 +52,30 @@ class AggregateQuery {
   }
 
   /**
+   * Add a `sum` aggregate query to the list of aggregations.
+   *
+   * @param {string} property
+   * @param {string} alias
+   * @returns {AggregateQuery}
+   */
+  sum(property: string, alias: string): AggregateQuery {
+    this.aggregations.push(AggregateField.sum(property).alias(alias));
+    return this;
+  }
+
+  /**
+   * Add a `average` aggregate query to the list of aggregations.
+   *
+   * @param {string} property
+   * @param {string} alias
+   * @returns {AggregateQuery}
+   */
+  average(property: string, alias: string): AggregateQuery {
+    this.aggregations.push(AggregateField.average(property).alias(alias));
+    return this;
+  }
+
+  /**
    * Add a custom aggregation to the list of aggregations.
    *
    * @param {AggregateField} aggregation
@@ -99,7 +123,6 @@ class AggregateQuery {
    * Get the proto for the list of aggregations.
    *
    */
-  // eslint-disable-next-line
   toProto(): any {
     return this.aggregations.map(aggregation => aggregation.toProto());
   }
@@ -121,8 +144,22 @@ abstract class AggregateField {
     return new Count();
   }
 
-  static sum(): Sum {
-    return new Sum();
+  /**
+   * Gets a copy of the Sum aggregate field.
+   *
+   * @returns {Sum}
+   */
+  static sum(property: string): Sum {
+    return new Sum(property);
+  }
+
+  /**
+   * Gets a copy of the Average aggregate field.
+   *
+   * @returns {Average}
+   */
+  static average(property: string): Sum {
+    return new Average(property);
   }
 
   /**
@@ -141,7 +178,6 @@ abstract class AggregateField {
    * Gets the proto for the aggregate field.
    *
    */
-  // eslint-disable-next-line
   abstract toProto(): any;
 }
 
@@ -150,7 +186,6 @@ abstract class AggregateField {
  *
  */
 class Count extends AggregateField {
-  // eslint-disable-next-line
   /**
    * Gets the proto for the count aggregate field.
    *
@@ -162,33 +197,57 @@ class Count extends AggregateField {
 }
 
 /**
- * A Sum is a class that contains data that defines a Sum aggregation.
+ * A PropertyAggregateField is a class that contains data that defines any
+ * aggregation that is performed on a property.
  *
  */
-class Sum extends AggregateField {
-  // eslint-disable-next-line
+abstract class PropertyAggregateField extends AggregateField {
+  property_?: string;
+  abstract operator: string;
+
   /**
-   * Gets the proto for the count aggregate field.
+   * Build a PropertyAggregateField object.
+   *
+   * @param {string} property
+   */
+  constructor(property: string) {
+    super();
+    this.property_ = property;
+  }
+
+  /**
+   * Gets the proto for the property aggregate field.
    *
    */
-  property_?: string;
-
   toProto(): any {
-    const sum = Object.assign(
+    const aggregation = Object.assign(
       {},
       this.property_ ? {property: {name: this.property_}} : null
     );
+    const aggregationObject: any = {};
+    aggregationObject[this.operator] = aggregation;
     return Object.assign(
-      {operator: 'sum'},
+      {operator: this.operator},
       this.alias_ ? {alias: this.alias_} : null,
-      {sum}
+      aggregationObject
     );
   }
+}
 
-  property(property: string): AggregateField {
-    this.property_ = property;
-    return this;
-  }
+/**
+ * A Sum is a class that contains data that defines a Sum aggregation.
+ *
+ */
+class Sum extends PropertyAggregateField {
+  operator = 'sum';
+}
+
+/**
+ * An Average is a class that contains data that defines an Average aggregation.
+ *
+ */
+class Average extends PropertyAggregateField {
+  operator = 'avg';
 }
 
 export {AggregateField, AggregateQuery, AGGREGATE_QUERY};

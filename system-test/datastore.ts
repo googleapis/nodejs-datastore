@@ -916,22 +916,34 @@ describe('Datastore', () => {
         });
       });
     });
+    describe('with a sum filter', () => {
+      // TODO: Add other tests
+      it('should run a sum aggregation', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.sum('appearances'));
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 8}]);
+      });
+    });
+    describe('with an average filter', () => {
+      // TODO: Add other tests
+      it('should run an average aggregation', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.average('appearances'));
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 8}]);
+      });
+    });
     describe('with a count filter', () => {
       it('should run a count aggregation', async () => {
         const q = datastore.createQuery('Character');
         const aggregate = datastore
           .createAggregationQuery(q)
           .addAggregation(AggregateField.count());
-        const [results] = await datastore.runAggregationQuery(aggregate);
-        assert.deepStrictEqual(results, [{property_1: 8}]);
-      });
-      it.only('should run a sum aggregation', async () => {
-        const q = datastore.createQuery('Character');
-        const aggregation = AggregateField.sum();
-        aggregation.property('appearances').alias('example');
-        const aggregate = datastore
-          .createAggregationQuery(q)
-          .addAggregation(aggregation);
         const [results] = await datastore.runAggregationQuery(aggregate);
         assert.deepStrictEqual(results, [{property_1: 8}]);
       });
