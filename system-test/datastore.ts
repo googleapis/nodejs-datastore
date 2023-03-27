@@ -925,6 +925,16 @@ describe('Datastore', () => {
         const [results] = await datastore.runAggregationQuery(aggregate);
         assert.deepStrictEqual(results, [{property_1: 8}]);
       });
+      it.only('should run a sum aggregation', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregation = AggregateField.sum();
+        aggregation.property('appearances');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(aggregation);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 8}]);
+      });
       it('should run a count aggregation with a list of aggregates', async () => {
         const q = datastore.createQuery('Character');
         const aggregate = datastore

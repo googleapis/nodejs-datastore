@@ -121,6 +121,10 @@ abstract class AggregateField {
     return new Count();
   }
 
+  static sum(): Sum {
+    return new Sum();
+  }
+
   /**
    * Gets a copy of the Count aggregate field.
    *
@@ -154,6 +158,33 @@ class Count extends AggregateField {
   toProto(): any {
     const count = Object.assign({});
     return Object.assign({count}, this.alias_ ? {alias: this.alias_} : null);
+  }
+}
+
+/**
+ * A Sum is a class that contains data that defines a Sum aggregation.
+ *
+ */
+class Sum extends AggregateField {
+  // eslint-disable-next-line
+  /**
+   * Gets the proto for the count aggregate field.
+   *
+   */
+  property_?: string;
+
+  toProto(): any {
+    const sum = Object.assign({});
+    Object.assign({sum}, this.alias_ ? {alias: this.alias_} : null);
+    return Object.assign(
+      {sum},
+      this.property_ ? {property: this.property_} : null
+    );
+  }
+
+  property(property: string): AggregateField {
+    this.property_ = property;
+    return this;
   }
 }
 
