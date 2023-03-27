@@ -928,7 +928,7 @@ describe('Datastore', () => {
       it.only('should run a sum aggregation', async () => {
         const q = datastore.createQuery('Character');
         const aggregation = AggregateField.sum();
-        aggregation.property('appearances');
+        aggregation.property('appearances').alias('example');
         const aggregate = datastore
           .createAggregationQuery(q)
           .addAggregation(aggregation);

@@ -174,11 +174,14 @@ class Sum extends AggregateField {
   property_?: string;
 
   toProto(): any {
-    const sum = Object.assign({});
-    Object.assign({sum}, this.alias_ ? {alias: this.alias_} : null);
+    const sum = Object.assign(
+      {},
+      this.property_ ? {property: {name: this.property_}} : null
+    );
     return Object.assign(
-      {sum},
-      this.property_ ? {property: this.property_} : null
+      {operator: 'sum'},
+      this.alias_ ? {alias: this.alias_} : null,
+      {sum}
     );
   }
 
