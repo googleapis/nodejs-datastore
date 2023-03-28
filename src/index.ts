@@ -708,6 +708,11 @@ class Datastore extends DatastoreRequest {
     return this.auth.getProjectId();
   }
 
+  /**
+   * Gets the database id that all requests will be run against.
+   *
+   * @param {any} [reqOpts] The request operations to add the databaseId to
+   */
   addDatabaseIdToRequest(reqOpts: any): void {
     addDatabaseIdToRequest(this, reqOpts);
   }
