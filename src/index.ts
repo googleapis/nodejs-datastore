@@ -1204,15 +1204,6 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Set the databaseId that this client will make requests against.
-   *
-   * @param {databaseId} string Sets the databaseId that requests will be run against.
-   */
-  setDatabaseId(databaseId: string): void {
-    this.options.databaseId = databaseId;
-  }
-
-  /**
    * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/datastore#_google_cloud_datastore_Datastore_save_member_1_|Datastore#save}, forcing the method to be `update`.
    *
    * @param {object|object[]} entities Datastore key object(s).
