@@ -42,7 +42,8 @@ import {Transform, pipeline} from 'stream';
 import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
 import Key = entity.Key;
 export {Entity, Key};
-
+import {PropertyFilter, and, or} from './filter';
+export {PropertyFilter, and, or};
 import {
   GetIndexesCallback,
   GetIndexesOptions,
@@ -708,6 +709,11 @@ class Datastore extends DatastoreRequest {
     return this.auth.getProjectId();
   }
 
+  /**
+   * Gets the database id that all requests will be run against.
+   *
+   * @param {any} [reqOpts] The request operations to add the databaseId to
+   */
   addDatabaseIdToRequest(reqOpts: any): void {
     addDatabaseIdToRequest(this, reqOpts);
   }
