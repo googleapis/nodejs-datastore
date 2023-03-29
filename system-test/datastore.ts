@@ -370,7 +370,7 @@ describe('Datastore', () => {
         const dataS3 = Object.assign({}, post);
         dataS3.author = 'S3';
         const generalKey = datastore.key(['Post', 'post']);
-        const generalKey2 = datastore.key(['Post', 'post']);
+        const generalKey2 = otherDatastore.key(['Post', 'post']);
         const postKeyDefault1 = datastore.key(['Post', 'post']);
         const postKeySecondary1 = datastore.key({
           path: ['Post', 'post', 'Subpost', 'postS1'],
