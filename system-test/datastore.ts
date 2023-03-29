@@ -340,6 +340,8 @@ describe('Datastore', () => {
         const query = datastore.createQuery('Post').hasAncestor(postKey);
         const [defaultDatastoreResults] = await datastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 0);
+        const [originalSecondaryResults] = await datastore.runQuery(query);
+        assert.strictEqual(originalSecondaryResults.length, 0);
         const [entity] = await datastore.get(postKey);
         assert(typeof entity === 'undefined');
         // With another database, verify that saving to the database works
@@ -350,6 +352,8 @@ describe('Datastore', () => {
         await otherDatastore.save({key: postKey, data: post});
         const [secondDatastoreResults] = await otherDatastore.runQuery(query);
         assert.strictEqual(secondDatastoreResults.length, 1);
+        const [originalResults] = await datastore.runQuery(query);
+        assert.strictEqual(originalResults.length, 0);
         const [otherEntity] = await otherDatastore.get(postKey);
         assert.strictEqual(otherEntity.author, 'Silvano');
         // Cleanup
