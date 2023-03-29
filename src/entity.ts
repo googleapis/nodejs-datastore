@@ -282,7 +282,6 @@ export namespace entity {
   }
 
   export interface KeyOptions {
-    databaseId?: string;
     namespace?: string;
     path: PathType[];
   }
@@ -365,7 +364,6 @@ export namespace entity {
    */
   export class Key {
     namespace?: string;
-    databaseId?: string;
     id?: string;
     name?: string;
     kind: string;
@@ -378,7 +376,6 @@ export namespace entity {
        * @type {string}
        */
       this.namespace = options.namespace;
-      this.databaseId = options.databaseId;
 
       options.path = [].slice.call(options.path);
 
@@ -1115,20 +1112,10 @@ export namespace entity {
       path: [],
     };
 
-    if (key.namespace || key.databaseId) {
-      keyProto.partitionId = Object.assign(
-        {},
-        key.namespace
-          ? {
-              namespaceId: key.namespace,
-            }
-          : null,
-        key.databaseId
-          ? {
-              databaseId: key.databaseId,
-            }
-          : null
-      );
+    if (key.namespace) {
+      keyProto.partitionId = {
+        namespaceId: key.namespace,
+      };
     }
 
     let numKeysWalked = 0;
