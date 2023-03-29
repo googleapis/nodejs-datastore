@@ -355,7 +355,7 @@ describe('Datastore', () => {
         // Cleanup
         await otherDatastore.delete(postKey);
       });
-      it.only('should ensure save respects the databaseId parameter per key', async () => {
+      it('should ensure save respects the databaseId parameter per key', async () => {
         // First write entities to the database by specifying the database in the key
         const otherDatastore = new Datastore({
           namespace: `${Date.now()}`,
@@ -369,18 +369,10 @@ describe('Datastore', () => {
         dataS2.author = 'S2';
         const dataS3 = Object.assign({}, post);
         dataS3.author = 'S3';
-        const generalKey = datastore.key(['Post', 'post']);
-        const generalKey2 = otherDatastore.key(['Post', 'post']);
-        const postKeyDefault1 = datastore.key(['Post', 'post']);
-        const postKeySecondary1 = datastore.key({
-          path: ['Post', 'post', 'Subpost', 'postS1'],
-        });
-        const postKeySecondary2 = datastore.key({
-          path: ['Post', 'post', 'Subpost', 'postS2'],
-        });
-        const postKeySecondary3 = datastore.key({
-          path: ['Post', 'post', 'Subpost', 'postS3'],
-        });
+        const postKeyDefault1 = datastore.key(['Post', 'postD1']);
+        const postKeySecondary1 = otherDatastore.key(['Post', 'postS1']);
+        const postKeySecondary2 = otherDatastore.key(['Post', 'postS2']);
+        const postKeySecondary3 = otherDatastore.key(['Post', 'postS3']);
         await datastore.save({key: postKeyDefault1, data: dataD1});
         await otherDatastore.save({key: postKeySecondary1, data: dataS1});
         await otherDatastore.save({key: postKeySecondary2, data: dataS2});
@@ -391,12 +383,32 @@ describe('Datastore', () => {
           .hasAncestor(postKeyDefault1);
         const [defaultDatastoreResults] = await datastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 1);
+        assert.strictEqual(defaultDatastoreResults[0].author, 'D1');
         // Next, ensure that the other database has the right records
-        const query2 = otherDatastore
+        const queryS1 = otherDatastore
           .createQuery('Post')
-          .hasAncestor(generalKey2);
-        const [secondDatastoreResults] = await otherDatastore.runQuery(query2);
-        assert.strictEqual(secondDatastoreResults.length, 3);
+          .hasAncestor(postKeySecondary1);
+        const [secondDatastoreResults1] = await otherDatastore.runQuery(
+          queryS1
+        );
+        assert.strictEqual(secondDatastoreResults1.length, 1);
+        assert.strictEqual(secondDatastoreResults1[0].author, 'S1');
+        const queryS2 = otherDatastore
+          .createQuery('Post')
+          .hasAncestor(postKeySecondary2);
+        const [secondDatastoreResults2] = await otherDatastore.runQuery(
+          queryS2
+        );
+        assert.strictEqual(secondDatastoreResults2.length, 1);
+        assert.strictEqual(secondDatastoreResults2[0].author, 'S2');
+        const queryS3 = otherDatastore
+          .createQuery('Post')
+          .hasAncestor(postKeySecondary3);
+        const [secondDatastoreResults3] = await otherDatastore.runQuery(
+          queryS3
+        );
+        assert.strictEqual(secondDatastoreResults3.length, 1);
+        assert.strictEqual(secondDatastoreResults3[0].author, 'S3');
         // Cleanup
         await datastore.delete(postKeyDefault1);
         await otherDatastore.delete(postKeySecondary1);
