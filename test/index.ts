@@ -1774,7 +1774,7 @@ describe('Datastore', () => {
           (config.reqOpts!.mutations![0].upsert! as Entity).excludeFromIndexes,
           excludeFromIndexes
         );
-        // Reassign this so that other tests don't fail because of the mock.
+        // Reassign this to what it was so that other tests don't fail because of the mock.
         fakeEntity.entityToEntityProto = entity.entityToEntityProto;
         done();
       };
