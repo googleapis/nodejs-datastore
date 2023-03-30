@@ -43,6 +43,7 @@
   "dependencies": {
     "@google-cloud/promisify": "^3.0.0",
     "arrify": "^2.0.1",
+    "async": "^3.2.4",
     "concat-stream": "^2.0.0",
     "extend": "^3.0.2",
     "google-gax": "^3.5.2",
