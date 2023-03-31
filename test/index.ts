@@ -1712,15 +1712,31 @@ describe('Datastore', () => {
     });
 
     it('should prepare excludeFromIndexes array for large values', done => {
-      const longString = Buffer.alloc(1501, '.').toString();
-      const data = {
-        longString,
-        notMetadata: true,
-        longStringArray: [longString],
-        metadata: {
+      try {
+        const longString = Buffer.alloc(1501, '.').toString();
+        const data = {
           longString,
-          otherProperty: 'value',
-          obj: {
+          notMetadata: true,
+          longStringArray: [longString],
+          metadata: {
+            longString,
+            otherProperty: 'value',
+            obj: {
+              longStringArray: [
+                {
+                  longString,
+                  nestedLongStringArray: [
+                    {
+                      longString,
+                      nestedProperty: true,
+                    },
+                    {
+                      longString,
+                    },
+                  ],
+                },
+              ],
+            },
             longStringArray: [
               {
                 longString,
@@ -1736,59 +1752,47 @@ describe('Datastore', () => {
               },
             ],
           },
-          longStringArray: [
-            {
-              longString,
-              nestedLongStringArray: [
-                {
-                  longString,
-                  nestedProperty: true,
-                },
-                {
-                  longString,
-                },
-              ],
-            },
-          ],
-        },
-      };
+        };
 
-      const excludeFromIndexes = [
-        'longString',
-        'longStringArray[]',
-        'metadata.longString',
-        'metadata.obj.longStringArray[].longString',
-        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-        'metadata.longStringArray[].longString',
-        'metadata.longStringArray[].nestedLongStringArray[].longString',
-      ];
+        const excludeFromIndexes = [
+          'longString',
+          'longStringArray[]',
+          'metadata.longString',
+          'metadata.obj.longStringArray[].longString',
+          'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+          'metadata.longStringArray[].longString',
+          'metadata.longStringArray[].nestedLongStringArray[].longString',
+        ];
 
-      fakeEntity.entityToEntityProto = (entity: EntityObject) => {
-        return entity as unknown as EntityProto;
-      };
-      datastore.request_ = (config: RequestConfig) => {
-        assert.strictEqual(
-          (config.reqOpts!.mutations![0].upsert! as Entity)
-            .excludeLargeProperties,
-          true
+        fakeEntity.entityToEntityProto = (entity: EntityObject) => {
+          return entity as unknown as EntityProto;
+        };
+        datastore.request_ = (config: RequestConfig) => {
+          assert.strictEqual(
+            (config.reqOpts!.mutations![0].upsert! as Entity)
+              .excludeLargeProperties,
+            true
+          );
+          assert.deepStrictEqual(
+            (config.reqOpts!.mutations![0].upsert! as Entity)
+              .excludeFromIndexes,
+            excludeFromIndexes
+          );
+          done();
+        };
+
+        datastore.save(
+          {
+            key,
+            data,
+            excludeLargeProperties: true,
+          },
+          assert.ifError
         );
-        assert.deepStrictEqual(
-          (config.reqOpts!.mutations![0].upsert! as Entity).excludeFromIndexes,
-          excludeFromIndexes
-        );
+      } finally {
         // Reassign this to what it was so that other tests don't fail because of the mock.
         fakeEntity.entityToEntityProto = ENTITY_TO_ENTITY_PROTO;
-        done();
-      };
-
-      datastore.save(
-        {
-          key,
-          data,
-          excludeLargeProperties: true,
-        },
-        assert.ifError
-      );
+      }
     });
 
     it('should allow auto setting the indexed value of a property with excludeLargeProperties', done => {
