@@ -26,6 +26,8 @@ import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
 
+const ENTITY_TO_ENTITY_PROTO = entity.entityToEntityProto;
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
 
@@ -77,7 +79,7 @@ const fakeEntity: any = {
   keyFromKeyProto: entity.keyFromKeyProto,
   keyToKeyProto: entity.keyToKeyProto,
   encodeValue: entity.encodeValue,
-  entityToEntityProto: entity.entityToEntityProto,
+  entityToEntityProto: ENTITY_TO_ENTITY_PROTO,
   findLargeProperties_: entity.findLargeProperties_,
   URLSafeKey: entity.URLSafeKey,
 };
@@ -1775,7 +1777,7 @@ describe('Datastore', () => {
           excludeFromIndexes
         );
         // Reassign this to what it was so that other tests don't fail because of the mock.
-        fakeEntity.entityToEntityProto = entity.entityToEntityProto;
+        fakeEntity.entityToEntityProto = ENTITY_TO_ENTITY_PROTO;
         done();
       };
 
