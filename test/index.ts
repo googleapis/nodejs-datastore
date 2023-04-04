@@ -79,7 +79,7 @@ const fakeEntityInit: any = {
   keyFromKeyProto: entity.keyFromKeyProto,
   keyToKeyProto: entity.keyToKeyProto,
   encodeValue: entity.encodeValue,
-  entityToEntityProto: ENTITY_TO_ENTITY_PROTO,
+  entityToEntityProto: entity.entityToEntityProto,
   findLargeProperties_: entity.findLargeProperties_,
   URLSafeKey: entity.URLSafeKey,
 };
@@ -1781,8 +1781,6 @@ describe('Datastore', () => {
           (config.reqOpts!.mutations![0].upsert! as Entity).excludeFromIndexes,
           excludeFromIndexes
         );
-        // Reassign this to what it was so that other tests don't fail because of the mock.
-        fakeEntity.entityToEntityProto = ENTITY_TO_ENTITY_PROTO;
         done();
       };
 
