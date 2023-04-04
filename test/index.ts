@@ -26,8 +26,6 @@ import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
 
-const ENTITY_TO_ENTITY_PROTO = entity.entityToEntityProto;
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
 
