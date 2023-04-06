@@ -504,8 +504,12 @@ class Datastore extends DatastoreRequest {
       },
       options
     );
-    if (this.customEndpoint_) {
-      this.options.sslCreds = grpc.credentials.createInsecure();
+    const isUsingEmulator =
+      this.baseUrl_ &&
+      (this.baseUrl_.includes('localhost') ||
+        this.baseUrl_.includes('127.0.0.1'));
+    if (this.customEndpoint_ && isUsingEmulator) {
+      this.options.sslCreds ??= grpc.credentials.createInsecure();
     }
 
     this.auth = new GoogleAuth(this.options);
