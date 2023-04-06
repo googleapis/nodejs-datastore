@@ -1360,4 +1360,15 @@ describe('Datastore', () => {
       await importOperation.cancel();
     });
   });
+
+  describe('using a custom endpoint', () => {
+    it('should complete a request when using a custom endpoint', async () => {
+      const customDatastore = new Datastore({
+        namespace: `${Date.now()}`,
+        apiEndpoint: 'datastore.googleapis.com',
+      });
+      const query = customDatastore.createQuery('Kind').select('__key__');
+      const [entities] = await customDatastore.runQuery(query);
+    });
+  });
 });
