@@ -15,11 +15,15 @@
 import * as assert from 'assert';
 import {readFileSync} from 'fs';
 import * as path from 'path';
-import {before, after, describe, it} from 'mocha';
+import {after, before, describe, it} from 'mocha';
 import * as yaml from 'js-yaml';
 import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
+import {AggregateField} from '../src/aggregate';
+import {PropertyFilter, EntityFilter, and, or} from '../src/filter';
+import {entity} from '../src/entity';
+import KEY_SYMBOL = entity.KEY_SYMBOL;
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -308,6 +312,42 @@ describe('Datastore', () => {
       await datastore.delete(postKey);
     });
 
+    it('should save/get/delete from a snapshot', async () => {
+      function sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+      const post2 = {
+        title: 'Another way to make pizza',
+        tags: ['pizza', 'grill'],
+        publishedAt: new Date(),
+        author: 'Silvano',
+        isDraft: false,
+        wordCount: 400,
+        rating: 5.0,
+        likes: null,
+        metadata: {
+          views: 100,
+        },
+      };
+      const path = ['Post', 'post1'];
+      const postKey = datastore.key(path);
+      await datastore.save({key: postKey, data: post});
+      await sleep(1000);
+      const savedTime = Date.now();
+      await sleep(1000);
+      // Save new post2 data, but then verify the timestamp read has post1 data
+      await datastore.save({key: postKey, data: post2});
+      const [entity] = await datastore.get(postKey, {readTime: savedTime});
+      assert.deepStrictEqual(entity[datastore.KEY], postKey);
+      const [entityNoOptions] = await datastore.get(postKey);
+      assert.deepStrictEqual(entityNoOptions[datastore.KEY], postKey);
+      delete entity[datastore.KEY];
+      assert.deepStrictEqual(entity, post);
+      delete entityNoOptions[datastore.KEY];
+      assert.deepStrictEqual(entityNoOptions, post2);
+      await datastore.delete(postKey);
+    });
+
     it('should save/get/delete with a numeric key id', async () => {
       const postKey = datastore.key(['Post', 123456789]);
       await datastore.save({key: postKey, data: post});
@@ -504,6 +544,19 @@ describe('Datastore', () => {
       assert.strictEqual(results![0].fullName, 'Full name');
       assert.deepStrictEqual(results![0].linkedTo, personKey);
       await datastore.delete(personKey);
+    });
+
+    it('should save with an empty buffer', async () => {
+      const key = datastore.key(['TEST']);
+      const result = await datastore.save({
+        key: key,
+        data: {
+          name: 'test',
+          blob: Buffer.from([]),
+        },
+      });
+      const mutationResult = result.pop()?.mutationResults?.pop();
+      assert.strictEqual(mutationResult?.key?.path?.pop()?.kind, 'TEST');
     });
 
     describe('entity types', () => {
@@ -725,6 +778,65 @@ describe('Datastore', () => {
       assert.strictEqual(entities!.length, 6);
     });
 
+    it('should filter queries with NOT_EQUAL', async () => {
+      const q = datastore
+        .createQuery('Character')
+        .hasAncestor(ancestor)
+        .filter('appearances', '!=', 9);
+      const [entities] = await datastore.runQuery(q);
+      assert.strictEqual(entities!.length, 6);
+    });
+
+    it('should filter queries with IN', async () => {
+      const q = datastore
+        .createQuery('Character')
+        .hasAncestor(ancestor)
+        .filter('appearances', 'IN', [9, 25]);
+      const [entities] = await datastore.runQuery(q);
+      assert.strictEqual(entities!.length, 3);
+    });
+
+    it('should filter queries with __key__ and IN', async () => {
+      const key1 = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
+      const key2 = datastore.key([
+        'Book',
+        'GoT',
+        'Character',
+        'Rickard',
+        'Character',
+        'Eddard',
+        'Character',
+        'Sansa',
+      ]);
+      const key3 = datastore.key([
+        'Book',
+        'GoT',
+        'Character',
+        'Rickard',
+        'Character',
+        'Eddard',
+      ]);
+      const value = [key1, key2, key3];
+      const q = datastore
+        .createQuery('Character')
+        .hasAncestor(ancestor)
+        .filter('__key__', 'IN', value);
+      const [entities] = await datastore.runQuery(q);
+      assert.strictEqual(entities!.length, 3);
+      assert.deepStrictEqual(entities[0][KEY_SYMBOL], key1);
+      assert.deepStrictEqual(entities[1][KEY_SYMBOL], key3);
+      assert.deepStrictEqual(entities[2][KEY_SYMBOL], key2);
+    });
+
+    it('should filter queries with NOT_IN', async () => {
+      const q = datastore
+        .createQuery('Character')
+        .hasAncestor(ancestor)
+        .filter('appearances', 'NOT_IN', [9, 25]);
+      const [entities] = await datastore.runQuery(q);
+      assert.strictEqual(entities!.length, 5);
+    });
+
     it('should filter queries with defined indexes', async () => {
       const q = datastore
         .createQuery('Character')
@@ -734,13 +846,194 @@ describe('Datastore', () => {
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities!.length, 6);
     });
-
+    describe('with the filter function using the Filter class', () => {
+      it('should run a query with one property filter', async () => {
+        const filter = new PropertyFilter('family', '=', 'Stark');
+        const q = datastore
+          .createQuery('Character')
+          .filter(filter)
+          .hasAncestor(ancestor);
+        const [entities] = await datastore.runQuery(q);
+        assert.strictEqual(entities!.length, 8);
+      });
+      it('should run a query with two property filters', async () => {
+        const q = datastore
+          .createQuery('Character')
+          .filter(new PropertyFilter('family', '=', 'Stark'))
+          .filter(new PropertyFilter('appearances', '>=', 20));
+        const [entities] = await datastore.runQuery(q);
+        assert.strictEqual(entities!.length, 6);
+      });
+      it('should run a query using new Filter class with filter', async () => {
+        const q = datastore
+          .createQuery('Character')
+          .filter('family', 'Stark')
+          .filter(new PropertyFilter('appearances', '>=', 20));
+        const [entities] = await datastore.runQuery(q);
+        assert.strictEqual(entities!.length, 6);
+        for (const entity of entities) {
+          if (Array.isArray(entity.family)) {
+            assert.strictEqual(entity.family[0], 'Stark');
+          } else {
+            assert.strictEqual(entity.family, 'Stark');
+          }
+          assert(entity.appearances >= 20);
+        }
+      });
+      it('should run a query using an AND composite filter', async () => {
+        const q = datastore
+          .createQuery('Character')
+          .filter(
+            and([
+              new PropertyFilter('family', '=', 'Stark'),
+              new PropertyFilter('appearances', '>=', 20),
+            ])
+          );
+        const [entities] = await datastore.runQuery(q);
+        assert.strictEqual(entities!.length, 6);
+        for (const entity of entities) {
+          if (Array.isArray(entity.family)) {
+            assert.strictEqual(entity.family[0], 'Stark');
+          } else {
+            assert.strictEqual(entity.family, 'Stark');
+          }
+          assert(entity.appearances >= 20);
+        }
+      });
+      it('should run a query using an OR composite filter', async () => {
+        const q = datastore
+          .createQuery('Character')
+          .filter(
+            or([
+              new PropertyFilter('family', '=', 'Stark'),
+              new PropertyFilter('appearances', '>=', 20),
+            ])
+          );
+        const [entities] = await datastore.runQuery(q);
+        assert.strictEqual(entities!.length, 8);
+        let atLeastOne = false;
+        for (const entity of entities) {
+          const familyHasStark = Array.isArray(entity.family)
+            ? entity.family[0] === 'Stark'
+            : entity.family === 'Stark';
+          const hasEnoughAppearances = entity.appearances >= 20;
+          if (familyHasStark && !hasEnoughAppearances) {
+            atLeastOne = true;
+          }
+        }
+        assert(atLeastOne);
+      });
+      describe('using hasAncestor and Filter class', () => {
+        const secondAncestor = datastore.key([
+          'Book',
+          'GoT',
+          'Character',
+          'Rickard',
+          'Character',
+          'Eddard',
+        ]);
+        it('should run a query using hasAncestor last', async () => {
+          const q = datastore
+            .createQuery('Character')
+            .filter(new PropertyFilter('appearances', '<', 30))
+            .hasAncestor(secondAncestor);
+          const [entities] = await datastore.runQuery(q);
+          assert.strictEqual(entities!.length, 3);
+        });
+        it('should run a query using hasAncestor first', async () => {
+          const q = datastore
+            .createQuery('Character')
+            .hasAncestor(secondAncestor)
+            .filter(new PropertyFilter('appearances', '<', 30));
+          const [entities] = await datastore.runQuery(q);
+          assert.strictEqual(entities!.length, 3);
+        });
+      });
+    });
+    describe('with a count filter', () => {
+      it('should run a count aggregation', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.count());
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 8}]);
+      });
+      it('should run a count aggregation with a list of aggregates', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.count(), AggregateField.count()]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 8, property_2: 8}]);
+      });
+      it('should run a count aggregation having other filters', async () => {
+        const q = datastore
+          .createQuery('Character')
+          .filter('family', 'Stark')
+          .filter('appearances', '>=', 20);
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.count().alias('total'));
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{total: 6}]);
+      });
+      it('should run a count aggregate filter with an alias', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.count().alias('total'));
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{total: 8}]);
+      });
+      it('should do multiple count aggregations with aliases', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.count().alias('total'),
+            AggregateField.count().alias('total2'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{total: 8, total2: 8}]);
+      });
+      it('should run a count aggregation filter with a limit', async () => {
+        const q = datastore.createQuery('Character').limit(5);
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.count());
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 5}]);
+      });
+      it('should run a count aggregate filter with a limit and an alias', async () => {
+        const q = datastore.createQuery('Character').limit(7);
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.count().alias('total')]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{total: 7}]);
+      });
+    });
     it('should filter by ancestor', async () => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
       const [entities] = await datastore.runQuery(q);
       assert.strictEqual(entities.length, characters.length);
     });
 
+    it('should construct filters by null status', async () => {
+      assert.strictEqual(
+        datastore.createQuery('Character').filter('status', null).filters.pop()
+          ?.val,
+        null
+      );
+      assert.strictEqual(
+        datastore
+          .createQuery('Character')
+          .filter('status', '=', null)
+          .filters.pop()?.val,
+        null
+      );
+    });
     it('should filter by key', async () => {
       const key = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
       const q = datastore
@@ -938,6 +1231,24 @@ describe('Datastore', () => {
       await transaction.commit();
     });
 
+    it('should aggregate query within a transaction', async () => {
+      const transaction = datastore.transaction();
+      await transaction.run();
+      const query = transaction.createQuery('Company');
+      const aggregateQuery = transaction
+        .createAggregationQuery(query)
+        .count('total');
+      let result;
+      try {
+        [result] = await aggregateQuery.run();
+      } catch (e) {
+        await transaction.rollback();
+        return;
+      }
+      assert.deepStrictEqual(result, [{total: 2}]);
+      await transaction.commit();
+    });
+
     it('should read in a readOnly transaction', async () => {
       const transaction = datastore.transaction({readOnly: true});
       const key = datastore.key(['Company', 'Google']);
@@ -1047,6 +1358,18 @@ describe('Datastore', () => {
       );
 
       await importOperation.cancel();
+    });
+  });
+
+  describe('using a custom endpoint', () => {
+    it('should complete a request when using the default endpoint as a custom endpoint', async () => {
+      const customDatastore = new Datastore({
+        namespace: `${Date.now()}`,
+        apiEndpoint: 'datastore.googleapis.com',
+      });
+      const query = customDatastore.createQuery('Kind').select('__key__');
+      const [entities] = await customDatastore.runQuery(query);
+      assert.strictEqual(entities.length, 0);
     });
   });
 });

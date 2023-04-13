@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as Long from "long";
-import {protobuf as $protobuf} from "google-gax";
+import type {protobuf as $protobuf} from "google-gax";
+import Long = require("long");
 /** Namespace google. */
 export namespace google {
 
@@ -134,42 +134,42 @@ export namespace google {
                 namespace DatastoreAdmin {
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#exportEntities}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|exportEntities}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type ExportEntitiesCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#importEntities}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|importEntities}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type ImportEntitiesCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#createIndex}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|createIndex}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type CreateIndexCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#deleteIndex}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|deleteIndex}.
                      * @param error Error, if any
                      * @param [response] Operation
                      */
                     type DeleteIndexCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#getIndex}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|getIndex}.
                      * @param error Error, if any
                      * @param [response] Index
                      */
                     type GetIndexCallback = (error: (Error|null), response?: google.datastore.admin.v1.Index) => void;
 
                     /**
-                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin#listIndexes}.
+                     * Callback as used by {@link google.datastore.admin.v1.DatastoreAdmin|listIndexes}.
                      * @param error Error, if any
                      * @param [response] ListIndexesResponse
                      */
@@ -288,6 +288,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CommonMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace CommonMetadata {
@@ -399,6 +406,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Progress
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an ExportEntitiesRequest. */
@@ -507,6 +521,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ExportEntitiesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an ImportEntitiesRequest. */
@@ -615,6 +636,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ImportEntitiesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an ExportEntitiesResponse. */
@@ -705,6 +733,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ExportEntitiesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an ExportEntitiesMetadata. */
@@ -819,6 +854,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ExportEntitiesMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an ImportEntitiesMetadata. */
@@ -933,6 +975,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ImportEntitiesMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an EntityFilter. */
@@ -1029,6 +1078,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for EntityFilter
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of a CreateIndexRequest. */
@@ -1125,6 +1181,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateIndexRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of a DeleteIndexRequest. */
@@ -1221,6 +1284,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteIndexRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of a GetIndexRequest. */
@@ -1317,6 +1387,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetIndexRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of a ListIndexesRequest. */
@@ -1425,6 +1502,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListIndexesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of a ListIndexesResponse. */
@@ -1521,6 +1605,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListIndexesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an IndexOperationMetadata. */
@@ -1623,6 +1714,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for IndexOperationMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of a DatastoreFirestoreMigrationMetadata. */
@@ -1719,6 +1817,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DatastoreFirestoreMigrationMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** OperationType enum. */
@@ -1848,9 +1953,30 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Index
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace Index {
+
+                    /** AncestorMode enum. */
+                    enum AncestorMode {
+                        ANCESTOR_MODE_UNSPECIFIED = 0,
+                        NONE = 1,
+                        ALL_ANCESTORS = 2
+                    }
+
+                    /** Direction enum. */
+                    enum Direction {
+                        DIRECTION_UNSPECIFIED = 0,
+                        ASCENDING = 1,
+                        DESCENDING = 2
+                    }
 
                     /** Properties of an IndexedProperty. */
                     interface IIndexedProperty {
@@ -1946,20 +2072,13 @@ export namespace google {
                          * @returns JSON object
                          */
                         public toJSON(): { [k: string]: any };
-                    }
 
-                    /** AncestorMode enum. */
-                    enum AncestorMode {
-                        ANCESTOR_MODE_UNSPECIFIED = 0,
-                        NONE = 1,
-                        ALL_ANCESTORS = 2
-                    }
-
-                    /** Direction enum. */
-                    enum Direction {
-                        DIRECTION_UNSPECIFIED = 0,
-                        ASCENDING = 1,
-                        DESCENDING = 2
+                        /**
+                         * Gets the default type url for IndexedProperty
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     /** State enum. */
@@ -2060,6 +2179,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for MigrationStateEvent
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of a MigrationProgressEvent. */
@@ -2165,9 +2291,24 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for MigrationProgressEvent
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace MigrationProgressEvent {
+
+                    /** ConcurrencyMode enum. */
+                    enum ConcurrencyMode {
+                        CONCURRENCY_MODE_UNSPECIFIED = 0,
+                        PESSIMISTIC = 1,
+                        OPTIMISTIC = 2,
+                        OPTIMISTIC_WITH_ENTITY_GROUPS = 3
+                    }
 
                     /** Properties of a PrepareStepDetails. */
                     interface IPrepareStepDetails {
@@ -2257,6 +2398,13 @@ export namespace google {
                          * @returns JSON object
                          */
                         public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for PrepareStepDetails
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     /** Properties of a RedirectWritesStepDetails. */
@@ -2347,13 +2495,13 @@ export namespace google {
                          * @returns JSON object
                          */
                         public toJSON(): { [k: string]: any };
-                    }
 
-                    /** ConcurrencyMode enum. */
-                    enum ConcurrencyMode {
-                        CONCURRENCY_MODE_UNSPECIFIED = 0,
-                        PESSIMISTIC = 1,
-                        OPTIMISTIC = 2
+                        /**
+                         * Gets the default type url for RedirectWritesStepDetails
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
                 }
 
@@ -2382,2190 +2530,210 @@ export namespace google {
         /** Namespace v1. */
         namespace v1 {
 
-            /** Represents a Datastore */
-            class Datastore extends $protobuf.rpc.Service {
+            /** Properties of an AggregationResult. */
+            interface IAggregationResult {
 
-                /**
-                 * Constructs a new Datastore service.
-                 * @param rpcImpl RPC implementation
-                 * @param [requestDelimited=false] Whether requests are length-delimited
-                 * @param [responseDelimited=false] Whether responses are length-delimited
-                 */
-                constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
-
-                /**
-                 * Creates new Datastore service using the specified rpc implementation.
-                 * @param rpcImpl RPC implementation
-                 * @param [requestDelimited=false] Whether requests are length-delimited
-                 * @param [responseDelimited=false] Whether responses are length-delimited
-                 * @returns RPC service. Useful where requests and/or responses are streamed.
-                 */
-                public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Datastore;
-
-                /**
-                 * Calls Lookup.
-                 * @param request LookupRequest message or plain object
-                 * @param callback Node-style callback called with the error, if any, and LookupResponse
-                 */
-                public lookup(request: google.datastore.v1.ILookupRequest, callback: google.datastore.v1.Datastore.LookupCallback): void;
-
-                /**
-                 * Calls Lookup.
-                 * @param request LookupRequest message or plain object
-                 * @returns Promise
-                 */
-                public lookup(request: google.datastore.v1.ILookupRequest): Promise<google.datastore.v1.LookupResponse>;
-
-                /**
-                 * Calls RunQuery.
-                 * @param request RunQueryRequest message or plain object
-                 * @param callback Node-style callback called with the error, if any, and RunQueryResponse
-                 */
-                public runQuery(request: google.datastore.v1.IRunQueryRequest, callback: google.datastore.v1.Datastore.RunQueryCallback): void;
-
-                /**
-                 * Calls RunQuery.
-                 * @param request RunQueryRequest message or plain object
-                 * @returns Promise
-                 */
-                public runQuery(request: google.datastore.v1.IRunQueryRequest): Promise<google.datastore.v1.RunQueryResponse>;
-
-                /**
-                 * Calls BeginTransaction.
-                 * @param request BeginTransactionRequest message or plain object
-                 * @param callback Node-style callback called with the error, if any, and BeginTransactionResponse
-                 */
-                public beginTransaction(request: google.datastore.v1.IBeginTransactionRequest, callback: google.datastore.v1.Datastore.BeginTransactionCallback): void;
-
-                /**
-                 * Calls BeginTransaction.
-                 * @param request BeginTransactionRequest message or plain object
-                 * @returns Promise
-                 */
-                public beginTransaction(request: google.datastore.v1.IBeginTransactionRequest): Promise<google.datastore.v1.BeginTransactionResponse>;
-
-                /**
-                 * Calls Commit.
-                 * @param request CommitRequest message or plain object
-                 * @param callback Node-style callback called with the error, if any, and CommitResponse
-                 */
-                public commit(request: google.datastore.v1.ICommitRequest, callback: google.datastore.v1.Datastore.CommitCallback): void;
-
-                /**
-                 * Calls Commit.
-                 * @param request CommitRequest message or plain object
-                 * @returns Promise
-                 */
-                public commit(request: google.datastore.v1.ICommitRequest): Promise<google.datastore.v1.CommitResponse>;
-
-                /**
-                 * Calls Rollback.
-                 * @param request RollbackRequest message or plain object
-                 * @param callback Node-style callback called with the error, if any, and RollbackResponse
-                 */
-                public rollback(request: google.datastore.v1.IRollbackRequest, callback: google.datastore.v1.Datastore.RollbackCallback): void;
-
-                /**
-                 * Calls Rollback.
-                 * @param request RollbackRequest message or plain object
-                 * @returns Promise
-                 */
-                public rollback(request: google.datastore.v1.IRollbackRequest): Promise<google.datastore.v1.RollbackResponse>;
-
-                /**
-                 * Calls AllocateIds.
-                 * @param request AllocateIdsRequest message or plain object
-                 * @param callback Node-style callback called with the error, if any, and AllocateIdsResponse
-                 */
-                public allocateIds(request: google.datastore.v1.IAllocateIdsRequest, callback: google.datastore.v1.Datastore.AllocateIdsCallback): void;
-
-                /**
-                 * Calls AllocateIds.
-                 * @param request AllocateIdsRequest message or plain object
-                 * @returns Promise
-                 */
-                public allocateIds(request: google.datastore.v1.IAllocateIdsRequest): Promise<google.datastore.v1.AllocateIdsResponse>;
-
-                /**
-                 * Calls ReserveIds.
-                 * @param request ReserveIdsRequest message or plain object
-                 * @param callback Node-style callback called with the error, if any, and ReserveIdsResponse
-                 */
-                public reserveIds(request: google.datastore.v1.IReserveIdsRequest, callback: google.datastore.v1.Datastore.ReserveIdsCallback): void;
-
-                /**
-                 * Calls ReserveIds.
-                 * @param request ReserveIdsRequest message or plain object
-                 * @returns Promise
-                 */
-                public reserveIds(request: google.datastore.v1.IReserveIdsRequest): Promise<google.datastore.v1.ReserveIdsResponse>;
+                /** AggregationResult aggregateProperties */
+                aggregateProperties?: ({ [k: string]: google.datastore.v1.IValue }|null);
             }
 
-            namespace Datastore {
+            /** Represents an AggregationResult. */
+            class AggregationResult implements IAggregationResult {
 
                 /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#lookup}.
-                 * @param error Error, if any
-                 * @param [response] LookupResponse
-                 */
-                type LookupCallback = (error: (Error|null), response?: google.datastore.v1.LookupResponse) => void;
-
-                /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#runQuery}.
-                 * @param error Error, if any
-                 * @param [response] RunQueryResponse
-                 */
-                type RunQueryCallback = (error: (Error|null), response?: google.datastore.v1.RunQueryResponse) => void;
-
-                /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#beginTransaction}.
-                 * @param error Error, if any
-                 * @param [response] BeginTransactionResponse
-                 */
-                type BeginTransactionCallback = (error: (Error|null), response?: google.datastore.v1.BeginTransactionResponse) => void;
-
-                /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#commit}.
-                 * @param error Error, if any
-                 * @param [response] CommitResponse
-                 */
-                type CommitCallback = (error: (Error|null), response?: google.datastore.v1.CommitResponse) => void;
-
-                /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#rollback}.
-                 * @param error Error, if any
-                 * @param [response] RollbackResponse
-                 */
-                type RollbackCallback = (error: (Error|null), response?: google.datastore.v1.RollbackResponse) => void;
-
-                /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#allocateIds}.
-                 * @param error Error, if any
-                 * @param [response] AllocateIdsResponse
-                 */
-                type AllocateIdsCallback = (error: (Error|null), response?: google.datastore.v1.AllocateIdsResponse) => void;
-
-                /**
-                 * Callback as used by {@link google.datastore.v1.Datastore#reserveIds}.
-                 * @param error Error, if any
-                 * @param [response] ReserveIdsResponse
-                 */
-                type ReserveIdsCallback = (error: (Error|null), response?: google.datastore.v1.ReserveIdsResponse) => void;
-            }
-
-            /** Properties of a LookupRequest. */
-            interface ILookupRequest {
-
-                /** LookupRequest projectId */
-                projectId?: (string|null);
-
-                /** LookupRequest readOptions */
-                readOptions?: (google.datastore.v1.IReadOptions|null);
-
-                /** LookupRequest keys */
-                keys?: (google.datastore.v1.IKey[]|null);
-            }
-
-            /** Represents a LookupRequest. */
-            class LookupRequest implements ILookupRequest {
-
-                /**
-                 * Constructs a new LookupRequest.
+                 * Constructs a new AggregationResult.
                  * @param [properties] Properties to set
                  */
-                constructor(properties?: google.datastore.v1.ILookupRequest);
+                constructor(properties?: google.datastore.v1.IAggregationResult);
 
-                /** LookupRequest projectId. */
-                public projectId: string;
-
-                /** LookupRequest readOptions. */
-                public readOptions?: (google.datastore.v1.IReadOptions|null);
-
-                /** LookupRequest keys. */
-                public keys: google.datastore.v1.IKey[];
+                /** AggregationResult aggregateProperties. */
+                public aggregateProperties: { [k: string]: google.datastore.v1.IValue };
 
                 /**
-                 * Creates a new LookupRequest instance using the specified properties.
+                 * Creates a new AggregationResult instance using the specified properties.
                  * @param [properties] Properties to set
-                 * @returns LookupRequest instance
+                 * @returns AggregationResult instance
                  */
-                public static create(properties?: google.datastore.v1.ILookupRequest): google.datastore.v1.LookupRequest;
+                public static create(properties?: google.datastore.v1.IAggregationResult): google.datastore.v1.AggregationResult;
 
                 /**
-                 * Encodes the specified LookupRequest message. Does not implicitly {@link google.datastore.v1.LookupRequest.verify|verify} messages.
-                 * @param message LookupRequest message or plain object to encode
+                 * Encodes the specified AggregationResult message. Does not implicitly {@link google.datastore.v1.AggregationResult.verify|verify} messages.
+                 * @param message AggregationResult message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encode(message: google.datastore.v1.ILookupRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encode(message: google.datastore.v1.IAggregationResult, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
-                 * Encodes the specified LookupRequest message, length delimited. Does not implicitly {@link google.datastore.v1.LookupRequest.verify|verify} messages.
-                 * @param message LookupRequest message or plain object to encode
+                 * Encodes the specified AggregationResult message, length delimited. Does not implicitly {@link google.datastore.v1.AggregationResult.verify|verify} messages.
+                 * @param message AggregationResult message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encodeDelimited(message: google.datastore.v1.ILookupRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: google.datastore.v1.IAggregationResult, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
-                 * Decodes a LookupRequest message from the specified reader or buffer.
+                 * Decodes an AggregationResult message from the specified reader or buffer.
                  * @param reader Reader or buffer to decode from
                  * @param [length] Message length if known beforehand
-                 * @returns LookupRequest
+                 * @returns AggregationResult
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.LookupRequest;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AggregationResult;
 
                 /**
-                 * Decodes a LookupRequest message from the specified reader or buffer, length delimited.
+                 * Decodes an AggregationResult message from the specified reader or buffer, length delimited.
                  * @param reader Reader or buffer to decode from
-                 * @returns LookupRequest
+                 * @returns AggregationResult
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.LookupRequest;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AggregationResult;
 
                 /**
-                 * Verifies a LookupRequest message.
+                 * Verifies an AggregationResult message.
                  * @param message Plain object to verify
                  * @returns `null` if valid, otherwise the reason why it is not
                  */
                 public static verify(message: { [k: string]: any }): (string|null);
 
                 /**
-                 * Creates a LookupRequest message from a plain object. Also converts values to their respective internal types.
+                 * Creates an AggregationResult message from a plain object. Also converts values to their respective internal types.
                  * @param object Plain object
-                 * @returns LookupRequest
+                 * @returns AggregationResult
                  */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.LookupRequest;
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.AggregationResult;
 
                 /**
-                 * Creates a plain object from a LookupRequest message. Also converts values to other types if specified.
-                 * @param message LookupRequest
+                 * Creates a plain object from an AggregationResult message. Also converts values to other types if specified.
+                 * @param message AggregationResult
                  * @param [options] Conversion options
                  * @returns Plain object
                  */
-                public static toObject(message: google.datastore.v1.LookupRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static toObject(message: google.datastore.v1.AggregationResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                 /**
-                 * Converts this LookupRequest to JSON.
+                 * Converts this AggregationResult to JSON.
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for AggregationResult
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
-            /** Properties of a LookupResponse. */
-            interface ILookupResponse {
+            /** Properties of an AggregationResultBatch. */
+            interface IAggregationResultBatch {
 
-                /** LookupResponse found */
-                found?: (google.datastore.v1.IEntityResult[]|null);
+                /** AggregationResultBatch aggregationResults */
+                aggregationResults?: (google.datastore.v1.IAggregationResult[]|null);
 
-                /** LookupResponse missing */
-                missing?: (google.datastore.v1.IEntityResult[]|null);
+                /** AggregationResultBatch moreResults */
+                moreResults?: (google.datastore.v1.QueryResultBatch.MoreResultsType|keyof typeof google.datastore.v1.QueryResultBatch.MoreResultsType|null);
 
-                /** LookupResponse deferred */
-                deferred?: (google.datastore.v1.IKey[]|null);
-
-                /** LookupResponse readTime */
+                /** AggregationResultBatch readTime */
                 readTime?: (google.protobuf.ITimestamp|null);
             }
 
-            /** Represents a LookupResponse. */
-            class LookupResponse implements ILookupResponse {
+            /** Represents an AggregationResultBatch. */
+            class AggregationResultBatch implements IAggregationResultBatch {
 
                 /**
-                 * Constructs a new LookupResponse.
+                 * Constructs a new AggregationResultBatch.
                  * @param [properties] Properties to set
                  */
-                constructor(properties?: google.datastore.v1.ILookupResponse);
+                constructor(properties?: google.datastore.v1.IAggregationResultBatch);
 
-                /** LookupResponse found. */
-                public found: google.datastore.v1.IEntityResult[];
+                /** AggregationResultBatch aggregationResults. */
+                public aggregationResults: google.datastore.v1.IAggregationResult[];
 
-                /** LookupResponse missing. */
-                public missing: google.datastore.v1.IEntityResult[];
+                /** AggregationResultBatch moreResults. */
+                public moreResults: (google.datastore.v1.QueryResultBatch.MoreResultsType|keyof typeof google.datastore.v1.QueryResultBatch.MoreResultsType);
 
-                /** LookupResponse deferred. */
-                public deferred: google.datastore.v1.IKey[];
-
-                /** LookupResponse readTime. */
+                /** AggregationResultBatch readTime. */
                 public readTime?: (google.protobuf.ITimestamp|null);
 
                 /**
-                 * Creates a new LookupResponse instance using the specified properties.
+                 * Creates a new AggregationResultBatch instance using the specified properties.
                  * @param [properties] Properties to set
-                 * @returns LookupResponse instance
+                 * @returns AggregationResultBatch instance
                  */
-                public static create(properties?: google.datastore.v1.ILookupResponse): google.datastore.v1.LookupResponse;
+                public static create(properties?: google.datastore.v1.IAggregationResultBatch): google.datastore.v1.AggregationResultBatch;
 
                 /**
-                 * Encodes the specified LookupResponse message. Does not implicitly {@link google.datastore.v1.LookupResponse.verify|verify} messages.
-                 * @param message LookupResponse message or plain object to encode
+                 * Encodes the specified AggregationResultBatch message. Does not implicitly {@link google.datastore.v1.AggregationResultBatch.verify|verify} messages.
+                 * @param message AggregationResultBatch message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encode(message: google.datastore.v1.ILookupResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encode(message: google.datastore.v1.IAggregationResultBatch, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
-                 * Encodes the specified LookupResponse message, length delimited. Does not implicitly {@link google.datastore.v1.LookupResponse.verify|verify} messages.
-                 * @param message LookupResponse message or plain object to encode
+                 * Encodes the specified AggregationResultBatch message, length delimited. Does not implicitly {@link google.datastore.v1.AggregationResultBatch.verify|verify} messages.
+                 * @param message AggregationResultBatch message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encodeDelimited(message: google.datastore.v1.ILookupResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: google.datastore.v1.IAggregationResultBatch, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
-                 * Decodes a LookupResponse message from the specified reader or buffer.
+                 * Decodes an AggregationResultBatch message from the specified reader or buffer.
                  * @param reader Reader or buffer to decode from
                  * @param [length] Message length if known beforehand
-                 * @returns LookupResponse
+                 * @returns AggregationResultBatch
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.LookupResponse;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AggregationResultBatch;
 
                 /**
-                 * Decodes a LookupResponse message from the specified reader or buffer, length delimited.
+                 * Decodes an AggregationResultBatch message from the specified reader or buffer, length delimited.
                  * @param reader Reader or buffer to decode from
-                 * @returns LookupResponse
+                 * @returns AggregationResultBatch
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.LookupResponse;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AggregationResultBatch;
 
                 /**
-                 * Verifies a LookupResponse message.
+                 * Verifies an AggregationResultBatch message.
                  * @param message Plain object to verify
                  * @returns `null` if valid, otherwise the reason why it is not
                  */
                 public static verify(message: { [k: string]: any }): (string|null);
 
                 /**
-                 * Creates a LookupResponse message from a plain object. Also converts values to their respective internal types.
+                 * Creates an AggregationResultBatch message from a plain object. Also converts values to their respective internal types.
                  * @param object Plain object
-                 * @returns LookupResponse
+                 * @returns AggregationResultBatch
                  */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.LookupResponse;
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.AggregationResultBatch;
 
                 /**
-                 * Creates a plain object from a LookupResponse message. Also converts values to other types if specified.
-                 * @param message LookupResponse
+                 * Creates a plain object from an AggregationResultBatch message. Also converts values to other types if specified.
+                 * @param message AggregationResultBatch
                  * @param [options] Conversion options
                  * @returns Plain object
                  */
-                public static toObject(message: google.datastore.v1.LookupResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static toObject(message: google.datastore.v1.AggregationResultBatch, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                 /**
-                 * Converts this LookupResponse to JSON.
+                 * Converts this AggregationResultBatch to JSON.
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
-            }
 
-            /** Properties of a RunQueryRequest. */
-            interface IRunQueryRequest {
-
-                /** RunQueryRequest projectId */
-                projectId?: (string|null);
-
-                /** RunQueryRequest partitionId */
-                partitionId?: (google.datastore.v1.IPartitionId|null);
-
-                /** RunQueryRequest readOptions */
-                readOptions?: (google.datastore.v1.IReadOptions|null);
-
-                /** RunQueryRequest query */
-                query?: (google.datastore.v1.IQuery|null);
-
-                /** RunQueryRequest gqlQuery */
-                gqlQuery?: (google.datastore.v1.IGqlQuery|null);
-            }
-
-            /** Represents a RunQueryRequest. */
-            class RunQueryRequest implements IRunQueryRequest {
-
-                /**
-                 * Constructs a new RunQueryRequest.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IRunQueryRequest);
-
-                /** RunQueryRequest projectId. */
-                public projectId: string;
-
-                /** RunQueryRequest partitionId. */
-                public partitionId?: (google.datastore.v1.IPartitionId|null);
-
-                /** RunQueryRequest readOptions. */
-                public readOptions?: (google.datastore.v1.IReadOptions|null);
-
-                /** RunQueryRequest query. */
-                public query?: (google.datastore.v1.IQuery|null);
-
-                /** RunQueryRequest gqlQuery. */
-                public gqlQuery?: (google.datastore.v1.IGqlQuery|null);
-
-                /** RunQueryRequest queryType. */
-                public queryType?: ("query"|"gqlQuery");
-
-                /**
-                 * Creates a new RunQueryRequest instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns RunQueryRequest instance
-                 */
-                public static create(properties?: google.datastore.v1.IRunQueryRequest): google.datastore.v1.RunQueryRequest;
-
-                /**
-                 * Encodes the specified RunQueryRequest message. Does not implicitly {@link google.datastore.v1.RunQueryRequest.verify|verify} messages.
-                 * @param message RunQueryRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IRunQueryRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified RunQueryRequest message, length delimited. Does not implicitly {@link google.datastore.v1.RunQueryRequest.verify|verify} messages.
-                 * @param message RunQueryRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IRunQueryRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a RunQueryRequest message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns RunQueryRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RunQueryRequest;
-
-                /**
-                 * Decodes a RunQueryRequest message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns RunQueryRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RunQueryRequest;
-
-                /**
-                 * Verifies a RunQueryRequest message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a RunQueryRequest message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns RunQueryRequest
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RunQueryRequest;
-
-                /**
-                 * Creates a plain object from a RunQueryRequest message. Also converts values to other types if specified.
-                 * @param message RunQueryRequest
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.RunQueryRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this RunQueryRequest to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a RunQueryResponse. */
-            interface IRunQueryResponse {
-
-                /** RunQueryResponse batch */
-                batch?: (google.datastore.v1.IQueryResultBatch|null);
-
-                /** RunQueryResponse query */
-                query?: (google.datastore.v1.IQuery|null);
-            }
-
-            /** Represents a RunQueryResponse. */
-            class RunQueryResponse implements IRunQueryResponse {
-
-                /**
-                 * Constructs a new RunQueryResponse.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IRunQueryResponse);
-
-                /** RunQueryResponse batch. */
-                public batch?: (google.datastore.v1.IQueryResultBatch|null);
-
-                /** RunQueryResponse query. */
-                public query?: (google.datastore.v1.IQuery|null);
-
-                /**
-                 * Creates a new RunQueryResponse instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns RunQueryResponse instance
-                 */
-                public static create(properties?: google.datastore.v1.IRunQueryResponse): google.datastore.v1.RunQueryResponse;
-
-                /**
-                 * Encodes the specified RunQueryResponse message. Does not implicitly {@link google.datastore.v1.RunQueryResponse.verify|verify} messages.
-                 * @param message RunQueryResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IRunQueryResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified RunQueryResponse message, length delimited. Does not implicitly {@link google.datastore.v1.RunQueryResponse.verify|verify} messages.
-                 * @param message RunQueryResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IRunQueryResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a RunQueryResponse message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns RunQueryResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RunQueryResponse;
-
-                /**
-                 * Decodes a RunQueryResponse message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns RunQueryResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RunQueryResponse;
-
-                /**
-                 * Verifies a RunQueryResponse message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a RunQueryResponse message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns RunQueryResponse
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RunQueryResponse;
-
-                /**
-                 * Creates a plain object from a RunQueryResponse message. Also converts values to other types if specified.
-                 * @param message RunQueryResponse
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.RunQueryResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this RunQueryResponse to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a BeginTransactionRequest. */
-            interface IBeginTransactionRequest {
-
-                /** BeginTransactionRequest projectId */
-                projectId?: (string|null);
-
-                /** BeginTransactionRequest transactionOptions */
-                transactionOptions?: (google.datastore.v1.ITransactionOptions|null);
-            }
-
-            /** Represents a BeginTransactionRequest. */
-            class BeginTransactionRequest implements IBeginTransactionRequest {
-
-                /**
-                 * Constructs a new BeginTransactionRequest.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IBeginTransactionRequest);
-
-                /** BeginTransactionRequest projectId. */
-                public projectId: string;
-
-                /** BeginTransactionRequest transactionOptions. */
-                public transactionOptions?: (google.datastore.v1.ITransactionOptions|null);
-
-                /**
-                 * Creates a new BeginTransactionRequest instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns BeginTransactionRequest instance
-                 */
-                public static create(properties?: google.datastore.v1.IBeginTransactionRequest): google.datastore.v1.BeginTransactionRequest;
-
-                /**
-                 * Encodes the specified BeginTransactionRequest message. Does not implicitly {@link google.datastore.v1.BeginTransactionRequest.verify|verify} messages.
-                 * @param message BeginTransactionRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IBeginTransactionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified BeginTransactionRequest message, length delimited. Does not implicitly {@link google.datastore.v1.BeginTransactionRequest.verify|verify} messages.
-                 * @param message BeginTransactionRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IBeginTransactionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a BeginTransactionRequest message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns BeginTransactionRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.BeginTransactionRequest;
-
-                /**
-                 * Decodes a BeginTransactionRequest message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns BeginTransactionRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.BeginTransactionRequest;
-
-                /**
-                 * Verifies a BeginTransactionRequest message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a BeginTransactionRequest message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns BeginTransactionRequest
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.BeginTransactionRequest;
-
-                /**
-                 * Creates a plain object from a BeginTransactionRequest message. Also converts values to other types if specified.
-                 * @param message BeginTransactionRequest
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.BeginTransactionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this BeginTransactionRequest to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a BeginTransactionResponse. */
-            interface IBeginTransactionResponse {
-
-                /** BeginTransactionResponse transaction */
-                transaction?: (Uint8Array|string|null);
-            }
-
-            /** Represents a BeginTransactionResponse. */
-            class BeginTransactionResponse implements IBeginTransactionResponse {
-
-                /**
-                 * Constructs a new BeginTransactionResponse.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IBeginTransactionResponse);
-
-                /** BeginTransactionResponse transaction. */
-                public transaction: (Uint8Array|string);
-
-                /**
-                 * Creates a new BeginTransactionResponse instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns BeginTransactionResponse instance
-                 */
-                public static create(properties?: google.datastore.v1.IBeginTransactionResponse): google.datastore.v1.BeginTransactionResponse;
-
-                /**
-                 * Encodes the specified BeginTransactionResponse message. Does not implicitly {@link google.datastore.v1.BeginTransactionResponse.verify|verify} messages.
-                 * @param message BeginTransactionResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IBeginTransactionResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified BeginTransactionResponse message, length delimited. Does not implicitly {@link google.datastore.v1.BeginTransactionResponse.verify|verify} messages.
-                 * @param message BeginTransactionResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IBeginTransactionResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a BeginTransactionResponse message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns BeginTransactionResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.BeginTransactionResponse;
-
-                /**
-                 * Decodes a BeginTransactionResponse message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns BeginTransactionResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.BeginTransactionResponse;
-
-                /**
-                 * Verifies a BeginTransactionResponse message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a BeginTransactionResponse message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns BeginTransactionResponse
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.BeginTransactionResponse;
-
-                /**
-                 * Creates a plain object from a BeginTransactionResponse message. Also converts values to other types if specified.
-                 * @param message BeginTransactionResponse
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.BeginTransactionResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this BeginTransactionResponse to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a RollbackRequest. */
-            interface IRollbackRequest {
-
-                /** RollbackRequest projectId */
-                projectId?: (string|null);
-
-                /** RollbackRequest transaction */
-                transaction?: (Uint8Array|string|null);
-            }
-
-            /** Represents a RollbackRequest. */
-            class RollbackRequest implements IRollbackRequest {
-
-                /**
-                 * Constructs a new RollbackRequest.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IRollbackRequest);
-
-                /** RollbackRequest projectId. */
-                public projectId: string;
-
-                /** RollbackRequest transaction. */
-                public transaction: (Uint8Array|string);
-
-                /**
-                 * Creates a new RollbackRequest instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns RollbackRequest instance
-                 */
-                public static create(properties?: google.datastore.v1.IRollbackRequest): google.datastore.v1.RollbackRequest;
-
-                /**
-                 * Encodes the specified RollbackRequest message. Does not implicitly {@link google.datastore.v1.RollbackRequest.verify|verify} messages.
-                 * @param message RollbackRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IRollbackRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified RollbackRequest message, length delimited. Does not implicitly {@link google.datastore.v1.RollbackRequest.verify|verify} messages.
-                 * @param message RollbackRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IRollbackRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a RollbackRequest message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns RollbackRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RollbackRequest;
-
-                /**
-                 * Decodes a RollbackRequest message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns RollbackRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RollbackRequest;
-
-                /**
-                 * Verifies a RollbackRequest message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a RollbackRequest message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns RollbackRequest
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RollbackRequest;
-
-                /**
-                 * Creates a plain object from a RollbackRequest message. Also converts values to other types if specified.
-                 * @param message RollbackRequest
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.RollbackRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this RollbackRequest to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a RollbackResponse. */
-            interface IRollbackResponse {
-            }
-
-            /** Represents a RollbackResponse. */
-            class RollbackResponse implements IRollbackResponse {
-
-                /**
-                 * Constructs a new RollbackResponse.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IRollbackResponse);
-
-                /**
-                 * Creates a new RollbackResponse instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns RollbackResponse instance
-                 */
-                public static create(properties?: google.datastore.v1.IRollbackResponse): google.datastore.v1.RollbackResponse;
-
-                /**
-                 * Encodes the specified RollbackResponse message. Does not implicitly {@link google.datastore.v1.RollbackResponse.verify|verify} messages.
-                 * @param message RollbackResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IRollbackResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified RollbackResponse message, length delimited. Does not implicitly {@link google.datastore.v1.RollbackResponse.verify|verify} messages.
-                 * @param message RollbackResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IRollbackResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a RollbackResponse message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns RollbackResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RollbackResponse;
-
-                /**
-                 * Decodes a RollbackResponse message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns RollbackResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RollbackResponse;
-
-                /**
-                 * Verifies a RollbackResponse message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a RollbackResponse message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns RollbackResponse
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RollbackResponse;
-
-                /**
-                 * Creates a plain object from a RollbackResponse message. Also converts values to other types if specified.
-                 * @param message RollbackResponse
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.RollbackResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this RollbackResponse to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a CommitRequest. */
-            interface ICommitRequest {
-
-                /** CommitRequest projectId */
-                projectId?: (string|null);
-
-                /** CommitRequest mode */
-                mode?: (google.datastore.v1.CommitRequest.Mode|keyof typeof google.datastore.v1.CommitRequest.Mode|null);
-
-                /** CommitRequest transaction */
-                transaction?: (Uint8Array|string|null);
-
-                /** CommitRequest mutations */
-                mutations?: (google.datastore.v1.IMutation[]|null);
-            }
-
-            /** Represents a CommitRequest. */
-            class CommitRequest implements ICommitRequest {
-
-                /**
-                 * Constructs a new CommitRequest.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.ICommitRequest);
-
-                /** CommitRequest projectId. */
-                public projectId: string;
-
-                /** CommitRequest mode. */
-                public mode: (google.datastore.v1.CommitRequest.Mode|keyof typeof google.datastore.v1.CommitRequest.Mode);
-
-                /** CommitRequest transaction. */
-                public transaction?: (Uint8Array|string|null);
-
-                /** CommitRequest mutations. */
-                public mutations: google.datastore.v1.IMutation[];
-
-                /** CommitRequest transactionSelector. */
-                public transactionSelector?: "transaction";
-
-                /**
-                 * Creates a new CommitRequest instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns CommitRequest instance
-                 */
-                public static create(properties?: google.datastore.v1.ICommitRequest): google.datastore.v1.CommitRequest;
-
-                /**
-                 * Encodes the specified CommitRequest message. Does not implicitly {@link google.datastore.v1.CommitRequest.verify|verify} messages.
-                 * @param message CommitRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.ICommitRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified CommitRequest message, length delimited. Does not implicitly {@link google.datastore.v1.CommitRequest.verify|verify} messages.
-                 * @param message CommitRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.ICommitRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a CommitRequest message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns CommitRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.CommitRequest;
-
-                /**
-                 * Decodes a CommitRequest message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns CommitRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.CommitRequest;
-
-                /**
-                 * Verifies a CommitRequest message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a CommitRequest message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns CommitRequest
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.CommitRequest;
-
-                /**
-                 * Creates a plain object from a CommitRequest message. Also converts values to other types if specified.
-                 * @param message CommitRequest
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.CommitRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this CommitRequest to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace CommitRequest {
-
-                /** Mode enum. */
-                enum Mode {
-                    MODE_UNSPECIFIED = 0,
-                    TRANSACTIONAL = 1,
-                    NON_TRANSACTIONAL = 2
-                }
-            }
-
-            /** Properties of a CommitResponse. */
-            interface ICommitResponse {
-
-                /** CommitResponse mutationResults */
-                mutationResults?: (google.datastore.v1.IMutationResult[]|null);
-
-                /** CommitResponse indexUpdates */
-                indexUpdates?: (number|null);
-
-                /** CommitResponse commitTime */
-                commitTime?: (google.protobuf.ITimestamp|null);
-            }
-
-            /** Represents a CommitResponse. */
-            class CommitResponse implements ICommitResponse {
-
-                /**
-                 * Constructs a new CommitResponse.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.ICommitResponse);
-
-                /** CommitResponse mutationResults. */
-                public mutationResults: google.datastore.v1.IMutationResult[];
-
-                /** CommitResponse indexUpdates. */
-                public indexUpdates: number;
-
-                /** CommitResponse commitTime. */
-                public commitTime?: (google.protobuf.ITimestamp|null);
-
-                /**
-                 * Creates a new CommitResponse instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns CommitResponse instance
-                 */
-                public static create(properties?: google.datastore.v1.ICommitResponse): google.datastore.v1.CommitResponse;
-
-                /**
-                 * Encodes the specified CommitResponse message. Does not implicitly {@link google.datastore.v1.CommitResponse.verify|verify} messages.
-                 * @param message CommitResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.ICommitResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified CommitResponse message, length delimited. Does not implicitly {@link google.datastore.v1.CommitResponse.verify|verify} messages.
-                 * @param message CommitResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.ICommitResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a CommitResponse message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns CommitResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.CommitResponse;
-
-                /**
-                 * Decodes a CommitResponse message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns CommitResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.CommitResponse;
-
-                /**
-                 * Verifies a CommitResponse message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a CommitResponse message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns CommitResponse
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.CommitResponse;
-
-                /**
-                 * Creates a plain object from a CommitResponse message. Also converts values to other types if specified.
-                 * @param message CommitResponse
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.CommitResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this CommitResponse to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of an AllocateIdsRequest. */
-            interface IAllocateIdsRequest {
-
-                /** AllocateIdsRequest projectId */
-                projectId?: (string|null);
-
-                /** AllocateIdsRequest keys */
-                keys?: (google.datastore.v1.IKey[]|null);
-            }
-
-            /** Represents an AllocateIdsRequest. */
-            class AllocateIdsRequest implements IAllocateIdsRequest {
-
-                /**
-                 * Constructs a new AllocateIdsRequest.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IAllocateIdsRequest);
-
-                /** AllocateIdsRequest projectId. */
-                public projectId: string;
-
-                /** AllocateIdsRequest keys. */
-                public keys: google.datastore.v1.IKey[];
-
-                /**
-                 * Creates a new AllocateIdsRequest instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns AllocateIdsRequest instance
-                 */
-                public static create(properties?: google.datastore.v1.IAllocateIdsRequest): google.datastore.v1.AllocateIdsRequest;
-
-                /**
-                 * Encodes the specified AllocateIdsRequest message. Does not implicitly {@link google.datastore.v1.AllocateIdsRequest.verify|verify} messages.
-                 * @param message AllocateIdsRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IAllocateIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified AllocateIdsRequest message, length delimited. Does not implicitly {@link google.datastore.v1.AllocateIdsRequest.verify|verify} messages.
-                 * @param message AllocateIdsRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IAllocateIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes an AllocateIdsRequest message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns AllocateIdsRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AllocateIdsRequest;
-
-                /**
-                 * Decodes an AllocateIdsRequest message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns AllocateIdsRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AllocateIdsRequest;
-
-                /**
-                 * Verifies an AllocateIdsRequest message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates an AllocateIdsRequest message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns AllocateIdsRequest
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.AllocateIdsRequest;
-
-                /**
-                 * Creates a plain object from an AllocateIdsRequest message. Also converts values to other types if specified.
-                 * @param message AllocateIdsRequest
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.AllocateIdsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this AllocateIdsRequest to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of an AllocateIdsResponse. */
-            interface IAllocateIdsResponse {
-
-                /** AllocateIdsResponse keys */
-                keys?: (google.datastore.v1.IKey[]|null);
-            }
-
-            /** Represents an AllocateIdsResponse. */
-            class AllocateIdsResponse implements IAllocateIdsResponse {
-
-                /**
-                 * Constructs a new AllocateIdsResponse.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IAllocateIdsResponse);
-
-                /** AllocateIdsResponse keys. */
-                public keys: google.datastore.v1.IKey[];
-
-                /**
-                 * Creates a new AllocateIdsResponse instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns AllocateIdsResponse instance
-                 */
-                public static create(properties?: google.datastore.v1.IAllocateIdsResponse): google.datastore.v1.AllocateIdsResponse;
-
-                /**
-                 * Encodes the specified AllocateIdsResponse message. Does not implicitly {@link google.datastore.v1.AllocateIdsResponse.verify|verify} messages.
-                 * @param message AllocateIdsResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IAllocateIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified AllocateIdsResponse message, length delimited. Does not implicitly {@link google.datastore.v1.AllocateIdsResponse.verify|verify} messages.
-                 * @param message AllocateIdsResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IAllocateIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes an AllocateIdsResponse message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns AllocateIdsResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AllocateIdsResponse;
-
-                /**
-                 * Decodes an AllocateIdsResponse message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns AllocateIdsResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AllocateIdsResponse;
-
-                /**
-                 * Verifies an AllocateIdsResponse message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates an AllocateIdsResponse message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns AllocateIdsResponse
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.AllocateIdsResponse;
-
-                /**
-                 * Creates a plain object from an AllocateIdsResponse message. Also converts values to other types if specified.
-                 * @param message AllocateIdsResponse
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.AllocateIdsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this AllocateIdsResponse to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a ReserveIdsRequest. */
-            interface IReserveIdsRequest {
-
-                /** ReserveIdsRequest projectId */
-                projectId?: (string|null);
-
-                /** ReserveIdsRequest databaseId */
-                databaseId?: (string|null);
-
-                /** ReserveIdsRequest keys */
-                keys?: (google.datastore.v1.IKey[]|null);
-            }
-
-            /** Represents a ReserveIdsRequest. */
-            class ReserveIdsRequest implements IReserveIdsRequest {
-
-                /**
-                 * Constructs a new ReserveIdsRequest.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IReserveIdsRequest);
-
-                /** ReserveIdsRequest projectId. */
-                public projectId: string;
-
-                /** ReserveIdsRequest databaseId. */
-                public databaseId: string;
-
-                /** ReserveIdsRequest keys. */
-                public keys: google.datastore.v1.IKey[];
-
-                /**
-                 * Creates a new ReserveIdsRequest instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns ReserveIdsRequest instance
-                 */
-                public static create(properties?: google.datastore.v1.IReserveIdsRequest): google.datastore.v1.ReserveIdsRequest;
-
-                /**
-                 * Encodes the specified ReserveIdsRequest message. Does not implicitly {@link google.datastore.v1.ReserveIdsRequest.verify|verify} messages.
-                 * @param message ReserveIdsRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IReserveIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified ReserveIdsRequest message, length delimited. Does not implicitly {@link google.datastore.v1.ReserveIdsRequest.verify|verify} messages.
-                 * @param message ReserveIdsRequest message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IReserveIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a ReserveIdsRequest message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns ReserveIdsRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.ReserveIdsRequest;
-
-                /**
-                 * Decodes a ReserveIdsRequest message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns ReserveIdsRequest
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.ReserveIdsRequest;
-
-                /**
-                 * Verifies a ReserveIdsRequest message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a ReserveIdsRequest message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns ReserveIdsRequest
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.ReserveIdsRequest;
-
-                /**
-                 * Creates a plain object from a ReserveIdsRequest message. Also converts values to other types if specified.
-                 * @param message ReserveIdsRequest
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.ReserveIdsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this ReserveIdsRequest to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a ReserveIdsResponse. */
-            interface IReserveIdsResponse {
-            }
-
-            /** Represents a ReserveIdsResponse. */
-            class ReserveIdsResponse implements IReserveIdsResponse {
-
-                /**
-                 * Constructs a new ReserveIdsResponse.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IReserveIdsResponse);
-
-                /**
-                 * Creates a new ReserveIdsResponse instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns ReserveIdsResponse instance
-                 */
-                public static create(properties?: google.datastore.v1.IReserveIdsResponse): google.datastore.v1.ReserveIdsResponse;
-
-                /**
-                 * Encodes the specified ReserveIdsResponse message. Does not implicitly {@link google.datastore.v1.ReserveIdsResponse.verify|verify} messages.
-                 * @param message ReserveIdsResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IReserveIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified ReserveIdsResponse message, length delimited. Does not implicitly {@link google.datastore.v1.ReserveIdsResponse.verify|verify} messages.
-                 * @param message ReserveIdsResponse message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IReserveIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a ReserveIdsResponse message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns ReserveIdsResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.ReserveIdsResponse;
-
-                /**
-                 * Decodes a ReserveIdsResponse message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns ReserveIdsResponse
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.ReserveIdsResponse;
-
-                /**
-                 * Verifies a ReserveIdsResponse message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a ReserveIdsResponse message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns ReserveIdsResponse
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.ReserveIdsResponse;
-
-                /**
-                 * Creates a plain object from a ReserveIdsResponse message. Also converts values to other types if specified.
-                 * @param message ReserveIdsResponse
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.ReserveIdsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this ReserveIdsResponse to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a Mutation. */
-            interface IMutation {
-
-                /** Mutation insert */
-                insert?: (google.datastore.v1.IEntity|null);
-
-                /** Mutation update */
-                update?: (google.datastore.v1.IEntity|null);
-
-                /** Mutation upsert */
-                upsert?: (google.datastore.v1.IEntity|null);
-
-                /** Mutation delete */
-                "delete"?: (google.datastore.v1.IKey|null);
-
-                /** Mutation baseVersion */
-                baseVersion?: (number|Long|string|null);
-
-                /** Mutation updateTime */
-                updateTime?: (google.protobuf.ITimestamp|null);
-            }
-
-            /** Represents a Mutation. */
-            class Mutation implements IMutation {
-
-                /**
-                 * Constructs a new Mutation.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IMutation);
-
-                /** Mutation insert. */
-                public insert?: (google.datastore.v1.IEntity|null);
-
-                /** Mutation update. */
-                public update?: (google.datastore.v1.IEntity|null);
-
-                /** Mutation upsert. */
-                public upsert?: (google.datastore.v1.IEntity|null);
-
-                /** Mutation delete. */
-                public delete?: (google.datastore.v1.IKey|null);
-
-                /** Mutation baseVersion. */
-                public baseVersion?: (number|Long|string|null);
-
-                /** Mutation updateTime. */
-                public updateTime?: (google.protobuf.ITimestamp|null);
-
-                /** Mutation operation. */
-                public operation?: ("insert"|"update"|"upsert"|"delete");
-
-                /** Mutation conflictDetectionStrategy. */
-                public conflictDetectionStrategy?: ("baseVersion"|"updateTime");
-
-                /**
-                 * Creates a new Mutation instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns Mutation instance
-                 */
-                public static create(properties?: google.datastore.v1.IMutation): google.datastore.v1.Mutation;
-
-                /**
-                 * Encodes the specified Mutation message. Does not implicitly {@link google.datastore.v1.Mutation.verify|verify} messages.
-                 * @param message Mutation message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IMutation, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified Mutation message, length delimited. Does not implicitly {@link google.datastore.v1.Mutation.verify|verify} messages.
-                 * @param message Mutation message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IMutation, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a Mutation message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns Mutation
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.Mutation;
-
-                /**
-                 * Decodes a Mutation message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns Mutation
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.Mutation;
-
-                /**
-                 * Verifies a Mutation message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a Mutation message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns Mutation
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.Mutation;
-
-                /**
-                 * Creates a plain object from a Mutation message. Also converts values to other types if specified.
-                 * @param message Mutation
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.Mutation, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this Mutation to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a MutationResult. */
-            interface IMutationResult {
-
-                /** MutationResult key */
-                key?: (google.datastore.v1.IKey|null);
-
-                /** MutationResult version */
-                version?: (number|Long|string|null);
-
-                /** MutationResult updateTime */
-                updateTime?: (google.protobuf.ITimestamp|null);
-
-                /** MutationResult conflictDetected */
-                conflictDetected?: (boolean|null);
-            }
-
-            /** Represents a MutationResult. */
-            class MutationResult implements IMutationResult {
-
-                /**
-                 * Constructs a new MutationResult.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IMutationResult);
-
-                /** MutationResult key. */
-                public key?: (google.datastore.v1.IKey|null);
-
-                /** MutationResult version. */
-                public version: (number|Long|string);
-
-                /** MutationResult updateTime. */
-                public updateTime?: (google.protobuf.ITimestamp|null);
-
-                /** MutationResult conflictDetected. */
-                public conflictDetected: boolean;
-
-                /**
-                 * Creates a new MutationResult instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns MutationResult instance
-                 */
-                public static create(properties?: google.datastore.v1.IMutationResult): google.datastore.v1.MutationResult;
-
-                /**
-                 * Encodes the specified MutationResult message. Does not implicitly {@link google.datastore.v1.MutationResult.verify|verify} messages.
-                 * @param message MutationResult message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IMutationResult, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified MutationResult message, length delimited. Does not implicitly {@link google.datastore.v1.MutationResult.verify|verify} messages.
-                 * @param message MutationResult message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IMutationResult, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a MutationResult message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns MutationResult
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.MutationResult;
-
-                /**
-                 * Decodes a MutationResult message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns MutationResult
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.MutationResult;
-
-                /**
-                 * Verifies a MutationResult message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a MutationResult message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns MutationResult
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.MutationResult;
-
-                /**
-                 * Creates a plain object from a MutationResult message. Also converts values to other types if specified.
-                 * @param message MutationResult
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.MutationResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this MutationResult to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            /** Properties of a ReadOptions. */
-            interface IReadOptions {
-
-                /** ReadOptions readConsistency */
-                readConsistency?: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency|null);
-
-                /** ReadOptions transaction */
-                transaction?: (Uint8Array|string|null);
-
-                /** ReadOptions readTime */
-                readTime?: (google.protobuf.ITimestamp|null);
-            }
-
-            /** Represents a ReadOptions. */
-            class ReadOptions implements IReadOptions {
-
-                /**
-                 * Constructs a new ReadOptions.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.IReadOptions);
-
-                /** ReadOptions readConsistency. */
-                public readConsistency?: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency|null);
-
-                /** ReadOptions transaction. */
-                public transaction?: (Uint8Array|string|null);
-
-                /** ReadOptions readTime. */
-                public readTime?: (google.protobuf.ITimestamp|null);
-
-                /** ReadOptions consistencyType. */
-                public consistencyType?: ("readConsistency"|"transaction"|"readTime");
-
-                /**
-                 * Creates a new ReadOptions instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns ReadOptions instance
-                 */
-                public static create(properties?: google.datastore.v1.IReadOptions): google.datastore.v1.ReadOptions;
-
-                /**
-                 * Encodes the specified ReadOptions message. Does not implicitly {@link google.datastore.v1.ReadOptions.verify|verify} messages.
-                 * @param message ReadOptions message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.IReadOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified ReadOptions message, length delimited. Does not implicitly {@link google.datastore.v1.ReadOptions.verify|verify} messages.
-                 * @param message ReadOptions message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.IReadOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a ReadOptions message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns ReadOptions
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.ReadOptions;
-
-                /**
-                 * Decodes a ReadOptions message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns ReadOptions
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.ReadOptions;
-
-                /**
-                 * Verifies a ReadOptions message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a ReadOptions message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns ReadOptions
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.ReadOptions;
-
-                /**
-                 * Creates a plain object from a ReadOptions message. Also converts values to other types if specified.
-                 * @param message ReadOptions
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.ReadOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                /**
-                 * Converts this ReadOptions to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace ReadOptions {
-
-                /** ReadConsistency enum. */
-                enum ReadConsistency {
-                    READ_CONSISTENCY_UNSPECIFIED = 0,
-                    STRONG = 1,
-                    EVENTUAL = 2
-                }
-            }
-
-            /** Properties of a TransactionOptions. */
-            interface ITransactionOptions {
-
-                /** TransactionOptions readWrite */
-                readWrite?: (google.datastore.v1.TransactionOptions.IReadWrite|null);
-
-                /** TransactionOptions readOnly */
-                readOnly?: (google.datastore.v1.TransactionOptions.IReadOnly|null);
-            }
-
-            /** Represents a TransactionOptions. */
-            class TransactionOptions implements ITransactionOptions {
-
-                /**
-                 * Constructs a new TransactionOptions.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: google.datastore.v1.ITransactionOptions);
-
-                /** TransactionOptions readWrite. */
-                public readWrite?: (google.datastore.v1.TransactionOptions.IReadWrite|null);
-
-                /** TransactionOptions readOnly. */
-                public readOnly?: (google.datastore.v1.TransactionOptions.IReadOnly|null);
-
-                /** TransactionOptions mode. */
-                public mode?: ("readWrite"|"readOnly");
-
-                /**
-                 * Creates a new TransactionOptions instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns TransactionOptions instance
-                 */
-                public static create(properties?: google.datastore.v1.ITransactionOptions): google.datastore.v1.TransactionOptions;
-
-                /**
-                 * Encodes the specified TransactionOptions message. Does not implicitly {@link google.datastore.v1.TransactionOptions.verify|verify} messages.
-                 * @param message TransactionOptions message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: google.datastore.v1.ITransactionOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Encodes the specified TransactionOptions message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.verify|verify} messages.
-                 * @param message TransactionOptions message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: google.datastore.v1.ITransactionOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                /**
-                 * Decodes a TransactionOptions message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns TransactionOptions
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.TransactionOptions;
-
-                /**
-                 * Decodes a TransactionOptions message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns TransactionOptions
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.TransactionOptions;
-
-                /**
-                 * Verifies a TransactionOptions message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
-
-                /**
-                 * Creates a TransactionOptions message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns TransactionOptions
-                 */
-                public static fromObject(object: { [k: string]: any }): google.datastore.v1.TransactionOptions;
-
-                /**
-                 * Creates a plain object from a TransactionOptions message. Also converts values to other types if specified.
-                 * @param message TransactionOptions
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: google.datastore.v1.TransactionOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
                 /**
-                 * Converts this TransactionOptions to JSON.
-                 * @returns JSON object
+                 * Gets the default type url for AggregationResultBatch
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
                  */
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace TransactionOptions {
-
-                /** Properties of a ReadWrite. */
-                interface IReadWrite {
-
-                    /** ReadWrite previousTransaction */
-                    previousTransaction?: (Uint8Array|string|null);
-                }
-
-                /** Represents a ReadWrite. */
-                class ReadWrite implements IReadWrite {
-
-                    /**
-                     * Constructs a new ReadWrite.
-                     * @param [properties] Properties to set
-                     */
-                    constructor(properties?: google.datastore.v1.TransactionOptions.IReadWrite);
-
-                    /** ReadWrite previousTransaction. */
-                    public previousTransaction: (Uint8Array|string);
-
-                    /**
-                     * Creates a new ReadWrite instance using the specified properties.
-                     * @param [properties] Properties to set
-                     * @returns ReadWrite instance
-                     */
-                    public static create(properties?: google.datastore.v1.TransactionOptions.IReadWrite): google.datastore.v1.TransactionOptions.ReadWrite;
-
-                    /**
-                     * Encodes the specified ReadWrite message. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadWrite.verify|verify} messages.
-                     * @param message ReadWrite message or plain object to encode
-                     * @param [writer] Writer to encode to
-                     * @returns Writer
-                     */
-                    public static encode(message: google.datastore.v1.TransactionOptions.IReadWrite, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                    /**
-                     * Encodes the specified ReadWrite message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadWrite.verify|verify} messages.
-                     * @param message ReadWrite message or plain object to encode
-                     * @param [writer] Writer to encode to
-                     * @returns Writer
-                     */
-                    public static encodeDelimited(message: google.datastore.v1.TransactionOptions.IReadWrite, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                    /**
-                     * Decodes a ReadWrite message from the specified reader or buffer.
-                     * @param reader Reader or buffer to decode from
-                     * @param [length] Message length if known beforehand
-                     * @returns ReadWrite
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.TransactionOptions.ReadWrite;
-
-                    /**
-                     * Decodes a ReadWrite message from the specified reader or buffer, length delimited.
-                     * @param reader Reader or buffer to decode from
-                     * @returns ReadWrite
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.TransactionOptions.ReadWrite;
-
-                    /**
-                     * Verifies a ReadWrite message.
-                     * @param message Plain object to verify
-                     * @returns `null` if valid, otherwise the reason why it is not
-                     */
-                    public static verify(message: { [k: string]: any }): (string|null);
-
-                    /**
-                     * Creates a ReadWrite message from a plain object. Also converts values to their respective internal types.
-                     * @param object Plain object
-                     * @returns ReadWrite
-                     */
-                    public static fromObject(object: { [k: string]: any }): google.datastore.v1.TransactionOptions.ReadWrite;
-
-                    /**
-                     * Creates a plain object from a ReadWrite message. Also converts values to other types if specified.
-                     * @param message ReadWrite
-                     * @param [options] Conversion options
-                     * @returns Plain object
-                     */
-                    public static toObject(message: google.datastore.v1.TransactionOptions.ReadWrite, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                    /**
-                     * Converts this ReadWrite to JSON.
-                     * @returns JSON object
-                     */
-                    public toJSON(): { [k: string]: any };
-                }
-
-                /** Properties of a ReadOnly. */
-                interface IReadOnly {
-
-                    /** ReadOnly readTime */
-                    readTime?: (google.protobuf.ITimestamp|null);
-                }
-
-                /** Represents a ReadOnly. */
-                class ReadOnly implements IReadOnly {
-
-                    /**
-                     * Constructs a new ReadOnly.
-                     * @param [properties] Properties to set
-                     */
-                    constructor(properties?: google.datastore.v1.TransactionOptions.IReadOnly);
-
-                    /** ReadOnly readTime. */
-                    public readTime?: (google.protobuf.ITimestamp|null);
-
-                    /**
-                     * Creates a new ReadOnly instance using the specified properties.
-                     * @param [properties] Properties to set
-                     * @returns ReadOnly instance
-                     */
-                    public static create(properties?: google.datastore.v1.TransactionOptions.IReadOnly): google.datastore.v1.TransactionOptions.ReadOnly;
-
-                    /**
-                     * Encodes the specified ReadOnly message. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadOnly.verify|verify} messages.
-                     * @param message ReadOnly message or plain object to encode
-                     * @param [writer] Writer to encode to
-                     * @returns Writer
-                     */
-                    public static encode(message: google.datastore.v1.TransactionOptions.IReadOnly, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                    /**
-                     * Encodes the specified ReadOnly message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadOnly.verify|verify} messages.
-                     * @param message ReadOnly message or plain object to encode
-                     * @param [writer] Writer to encode to
-                     * @returns Writer
-                     */
-                    public static encodeDelimited(message: google.datastore.v1.TransactionOptions.IReadOnly, writer?: $protobuf.Writer): $protobuf.Writer;
-
-                    /**
-                     * Decodes a ReadOnly message from the specified reader or buffer.
-                     * @param reader Reader or buffer to decode from
-                     * @param [length] Message length if known beforehand
-                     * @returns ReadOnly
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.TransactionOptions.ReadOnly;
-
-                    /**
-                     * Decodes a ReadOnly message from the specified reader or buffer, length delimited.
-                     * @param reader Reader or buffer to decode from
-                     * @returns ReadOnly
-                     * @throws {Error} If the payload is not a reader or valid buffer
-                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                     */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.TransactionOptions.ReadOnly;
-
-                    /**
-                     * Verifies a ReadOnly message.
-                     * @param message Plain object to verify
-                     * @returns `null` if valid, otherwise the reason why it is not
-                     */
-                    public static verify(message: { [k: string]: any }): (string|null);
-
-                    /**
-                     * Creates a ReadOnly message from a plain object. Also converts values to their respective internal types.
-                     * @param object Plain object
-                     * @returns ReadOnly
-                     */
-                    public static fromObject(object: { [k: string]: any }): google.datastore.v1.TransactionOptions.ReadOnly;
-
-                    /**
-                     * Creates a plain object from a ReadOnly message. Also converts values to other types if specified.
-                     * @param message ReadOnly
-                     * @param [options] Conversion options
-                     * @returns Plain object
-                     */
-                    public static toObject(message: google.datastore.v1.TransactionOptions.ReadOnly, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-                    /**
-                     * Converts this ReadOnly to JSON.
-                     * @returns JSON object
-                     */
-                    public toJSON(): { [k: string]: any };
-                }
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a PartitionId. */
@@ -4573,6 +2741,9 @@ export namespace google {
 
                 /** PartitionId projectId */
                 projectId?: (string|null);
+
+                /** PartitionId databaseId */
+                databaseId?: (string|null);
 
                 /** PartitionId namespaceId */
                 namespaceId?: (string|null);
@@ -4589,6 +2760,9 @@ export namespace google {
 
                 /** PartitionId projectId. */
                 public projectId: string;
+
+                /** PartitionId databaseId. */
+                public databaseId: string;
 
                 /** PartitionId namespaceId. */
                 public namespaceId: string;
@@ -4662,6 +2836,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for PartitionId
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a Key. */
@@ -4758,6 +2939,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Key
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace Key {
@@ -4865,6 +3053,13 @@ export namespace google {
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for PathElement
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4956,6 +3151,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for ArrayValue
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a Value. */
@@ -5121,6 +3323,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Value
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of an Entity. */
@@ -5217,6 +3426,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Entity
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of an EntityResult. */
@@ -5227,6 +3443,9 @@ export namespace google {
 
                 /** EntityResult version */
                 version?: (number|Long|string|null);
+
+                /** EntityResult createTime */
+                createTime?: (google.protobuf.ITimestamp|null);
 
                 /** EntityResult updateTime */
                 updateTime?: (google.protobuf.ITimestamp|null);
@@ -5249,6 +3468,9 @@ export namespace google {
 
                 /** EntityResult version. */
                 public version: (number|Long|string);
+
+                /** EntityResult createTime. */
+                public createTime?: (google.protobuf.ITimestamp|null);
 
                 /** EntityResult updateTime. */
                 public updateTime?: (google.protobuf.ITimestamp|null);
@@ -5325,6 +3547,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for EntityResult
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace EntityResult {
@@ -5474,6 +3703,328 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Query
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of an AggregationQuery. */
+            interface IAggregationQuery {
+
+                /** AggregationQuery nestedQuery */
+                nestedQuery?: (google.datastore.v1.IQuery|null);
+
+                /** AggregationQuery aggregations */
+                aggregations?: (google.datastore.v1.AggregationQuery.IAggregation[]|null);
+            }
+
+            /** Represents an AggregationQuery. */
+            class AggregationQuery implements IAggregationQuery {
+
+                /**
+                 * Constructs a new AggregationQuery.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IAggregationQuery);
+
+                /** AggregationQuery nestedQuery. */
+                public nestedQuery?: (google.datastore.v1.IQuery|null);
+
+                /** AggregationQuery aggregations. */
+                public aggregations: google.datastore.v1.AggregationQuery.IAggregation[];
+
+                /** AggregationQuery queryType. */
+                public queryType?: "nestedQuery";
+
+                /**
+                 * Creates a new AggregationQuery instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns AggregationQuery instance
+                 */
+                public static create(properties?: google.datastore.v1.IAggregationQuery): google.datastore.v1.AggregationQuery;
+
+                /**
+                 * Encodes the specified AggregationQuery message. Does not implicitly {@link google.datastore.v1.AggregationQuery.verify|verify} messages.
+                 * @param message AggregationQuery message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IAggregationQuery, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified AggregationQuery message, length delimited. Does not implicitly {@link google.datastore.v1.AggregationQuery.verify|verify} messages.
+                 * @param message AggregationQuery message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IAggregationQuery, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an AggregationQuery message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns AggregationQuery
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AggregationQuery;
+
+                /**
+                 * Decodes an AggregationQuery message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns AggregationQuery
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AggregationQuery;
+
+                /**
+                 * Verifies an AggregationQuery message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an AggregationQuery message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns AggregationQuery
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.AggregationQuery;
+
+                /**
+                 * Creates a plain object from an AggregationQuery message. Also converts values to other types if specified.
+                 * @param message AggregationQuery
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.AggregationQuery, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this AggregationQuery to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for AggregationQuery
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            namespace AggregationQuery {
+
+                /** Properties of an Aggregation. */
+                interface IAggregation {
+
+                    /** Aggregation count */
+                    count?: (google.datastore.v1.AggregationQuery.Aggregation.ICount|null);
+
+                    /** Aggregation alias */
+                    alias?: (string|null);
+                }
+
+                /** Represents an Aggregation. */
+                class Aggregation implements IAggregation {
+
+                    /**
+                     * Constructs a new Aggregation.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.v1.AggregationQuery.IAggregation);
+
+                    /** Aggregation count. */
+                    public count?: (google.datastore.v1.AggregationQuery.Aggregation.ICount|null);
+
+                    /** Aggregation alias. */
+                    public alias: string;
+
+                    /** Aggregation operator. */
+                    public operator?: "count";
+
+                    /**
+                     * Creates a new Aggregation instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns Aggregation instance
+                     */
+                    public static create(properties?: google.datastore.v1.AggregationQuery.IAggregation): google.datastore.v1.AggregationQuery.Aggregation;
+
+                    /**
+                     * Encodes the specified Aggregation message. Does not implicitly {@link google.datastore.v1.AggregationQuery.Aggregation.verify|verify} messages.
+                     * @param message Aggregation message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.v1.AggregationQuery.IAggregation, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified Aggregation message, length delimited. Does not implicitly {@link google.datastore.v1.AggregationQuery.Aggregation.verify|verify} messages.
+                     * @param message Aggregation message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.v1.AggregationQuery.IAggregation, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an Aggregation message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns Aggregation
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AggregationQuery.Aggregation;
+
+                    /**
+                     * Decodes an Aggregation message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Aggregation
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AggregationQuery.Aggregation;
+
+                    /**
+                     * Verifies an Aggregation message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an Aggregation message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns Aggregation
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.v1.AggregationQuery.Aggregation;
+
+                    /**
+                     * Creates a plain object from an Aggregation message. Also converts values to other types if specified.
+                     * @param message Aggregation
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.v1.AggregationQuery.Aggregation, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this Aggregation to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Aggregation
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace Aggregation {
+
+                    /** Properties of a Count. */
+                    interface ICount {
+
+                        /** Count upTo */
+                        upTo?: (google.protobuf.IInt64Value|null);
+                    }
+
+                    /** Represents a Count. */
+                    class Count implements ICount {
+
+                        /**
+                         * Constructs a new Count.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.datastore.v1.AggregationQuery.Aggregation.ICount);
+
+                        /** Count upTo. */
+                        public upTo?: (google.protobuf.IInt64Value|null);
+
+                        /**
+                         * Creates a new Count instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns Count instance
+                         */
+                        public static create(properties?: google.datastore.v1.AggregationQuery.Aggregation.ICount): google.datastore.v1.AggregationQuery.Aggregation.Count;
+
+                        /**
+                         * Encodes the specified Count message. Does not implicitly {@link google.datastore.v1.AggregationQuery.Aggregation.Count.verify|verify} messages.
+                         * @param message Count message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.datastore.v1.AggregationQuery.Aggregation.ICount, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified Count message, length delimited. Does not implicitly {@link google.datastore.v1.AggregationQuery.Aggregation.Count.verify|verify} messages.
+                         * @param message Count message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.datastore.v1.AggregationQuery.Aggregation.ICount, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a Count message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns Count
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AggregationQuery.Aggregation.Count;
+
+                        /**
+                         * Decodes a Count message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Count
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AggregationQuery.Aggregation.Count;
+
+                        /**
+                         * Verifies a Count message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a Count message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns Count
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.datastore.v1.AggregationQuery.Aggregation.Count;
+
+                        /**
+                         * Creates a plain object from a Count message. Also converts values to other types if specified.
+                         * @param message Count
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.datastore.v1.AggregationQuery.Aggregation.Count, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this Count to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for Count
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+                }
             }
 
             /** Properties of a KindExpression. */
@@ -5564,6 +4115,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for KindExpression
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a PropertyReference. */
@@ -5654,6 +4212,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for PropertyReference
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a Projection. */
@@ -5744,6 +4309,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Projection
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a PropertyOrder. */
@@ -5840,6 +4412,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for PropertyOrder
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PropertyOrder {
@@ -5949,6 +4528,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Filter
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a CompositeFilter. */
@@ -6045,6 +4631,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for CompositeFilter
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace CompositeFilter {
@@ -6052,7 +4645,8 @@ export namespace google {
                 /** Operator enum. */
                 enum Operator {
                     OPERATOR_UNSPECIFIED = 0,
-                    AND = 1
+                    AND = 1,
+                    OR = 2
                 }
             }
 
@@ -6156,6 +4750,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for PropertyFilter
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PropertyFilter {
@@ -6281,6 +4882,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for GqlQuery
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a GqlQueryParameter. */
@@ -6380,6 +4988,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for GqlQueryParameter
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a QueryResultBatch. */
@@ -6512,6 +5127,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for QueryResultBatch
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace QueryResultBatch {
@@ -6523,6 +5145,2658 @@ export namespace google {
                     MORE_RESULTS_AFTER_LIMIT = 2,
                     MORE_RESULTS_AFTER_CURSOR = 4,
                     NO_MORE_RESULTS = 3
+                }
+            }
+
+            /** Represents a Datastore */
+            class Datastore extends $protobuf.rpc.Service {
+
+                /**
+                 * Constructs a new Datastore service.
+                 * @param rpcImpl RPC implementation
+                 * @param [requestDelimited=false] Whether requests are length-delimited
+                 * @param [responseDelimited=false] Whether responses are length-delimited
+                 */
+                constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+                /**
+                 * Creates new Datastore service using the specified rpc implementation.
+                 * @param rpcImpl RPC implementation
+                 * @param [requestDelimited=false] Whether requests are length-delimited
+                 * @param [responseDelimited=false] Whether responses are length-delimited
+                 * @returns RPC service. Useful where requests and/or responses are streamed.
+                 */
+                public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Datastore;
+
+                /**
+                 * Calls Lookup.
+                 * @param request LookupRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and LookupResponse
+                 */
+                public lookup(request: google.datastore.v1.ILookupRequest, callback: google.datastore.v1.Datastore.LookupCallback): void;
+
+                /**
+                 * Calls Lookup.
+                 * @param request LookupRequest message or plain object
+                 * @returns Promise
+                 */
+                public lookup(request: google.datastore.v1.ILookupRequest): Promise<google.datastore.v1.LookupResponse>;
+
+                /**
+                 * Calls RunQuery.
+                 * @param request RunQueryRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and RunQueryResponse
+                 */
+                public runQuery(request: google.datastore.v1.IRunQueryRequest, callback: google.datastore.v1.Datastore.RunQueryCallback): void;
+
+                /**
+                 * Calls RunQuery.
+                 * @param request RunQueryRequest message or plain object
+                 * @returns Promise
+                 */
+                public runQuery(request: google.datastore.v1.IRunQueryRequest): Promise<google.datastore.v1.RunQueryResponse>;
+
+                /**
+                 * Calls RunAggregationQuery.
+                 * @param request RunAggregationQueryRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and RunAggregationQueryResponse
+                 */
+                public runAggregationQuery(request: google.datastore.v1.IRunAggregationQueryRequest, callback: google.datastore.v1.Datastore.RunAggregationQueryCallback): void;
+
+                /**
+                 * Calls RunAggregationQuery.
+                 * @param request RunAggregationQueryRequest message or plain object
+                 * @returns Promise
+                 */
+                public runAggregationQuery(request: google.datastore.v1.IRunAggregationQueryRequest): Promise<google.datastore.v1.RunAggregationQueryResponse>;
+
+                /**
+                 * Calls BeginTransaction.
+                 * @param request BeginTransactionRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and BeginTransactionResponse
+                 */
+                public beginTransaction(request: google.datastore.v1.IBeginTransactionRequest, callback: google.datastore.v1.Datastore.BeginTransactionCallback): void;
+
+                /**
+                 * Calls BeginTransaction.
+                 * @param request BeginTransactionRequest message or plain object
+                 * @returns Promise
+                 */
+                public beginTransaction(request: google.datastore.v1.IBeginTransactionRequest): Promise<google.datastore.v1.BeginTransactionResponse>;
+
+                /**
+                 * Calls Commit.
+                 * @param request CommitRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and CommitResponse
+                 */
+                public commit(request: google.datastore.v1.ICommitRequest, callback: google.datastore.v1.Datastore.CommitCallback): void;
+
+                /**
+                 * Calls Commit.
+                 * @param request CommitRequest message or plain object
+                 * @returns Promise
+                 */
+                public commit(request: google.datastore.v1.ICommitRequest): Promise<google.datastore.v1.CommitResponse>;
+
+                /**
+                 * Calls Rollback.
+                 * @param request RollbackRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and RollbackResponse
+                 */
+                public rollback(request: google.datastore.v1.IRollbackRequest, callback: google.datastore.v1.Datastore.RollbackCallback): void;
+
+                /**
+                 * Calls Rollback.
+                 * @param request RollbackRequest message or plain object
+                 * @returns Promise
+                 */
+                public rollback(request: google.datastore.v1.IRollbackRequest): Promise<google.datastore.v1.RollbackResponse>;
+
+                /**
+                 * Calls AllocateIds.
+                 * @param request AllocateIdsRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and AllocateIdsResponse
+                 */
+                public allocateIds(request: google.datastore.v1.IAllocateIdsRequest, callback: google.datastore.v1.Datastore.AllocateIdsCallback): void;
+
+                /**
+                 * Calls AllocateIds.
+                 * @param request AllocateIdsRequest message or plain object
+                 * @returns Promise
+                 */
+                public allocateIds(request: google.datastore.v1.IAllocateIdsRequest): Promise<google.datastore.v1.AllocateIdsResponse>;
+
+                /**
+                 * Calls ReserveIds.
+                 * @param request ReserveIdsRequest message or plain object
+                 * @param callback Node-style callback called with the error, if any, and ReserveIdsResponse
+                 */
+                public reserveIds(request: google.datastore.v1.IReserveIdsRequest, callback: google.datastore.v1.Datastore.ReserveIdsCallback): void;
+
+                /**
+                 * Calls ReserveIds.
+                 * @param request ReserveIdsRequest message or plain object
+                 * @returns Promise
+                 */
+                public reserveIds(request: google.datastore.v1.IReserveIdsRequest): Promise<google.datastore.v1.ReserveIdsResponse>;
+            }
+
+            namespace Datastore {
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|lookup}.
+                 * @param error Error, if any
+                 * @param [response] LookupResponse
+                 */
+                type LookupCallback = (error: (Error|null), response?: google.datastore.v1.LookupResponse) => void;
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|runQuery}.
+                 * @param error Error, if any
+                 * @param [response] RunQueryResponse
+                 */
+                type RunQueryCallback = (error: (Error|null), response?: google.datastore.v1.RunQueryResponse) => void;
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|runAggregationQuery}.
+                 * @param error Error, if any
+                 * @param [response] RunAggregationQueryResponse
+                 */
+                type RunAggregationQueryCallback = (error: (Error|null), response?: google.datastore.v1.RunAggregationQueryResponse) => void;
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|beginTransaction}.
+                 * @param error Error, if any
+                 * @param [response] BeginTransactionResponse
+                 */
+                type BeginTransactionCallback = (error: (Error|null), response?: google.datastore.v1.BeginTransactionResponse) => void;
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|commit}.
+                 * @param error Error, if any
+                 * @param [response] CommitResponse
+                 */
+                type CommitCallback = (error: (Error|null), response?: google.datastore.v1.CommitResponse) => void;
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|rollback}.
+                 * @param error Error, if any
+                 * @param [response] RollbackResponse
+                 */
+                type RollbackCallback = (error: (Error|null), response?: google.datastore.v1.RollbackResponse) => void;
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|allocateIds}.
+                 * @param error Error, if any
+                 * @param [response] AllocateIdsResponse
+                 */
+                type AllocateIdsCallback = (error: (Error|null), response?: google.datastore.v1.AllocateIdsResponse) => void;
+
+                /**
+                 * Callback as used by {@link google.datastore.v1.Datastore|reserveIds}.
+                 * @param error Error, if any
+                 * @param [response] ReserveIdsResponse
+                 */
+                type ReserveIdsCallback = (error: (Error|null), response?: google.datastore.v1.ReserveIdsResponse) => void;
+            }
+
+            /** Properties of a LookupRequest. */
+            interface ILookupRequest {
+
+                /** LookupRequest projectId */
+                projectId?: (string|null);
+
+                /** LookupRequest databaseId */
+                databaseId?: (string|null);
+
+                /** LookupRequest readOptions */
+                readOptions?: (google.datastore.v1.IReadOptions|null);
+
+                /** LookupRequest keys */
+                keys?: (google.datastore.v1.IKey[]|null);
+            }
+
+            /** Represents a LookupRequest. */
+            class LookupRequest implements ILookupRequest {
+
+                /**
+                 * Constructs a new LookupRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.ILookupRequest);
+
+                /** LookupRequest projectId. */
+                public projectId: string;
+
+                /** LookupRequest databaseId. */
+                public databaseId: string;
+
+                /** LookupRequest readOptions. */
+                public readOptions?: (google.datastore.v1.IReadOptions|null);
+
+                /** LookupRequest keys. */
+                public keys: google.datastore.v1.IKey[];
+
+                /**
+                 * Creates a new LookupRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LookupRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.ILookupRequest): google.datastore.v1.LookupRequest;
+
+                /**
+                 * Encodes the specified LookupRequest message. Does not implicitly {@link google.datastore.v1.LookupRequest.verify|verify} messages.
+                 * @param message LookupRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.ILookupRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LookupRequest message, length delimited. Does not implicitly {@link google.datastore.v1.LookupRequest.verify|verify} messages.
+                 * @param message LookupRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.ILookupRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LookupRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LookupRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.LookupRequest;
+
+                /**
+                 * Decodes a LookupRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LookupRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.LookupRequest;
+
+                /**
+                 * Verifies a LookupRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LookupRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LookupRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.LookupRequest;
+
+                /**
+                 * Creates a plain object from a LookupRequest message. Also converts values to other types if specified.
+                 * @param message LookupRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.LookupRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LookupRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LookupRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a LookupResponse. */
+            interface ILookupResponse {
+
+                /** LookupResponse found */
+                found?: (google.datastore.v1.IEntityResult[]|null);
+
+                /** LookupResponse missing */
+                missing?: (google.datastore.v1.IEntityResult[]|null);
+
+                /** LookupResponse deferred */
+                deferred?: (google.datastore.v1.IKey[]|null);
+
+                /** LookupResponse transaction */
+                transaction?: (Uint8Array|string|null);
+
+                /** LookupResponse readTime */
+                readTime?: (google.protobuf.ITimestamp|null);
+            }
+
+            /** Represents a LookupResponse. */
+            class LookupResponse implements ILookupResponse {
+
+                /**
+                 * Constructs a new LookupResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.ILookupResponse);
+
+                /** LookupResponse found. */
+                public found: google.datastore.v1.IEntityResult[];
+
+                /** LookupResponse missing. */
+                public missing: google.datastore.v1.IEntityResult[];
+
+                /** LookupResponse deferred. */
+                public deferred: google.datastore.v1.IKey[];
+
+                /** LookupResponse transaction. */
+                public transaction: (Uint8Array|string);
+
+                /** LookupResponse readTime. */
+                public readTime?: (google.protobuf.ITimestamp|null);
+
+                /**
+                 * Creates a new LookupResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LookupResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.ILookupResponse): google.datastore.v1.LookupResponse;
+
+                /**
+                 * Encodes the specified LookupResponse message. Does not implicitly {@link google.datastore.v1.LookupResponse.verify|verify} messages.
+                 * @param message LookupResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.ILookupResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LookupResponse message, length delimited. Does not implicitly {@link google.datastore.v1.LookupResponse.verify|verify} messages.
+                 * @param message LookupResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.ILookupResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LookupResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LookupResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.LookupResponse;
+
+                /**
+                 * Decodes a LookupResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LookupResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.LookupResponse;
+
+                /**
+                 * Verifies a LookupResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LookupResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LookupResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.LookupResponse;
+
+                /**
+                 * Creates a plain object from a LookupResponse message. Also converts values to other types if specified.
+                 * @param message LookupResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.LookupResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LookupResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LookupResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a RunQueryRequest. */
+            interface IRunQueryRequest {
+
+                /** RunQueryRequest projectId */
+                projectId?: (string|null);
+
+                /** RunQueryRequest databaseId */
+                databaseId?: (string|null);
+
+                /** RunQueryRequest partitionId */
+                partitionId?: (google.datastore.v1.IPartitionId|null);
+
+                /** RunQueryRequest readOptions */
+                readOptions?: (google.datastore.v1.IReadOptions|null);
+
+                /** RunQueryRequest query */
+                query?: (google.datastore.v1.IQuery|null);
+
+                /** RunQueryRequest gqlQuery */
+                gqlQuery?: (google.datastore.v1.IGqlQuery|null);
+            }
+
+            /** Represents a RunQueryRequest. */
+            class RunQueryRequest implements IRunQueryRequest {
+
+                /**
+                 * Constructs a new RunQueryRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IRunQueryRequest);
+
+                /** RunQueryRequest projectId. */
+                public projectId: string;
+
+                /** RunQueryRequest databaseId. */
+                public databaseId: string;
+
+                /** RunQueryRequest partitionId. */
+                public partitionId?: (google.datastore.v1.IPartitionId|null);
+
+                /** RunQueryRequest readOptions. */
+                public readOptions?: (google.datastore.v1.IReadOptions|null);
+
+                /** RunQueryRequest query. */
+                public query?: (google.datastore.v1.IQuery|null);
+
+                /** RunQueryRequest gqlQuery. */
+                public gqlQuery?: (google.datastore.v1.IGqlQuery|null);
+
+                /** RunQueryRequest queryType. */
+                public queryType?: ("query"|"gqlQuery");
+
+                /**
+                 * Creates a new RunQueryRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns RunQueryRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.IRunQueryRequest): google.datastore.v1.RunQueryRequest;
+
+                /**
+                 * Encodes the specified RunQueryRequest message. Does not implicitly {@link google.datastore.v1.RunQueryRequest.verify|verify} messages.
+                 * @param message RunQueryRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IRunQueryRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified RunQueryRequest message, length delimited. Does not implicitly {@link google.datastore.v1.RunQueryRequest.verify|verify} messages.
+                 * @param message RunQueryRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IRunQueryRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a RunQueryRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns RunQueryRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RunQueryRequest;
+
+                /**
+                 * Decodes a RunQueryRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns RunQueryRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RunQueryRequest;
+
+                /**
+                 * Verifies a RunQueryRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a RunQueryRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns RunQueryRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RunQueryRequest;
+
+                /**
+                 * Creates a plain object from a RunQueryRequest message. Also converts values to other types if specified.
+                 * @param message RunQueryRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.RunQueryRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this RunQueryRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for RunQueryRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a RunQueryResponse. */
+            interface IRunQueryResponse {
+
+                /** RunQueryResponse batch */
+                batch?: (google.datastore.v1.IQueryResultBatch|null);
+
+                /** RunQueryResponse query */
+                query?: (google.datastore.v1.IQuery|null);
+
+                /** RunQueryResponse transaction */
+                transaction?: (Uint8Array|string|null);
+            }
+
+            /** Represents a RunQueryResponse. */
+            class RunQueryResponse implements IRunQueryResponse {
+
+                /**
+                 * Constructs a new RunQueryResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IRunQueryResponse);
+
+                /** RunQueryResponse batch. */
+                public batch?: (google.datastore.v1.IQueryResultBatch|null);
+
+                /** RunQueryResponse query. */
+                public query?: (google.datastore.v1.IQuery|null);
+
+                /** RunQueryResponse transaction. */
+                public transaction: (Uint8Array|string);
+
+                /**
+                 * Creates a new RunQueryResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns RunQueryResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.IRunQueryResponse): google.datastore.v1.RunQueryResponse;
+
+                /**
+                 * Encodes the specified RunQueryResponse message. Does not implicitly {@link google.datastore.v1.RunQueryResponse.verify|verify} messages.
+                 * @param message RunQueryResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IRunQueryResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified RunQueryResponse message, length delimited. Does not implicitly {@link google.datastore.v1.RunQueryResponse.verify|verify} messages.
+                 * @param message RunQueryResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IRunQueryResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a RunQueryResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns RunQueryResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RunQueryResponse;
+
+                /**
+                 * Decodes a RunQueryResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns RunQueryResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RunQueryResponse;
+
+                /**
+                 * Verifies a RunQueryResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a RunQueryResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns RunQueryResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RunQueryResponse;
+
+                /**
+                 * Creates a plain object from a RunQueryResponse message. Also converts values to other types if specified.
+                 * @param message RunQueryResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.RunQueryResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this RunQueryResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for RunQueryResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a RunAggregationQueryRequest. */
+            interface IRunAggregationQueryRequest {
+
+                /** RunAggregationQueryRequest projectId */
+                projectId?: (string|null);
+
+                /** RunAggregationQueryRequest databaseId */
+                databaseId?: (string|null);
+
+                /** RunAggregationQueryRequest partitionId */
+                partitionId?: (google.datastore.v1.IPartitionId|null);
+
+                /** RunAggregationQueryRequest readOptions */
+                readOptions?: (google.datastore.v1.IReadOptions|null);
+
+                /** RunAggregationQueryRequest aggregationQuery */
+                aggregationQuery?: (google.datastore.v1.IAggregationQuery|null);
+
+                /** RunAggregationQueryRequest gqlQuery */
+                gqlQuery?: (google.datastore.v1.IGqlQuery|null);
+            }
+
+            /** Represents a RunAggregationQueryRequest. */
+            class RunAggregationQueryRequest implements IRunAggregationQueryRequest {
+
+                /**
+                 * Constructs a new RunAggregationQueryRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IRunAggregationQueryRequest);
+
+                /** RunAggregationQueryRequest projectId. */
+                public projectId: string;
+
+                /** RunAggregationQueryRequest databaseId. */
+                public databaseId: string;
+
+                /** RunAggregationQueryRequest partitionId. */
+                public partitionId?: (google.datastore.v1.IPartitionId|null);
+
+                /** RunAggregationQueryRequest readOptions. */
+                public readOptions?: (google.datastore.v1.IReadOptions|null);
+
+                /** RunAggregationQueryRequest aggregationQuery. */
+                public aggregationQuery?: (google.datastore.v1.IAggregationQuery|null);
+
+                /** RunAggregationQueryRequest gqlQuery. */
+                public gqlQuery?: (google.datastore.v1.IGqlQuery|null);
+
+                /** RunAggregationQueryRequest queryType. */
+                public queryType?: ("aggregationQuery"|"gqlQuery");
+
+                /**
+                 * Creates a new RunAggregationQueryRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns RunAggregationQueryRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.IRunAggregationQueryRequest): google.datastore.v1.RunAggregationQueryRequest;
+
+                /**
+                 * Encodes the specified RunAggregationQueryRequest message. Does not implicitly {@link google.datastore.v1.RunAggregationQueryRequest.verify|verify} messages.
+                 * @param message RunAggregationQueryRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IRunAggregationQueryRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified RunAggregationQueryRequest message, length delimited. Does not implicitly {@link google.datastore.v1.RunAggregationQueryRequest.verify|verify} messages.
+                 * @param message RunAggregationQueryRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IRunAggregationQueryRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a RunAggregationQueryRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns RunAggregationQueryRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RunAggregationQueryRequest;
+
+                /**
+                 * Decodes a RunAggregationQueryRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns RunAggregationQueryRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RunAggregationQueryRequest;
+
+                /**
+                 * Verifies a RunAggregationQueryRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a RunAggregationQueryRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns RunAggregationQueryRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RunAggregationQueryRequest;
+
+                /**
+                 * Creates a plain object from a RunAggregationQueryRequest message. Also converts values to other types if specified.
+                 * @param message RunAggregationQueryRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.RunAggregationQueryRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this RunAggregationQueryRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for RunAggregationQueryRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a RunAggregationQueryResponse. */
+            interface IRunAggregationQueryResponse {
+
+                /** RunAggregationQueryResponse batch */
+                batch?: (google.datastore.v1.IAggregationResultBatch|null);
+
+                /** RunAggregationQueryResponse query */
+                query?: (google.datastore.v1.IAggregationQuery|null);
+
+                /** RunAggregationQueryResponse transaction */
+                transaction?: (Uint8Array|string|null);
+            }
+
+            /** Represents a RunAggregationQueryResponse. */
+            class RunAggregationQueryResponse implements IRunAggregationQueryResponse {
+
+                /**
+                 * Constructs a new RunAggregationQueryResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IRunAggregationQueryResponse);
+
+                /** RunAggregationQueryResponse batch. */
+                public batch?: (google.datastore.v1.IAggregationResultBatch|null);
+
+                /** RunAggregationQueryResponse query. */
+                public query?: (google.datastore.v1.IAggregationQuery|null);
+
+                /** RunAggregationQueryResponse transaction. */
+                public transaction: (Uint8Array|string);
+
+                /**
+                 * Creates a new RunAggregationQueryResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns RunAggregationQueryResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.IRunAggregationQueryResponse): google.datastore.v1.RunAggregationQueryResponse;
+
+                /**
+                 * Encodes the specified RunAggregationQueryResponse message. Does not implicitly {@link google.datastore.v1.RunAggregationQueryResponse.verify|verify} messages.
+                 * @param message RunAggregationQueryResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IRunAggregationQueryResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified RunAggregationQueryResponse message, length delimited. Does not implicitly {@link google.datastore.v1.RunAggregationQueryResponse.verify|verify} messages.
+                 * @param message RunAggregationQueryResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IRunAggregationQueryResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a RunAggregationQueryResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns RunAggregationQueryResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RunAggregationQueryResponse;
+
+                /**
+                 * Decodes a RunAggregationQueryResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns RunAggregationQueryResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RunAggregationQueryResponse;
+
+                /**
+                 * Verifies a RunAggregationQueryResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a RunAggregationQueryResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns RunAggregationQueryResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RunAggregationQueryResponse;
+
+                /**
+                 * Creates a plain object from a RunAggregationQueryResponse message. Also converts values to other types if specified.
+                 * @param message RunAggregationQueryResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.RunAggregationQueryResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this RunAggregationQueryResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for RunAggregationQueryResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a BeginTransactionRequest. */
+            interface IBeginTransactionRequest {
+
+                /** BeginTransactionRequest projectId */
+                projectId?: (string|null);
+
+                /** BeginTransactionRequest databaseId */
+                databaseId?: (string|null);
+
+                /** BeginTransactionRequest transactionOptions */
+                transactionOptions?: (google.datastore.v1.ITransactionOptions|null);
+            }
+
+            /** Represents a BeginTransactionRequest. */
+            class BeginTransactionRequest implements IBeginTransactionRequest {
+
+                /**
+                 * Constructs a new BeginTransactionRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IBeginTransactionRequest);
+
+                /** BeginTransactionRequest projectId. */
+                public projectId: string;
+
+                /** BeginTransactionRequest databaseId. */
+                public databaseId: string;
+
+                /** BeginTransactionRequest transactionOptions. */
+                public transactionOptions?: (google.datastore.v1.ITransactionOptions|null);
+
+                /**
+                 * Creates a new BeginTransactionRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns BeginTransactionRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.IBeginTransactionRequest): google.datastore.v1.BeginTransactionRequest;
+
+                /**
+                 * Encodes the specified BeginTransactionRequest message. Does not implicitly {@link google.datastore.v1.BeginTransactionRequest.verify|verify} messages.
+                 * @param message BeginTransactionRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IBeginTransactionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified BeginTransactionRequest message, length delimited. Does not implicitly {@link google.datastore.v1.BeginTransactionRequest.verify|verify} messages.
+                 * @param message BeginTransactionRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IBeginTransactionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a BeginTransactionRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns BeginTransactionRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.BeginTransactionRequest;
+
+                /**
+                 * Decodes a BeginTransactionRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns BeginTransactionRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.BeginTransactionRequest;
+
+                /**
+                 * Verifies a BeginTransactionRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a BeginTransactionRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns BeginTransactionRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.BeginTransactionRequest;
+
+                /**
+                 * Creates a plain object from a BeginTransactionRequest message. Also converts values to other types if specified.
+                 * @param message BeginTransactionRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.BeginTransactionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this BeginTransactionRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for BeginTransactionRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a BeginTransactionResponse. */
+            interface IBeginTransactionResponse {
+
+                /** BeginTransactionResponse transaction */
+                transaction?: (Uint8Array|string|null);
+            }
+
+            /** Represents a BeginTransactionResponse. */
+            class BeginTransactionResponse implements IBeginTransactionResponse {
+
+                /**
+                 * Constructs a new BeginTransactionResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IBeginTransactionResponse);
+
+                /** BeginTransactionResponse transaction. */
+                public transaction: (Uint8Array|string);
+
+                /**
+                 * Creates a new BeginTransactionResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns BeginTransactionResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.IBeginTransactionResponse): google.datastore.v1.BeginTransactionResponse;
+
+                /**
+                 * Encodes the specified BeginTransactionResponse message. Does not implicitly {@link google.datastore.v1.BeginTransactionResponse.verify|verify} messages.
+                 * @param message BeginTransactionResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IBeginTransactionResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified BeginTransactionResponse message, length delimited. Does not implicitly {@link google.datastore.v1.BeginTransactionResponse.verify|verify} messages.
+                 * @param message BeginTransactionResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IBeginTransactionResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a BeginTransactionResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns BeginTransactionResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.BeginTransactionResponse;
+
+                /**
+                 * Decodes a BeginTransactionResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns BeginTransactionResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.BeginTransactionResponse;
+
+                /**
+                 * Verifies a BeginTransactionResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a BeginTransactionResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns BeginTransactionResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.BeginTransactionResponse;
+
+                /**
+                 * Creates a plain object from a BeginTransactionResponse message. Also converts values to other types if specified.
+                 * @param message BeginTransactionResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.BeginTransactionResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this BeginTransactionResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for BeginTransactionResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a RollbackRequest. */
+            interface IRollbackRequest {
+
+                /** RollbackRequest projectId */
+                projectId?: (string|null);
+
+                /** RollbackRequest databaseId */
+                databaseId?: (string|null);
+
+                /** RollbackRequest transaction */
+                transaction?: (Uint8Array|string|null);
+            }
+
+            /** Represents a RollbackRequest. */
+            class RollbackRequest implements IRollbackRequest {
+
+                /**
+                 * Constructs a new RollbackRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IRollbackRequest);
+
+                /** RollbackRequest projectId. */
+                public projectId: string;
+
+                /** RollbackRequest databaseId. */
+                public databaseId: string;
+
+                /** RollbackRequest transaction. */
+                public transaction: (Uint8Array|string);
+
+                /**
+                 * Creates a new RollbackRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns RollbackRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.IRollbackRequest): google.datastore.v1.RollbackRequest;
+
+                /**
+                 * Encodes the specified RollbackRequest message. Does not implicitly {@link google.datastore.v1.RollbackRequest.verify|verify} messages.
+                 * @param message RollbackRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IRollbackRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified RollbackRequest message, length delimited. Does not implicitly {@link google.datastore.v1.RollbackRequest.verify|verify} messages.
+                 * @param message RollbackRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IRollbackRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a RollbackRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns RollbackRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RollbackRequest;
+
+                /**
+                 * Decodes a RollbackRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns RollbackRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RollbackRequest;
+
+                /**
+                 * Verifies a RollbackRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a RollbackRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns RollbackRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RollbackRequest;
+
+                /**
+                 * Creates a plain object from a RollbackRequest message. Also converts values to other types if specified.
+                 * @param message RollbackRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.RollbackRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this RollbackRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for RollbackRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a RollbackResponse. */
+            interface IRollbackResponse {
+            }
+
+            /** Represents a RollbackResponse. */
+            class RollbackResponse implements IRollbackResponse {
+
+                /**
+                 * Constructs a new RollbackResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IRollbackResponse);
+
+                /**
+                 * Creates a new RollbackResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns RollbackResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.IRollbackResponse): google.datastore.v1.RollbackResponse;
+
+                /**
+                 * Encodes the specified RollbackResponse message. Does not implicitly {@link google.datastore.v1.RollbackResponse.verify|verify} messages.
+                 * @param message RollbackResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IRollbackResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified RollbackResponse message, length delimited. Does not implicitly {@link google.datastore.v1.RollbackResponse.verify|verify} messages.
+                 * @param message RollbackResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IRollbackResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a RollbackResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns RollbackResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.RollbackResponse;
+
+                /**
+                 * Decodes a RollbackResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns RollbackResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.RollbackResponse;
+
+                /**
+                 * Verifies a RollbackResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a RollbackResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns RollbackResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.RollbackResponse;
+
+                /**
+                 * Creates a plain object from a RollbackResponse message. Also converts values to other types if specified.
+                 * @param message RollbackResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.RollbackResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this RollbackResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for RollbackResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a CommitRequest. */
+            interface ICommitRequest {
+
+                /** CommitRequest projectId */
+                projectId?: (string|null);
+
+                /** CommitRequest databaseId */
+                databaseId?: (string|null);
+
+                /** CommitRequest mode */
+                mode?: (google.datastore.v1.CommitRequest.Mode|keyof typeof google.datastore.v1.CommitRequest.Mode|null);
+
+                /** CommitRequest transaction */
+                transaction?: (Uint8Array|string|null);
+
+                /** CommitRequest singleUseTransaction */
+                singleUseTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
+                /** CommitRequest mutations */
+                mutations?: (google.datastore.v1.IMutation[]|null);
+            }
+
+            /** Represents a CommitRequest. */
+            class CommitRequest implements ICommitRequest {
+
+                /**
+                 * Constructs a new CommitRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.ICommitRequest);
+
+                /** CommitRequest projectId. */
+                public projectId: string;
+
+                /** CommitRequest databaseId. */
+                public databaseId: string;
+
+                /** CommitRequest mode. */
+                public mode: (google.datastore.v1.CommitRequest.Mode|keyof typeof google.datastore.v1.CommitRequest.Mode);
+
+                /** CommitRequest transaction. */
+                public transaction?: (Uint8Array|string|null);
+
+                /** CommitRequest singleUseTransaction. */
+                public singleUseTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
+                /** CommitRequest mutations. */
+                public mutations: google.datastore.v1.IMutation[];
+
+                /** CommitRequest transactionSelector. */
+                public transactionSelector?: ("transaction"|"singleUseTransaction");
+
+                /**
+                 * Creates a new CommitRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns CommitRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.ICommitRequest): google.datastore.v1.CommitRequest;
+
+                /**
+                 * Encodes the specified CommitRequest message. Does not implicitly {@link google.datastore.v1.CommitRequest.verify|verify} messages.
+                 * @param message CommitRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.ICommitRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified CommitRequest message, length delimited. Does not implicitly {@link google.datastore.v1.CommitRequest.verify|verify} messages.
+                 * @param message CommitRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.ICommitRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a CommitRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns CommitRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.CommitRequest;
+
+                /**
+                 * Decodes a CommitRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns CommitRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.CommitRequest;
+
+                /**
+                 * Verifies a CommitRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a CommitRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns CommitRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.CommitRequest;
+
+                /**
+                 * Creates a plain object from a CommitRequest message. Also converts values to other types if specified.
+                 * @param message CommitRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.CommitRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this CommitRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for CommitRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            namespace CommitRequest {
+
+                /** Mode enum. */
+                enum Mode {
+                    MODE_UNSPECIFIED = 0,
+                    TRANSACTIONAL = 1,
+                    NON_TRANSACTIONAL = 2
+                }
+            }
+
+            /** Properties of a CommitResponse. */
+            interface ICommitResponse {
+
+                /** CommitResponse mutationResults */
+                mutationResults?: (google.datastore.v1.IMutationResult[]|null);
+
+                /** CommitResponse indexUpdates */
+                indexUpdates?: (number|null);
+
+                /** CommitResponse commitTime */
+                commitTime?: (google.protobuf.ITimestamp|null);
+            }
+
+            /** Represents a CommitResponse. */
+            class CommitResponse implements ICommitResponse {
+
+                /**
+                 * Constructs a new CommitResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.ICommitResponse);
+
+                /** CommitResponse mutationResults. */
+                public mutationResults: google.datastore.v1.IMutationResult[];
+
+                /** CommitResponse indexUpdates. */
+                public indexUpdates: number;
+
+                /** CommitResponse commitTime. */
+                public commitTime?: (google.protobuf.ITimestamp|null);
+
+                /**
+                 * Creates a new CommitResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns CommitResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.ICommitResponse): google.datastore.v1.CommitResponse;
+
+                /**
+                 * Encodes the specified CommitResponse message. Does not implicitly {@link google.datastore.v1.CommitResponse.verify|verify} messages.
+                 * @param message CommitResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.ICommitResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified CommitResponse message, length delimited. Does not implicitly {@link google.datastore.v1.CommitResponse.verify|verify} messages.
+                 * @param message CommitResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.ICommitResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a CommitResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns CommitResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.CommitResponse;
+
+                /**
+                 * Decodes a CommitResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns CommitResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.CommitResponse;
+
+                /**
+                 * Verifies a CommitResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a CommitResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns CommitResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.CommitResponse;
+
+                /**
+                 * Creates a plain object from a CommitResponse message. Also converts values to other types if specified.
+                 * @param message CommitResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.CommitResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this CommitResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for CommitResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of an AllocateIdsRequest. */
+            interface IAllocateIdsRequest {
+
+                /** AllocateIdsRequest projectId */
+                projectId?: (string|null);
+
+                /** AllocateIdsRequest databaseId */
+                databaseId?: (string|null);
+
+                /** AllocateIdsRequest keys */
+                keys?: (google.datastore.v1.IKey[]|null);
+            }
+
+            /** Represents an AllocateIdsRequest. */
+            class AllocateIdsRequest implements IAllocateIdsRequest {
+
+                /**
+                 * Constructs a new AllocateIdsRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IAllocateIdsRequest);
+
+                /** AllocateIdsRequest projectId. */
+                public projectId: string;
+
+                /** AllocateIdsRequest databaseId. */
+                public databaseId: string;
+
+                /** AllocateIdsRequest keys. */
+                public keys: google.datastore.v1.IKey[];
+
+                /**
+                 * Creates a new AllocateIdsRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns AllocateIdsRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.IAllocateIdsRequest): google.datastore.v1.AllocateIdsRequest;
+
+                /**
+                 * Encodes the specified AllocateIdsRequest message. Does not implicitly {@link google.datastore.v1.AllocateIdsRequest.verify|verify} messages.
+                 * @param message AllocateIdsRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IAllocateIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified AllocateIdsRequest message, length delimited. Does not implicitly {@link google.datastore.v1.AllocateIdsRequest.verify|verify} messages.
+                 * @param message AllocateIdsRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IAllocateIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an AllocateIdsRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns AllocateIdsRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AllocateIdsRequest;
+
+                /**
+                 * Decodes an AllocateIdsRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns AllocateIdsRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AllocateIdsRequest;
+
+                /**
+                 * Verifies an AllocateIdsRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an AllocateIdsRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns AllocateIdsRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.AllocateIdsRequest;
+
+                /**
+                 * Creates a plain object from an AllocateIdsRequest message. Also converts values to other types if specified.
+                 * @param message AllocateIdsRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.AllocateIdsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this AllocateIdsRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for AllocateIdsRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of an AllocateIdsResponse. */
+            interface IAllocateIdsResponse {
+
+                /** AllocateIdsResponse keys */
+                keys?: (google.datastore.v1.IKey[]|null);
+            }
+
+            /** Represents an AllocateIdsResponse. */
+            class AllocateIdsResponse implements IAllocateIdsResponse {
+
+                /**
+                 * Constructs a new AllocateIdsResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IAllocateIdsResponse);
+
+                /** AllocateIdsResponse keys. */
+                public keys: google.datastore.v1.IKey[];
+
+                /**
+                 * Creates a new AllocateIdsResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns AllocateIdsResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.IAllocateIdsResponse): google.datastore.v1.AllocateIdsResponse;
+
+                /**
+                 * Encodes the specified AllocateIdsResponse message. Does not implicitly {@link google.datastore.v1.AllocateIdsResponse.verify|verify} messages.
+                 * @param message AllocateIdsResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IAllocateIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified AllocateIdsResponse message, length delimited. Does not implicitly {@link google.datastore.v1.AllocateIdsResponse.verify|verify} messages.
+                 * @param message AllocateIdsResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IAllocateIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an AllocateIdsResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns AllocateIdsResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.AllocateIdsResponse;
+
+                /**
+                 * Decodes an AllocateIdsResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns AllocateIdsResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.AllocateIdsResponse;
+
+                /**
+                 * Verifies an AllocateIdsResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an AllocateIdsResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns AllocateIdsResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.AllocateIdsResponse;
+
+                /**
+                 * Creates a plain object from an AllocateIdsResponse message. Also converts values to other types if specified.
+                 * @param message AllocateIdsResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.AllocateIdsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this AllocateIdsResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for AllocateIdsResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a ReserveIdsRequest. */
+            interface IReserveIdsRequest {
+
+                /** ReserveIdsRequest projectId */
+                projectId?: (string|null);
+
+                /** ReserveIdsRequest databaseId */
+                databaseId?: (string|null);
+
+                /** ReserveIdsRequest keys */
+                keys?: (google.datastore.v1.IKey[]|null);
+            }
+
+            /** Represents a ReserveIdsRequest. */
+            class ReserveIdsRequest implements IReserveIdsRequest {
+
+                /**
+                 * Constructs a new ReserveIdsRequest.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IReserveIdsRequest);
+
+                /** ReserveIdsRequest projectId. */
+                public projectId: string;
+
+                /** ReserveIdsRequest databaseId. */
+                public databaseId: string;
+
+                /** ReserveIdsRequest keys. */
+                public keys: google.datastore.v1.IKey[];
+
+                /**
+                 * Creates a new ReserveIdsRequest instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns ReserveIdsRequest instance
+                 */
+                public static create(properties?: google.datastore.v1.IReserveIdsRequest): google.datastore.v1.ReserveIdsRequest;
+
+                /**
+                 * Encodes the specified ReserveIdsRequest message. Does not implicitly {@link google.datastore.v1.ReserveIdsRequest.verify|verify} messages.
+                 * @param message ReserveIdsRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IReserveIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified ReserveIdsRequest message, length delimited. Does not implicitly {@link google.datastore.v1.ReserveIdsRequest.verify|verify} messages.
+                 * @param message ReserveIdsRequest message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IReserveIdsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a ReserveIdsRequest message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns ReserveIdsRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.ReserveIdsRequest;
+
+                /**
+                 * Decodes a ReserveIdsRequest message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns ReserveIdsRequest
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.ReserveIdsRequest;
+
+                /**
+                 * Verifies a ReserveIdsRequest message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a ReserveIdsRequest message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns ReserveIdsRequest
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.ReserveIdsRequest;
+
+                /**
+                 * Creates a plain object from a ReserveIdsRequest message. Also converts values to other types if specified.
+                 * @param message ReserveIdsRequest
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.ReserveIdsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this ReserveIdsRequest to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for ReserveIdsRequest
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a ReserveIdsResponse. */
+            interface IReserveIdsResponse {
+            }
+
+            /** Represents a ReserveIdsResponse. */
+            class ReserveIdsResponse implements IReserveIdsResponse {
+
+                /**
+                 * Constructs a new ReserveIdsResponse.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IReserveIdsResponse);
+
+                /**
+                 * Creates a new ReserveIdsResponse instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns ReserveIdsResponse instance
+                 */
+                public static create(properties?: google.datastore.v1.IReserveIdsResponse): google.datastore.v1.ReserveIdsResponse;
+
+                /**
+                 * Encodes the specified ReserveIdsResponse message. Does not implicitly {@link google.datastore.v1.ReserveIdsResponse.verify|verify} messages.
+                 * @param message ReserveIdsResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IReserveIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified ReserveIdsResponse message, length delimited. Does not implicitly {@link google.datastore.v1.ReserveIdsResponse.verify|verify} messages.
+                 * @param message ReserveIdsResponse message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IReserveIdsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a ReserveIdsResponse message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns ReserveIdsResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.ReserveIdsResponse;
+
+                /**
+                 * Decodes a ReserveIdsResponse message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns ReserveIdsResponse
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.ReserveIdsResponse;
+
+                /**
+                 * Verifies a ReserveIdsResponse message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a ReserveIdsResponse message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns ReserveIdsResponse
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.ReserveIdsResponse;
+
+                /**
+                 * Creates a plain object from a ReserveIdsResponse message. Also converts values to other types if specified.
+                 * @param message ReserveIdsResponse
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.ReserveIdsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this ReserveIdsResponse to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for ReserveIdsResponse
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a Mutation. */
+            interface IMutation {
+
+                /** Mutation insert */
+                insert?: (google.datastore.v1.IEntity|null);
+
+                /** Mutation update */
+                update?: (google.datastore.v1.IEntity|null);
+
+                /** Mutation upsert */
+                upsert?: (google.datastore.v1.IEntity|null);
+
+                /** Mutation delete */
+                "delete"?: (google.datastore.v1.IKey|null);
+
+                /** Mutation baseVersion */
+                baseVersion?: (number|Long|string|null);
+
+                /** Mutation updateTime */
+                updateTime?: (google.protobuf.ITimestamp|null);
+            }
+
+            /** Represents a Mutation. */
+            class Mutation implements IMutation {
+
+                /**
+                 * Constructs a new Mutation.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IMutation);
+
+                /** Mutation insert. */
+                public insert?: (google.datastore.v1.IEntity|null);
+
+                /** Mutation update. */
+                public update?: (google.datastore.v1.IEntity|null);
+
+                /** Mutation upsert. */
+                public upsert?: (google.datastore.v1.IEntity|null);
+
+                /** Mutation delete. */
+                public delete?: (google.datastore.v1.IKey|null);
+
+                /** Mutation baseVersion. */
+                public baseVersion?: (number|Long|string|null);
+
+                /** Mutation updateTime. */
+                public updateTime?: (google.protobuf.ITimestamp|null);
+
+                /** Mutation operation. */
+                public operation?: ("insert"|"update"|"upsert"|"delete");
+
+                /** Mutation conflictDetectionStrategy. */
+                public conflictDetectionStrategy?: ("baseVersion"|"updateTime");
+
+                /**
+                 * Creates a new Mutation instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns Mutation instance
+                 */
+                public static create(properties?: google.datastore.v1.IMutation): google.datastore.v1.Mutation;
+
+                /**
+                 * Encodes the specified Mutation message. Does not implicitly {@link google.datastore.v1.Mutation.verify|verify} messages.
+                 * @param message Mutation message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IMutation, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified Mutation message, length delimited. Does not implicitly {@link google.datastore.v1.Mutation.verify|verify} messages.
+                 * @param message Mutation message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IMutation, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a Mutation message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns Mutation
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.Mutation;
+
+                /**
+                 * Decodes a Mutation message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns Mutation
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.Mutation;
+
+                /**
+                 * Verifies a Mutation message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a Mutation message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns Mutation
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.Mutation;
+
+                /**
+                 * Creates a plain object from a Mutation message. Also converts values to other types if specified.
+                 * @param message Mutation
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.Mutation, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this Mutation to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Mutation
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a MutationResult. */
+            interface IMutationResult {
+
+                /** MutationResult key */
+                key?: (google.datastore.v1.IKey|null);
+
+                /** MutationResult version */
+                version?: (number|Long|string|null);
+
+                /** MutationResult createTime */
+                createTime?: (google.protobuf.ITimestamp|null);
+
+                /** MutationResult updateTime */
+                updateTime?: (google.protobuf.ITimestamp|null);
+
+                /** MutationResult conflictDetected */
+                conflictDetected?: (boolean|null);
+            }
+
+            /** Represents a MutationResult. */
+            class MutationResult implements IMutationResult {
+
+                /**
+                 * Constructs a new MutationResult.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IMutationResult);
+
+                /** MutationResult key. */
+                public key?: (google.datastore.v1.IKey|null);
+
+                /** MutationResult version. */
+                public version: (number|Long|string);
+
+                /** MutationResult createTime. */
+                public createTime?: (google.protobuf.ITimestamp|null);
+
+                /** MutationResult updateTime. */
+                public updateTime?: (google.protobuf.ITimestamp|null);
+
+                /** MutationResult conflictDetected. */
+                public conflictDetected: boolean;
+
+                /**
+                 * Creates a new MutationResult instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns MutationResult instance
+                 */
+                public static create(properties?: google.datastore.v1.IMutationResult): google.datastore.v1.MutationResult;
+
+                /**
+                 * Encodes the specified MutationResult message. Does not implicitly {@link google.datastore.v1.MutationResult.verify|verify} messages.
+                 * @param message MutationResult message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IMutationResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified MutationResult message, length delimited. Does not implicitly {@link google.datastore.v1.MutationResult.verify|verify} messages.
+                 * @param message MutationResult message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IMutationResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a MutationResult message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns MutationResult
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.MutationResult;
+
+                /**
+                 * Decodes a MutationResult message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns MutationResult
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.MutationResult;
+
+                /**
+                 * Verifies a MutationResult message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a MutationResult message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns MutationResult
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.MutationResult;
+
+                /**
+                 * Creates a plain object from a MutationResult message. Also converts values to other types if specified.
+                 * @param message MutationResult
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.MutationResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this MutationResult to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for MutationResult
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a ReadOptions. */
+            interface IReadOptions {
+
+                /** ReadOptions readConsistency */
+                readConsistency?: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency|null);
+
+                /** ReadOptions transaction */
+                transaction?: (Uint8Array|string|null);
+
+                /** ReadOptions newTransaction */
+                newTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
+                /** ReadOptions readTime */
+                readTime?: (google.protobuf.ITimestamp|null);
+            }
+
+            /** Represents a ReadOptions. */
+            class ReadOptions implements IReadOptions {
+
+                /**
+                 * Constructs a new ReadOptions.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IReadOptions);
+
+                /** ReadOptions readConsistency. */
+                public readConsistency?: (google.datastore.v1.ReadOptions.ReadConsistency|keyof typeof google.datastore.v1.ReadOptions.ReadConsistency|null);
+
+                /** ReadOptions transaction. */
+                public transaction?: (Uint8Array|string|null);
+
+                /** ReadOptions newTransaction. */
+                public newTransaction?: (google.datastore.v1.ITransactionOptions|null);
+
+                /** ReadOptions readTime. */
+                public readTime?: (google.protobuf.ITimestamp|null);
+
+                /** ReadOptions consistencyType. */
+                public consistencyType?: ("readConsistency"|"transaction"|"newTransaction"|"readTime");
+
+                /**
+                 * Creates a new ReadOptions instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns ReadOptions instance
+                 */
+                public static create(properties?: google.datastore.v1.IReadOptions): google.datastore.v1.ReadOptions;
+
+                /**
+                 * Encodes the specified ReadOptions message. Does not implicitly {@link google.datastore.v1.ReadOptions.verify|verify} messages.
+                 * @param message ReadOptions message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IReadOptions, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified ReadOptions message, length delimited. Does not implicitly {@link google.datastore.v1.ReadOptions.verify|verify} messages.
+                 * @param message ReadOptions message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IReadOptions, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a ReadOptions message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns ReadOptions
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.ReadOptions;
+
+                /**
+                 * Decodes a ReadOptions message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns ReadOptions
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.ReadOptions;
+
+                /**
+                 * Verifies a ReadOptions message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a ReadOptions message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns ReadOptions
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.ReadOptions;
+
+                /**
+                 * Creates a plain object from a ReadOptions message. Also converts values to other types if specified.
+                 * @param message ReadOptions
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.ReadOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this ReadOptions to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for ReadOptions
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            namespace ReadOptions {
+
+                /** ReadConsistency enum. */
+                enum ReadConsistency {
+                    READ_CONSISTENCY_UNSPECIFIED = 0,
+                    STRONG = 1,
+                    EVENTUAL = 2
+                }
+            }
+
+            /** Properties of a TransactionOptions. */
+            interface ITransactionOptions {
+
+                /** TransactionOptions readWrite */
+                readWrite?: (google.datastore.v1.TransactionOptions.IReadWrite|null);
+
+                /** TransactionOptions readOnly */
+                readOnly?: (google.datastore.v1.TransactionOptions.IReadOnly|null);
+            }
+
+            /** Represents a TransactionOptions. */
+            class TransactionOptions implements ITransactionOptions {
+
+                /**
+                 * Constructs a new TransactionOptions.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.ITransactionOptions);
+
+                /** TransactionOptions readWrite. */
+                public readWrite?: (google.datastore.v1.TransactionOptions.IReadWrite|null);
+
+                /** TransactionOptions readOnly. */
+                public readOnly?: (google.datastore.v1.TransactionOptions.IReadOnly|null);
+
+                /** TransactionOptions mode. */
+                public mode?: ("readWrite"|"readOnly");
+
+                /**
+                 * Creates a new TransactionOptions instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns TransactionOptions instance
+                 */
+                public static create(properties?: google.datastore.v1.ITransactionOptions): google.datastore.v1.TransactionOptions;
+
+                /**
+                 * Encodes the specified TransactionOptions message. Does not implicitly {@link google.datastore.v1.TransactionOptions.verify|verify} messages.
+                 * @param message TransactionOptions message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.ITransactionOptions, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified TransactionOptions message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.verify|verify} messages.
+                 * @param message TransactionOptions message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.ITransactionOptions, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a TransactionOptions message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns TransactionOptions
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.TransactionOptions;
+
+                /**
+                 * Decodes a TransactionOptions message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns TransactionOptions
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.TransactionOptions;
+
+                /**
+                 * Verifies a TransactionOptions message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a TransactionOptions message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns TransactionOptions
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.TransactionOptions;
+
+                /**
+                 * Creates a plain object from a TransactionOptions message. Also converts values to other types if specified.
+                 * @param message TransactionOptions
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.TransactionOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this TransactionOptions to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for TransactionOptions
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            namespace TransactionOptions {
+
+                /** Properties of a ReadWrite. */
+                interface IReadWrite {
+
+                    /** ReadWrite previousTransaction */
+                    previousTransaction?: (Uint8Array|string|null);
+                }
+
+                /** Represents a ReadWrite. */
+                class ReadWrite implements IReadWrite {
+
+                    /**
+                     * Constructs a new ReadWrite.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.v1.TransactionOptions.IReadWrite);
+
+                    /** ReadWrite previousTransaction. */
+                    public previousTransaction: (Uint8Array|string);
+
+                    /**
+                     * Creates a new ReadWrite instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ReadWrite instance
+                     */
+                    public static create(properties?: google.datastore.v1.TransactionOptions.IReadWrite): google.datastore.v1.TransactionOptions.ReadWrite;
+
+                    /**
+                     * Encodes the specified ReadWrite message. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadWrite.verify|verify} messages.
+                     * @param message ReadWrite message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.v1.TransactionOptions.IReadWrite, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ReadWrite message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadWrite.verify|verify} messages.
+                     * @param message ReadWrite message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.v1.TransactionOptions.IReadWrite, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ReadWrite message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ReadWrite
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.TransactionOptions.ReadWrite;
+
+                    /**
+                     * Decodes a ReadWrite message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ReadWrite
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.TransactionOptions.ReadWrite;
+
+                    /**
+                     * Verifies a ReadWrite message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ReadWrite message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ReadWrite
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.v1.TransactionOptions.ReadWrite;
+
+                    /**
+                     * Creates a plain object from a ReadWrite message. Also converts values to other types if specified.
+                     * @param message ReadWrite
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.v1.TransactionOptions.ReadWrite, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ReadWrite to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ReadWrite
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ReadOnly. */
+                interface IReadOnly {
+
+                    /** ReadOnly readTime */
+                    readTime?: (google.protobuf.ITimestamp|null);
+                }
+
+                /** Represents a ReadOnly. */
+                class ReadOnly implements IReadOnly {
+
+                    /**
+                     * Constructs a new ReadOnly.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.datastore.v1.TransactionOptions.IReadOnly);
+
+                    /** ReadOnly readTime. */
+                    public readTime?: (google.protobuf.ITimestamp|null);
+
+                    /**
+                     * Creates a new ReadOnly instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ReadOnly instance
+                     */
+                    public static create(properties?: google.datastore.v1.TransactionOptions.IReadOnly): google.datastore.v1.TransactionOptions.ReadOnly;
+
+                    /**
+                     * Encodes the specified ReadOnly message. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadOnly.verify|verify} messages.
+                     * @param message ReadOnly message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.datastore.v1.TransactionOptions.IReadOnly, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ReadOnly message, length delimited. Does not implicitly {@link google.datastore.v1.TransactionOptions.ReadOnly.verify|verify} messages.
+                     * @param message ReadOnly message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.datastore.v1.TransactionOptions.IReadOnly, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ReadOnly message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ReadOnly
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.TransactionOptions.ReadOnly;
+
+                    /**
+                     * Decodes a ReadOnly message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ReadOnly
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.TransactionOptions.ReadOnly;
+
+                    /**
+                     * Verifies a ReadOnly message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ReadOnly message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ReadOnly
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.datastore.v1.TransactionOptions.ReadOnly;
+
+                    /**
+                     * Creates a plain object from a ReadOnly message. Also converts values to other types if specified.
+                     * @param message ReadOnly
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.datastore.v1.TransactionOptions.ReadOnly, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ReadOnly to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ReadOnly
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
         }
@@ -6625,6 +7899,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Http
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a HttpRule. */
@@ -6772,6 +8053,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for HttpRule
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a CustomHttpPattern. */
@@ -6868,6 +8156,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CustomHttpPattern
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** FieldBehavior enum. */
@@ -6880,6 +8175,206 @@ export namespace google {
             IMMUTABLE = 5,
             UNORDERED_LIST = 6,
             NON_EMPTY_DEFAULT = 7
+        }
+
+        /** Properties of a RoutingRule. */
+        interface IRoutingRule {
+
+            /** RoutingRule routingParameters */
+            routingParameters?: (google.api.IRoutingParameter[]|null);
+        }
+
+        /** Represents a RoutingRule. */
+        class RoutingRule implements IRoutingRule {
+
+            /**
+             * Constructs a new RoutingRule.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IRoutingRule);
+
+            /** RoutingRule routingParameters. */
+            public routingParameters: google.api.IRoutingParameter[];
+
+            /**
+             * Creates a new RoutingRule instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RoutingRule instance
+             */
+            public static create(properties?: google.api.IRoutingRule): google.api.RoutingRule;
+
+            /**
+             * Encodes the specified RoutingRule message. Does not implicitly {@link google.api.RoutingRule.verify|verify} messages.
+             * @param message RoutingRule message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IRoutingRule, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RoutingRule message, length delimited. Does not implicitly {@link google.api.RoutingRule.verify|verify} messages.
+             * @param message RoutingRule message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IRoutingRule, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RoutingRule message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RoutingRule
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.RoutingRule;
+
+            /**
+             * Decodes a RoutingRule message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RoutingRule
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.RoutingRule;
+
+            /**
+             * Verifies a RoutingRule message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RoutingRule message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RoutingRule
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.RoutingRule;
+
+            /**
+             * Creates a plain object from a RoutingRule message. Also converts values to other types if specified.
+             * @param message RoutingRule
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.RoutingRule, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RoutingRule to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RoutingRule
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RoutingParameter. */
+        interface IRoutingParameter {
+
+            /** RoutingParameter field */
+            field?: (string|null);
+
+            /** RoutingParameter pathTemplate */
+            pathTemplate?: (string|null);
+        }
+
+        /** Represents a RoutingParameter. */
+        class RoutingParameter implements IRoutingParameter {
+
+            /**
+             * Constructs a new RoutingParameter.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IRoutingParameter);
+
+            /** RoutingParameter field. */
+            public field: string;
+
+            /** RoutingParameter pathTemplate. */
+            public pathTemplate: string;
+
+            /**
+             * Creates a new RoutingParameter instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RoutingParameter instance
+             */
+            public static create(properties?: google.api.IRoutingParameter): google.api.RoutingParameter;
+
+            /**
+             * Encodes the specified RoutingParameter message. Does not implicitly {@link google.api.RoutingParameter.verify|verify} messages.
+             * @param message RoutingParameter message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IRoutingParameter, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RoutingParameter message, length delimited. Does not implicitly {@link google.api.RoutingParameter.verify|verify} messages.
+             * @param message RoutingParameter message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IRoutingParameter, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RoutingParameter message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RoutingParameter
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.RoutingParameter;
+
+            /**
+             * Decodes a RoutingParameter message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RoutingParameter
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.RoutingParameter;
+
+            /**
+             * Verifies a RoutingParameter message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RoutingParameter message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RoutingParameter
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.RoutingParameter;
+
+            /**
+             * Creates a plain object from a RoutingParameter message. Also converts values to other types if specified.
+             * @param message RoutingParameter
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.RoutingParameter, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RoutingParameter to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RoutingParameter
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 
@@ -6974,6 +8469,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FileDescriptorSet
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a FileDescriptorProto. */
@@ -7014,6 +8516,9 @@ export namespace google {
 
             /** FileDescriptorProto syntax */
             syntax?: (string|null);
+
+            /** FileDescriptorProto edition */
+            edition?: (string|null);
         }
 
         /** Represents a FileDescriptorProto. */
@@ -7060,6 +8565,9 @@ export namespace google {
 
             /** FileDescriptorProto syntax. */
             public syntax: string;
+
+            /** FileDescriptorProto edition. */
+            public edition: string;
 
             /**
              * Creates a new FileDescriptorProto instance using the specified properties.
@@ -7130,6 +8638,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FileDescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a DescriptorProto. */
@@ -7274,6 +8789,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace DescriptorProto {
@@ -7378,6 +8900,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for ExtensionRange
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** Properties of a ReservedRange. */
@@ -7474,6 +9003,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for ReservedRange
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
         }
 
@@ -7565,6 +9101,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ExtensionRangeOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a FieldDescriptorProto. */
@@ -7715,6 +9258,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FieldDescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace FieldDescriptorProto {
@@ -7843,6 +9393,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for OneofDescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of an EnumDescriptorProto. */
@@ -7957,6 +9514,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for EnumDescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace EnumDescriptorProto {
@@ -8055,6 +9619,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for EnumReservedRange
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
         }
 
@@ -8158,6 +9729,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for EnumValueDescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a ServiceDescriptorProto. */
@@ -8260,6 +9838,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ServiceDescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a MethodDescriptorProto. */
@@ -8380,6 +9965,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MethodDescriptorProto
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a FileOptions. */
@@ -8590,6 +10182,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FileOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace FileOptions {
@@ -8714,6 +10313,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MessageOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a FieldOptions. */
@@ -8730,6 +10336,9 @@ export namespace google {
 
             /** FieldOptions lazy */
             lazy?: (boolean|null);
+
+            /** FieldOptions unverifiedLazy */
+            unverifiedLazy?: (boolean|null);
 
             /** FieldOptions deprecated */
             deprecated?: (boolean|null);
@@ -8764,6 +10373,9 @@ export namespace google {
 
             /** FieldOptions lazy. */
             public lazy: boolean;
+
+            /** FieldOptions unverifiedLazy. */
+            public unverifiedLazy: boolean;
 
             /** FieldOptions deprecated. */
             public deprecated: boolean;
@@ -8843,6 +10455,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FieldOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace FieldOptions {
@@ -8950,6 +10569,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for OneofOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of an EnumOptions. */
@@ -9052,6 +10678,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for EnumOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of an EnumValueOptions. */
@@ -9148,6 +10781,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for EnumValueOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a ServiceOptions. */
@@ -9250,6 +10890,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ServiceOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a MethodOptions. */
@@ -9272,6 +10919,9 @@ export namespace google {
 
             /** MethodOptions .google.longrunning.operationInfo */
             ".google.longrunning.operationInfo"?: (google.longrunning.IOperationInfo|null);
+
+            /** MethodOptions .google.api.routing */
+            ".google.api.routing"?: (google.api.IRoutingRule|null);
         }
 
         /** Represents a MethodOptions. */
@@ -9361,6 +11011,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MethodOptions
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace MethodOptions {
@@ -9497,6 +11154,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for UninterpretedOption
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace UninterpretedOption {
@@ -9595,6 +11259,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for NamePart
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
         }
 
@@ -9686,6 +11357,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for SourceCodeInfo
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace SourceCodeInfo {
@@ -9802,6 +11480,13 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Location
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
         }
 
@@ -9893,6 +11578,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GeneratedCodeInfo
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         namespace GeneratedCodeInfo {
@@ -9911,6 +11603,9 @@ export namespace google {
 
                 /** Annotation end */
                 end?: (number|null);
+
+                /** Annotation semantic */
+                semantic?: (google.protobuf.GeneratedCodeInfo.Annotation.Semantic|keyof typeof google.protobuf.GeneratedCodeInfo.Annotation.Semantic|null);
             }
 
             /** Represents an Annotation. */
@@ -9933,6 +11628,9 @@ export namespace google {
 
                 /** Annotation end. */
                 public end: number;
+
+                /** Annotation semantic. */
+                public semantic: (google.protobuf.GeneratedCodeInfo.Annotation.Semantic|keyof typeof google.protobuf.GeneratedCodeInfo.Annotation.Semantic);
 
                 /**
                  * Creates a new Annotation instance using the specified properties.
@@ -10003,6 +11701,23 @@ export namespace google {
                  * @returns JSON object
                  */
                 public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Annotation
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            namespace Annotation {
+
+                /** Semantic enum. */
+                enum Semantic {
+                    NONE = 0,
+                    SET = 1,
+                    ALIAS = 2
+                }
             }
         }
 
@@ -10100,6 +11815,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Any
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a Duration. */
@@ -10196,6 +11918,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Duration
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of an Empty. */
@@ -10280,6 +12009,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Empty
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a Timestamp. */
@@ -10376,6 +12112,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Timestamp
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a Struct. */
@@ -10466,6 +12209,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Struct
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a Value. */
@@ -10589,6 +12339,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** NullValue enum. */
@@ -10684,6 +12441,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ListValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a DoubleValue. */
@@ -10774,6 +12538,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DoubleValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a FloatValue. */
@@ -10864,6 +12635,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FloatValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of an Int64Value. */
@@ -10954,6 +12732,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Int64Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a UInt64Value. */
@@ -11044,6 +12829,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for UInt64Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of an Int32Value. */
@@ -11134,6 +12926,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Int32Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a UInt32Value. */
@@ -11224,6 +13023,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for UInt32Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a BoolValue. */
@@ -11314,6 +13120,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for BoolValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a StringValue. */
@@ -11404,6 +13217,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for StringValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a BytesValue. */
@@ -11494,6 +13314,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for BytesValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 
@@ -11594,35 +13421,35 @@ export namespace google {
         namespace Operations {
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#listOperations}.
+             * Callback as used by {@link google.longrunning.Operations|listOperations}.
              * @param error Error, if any
              * @param [response] ListOperationsResponse
              */
             type ListOperationsCallback = (error: (Error|null), response?: google.longrunning.ListOperationsResponse) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#getOperation}.
+             * Callback as used by {@link google.longrunning.Operations|getOperation}.
              * @param error Error, if any
              * @param [response] Operation
              */
             type GetOperationCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#deleteOperation}.
+             * Callback as used by {@link google.longrunning.Operations|deleteOperation}.
              * @param error Error, if any
              * @param [response] Empty
              */
             type DeleteOperationCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#cancelOperation}.
+             * Callback as used by {@link google.longrunning.Operations|cancelOperation}.
              * @param error Error, if any
              * @param [response] Empty
              */
             type CancelOperationCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
 
             /**
-             * Callback as used by {@link google.longrunning.Operations#waitOperation}.
+             * Callback as used by {@link google.longrunning.Operations|waitOperation}.
              * @param error Error, if any
              * @param [response] Operation
              */
@@ -11744,6 +13571,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Operation
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a GetOperationRequest. */
@@ -11834,6 +13668,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GetOperationRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a ListOperationsRequest. */
@@ -11942,6 +13783,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ListOperationsRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a ListOperationsResponse. */
@@ -12038,6 +13886,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ListOperationsResponse
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a CancelOperationRequest. */
@@ -12128,6 +13983,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CancelOperationRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a DeleteOperationRequest. */
@@ -12218,6 +14080,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DeleteOperationRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of a WaitOperationRequest. */
@@ -12314,6 +14183,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for WaitOperationRequest
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
         /** Properties of an OperationInfo. */
@@ -12410,6 +14286,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for OperationInfo
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 
@@ -12516,6 +14399,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Status
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 
@@ -12616,6 +14506,13 @@ export namespace google {
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for LatLng
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 }

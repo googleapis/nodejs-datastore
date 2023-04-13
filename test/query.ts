@@ -18,6 +18,8 @@ import {beforeEach, describe, it} from 'mocha';
 const {Query} = require('../src/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import {Datastore} from '../src';
+import {AggregateField, AggregateQuery} from '../src/aggregate';
+import {PropertyFilter, EntityFilter, or} from '../src/filter';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -55,6 +57,24 @@ describe('Query', () => {
         assert.strictEqual(query.namespace, null);
       });
     });
+
+    it('should create a query with a count aggregation', () => {
+      const query = new Query(['kind1']);
+      const firstAggregation = AggregateField.count().alias('total');
+      const secondAggregation = AggregateField.count().alias('total2');
+      const aggregate = new AggregateQuery(query).addAggregations([
+        firstAggregation,
+        secondAggregation,
+      ]);
+      const aggregate2 = new AggregateQuery(query)
+        .count('total')
+        .count('total2');
+      assert.deepStrictEqual(aggregate.aggregations, aggregate2.aggregations);
+      assert.deepStrictEqual(aggregate.aggregations, [
+        firstAggregation,
+        secondAggregation,
+      ]);
+    });
   });
 
   describe('filter', () => {
@@ -75,7 +95,10 @@ describe('Query', () => {
         .filter('name', '=', 'Title')
         .filter('count', '>', 20)
         .filter('size', '<', 10)
-        .filter('something', '>=', 11);
+        .filter('something', '>=', 11)
+        .filter('neProperty', '!=', 12)
+        .filter('inProperty', 'IN', 13)
+        .filter('notInProperty', 'NOT_IN', 14);
 
       assert.strictEqual(query.filters[0].name, 'date');
       assert.strictEqual(query.filters[0].op, '<=');
@@ -96,6 +119,18 @@ describe('Query', () => {
       assert.strictEqual(query.filters[4].name, 'something');
       assert.strictEqual(query.filters[4].op, '>=');
       assert.strictEqual(query.filters[4].val, 11);
+
+      assert.strictEqual(query.filters[5].name, 'neProperty');
+      assert.strictEqual(query.filters[5].op, '!=');
+      assert.strictEqual(query.filters[5].val, 12);
+
+      assert.strictEqual(query.filters[6].name, 'inProperty');
+      assert.strictEqual(query.filters[6].op, 'IN');
+      assert.strictEqual(query.filters[6].val, 13);
+
+      assert.strictEqual(query.filters[7].name, 'notInProperty');
+      assert.strictEqual(query.filters[7].op, 'NOT_IN');
+      assert.strictEqual(query.filters[7].val, 14);
     });
 
     it('should remove any whitespace surrounding the filter name', () => {
@@ -128,6 +163,61 @@ describe('Query', () => {
       assert.strictEqual(filter.name, 'name');
       assert.strictEqual(filter.op, '=');
       assert.strictEqual(filter.val, 'Stephen');
+    });
+  });
+  it('should issue a warning when a Filter instance is not provided', done => {
+    const onWarning = (warning: {message: unknown}) => {
+      assert.strictEqual(
+        warning.message,
+        'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
+      );
+      process.removeListener('warning', onWarning);
+      done();
+    };
+    process.on('warning', onWarning);
+    new Query(['kind1']).filter('name', 'Stephen');
+  });
+  describe('filter with Filter class', () => {
+    it('should support filter with Filter', () => {
+      const now = new Date();
+      const query = new Query(['kind1']).filter(
+        new PropertyFilter('date', '<=', now)
+      );
+      const filter = query.entityFilters[0];
+
+      assert.strictEqual(filter.name, 'date');
+      assert.strictEqual(filter.op, '<=');
+      assert.strictEqual(filter.val, now);
+    });
+    it('should support filter with OR', () => {
+      const now = new Date();
+      const query = new Query(['kind1']).filter(
+        or([
+          new PropertyFilter('date', '<=', now),
+          new PropertyFilter('name', '=', 'Stephen'),
+        ])
+      );
+      const filter = query.entityFilters[0];
+      assert.strictEqual(filter.op, 'OR');
+      // Check filters
+      const filters = filter.filters;
+      assert.strictEqual(filters.length, 2);
+      assert.strictEqual(filters[0].name, 'date');
+      assert.strictEqual(filters[0].op, '<=');
+      assert.strictEqual(filters[0].val, now);
+      assert.strictEqual(filters[1].name, 'name');
+      assert.strictEqual(filters[1].op, '=');
+      assert.strictEqual(filters[1].val, 'Stephen');
+    });
+    it('should accept null as value', () => {
+      assert.strictEqual(
+        new Query(['kind1']).filter('status', null).filters.pop()?.val,
+        null
+      );
+      assert.strictEqual(
+        new Query(['kind1']).filter('status', '=', null).filters.pop()?.val,
+        null
+      );
     });
   });
 

@@ -4,6 +4,124 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [7.5.1](https://github.com/googleapis/nodejs-datastore/compare/v7.5.0...v7.5.1) (2023-04-11)
+
+
+### Bug Fixes
+
+* Allow user to set custom endpoints ([#1101](https://github.com/googleapis/nodejs-datastore/issues/1101)) ([e79fa49](https://github.com/googleapis/nodejs-datastore/commit/e79fa49f753984e34b63538005f29ab7efb7695e))
+
+## [7.5.0](https://github.com/googleapis/nodejs-datastore/compare/v7.4.0...v7.5.0) (2023-03-29)
+
+
+### Features
+
+* Add SUM/AVG aggregation query support in the preview branch and improve query API documentation ([#1094](https://github.com/googleapis/nodejs-datastore/issues/1094)) ([d14f87e](https://github.com/googleapis/nodejs-datastore/commit/d14f87ed4aaef42090673fbe78b23992093925ad))
+
+
+### Bug Fixes
+
+* Allow IN queries on __key__ ([#1085](https://github.com/googleapis/nodejs-datastore/issues/1085)) ([dd2d5f4](https://github.com/googleapis/nodejs-datastore/commit/dd2d5f4d15f714b3f3586250802fb6822b7e01ff))
+
+## [7.4.0](https://github.com/googleapis/nodejs-datastore/compare/v7.3.2...v7.4.0) (2023-03-09)
+
+
+### Features
+
+* Introduce EntityFilter class with support for and/or filters ([#1061](https://github.com/googleapis/nodejs-datastore/issues/1061)) ([8fc58c0](https://github.com/googleapis/nodejs-datastore/commit/8fc58c0f18e5333f996099e09ec673e9bf3460af))
+
+
+### Bug Fixes
+
+* Or filters with warnings ([#1075](https://github.com/googleapis/nodejs-datastore/issues/1075)) ([73bfcc4](https://github.com/googleapis/nodejs-datastore/commit/73bfcc40129309b512627f873d9f841f7ad370ee))
+
+## [7.3.2](https://github.com/googleapis/nodejs-datastore/compare/v7.3.1...v7.3.2) (2023-02-17)
+
+
+### Bug Fixes
+
+* Allow filtering null values ([#1067](https://github.com/googleapis/nodejs-datastore/issues/1067)) ([b89fa21](https://github.com/googleapis/nodejs-datastore/commit/b89fa211b366ec3e24ea5b2c8deeb90c695aa0df))
+
+## [7.3.1](https://github.com/googleapis/nodejs-datastore/compare/v7.3.0...v7.3.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* **deps:** Roll back dependency @google-cloud/datastore to ^7.2.0 ([#1069](https://github.com/googleapis/nodejs-datastore/issues/1069)) ([1677c53](https://github.com/googleapis/nodejs-datastore/commit/1677c53b612799a90c455636ac19e081ff3730b3))
+
+## [7.3.0](https://github.com/googleapis/nodejs-datastore/compare/v7.2.0...v7.3.0) (2023-02-16)
+
+
+### Features
+
+* Add `OR` query support ([#1064](https://github.com/googleapis/nodejs-datastore/issues/1064)) ([196bdaf](https://github.com/googleapis/nodejs-datastore/commit/196bdafb27b6987ccbf547e480b008aee65775d0))
+
+## [7.2.0](https://github.com/googleapis/nodejs-datastore/compare/v7.1.0...v7.2.0) (2023-02-09)
+
+
+### Features
+
+* Add dynamic routing header annotation to DatastoreV1 ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+* Added Snooze API support ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+* Added SuggestConversationSummary RPC ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+* New transaction options for datastoreV1 ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency sinon to v15 ([#1020](https://github.com/googleapis/nodejs-datastore/issues/1020)) ([a61258c](https://github.com/googleapis/nodejs-datastore/commit/a61258c92354df5a62cf6e7d6977f8f83bfd907f))
+
+## [7.1.0](https://github.com/googleapis/nodejs-datastore/compare/v7.0.0...v7.1.0) (2023-01-18)
+
+
+### Features
+
+* Add datastore aggregation query APIs ([#1008](https://github.com/googleapis/nodejs-datastore/issues/1008)) ([d5c2cb1](https://github.com/googleapis/nodejs-datastore/commit/d5c2cb1f0725f3cce1dde5b80ac7aff55b605f9a))
+* Add the count aggregate function ([#972](https://github.com/googleapis/nodejs-datastore/issues/972)) ([76adfc6](https://github.com/googleapis/nodejs-datastore/commit/76adfc6db03a4196999a8d510c0ab1ca15218f24))
+* Snapshot reads ([#963](https://github.com/googleapis/nodejs-datastore/issues/963)) ([0ecca86](https://github.com/googleapis/nodejs-datastore/commit/0ecca862fd93fc668a3dd3f5c93c54724e43f055))
+* Support regapic LRO ([#957](https://github.com/googleapis/nodejs-datastore/issues/957)) ([99778fb](https://github.com/googleapis/nodejs-datastore/commit/99778fb5e031eadd067b1ae9be0f910985966956))
+
+
+### Bug Fixes
+
+* Allow passing gax instance to client constructor ([#974](https://github.com/googleapis/nodejs-datastore/issues/974)) ([386b9c7](https://github.com/googleapis/nodejs-datastore/commit/386b9c735d57ce23f004ba3e9b1eb9a9377622dc))
+* Better support for fallback mode ([#967](https://github.com/googleapis/nodejs-datastore/issues/967)) ([0447d87](https://github.com/googleapis/nodejs-datastore/commit/0447d87ec162d64988d47e2fb21715dea78b6720))
+* Bring back LRO mixin ([#1009](https://github.com/googleapis/nodejs-datastore/issues/1009)) ([1d8de5f](https://github.com/googleapis/nodejs-datastore/commit/1d8de5f6bc5015dadd4be635748e799f05bfd325))
+* Change import long to require ([#968](https://github.com/googleapis/nodejs-datastore/issues/968)) ([5e710f2](https://github.com/googleapis/nodejs-datastore/commit/5e710f2c47001114ad087084507ad6d494143f1b))
+* **deps:** Update dependency @google-cloud/promisify to v3 ([#942](https://github.com/googleapis/nodejs-datastore/issues/942)) ([7b35856](https://github.com/googleapis/nodejs-datastore/commit/7b35856b0568571d5bcad70b2464344e6c06a4cb))
+* **deps:** Use google-gax v3.5.2 ([#1013](https://github.com/googleapis/nodejs-datastore/issues/1013)) ([1753eae](https://github.com/googleapis/nodejs-datastore/commit/1753eae467bff477e7991f74acbe3000656a955f))
+* Do not import the whole google-gax from proto JS ([#1553](https://github.com/googleapis/nodejs-datastore/issues/1553)) ([#973](https://github.com/googleapis/nodejs-datastore/issues/973)) ([9550bbc](https://github.com/googleapis/nodejs-datastore/commit/9550bbcc10912ca28b64a89153f3ae8e7862d939))
+* Preserve default values in x-goog-request-params header ([#979](https://github.com/googleapis/nodejs-datastore/issues/979)) ([2b80e1e](https://github.com/googleapis/nodejs-datastore/commit/2b80e1ef691a340ed15e3105983cd34983b57cb1))
+* Regenerated protos JS and TS definitions ([#1016](https://github.com/googleapis/nodejs-datastore/issues/1016)) ([d0ae656](https://github.com/googleapis/nodejs-datastore/commit/d0ae656ca83fbad0be5659d8d4516d8bde879a28))
+* Remove pip install statements ([#1546](https://github.com/googleapis/nodejs-datastore/issues/1546)) ([#970](https://github.com/googleapis/nodejs-datastore/issues/970)) ([2225fc7](https://github.com/googleapis/nodejs-datastore/commit/2225fc7753086243778c240a444c4940c29c5499))
+* Use google-gax v3.3.0 ([9550bbc](https://github.com/googleapis/nodejs-datastore/commit/9550bbcc10912ca28b64a89153f3ae8e7862d939))
+
+## [7.0.0](https://github.com/googleapis/nodejs-datastore/compare/v6.6.2...v7.0.0) (2022-06-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* update library to use Node 12 (#945)
+
+### Features
+
+* add IN/NOT_IN/NOT_EQUALS support to cloud datastore proto ([6f22f0f](https://github.com/googleapis/nodejs-datastore/commit/6f22f0f473de8a5b07addc83523a6215e165563d))
+* define Datastore -> Firestore in Datastore mode migration long running operation metadata ([#907](https://github.com/googleapis/nodejs-datastore/issues/907)) ([652f66d](https://github.com/googleapis/nodejs-datastore/commit/652f66d2f88d80c900499890e7dd474cdbbc9c0b))
+* expose new read_time API fields, currently only available in private preview ([#932](https://github.com/googleapis/nodejs-datastore/issues/932)) ([aef00f8](https://github.com/googleapis/nodejs-datastore/commit/aef00f81864598fbd18b96dbf6986e3147d2a7a0))
+* Query filters for datastore ([#936](https://github.com/googleapis/nodejs-datastore/issues/936)) ([51725fa](https://github.com/googleapis/nodejs-datastore/commit/51725fab85cb1fcc231c71f6e8f56d58e958f676))
+
+
+### Bug Fixes
+
+* **deps:** update dependency sinon to v13 ([#918](https://github.com/googleapis/nodejs-datastore/issues/918)) ([fa01bd4](https://github.com/googleapis/nodejs-datastore/commit/fa01bd43ba1733a17411c071850c45de2b3ecd90))
+* **deps:** update dependency sinon to v14 ([#943](https://github.com/googleapis/nodejs-datastore/issues/943)) ([e117702](https://github.com/googleapis/nodejs-datastore/commit/e1177025eb3b6f2c6b1c20e3e83ad478c8eff366))
+* fixes for dynamic routing and streaming descriptors ([#947](https://github.com/googleapis/nodejs-datastore/issues/947)) ([ba6c190](https://github.com/googleapis/nodejs-datastore/commit/ba6c1902ba5ce19df651ed49d1d9a911c598fe5d))
+
+
+### Build System
+
+* update library to use Node 12 ([#945](https://github.com/googleapis/nodejs-datastore/issues/945)) ([eecf7ac](https://github.com/googleapis/nodejs-datastore/commit/eecf7ac37597ec4a84a1f4ceb9421764fddd1d0b))
+
 ### [6.6.2](https://www.github.com/googleapis/nodejs-datastore/compare/v6.6.1...v6.6.2) (2021-11-08)
 
 

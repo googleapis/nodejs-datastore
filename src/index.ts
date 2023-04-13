@@ -42,7 +42,8 @@ import {Transform, pipeline} from 'stream';
 import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
 import Key = entity.Key;
 export {Entity, Key};
-
+import {PropertyFilter, and, or} from './filter';
+export {PropertyFilter, and, or};
 import {
   GetIndexesCallback,
   GetIndexesOptions,
@@ -64,6 +65,7 @@ import {
 import {Transaction} from './transaction';
 import {promisifyAll} from '@google-cloud/promisify';
 import {google} from '../protos/protos';
+import {AggregateQuery} from './aggregate';
 
 const {grpc} = new GrpcClient();
 
@@ -502,11 +504,25 @@ class Datastore extends DatastoreRequest {
       },
       options
     );
-    if (this.customEndpoint_) {
-      this.options.sslCreds = grpc.credentials.createInsecure();
+    const isUsingEmulator =
+      this.baseUrl_ &&
+      (this.baseUrl_.includes('localhost') ||
+        this.baseUrl_.includes('127.0.0.1') ||
+        this.baseUrl_.includes('::1'));
+    if (this.customEndpoint_ && isUsingEmulator) {
+      this.options.sslCreds ??= grpc.credentials.createInsecure();
     }
 
     this.auth = new GoogleAuth(this.options);
+  }
+
+  /**
+   * Create an aggregation query from a Query.
+   *
+   * @param {Query} query A Query object.
+   */
+  createAggregationQuery(query: Query): AggregateQuery {
+    return new AggregateQuery(query);
   }
 
   /**
@@ -611,13 +627,13 @@ class Datastore extends DatastoreRequest {
     const gaxOpts = options.gaxOptions || {};
 
     const reqOpts = {
-      pageSize: gaxOpts.pageSize,
-      pageToken: gaxOpts.pageToken,
+      pageSize: (gaxOpts as GetIndexesOptions).pageSize,
+      pageToken: (gaxOpts as GetIndexesOptions).pageToken,
       ...options,
     };
 
-    delete gaxOpts.pageSize;
-    delete gaxOpts.pageToken;
+    delete (gaxOpts as GetIndexesOptions).pageSize;
+    delete (gaxOpts as GetIndexesOptions).pageToken;
     delete (reqOpts as CallOptions).autoPaginate;
     delete (reqOpts as GetIndexesOptions).gaxOptions;
 
@@ -770,7 +786,7 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `insert`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/datastore#_google_cloud_datastore_Datastore_save_member_1_|Datastore#save}, forcing the method to be `insert`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -1179,7 +1195,7 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `update`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/datastore#_google_cloud_datastore_Datastore_save_member_1_|Datastore#save}, forcing the method to be `update`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -1209,7 +1225,7 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `upsert`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/datastore#_google_cloud_datastore_Datastore_save_member_1_|Datastore#save}, forcing the method to be `upsert`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -1797,10 +1813,12 @@ class Datastore extends DatastoreRequest {
  */
 promisifyAll(Datastore, {
   exclude: [
+    'createAggregationQuery',
     'double',
     'isDouble',
     'geoPoint',
     'getProjectId',
+    'getSharedQueryOptions',
     'isGeoPoint',
     'index',
     'int',

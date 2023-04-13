@@ -1,4 +1,4 @@
-// Copyright 2021 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import "google/longrunning/operations.proto";
 import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Google.Cloud.Datastore.Admin.V1";
-option go_package = "google.golang.org/genproto/googleapis/datastore/admin/v1;admin";
+option go_package = "cloud.google.com/go/datastore/admin/apiv1/adminpb;adminpb";
 option java_multiple_files = true;
 option java_outer_classname = "DatastoreAdminProto";
 option java_package = "com.google.datastore.admin.v1";
@@ -481,7 +481,7 @@ message IndexOperationMetadata {
 // design pattern.
 //
 // This singleton resource can be accessed at:
-// `projects/{project_id}/datastore-firestore-migration`
+// "projects/{project_id}/operations/datastore-firestore-migration"
 message DatastoreFirestoreMigrationMetadata {
   // The current state of migration from Cloud Datastore to Cloud Firestore in
   // Datastore mode.

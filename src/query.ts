@@ -18,11 +18,21 @@ import arrify = require('arrify');
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
+import {EntityFilter, isFilter, AllowedFilterValueType} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 
-export type Operator = '=' | '<' | '>' | '<=' | '>=' | 'HAS_ANCESTOR';
+export type Operator =
+  | '='
+  | '<'
+  | '>'
+  | '<='
+  | '>='
+  | 'HAS_ANCESTOR'
+  | '!='
+  | 'IN'
+  | 'NOT_IN';
 
 export interface OrderOptions {
   descending?: boolean;
@@ -66,6 +76,7 @@ class Query {
   namespace?: string | null;
   kinds: string[];
   filters: Filter[];
+  entityFilters: EntityFilter[];
   orders: Order[];
   groupByVal: Array<{}>;
   selectVal: Array<{}>;
@@ -114,6 +125,11 @@ class Query {
      */
     this.filters = [];
     /**
+     * @name Query#entityFilters
+     * @type {array}
+     */
+    this.entityFilters = [];
+    /**
      * @name Query#orders
      * @type {array}
      */
@@ -154,14 +170,13 @@ class Query {
 
   /**
    * Datastore allows querying on properties. Supported comparison operators
-   * are `=`, `<`, `>`, `<=`, and `>=`. "Not equal" and `IN` operators are
-   * currently not supported.
+   * are `=`, `<`, `>`, `<=`, `>=`, `!=`, `HAS_ANCESTOR`, `IN` and `NOT_IN`.
    *
    * *To filter by ancestors, see {module:datastore/query#hasAncestor}.*
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#datastore-property-filter-nodejs| Datastore Filters}
    *
-   * @param {string} property The field name.
+   * @param {string | EntityFilter} propertyOrFilter The field name.
    * @param {string} [operator="="] Operator (=, <, >, <=, >=).
    * @param {*} value Value to compare property to.
    * @returns {Query}
@@ -192,20 +207,40 @@ class Query {
    * const keyQuery = query.filter('__key__', key);
    * ```
    */
-  filter(property: string, value: {}): Query;
-  filter(property: string, operator: Operator, value: {}): Query;
-  filter(property: string, operatorOrValue: Operator, value?: {}): Query {
-    let operator = operatorOrValue as Operator;
-    if (arguments.length === 2) {
-      value = operatorOrValue as {};
-      operator = '=';
-    }
+  filter(filter: EntityFilter): Query;
+  filter<T extends string>(
+    property: T,
+    value: AllowedFilterValueType<T>
+  ): Query;
+  filter<T extends string>(
+    property: T,
+    operator: Operator,
+    value: AllowedFilterValueType<T>
+  ): Query;
+  filter<T extends string>(
+    propertyOrFilter: T | EntityFilter,
+    operatorOrValue?: Operator | AllowedFilterValueType<T>,
+    value?: AllowedFilterValueType<T>
+  ): Query {
+    if (isFilter(propertyOrFilter)) {
+      this.entityFilters.push(propertyOrFilter);
+      return this;
+    } else {
+      process.emitWarning(
+        'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
+      );
+      let operator = operatorOrValue as Operator;
+      if (arguments.length === 2) {
+        value = operatorOrValue as AllowedFilterValueType<T>;
+        operator = '=';
+      }
 
-    this.filters.push({
-      name: property.trim(),
-      op: operator.trim() as Operator,
-      val: value,
-    });
+      this.filters.push({
+        name: (propertyOrFilter as String).trim(),
+        op: operator.trim() as Operator,
+        val: value,
+      });
+    }
     return this;
   }
 
@@ -553,6 +588,7 @@ export interface IntegerTypeCastOptions {
 
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
+  readTime?: number;
   gaxOptions?: CallOptions;
   wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
@@ -562,6 +598,8 @@ export interface RunQueryCallback {
 }
 
 export type RunQueryResponse = [Entity[], RunQueryInfo];
+
+export type RunAggregateQueryResponse = any;
 
 export interface RunQueryInfo {
   endCursor?: string;

@@ -30,6 +30,7 @@ import {
   RequestOptions,
   PrepareEntityObjectResponse,
 } from './request';
+import {AggregateQuery} from './aggregate';
 
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
@@ -342,6 +343,15 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
+   * Create an aggregation query from the query specified. See {module:datastore/query} for all
+   * of the available methods.
+   *
+   */
+  createAggregationQuery(query: Query): AggregateQuery {
+    return this.datastore.createAggregationQuery.call(this, query);
+  }
+
+  /**
    * Delete all entities identified with the specified key(s) in the current
    * transaction.
    *
@@ -389,7 +399,7 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `insert`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `insert`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -719,7 +729,7 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `update`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `update`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -741,7 +751,7 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `upsert`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `upsert`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -795,7 +805,15 @@ export interface RunOptions {
  * that a callback is omitted.
  */
 promisifyAll(Transaction, {
-  exclude: ['createQuery', 'delete', 'insert', 'save', 'update', 'upsert'],
+  exclude: [
+    'createAggregationQuery',
+    'createQuery',
+    'delete',
+    'insert',
+    'save',
+    'update',
+    'upsert',
+  ],
 });
 
 /**
