@@ -44,6 +44,7 @@ accept your pull requests.
 1.  [Set up authentication with a service account][auth] so you can access the
     API from your local workstation.
 
+
 ## Running the tests
 
 1.  [Prepare your environment for Node.js setup][setup].
@@ -66,29 +67,6 @@ accept your pull requests.
 1.  Lint (and maybe fix) any changes:
 
         npm run fix
-
-## Running the system tests
-
-1. Ensure you have completed steps in the `Before you begin` section
-
-1. [Prepare your environment for Node.js setup][setup].
-
-1. Install dependencies:
-
-        npm install
-
-1. Add indexes to your project:
-
-        cd system-test
-        cd data
-        gcloud datastore indexes create index.yaml
-
-1. Run the system tests from the project root directory:
-
-        npm run system-test
-
-    
-    
 
 [setup]: https://cloud.google.com/nodejs/docs/setup
 [projects]: https://console.cloud.google.com/project
