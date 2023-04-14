@@ -18,10 +18,10 @@ import arrify = require('arrify');
 import {Key} from 'readline';
 import {Datastore} from '.';
 import {Entity} from './entity';
+import {EntityFilter, isFilter, AllowedFilterValueType} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
-import {AggregateField, AggregateQuery} from './aggregate';
 
 export type Operator =
   | '='
@@ -76,6 +76,7 @@ class Query {
   namespace?: string | null;
   kinds: string[];
   filters: Filter[];
+  entityFilters: EntityFilter[];
   orders: Order[];
   groupByVal: Array<{}>;
   selectVal: Array<{}>;
@@ -124,6 +125,11 @@ class Query {
      */
     this.filters = [];
     /**
+     * @name Query#entityFilters
+     * @type {array}
+     */
+    this.entityFilters = [];
+    /**
      * @name Query#orders
      * @type {array}
      */
@@ -170,7 +176,7 @@ class Query {
    *
    * @see {@link https://cloud.google.com/datastore/docs/concepts/queries#datastore-property-filter-nodejs| Datastore Filters}
    *
-   * @param {string} property The field name.
+   * @param {string | EntityFilter} propertyOrFilter The field name.
    * @param {string} [operator="="] Operator (=, <, >, <=, >=).
    * @param {*} value Value to compare property to.
    * @returns {Query}
@@ -201,24 +207,40 @@ class Query {
    * const keyQuery = query.filter('__key__', key);
    * ```
    */
-  filter(property: string, value: {} | null): Query;
-  filter(property: string, operator: Operator, value: {} | null): Query;
-  filter(
-    property: string,
-    operatorOrValue: Operator,
-    value?: {} | null
+  filter(filter: EntityFilter): Query;
+  filter<T extends string>(
+    property: T,
+    value: AllowedFilterValueType<T>
+  ): Query;
+  filter<T extends string>(
+    property: T,
+    operator: Operator,
+    value: AllowedFilterValueType<T>
+  ): Query;
+  filter<T extends string>(
+    propertyOrFilter: T | EntityFilter,
+    operatorOrValue?: Operator | AllowedFilterValueType<T>,
+    value?: AllowedFilterValueType<T>
   ): Query {
-    let operator = operatorOrValue as Operator;
-    if (arguments.length === 2) {
-      value = operatorOrValue as {};
-      operator = '=';
-    }
+    if (isFilter(propertyOrFilter)) {
+      this.entityFilters.push(propertyOrFilter);
+      return this;
+    } else {
+      process.emitWarning(
+        'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
+      );
+      let operator = operatorOrValue as Operator;
+      if (arguments.length === 2) {
+        value = operatorOrValue as AllowedFilterValueType<T>;
+        operator = '=';
+      }
 
-    this.filters.push({
-      name: property.trim(),
-      op: operator.trim() as Operator,
-      val: value,
-    });
+      this.filters.push({
+        name: (propertyOrFilter as String).trim(),
+        op: operator.trim() as Operator,
+        val: value,
+      });
+    }
     return this;
   }
 
