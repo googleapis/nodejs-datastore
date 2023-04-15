@@ -66,27 +66,6 @@ node tasks <command>
 */
 
 
-// [START datastore_update_entity]
-async function markDone(taskId) {
-  const transaction = datastore.transaction();
-  const taskKey = datastore.key(['Task', datastore.int(taskId)]);
-
-  try {
-    await transaction.run();
-    const [task] = await transaction.get(taskKey);
-    task.done = true;
-    transaction.save({
-      key: taskKey,
-      data: task,
-    });
-    await transaction.commit();
-    console.log(`Task ${taskId} updated successfully.`);
-  } catch (err) {
-    await transaction.rollback();
-  }
-}
-// [END datastore_update_entity]
-
 // [START datastore_merge_entity]
 async function merge(taskId, description) {
   const taskKey = datastore.key(['Task', taskId]);
