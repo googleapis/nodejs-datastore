@@ -105,19 +105,6 @@ async function merge(taskId, description) {
 }
 // [END datastore_merge_entity]
 
-// [START datastore_retrieve_entities]
-async function listTasks() {
-  const query = datastore.createQuery('Task').order('created');
-
-  const [tasks] = await datastore.runQuery(query);
-  console.log('Tasks:');
-  tasks.forEach(task => {
-    const taskKey = task[datastore.KEY];
-    console.log(taskKey.id, task);
-  });
-}
-// [END datastore_retrieve_entities]
-
 // [START datastore_delete_entity]
 async function deleteTask(taskId) {
   const taskKey = datastore.key(['Task', datastore.int(taskId)]);
