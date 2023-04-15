@@ -65,36 +65,6 @@ node tasks <command>
 ```
 */
 
-// [START datastore_add_entity]
-async function addTask(description) {
-  const taskKey = datastore.key('Task');
-  const entity = {
-    key: taskKey,
-    data: [
-      {
-        name: 'created',
-        value: new Date().toJSON(),
-      },
-      {
-        name: 'description',
-        value: description,
-        excludeFromIndexes: true,
-      },
-      {
-        name: 'done',
-        value: false,
-      },
-    ],
-  };
-
-  try {
-    await datastore.save(entity);
-    console.log(`Task ${taskKey.id} created successfully.`);
-  } catch (err) {
-    console.error('ERROR:', err);
-  }
-}
-// [END datastore_add_entity]
 
 // [START datastore_update_entity]
 async function markDone(taskId) {
