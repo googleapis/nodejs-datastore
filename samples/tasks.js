@@ -105,15 +105,6 @@ async function merge(taskId, description) {
 }
 // [END datastore_merge_entity]
 
-// [START datastore_delete_entity]
-async function deleteTask(taskId) {
-  const taskKey = datastore.key(['Task', datastore.int(taskId)]);
-
-  await datastore.delete(taskKey);
-  console.log(`Task ${taskId} deleted successfully.`);
-}
-// [END datastore_delete_entity]
-
 require(`yargs`) // eslint-disable-line
   .command(
     'new <description>',
