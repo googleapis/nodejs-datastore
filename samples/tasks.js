@@ -65,7 +65,6 @@ node tasks <command>
 ```
 */
 
-
 // [START datastore_merge_entity]
 async function merge(taskId, description) {
   const taskKey = datastore.key(['Task', taskId]);
