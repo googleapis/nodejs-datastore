@@ -917,7 +917,6 @@ describe('Datastore', () => {
       });
     });
     describe('with a sum filter', () => {
-      // TODO: Add other tests
       it('should run a sum aggregation', async () => {
         const q = datastore.createQuery('Character');
         const aggregate = datastore
@@ -1219,22 +1218,58 @@ describe('Datastore', () => {
       await transaction.commit();
     });
 
-    it('should aggregate query within a transaction', async () => {
-      const transaction = datastore.transaction();
-      await transaction.run();
-      const query = transaction.createQuery('Company');
-      const aggregateQuery = transaction
-        .createAggregationQuery(query)
-        .count('total');
-      let result;
-      try {
-        [result] = await aggregateQuery.run();
-      } catch (e) {
-        await transaction.rollback();
-        return;
-      }
-      assert.deepStrictEqual(result, [{total: 2}]);
-      await transaction.commit();
+    describe('should aggregate query within a transaction', async () => {
+      it('should aggregate query within a count transaction', async () => {
+        const transaction = datastore.transaction();
+        await transaction.run();
+        const query = transaction.createQuery('Company');
+        const aggregateQuery = transaction
+          .createAggregationQuery(query)
+          .count('total');
+        let result;
+        try {
+          [result] = await aggregateQuery.run();
+        } catch (e) {
+          await transaction.rollback();
+          return;
+        }
+        assert.deepStrictEqual(result, [{total: 2}]);
+        await transaction.commit();
+      });
+      it('should aggregate query within a sum transaction', async () => {
+        const transaction = datastore.transaction();
+        await transaction.run();
+        const query = transaction.createQuery('Company');
+        const aggregateQuery = transaction
+          .createAggregationQuery(query)
+          .sum('appearances', 'total appearances');
+        let result;
+        try {
+          [result] = await aggregateQuery.run();
+        } catch (e) {
+          await transaction.rollback();
+          return;
+        }
+        assert.deepStrictEqual(result, [{'total appearances': 2}]);
+        await transaction.commit();
+      });
+      it('should aggregate query within a average transaction', async () => {
+        const transaction = datastore.transaction();
+        await transaction.run();
+        const query = transaction.createQuery('Company');
+        const aggregateQuery = transaction
+          .createAggregationQuery(query)
+          .average('appearances', 'average appearances');
+        let result;
+        try {
+          [result] = await aggregateQuery.run();
+        } catch (e) {
+          await transaction.rollback();
+          return;
+        }
+        assert.deepStrictEqual(result, [{'average appearances': 2}]);
+        await transaction.commit();
+      });
     });
 
     it('should read in a readOnly transaction', async () => {
