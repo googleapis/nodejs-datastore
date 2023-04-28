@@ -1218,7 +1218,7 @@ describe('Datastore', () => {
       await transaction.commit();
     });
 
-    describe('should aggregate query within a transaction', async () => {
+    describe('aggregate query within a transaction', async () => {
       it('should aggregate query within a count transaction', async () => {
         const transaction = datastore.transaction();
         await transaction.run();
