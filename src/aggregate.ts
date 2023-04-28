@@ -158,7 +158,7 @@ abstract class AggregateField {
    *
    * @returns {Average}
    */
-  static average(property: string): Sum {
+  static average(property: string): Average {
     return new Average(property);
   }
 
