@@ -1231,7 +1231,7 @@ describe('Datastore', () => {
           [result] = await aggregateQuery.run();
         } catch (e) {
           await transaction.rollback();
-          return;
+          assert.fail('The aggregation query run should have been successful');
         }
         assert.deepStrictEqual(result, [{total: 2}]);
         await transaction.commit();
@@ -1243,13 +1243,7 @@ describe('Datastore', () => {
         const aggregateQuery = transaction
           .createAggregationQuery(query)
           .sum('appearances', 'total appearances');
-        let result;
-        try {
-          [result] = await aggregateQuery.run();
-        } catch (e) {
-          await transaction.rollback();
-          return;
-        }
+        const [result] = await aggregateQuery.run();
         assert.deepStrictEqual(result, [{'total appearances': 2}]);
         await transaction.commit();
       });
@@ -1260,13 +1254,7 @@ describe('Datastore', () => {
         const aggregateQuery = transaction
           .createAggregationQuery(query)
           .average('appearances', 'average appearances');
-        let result;
-        try {
-          [result] = await aggregateQuery.run();
-        } catch (e) {
-          await transaction.rollback();
-          return;
-        }
+        const [result] = await aggregateQuery.run();
         assert.deepStrictEqual(result, [{'average appearances': 2}]);
         await transaction.commit();
       });
