@@ -46,7 +46,7 @@ class AggregateQuery {
    * @param {string} alias
    * @returns {AggregateQuery}
    */
-  count(alias: string): AggregateQuery {
+  count(alias?: string): AggregateQuery {
     this.aggregations.push(AggregateField.count().alias(alias));
     return this;
   }
@@ -58,7 +58,7 @@ class AggregateQuery {
    * @param {string} alias
    * @returns {AggregateQuery}
    */
-  sum(property: string, alias: string): AggregateQuery {
+  sum(property: string, alias?: string): AggregateQuery {
     this.aggregations.push(AggregateField.sum(property).alias(alias));
     return this;
   }
@@ -70,7 +70,7 @@ class AggregateQuery {
    * @param {string} alias
    * @returns {AggregateQuery}
    */
-  average(property: string, alias: string): AggregateQuery {
+  average(property: string, alias?: string): AggregateQuery {
     this.aggregations.push(AggregateField.average(property).alias(alias));
     return this;
   }
@@ -169,7 +169,7 @@ abstract class AggregateField {
    * aggregate field when a query is run.
    * @returns {AggregateField}
    */
-  alias(alias: string): AggregateField {
+  alias(alias?: string): AggregateField {
     this.alias_ = alias;
     return this;
   }
