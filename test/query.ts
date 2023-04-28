@@ -75,6 +75,61 @@ describe('Query', () => {
         secondAggregation,
       ]);
     });
+
+    describe('comparing equivalent aggregation queries', async () => {
+      function generateAggregateQuery() {
+        return new AggregateQuery(new Query(['kind1']));
+      }
+
+      function compareAggregations(
+        aggregateQuery: AggregateQuery,
+        aggregateFields: AggregateField[]
+      ) {
+        const addAggregationsAggregate = generateAggregateQuery();
+        addAggregationsAggregate.addAggregations(aggregateFields);
+        const addAggregationAggregate = generateAggregateQuery();
+        aggregateFields.forEach(aggregateField =>
+          addAggregationAggregate.addAggregation(aggregateField)
+        );
+        assert.deepStrictEqual(
+          aggregateQuery.aggregations,
+          addAggregationsAggregate.aggregations
+        );
+        assert.deepStrictEqual(
+          aggregateQuery.aggregations,
+          addAggregationAggregate.aggregations
+        );
+        assert.deepStrictEqual(aggregateQuery.aggregations, aggregateFields);
+      }
+      it('should compare equivalent count aggregation queries', () => {
+        compareAggregations(
+          generateAggregateQuery().count('total1').count('total2'),
+          ['total1', 'total2'].map(alias => AggregateField.count().alias(alias))
+        );
+      });
+      it('should compare equivalent sum aggregation queries', () => {
+        compareAggregations(
+          generateAggregateQuery()
+            .sum('property1', 'alias1')
+            .sum('property2', 'alias2'),
+          [
+            AggregateField.sum('property1').alias('alias1'),
+            AggregateField.sum('property2').alias('alias2'),
+          ]
+        );
+      });
+      it('should compare equivalent average aggregation queries', () => {
+        compareAggregations(
+          generateAggregateQuery()
+            .average('property1', 'alias1')
+            .average('property2', 'alias2'),
+          [
+            AggregateField.average('property1').alias('alias1'),
+            AggregateField.average('property2').alias('alias2'),
+          ]
+        );
+      });
+    });
   });
 
   describe('filter', () => {
