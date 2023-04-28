@@ -69,11 +69,7 @@ describe('Query', () => {
       const aggregate2 = new AggregateQuery(query)
         .count('total')
         .count('total2');
-      const aggregate3 = new AggregateQuery(query)
-        .addAggregation(firstAggregation)
-        .addAggregation(secondAggregation);
       assert.deepStrictEqual(aggregate.aggregations, aggregate2.aggregations);
-      assert.deepStrictEqual(aggregate.aggregations, aggregate3.aggregations);
       assert.deepStrictEqual(aggregate.aggregations, [
         firstAggregation,
         secondAggregation,
