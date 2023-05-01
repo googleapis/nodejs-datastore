@@ -24,6 +24,7 @@ import {AggregateField} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, and, or} from '../src/filter';
 
 describe('Datastore', () => {
+  let timeBeforeDataCreation: number;
   const testKinds: string[] = [];
   const datastore = new Datastore({
     namespace: `${Date.now()}`,
@@ -674,12 +675,17 @@ describe('Datastore', () => {
     ];
 
     before(async () => {
+      function sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
       const keysToSave = keys.map((key, index) => {
         return {
           key,
           data: characters[index],
         };
       });
+      timeBeforeDataCreation = Date.now();
+      await sleep(1000);
       await datastore.save(keysToSave);
     });
 
@@ -1007,6 +1013,16 @@ describe('Datastore', () => {
           .createAggregationQuery(q)
           .addAggregations([AggregateField.sum('appearances').alias('sum1')]);
         const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{sum1: 7}]);
+      });
+      it('should run a sum aggregate filter against a query from before the data creation', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.sum('appearances').alias('sum1')]);
+        const [results] = await datastore.runAggregationQuery(aggregate, {
+          readTime: timeBeforeDataCreation,
+        });
         assert.deepStrictEqual(results, [{sum1: 7}]);
       });
     });
