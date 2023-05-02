@@ -40,8 +40,9 @@ import * as is from 'is';
 import {Transform, pipeline} from 'stream';
 
 import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
+import {AggregateField} from './aggregate';
 import Key = entity.Key;
-export {Entity, Key};
+export {Entity, Key, AggregateField};
 
 import {
   GetIndexesCallback,
