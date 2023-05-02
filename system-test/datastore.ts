@@ -1216,6 +1216,108 @@ describe('Datastore', () => {
     });
   });
 
+  describe('querying the datastore with an overflow data set', () => {
+    const keys = [
+      // Paths:
+      ['Rickard'],
+      ['Rickard', 'Character', 'Eddard'],
+    ].map(path => {
+      return datastore.key(['Book', 'GoT', 'Character'].concat(path));
+    });
+    const characters = [
+      {
+        name: 'Rickard',
+        family: 'Stark',
+        appearances: 9223372036854775807,
+        alive: false,
+      },
+      {
+        name: 'Eddard',
+        family: 'Stark',
+        appearances: 9223372036854775807,
+        alive: false,
+      },
+    ];
+    before(async () => {
+      const keysToSave = keys.map((key, index) => {
+        return {
+          key,
+          data: characters[index],
+        };
+      });
+      await datastore.save(keysToSave);
+    });
+    after(async () => {
+      await datastore.delete(keys);
+    });
+    it('should run a sum aggregation', async () => {
+      const q = datastore.createQuery('Character');
+      const aggregate = datastore
+        .createAggregationQuery(q)
+        .addAggregation(AggregateField.sum('appearances'));
+      const [results] = await datastore.runAggregationQuery(aggregate);
+      assert.deepStrictEqual(results, [{property_1: 8}]);
+    });
+    it('should run an average aggregation', async () => {
+      const q = datastore.createQuery('Character');
+      const aggregate = datastore
+        .createAggregationQuery(q)
+        .addAggregation(AggregateField.average('appearances'));
+      const [results] = await datastore.runAggregationQuery(aggregate);
+      assert.deepStrictEqual(results, [{property_1: 8}]);
+    });
+  });
+  describe('querying the datastore with an NaN in the data set', () => {
+    const keys = [
+      // Paths:
+      ['Rickard'],
+      ['Rickard', 'Character', 'Eddard'],
+    ].map(path => {
+      return datastore.key(['Book', 'GoT', 'Character'].concat(path));
+    });
+    const characters = [
+      {
+        name: 'Rickard',
+        family: 'Stark',
+        appearances: 4,
+        alive: false,
+      },
+      {
+        name: 'Eddard',
+        family: 'Stark',
+        appearances: null,
+        alive: false,
+      },
+    ];
+    before(async () => {
+      const keysToSave = keys.map((key, index) => {
+        return {
+          key,
+          data: characters[index],
+        };
+      });
+      await datastore.save(keysToSave);
+    });
+    after(async () => {
+      await datastore.delete(keys);
+    });
+    it('should run a sum aggregation', async () => {
+      const q = datastore.createQuery('Character');
+      const aggregate = datastore
+        .createAggregationQuery(q)
+        .addAggregation(AggregateField.sum('appearances'));
+      const [results] = await datastore.runAggregationQuery(aggregate);
+      assert.deepStrictEqual(results, [{property_1: 8}]);
+    });
+    it('should run an average aggregation', async () => {
+      const q = datastore.createQuery('Character');
+      const aggregate = datastore
+        .createAggregationQuery(q)
+        .addAggregation(AggregateField.average('appearances'));
+      const [results] = await datastore.runAggregationQuery(aggregate);
+      assert.deepStrictEqual(results, [{property_1: 8}]);
+    });
+  });
   describe('transactions', () => {
     it('should run in a transaction', async () => {
       const key = datastore.key(['Company', 'Google']);
