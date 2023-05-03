@@ -21,6 +21,7 @@ import {PathType} from '.';
 import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
+import {and, PropertyFilter} from './filter';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -117,7 +118,7 @@ export namespace entity {
    *     `integerTypeCastFunction` to handle `integerValue` conversion.
    * @param {function} typeCastOptions.integerTypeCastFunction A custom user
    *     provided function to convert `integerValue`.
-   * @param {sting|string[]} [typeCastOptions.properties] `Entity` property
+   * @param {string|string[]} [typeCastOptions.properties] `Entity` property
    *     names to be converted using `integerTypeCastFunction`.
    *
    * @example
@@ -657,10 +658,7 @@ export namespace entity {
     }
 
     if (value instanceof Buffer) {
-      // Convert the buffer to a base 64 string to workaround a bug of
-      // protobufs encoding empty buffer.
-      // See https://github.com/googleapis/nodejs-datastore/issues/755
-      valueProto.blobValue = value.toString('base64');
+      valueProto.blobValue = value;
       return valueProto;
     }
 
@@ -1186,18 +1184,6 @@ export namespace entity {
    * ```
    */
   export function queryToQueryProto(query: Query): QueryProto {
-    const OP_TO_OPERATOR = {
-      '=': 'EQUAL',
-      '>': 'GREATER_THAN',
-      '>=': 'GREATER_THAN_OR_EQUAL',
-      '<': 'LESS_THAN',
-      '<=': 'LESS_THAN_OR_EQUAL',
-      HAS_ANCESTOR: 'HAS_ANCESTOR',
-      '!=': 'NOT_EQUAL',
-      IN: 'IN',
-      NOT_IN: 'NOT_IN',
-    };
-
     const SIGN_TO_ORDER = {
       '-': 'DESCENDING',
       '+': 'ASCENDING',
@@ -1252,34 +1238,20 @@ export namespace entity {
       queryProto.startCursor = query.startVal;
     }
 
-    if (query.filters.length > 0) {
-      const filters = query.filters.map(filter => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let value: any = {};
-
-        if (filter.name === '__key__') {
-          value.keyValue = entity.keyToKeyProto(filter.val);
-        } else {
-          value = entity.encodeValue(filter.val, filter.name);
-        }
-
-        return {
-          propertyFilter: {
-            property: {
-              name: filter.name,
-            },
-            op: OP_TO_OPERATOR[filter.op],
-            value,
-          },
-        };
-      });
-
-      queryProto.filter = {
-        compositeFilter: {
-          filters,
-          op: 'AND',
-        },
-      };
+    // Check to see if there is at least one type of legacy filter or new filter.
+    if (query.filters.length > 0 || query.entityFilters.length > 0) {
+      // Convert all legacy filters into new property filter objects
+      const filters = query.filters.map(
+        filter => new PropertyFilter(filter.name, filter.op, filter.val)
+      );
+      const entityFilters = query.entityFilters;
+      const allFilters = entityFilters.concat(filters);
+      /*
+        To be consistent with prior implementation, apply an AND composite filter
+        to the collection of Filter objects. Then, set the filter property as before
+        to the output of the toProto method.
+       */
+      queryProto.filter = and(allFilters).toProto();
     }
 
     return queryProto;
