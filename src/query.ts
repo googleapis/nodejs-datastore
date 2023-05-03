@@ -231,19 +231,13 @@ class Query {
       case 1: {
         if (isFilter(propertyOrFilter)) {
           this.entityFilters.push(propertyOrFilter);
-        } else {
-          this.filters.push({
-            name: (propertyOrFilter as String).trim(),
-            op: (operatorOrValue as Operator).trim() as Operator,
-            val: value,
-          });
         }
         break;
       }
       case 2: {
         this.filters.push({
           name: (propertyOrFilter as String).trim(),
-          op: '=' as Operator,
+          op: '=',
           val: operatorOrValue as AllowedFilterValueType<T>,
         });
         break;
