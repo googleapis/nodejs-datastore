@@ -1371,5 +1371,14 @@ describe('Datastore', () => {
       const [entities] = await customDatastore.runQuery(query);
       assert.strictEqual(entities.length, 0);
     });
+    it('should complete a request when using the regional endpoint as a custom endpoint', async () => {
+      const customDatastore = new Datastore({
+        namespace: `${Date.now()}`,
+        apiEndpoint: 'nam5-datastore.googleapis.com',
+      });
+      const query = customDatastore.createQuery('Kind').select('__key__');
+      const [entities] = await customDatastore.runQuery(query);
+      assert.strictEqual(entities.length, 0);
+    });
   });
 });
