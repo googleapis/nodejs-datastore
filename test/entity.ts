@@ -339,7 +339,14 @@ describe('entity', () => {
     it('should always compute the correct serialized path', () => {
       const key = new testEntity.Key({
         namespace: 'namespace',
-        path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new testEntity.Int('1')],
+        path: [
+          'ParentKind',
+          'name',
+          'Kind',
+          1,
+          'SubKind',
+          new testEntity.Int('1'),
+        ],
       });
       assert.deepStrictEqual(key.serialized, {
         namespace: 'namespace',
@@ -356,7 +363,14 @@ describe('entity', () => {
 
     it('should allow re-creating a Key from the serialized path', () => {
       const key = new testEntity.Key({
-        path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new testEntity.Int('1')],
+        path: [
+          'ParentKind',
+          'name',
+          'Kind',
+          1,
+          'SubKind',
+          new testEntity.Int('1'),
+        ],
       });
       const key2 = new testEntity.Key(key.serialized);
       assert.deepStrictEqual(key.serialized, key2.serialized);
@@ -364,7 +378,14 @@ describe('entity', () => {
 
     it('should allow re-creating a Key from the JSON serialized path', () => {
       const key = new testEntity.Key({
-        path: ['ParentKind', 'name', 'Kind', 1, 'SubKind', new testEntity.Int('1')],
+        path: [
+          'ParentKind',
+          'name',
+          'Kind',
+          1,
+          'SubKind',
+          new testEntity.Int('1'),
+        ],
       });
       const toPOJO = (v: object) => JSON.parse(JSON.stringify(v));
       const key2 = new testEntity.Key(toPOJO(key.serialized));
@@ -440,7 +461,9 @@ describe('entity', () => {
           return decodeValueProto(valueProto, wrapNumbers);
         };
 
-        assert.deepStrictEqual(testEntity.decodeValueProto(valueProto), [intValue]);
+        assert.deepStrictEqual(testEntity.decodeValueProto(valueProto), [
+          intValue,
+        ]);
       });
 
       it('should wrap numbers with an option', () => {
@@ -490,7 +513,10 @@ describe('entity', () => {
           return expectedValue;
         };
 
-        assert.strictEqual(testEntity.decodeValueProto(valueProto), expectedValue);
+        assert.strictEqual(
+          testEntity.decodeValueProto(valueProto),
+          expectedValue
+        );
       });
 
       it('should not wrap numbers by default', () => {
@@ -510,7 +536,10 @@ describe('entity', () => {
           return expectedValue;
         };
 
-        assert.strictEqual(testEntity.decodeValueProto(valueProto), expectedValue);
+        assert.strictEqual(
+          testEntity.decodeValueProto(valueProto),
+          expectedValue
+        );
       });
 
       it('should wrap numbers with an option', () => {
@@ -671,7 +700,10 @@ describe('entity', () => {
         doubleValue: expectedValue,
       };
 
-      assert.strictEqual(testEntity.decodeValueProto(valueProto), expectedValue);
+      assert.strictEqual(
+        testEntity.decodeValueProto(valueProto),
+        expectedValue
+      );
     });
 
     it('should decode keys', () => {
@@ -687,7 +719,10 @@ describe('entity', () => {
         return expectedValue;
       };
 
-      assert.strictEqual(testEntity.decodeValueProto(valueProto), expectedValue);
+      assert.strictEqual(
+        testEntity.decodeValueProto(valueProto),
+        expectedValue
+      );
     });
 
     it('should decode timestamps', () => {
@@ -720,7 +755,10 @@ describe('entity', () => {
         booleanValue: expectedValue,
       };
 
-      assert.strictEqual(testEntity.decodeValueProto(valueProto), expectedValue);
+      assert.strictEqual(
+        testEntity.decodeValueProto(valueProto),
+        expectedValue
+      );
     });
   });
 
@@ -1941,11 +1979,12 @@ describe('entity', () => {
 
       const query = ds
         .createQuery('Kind1')
-        .filter('__key__', 'IN', [
-          new entity.Key({path: ['Kind1', 'key1']}),
-        ]);
+        .filter('__key__', 'IN', [new entity.Key({path: ['Kind1', 'key1']})]);
 
-      assert.deepStrictEqual(testEntity.queryToQueryProto(query), keyWithInQuery);
+      assert.deepStrictEqual(
+        testEntity.queryToQueryProto(query),
+        keyWithInQuery
+      );
     });
 
     it('should support the filter method with Filter objects', () => {
