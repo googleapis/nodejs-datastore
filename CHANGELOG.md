@@ -4,6 +4,73 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [7.5.1](https://github.com/googleapis/nodejs-datastore/compare/v7.5.0...v7.5.1) (2023-04-11)
+
+
+### Bug Fixes
+
+* Allow user to set custom endpoints ([#1101](https://github.com/googleapis/nodejs-datastore/issues/1101)) ([e79fa49](https://github.com/googleapis/nodejs-datastore/commit/e79fa49f753984e34b63538005f29ab7efb7695e))
+
+## [7.5.0](https://github.com/googleapis/nodejs-datastore/compare/v7.4.0...v7.5.0) (2023-03-29)
+
+
+### Features
+
+* Add SUM/AVG aggregation query support in the preview branch and improve query API documentation ([#1094](https://github.com/googleapis/nodejs-datastore/issues/1094)) ([d14f87e](https://github.com/googleapis/nodejs-datastore/commit/d14f87ed4aaef42090673fbe78b23992093925ad))
+
+
+### Bug Fixes
+
+* Allow IN queries on __key__ ([#1085](https://github.com/googleapis/nodejs-datastore/issues/1085)) ([dd2d5f4](https://github.com/googleapis/nodejs-datastore/commit/dd2d5f4d15f714b3f3586250802fb6822b7e01ff))
+
+## [7.4.0](https://github.com/googleapis/nodejs-datastore/compare/v7.3.2...v7.4.0) (2023-03-09)
+
+
+### Features
+
+* Introduce EntityFilter class with support for and/or filters ([#1061](https://github.com/googleapis/nodejs-datastore/issues/1061)) ([8fc58c0](https://github.com/googleapis/nodejs-datastore/commit/8fc58c0f18e5333f996099e09ec673e9bf3460af))
+
+
+### Bug Fixes
+
+* Or filters with warnings ([#1075](https://github.com/googleapis/nodejs-datastore/issues/1075)) ([73bfcc4](https://github.com/googleapis/nodejs-datastore/commit/73bfcc40129309b512627f873d9f841f7ad370ee))
+
+## [7.3.2](https://github.com/googleapis/nodejs-datastore/compare/v7.3.1...v7.3.2) (2023-02-17)
+
+
+### Bug Fixes
+
+* Allow filtering null values ([#1067](https://github.com/googleapis/nodejs-datastore/issues/1067)) ([b89fa21](https://github.com/googleapis/nodejs-datastore/commit/b89fa211b366ec3e24ea5b2c8deeb90c695aa0df))
+
+## [7.3.1](https://github.com/googleapis/nodejs-datastore/compare/v7.3.0...v7.3.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* **deps:** Roll back dependency @google-cloud/datastore to ^7.2.0 ([#1069](https://github.com/googleapis/nodejs-datastore/issues/1069)) ([1677c53](https://github.com/googleapis/nodejs-datastore/commit/1677c53b612799a90c455636ac19e081ff3730b3))
+
+## [7.3.0](https://github.com/googleapis/nodejs-datastore/compare/v7.2.0...v7.3.0) (2023-02-16)
+
+
+### Features
+
+* Add `OR` query support ([#1064](https://github.com/googleapis/nodejs-datastore/issues/1064)) ([196bdaf](https://github.com/googleapis/nodejs-datastore/commit/196bdafb27b6987ccbf547e480b008aee65775d0))
+
+## [7.2.0](https://github.com/googleapis/nodejs-datastore/compare/v7.1.0...v7.2.0) (2023-02-09)
+
+
+### Features
+
+* Add dynamic routing header annotation to DatastoreV1 ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+* Added Snooze API support ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+* Added SuggestConversationSummary RPC ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+* New transaction options for datastoreV1 ([b023ab4](https://github.com/googleapis/nodejs-datastore/commit/b023ab47146159c32ebc64dd09da681ad09c4081))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency sinon to v15 ([#1020](https://github.com/googleapis/nodejs-datastore/issues/1020)) ([a61258c](https://github.com/googleapis/nodejs-datastore/commit/a61258c92354df5a62cf6e7d6977f8f83bfd907f))
+
 ## [7.1.0](https://github.com/googleapis/nodejs-datastore/compare/v7.0.0...v7.1.0) (2023-01-18)
 
 

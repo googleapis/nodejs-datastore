@@ -42,7 +42,8 @@ import {Transform, pipeline} from 'stream';
 import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
 import Key = entity.Key;
 export {Entity, Key};
-
+import {PropertyFilter, and, or} from './filter';
+export {PropertyFilter, and, or};
 import {
   GetIndexesCallback,
   GetIndexesOptions,
@@ -289,7 +290,7 @@ const urlSafeKey = new entity.URLSafeKey();
  * @example Creating Records
  * ```
  * // New entities can be created and persisted with {@link Datastore#save}.
- * // The entitiy must have a key to be saved. If you don't specify an
+ * // The entity must have a key to be saved. If you don't specify an
  * // identifier for the key, one is generated for you.
  * //
  * // We will create a key with a `name` identifier, "Google".
@@ -503,8 +504,13 @@ class Datastore extends DatastoreRequest {
       },
       options
     );
-    if (this.customEndpoint_) {
-      this.options.sslCreds = grpc.credentials.createInsecure();
+    const isUsingEmulator =
+      this.baseUrl_ &&
+      (this.baseUrl_.includes('localhost') ||
+        this.baseUrl_.includes('127.0.0.1') ||
+        this.baseUrl_.includes('::1'));
+    if (this.customEndpoint_ && isUsingEmulator) {
+      this.options.sslCreds ??= grpc.credentials.createInsecure();
     }
 
     this.auth = new GoogleAuth(this.options);
@@ -780,7 +786,7 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `insert`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/datastore#_google_cloud_datastore_Datastore_save_member_1_|Datastore#save}, forcing the method to be `insert`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -1189,7 +1195,7 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `update`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/datastore#_google_cloud_datastore_Datastore_save_member_1_|Datastore#save}, forcing the method to be `update`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
@@ -1219,7 +1225,7 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Maps to {@link Datastore#save}, forcing the method to be `upsert`.
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/datastore#_google_cloud_datastore_Datastore_save_member_1_|Datastore#save}, forcing the method to be `upsert`.
    *
    * @param {object|object[]} entities Datastore key object(s).
    * @param {Key} entities.key Datastore key object.
