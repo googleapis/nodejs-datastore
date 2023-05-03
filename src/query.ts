@@ -225,22 +225,23 @@ class Query {
     if (isFilter(propertyOrFilter)) {
       this.entityFilters.push(propertyOrFilter);
       return this;
-    } else {
-      process.emitWarning(
-        'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
-      );
-      let operator = operatorOrValue as Operator;
-      if (arguments.length === 2) {
-        value = operatorOrValue as AllowedFilterValueType<T>;
-        operator = '=';
-      }
-
-      this.filters.push({
-        name: (propertyOrFilter as String).trim(),
-        op: operator.trim() as Operator,
-        val: value,
-      });
     }
+    process.emitWarning(
+      'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
+    );
+    const filter =
+      arguments.length === 2
+        ? {
+            name: (propertyOrFilter as String).trim(),
+            op: '=' as Operator,
+            val: operatorOrValue as AllowedFilterValueType<T>,
+          }
+        : {
+            name: (propertyOrFilter as String).trim(),
+            op: (operatorOrValue as Operator).trim() as Operator,
+            val: value,
+          };
+    this.filters.push(filter);
     return this;
   }
 
