@@ -25,7 +25,7 @@ import {entity} from '../src/entity';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 import {PropertyFilter, and, or} from '../src/filter';
 
-const SECOND_DATABASE_ID = 'foo2';
+const SECOND_DATABASE_ID = 'secondDatabase';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
