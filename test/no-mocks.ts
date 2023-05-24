@@ -1,5 +1,5 @@
 import {describe, it} from 'mocha';
-import {RequestConfig} from '../src/request';
+import {RequestCallback, RequestConfig} from '../src/request';
 import * as assert from 'assert';
 import {Datastore} from '../src';
 
@@ -29,33 +29,24 @@ describe('NoMocks', () => {
         ],
       },
     };
-    function evaluateConfig(config: RequestConfig) {
+    datastore.request_ = (config: RequestConfig, callback: RequestCallback) => {
       try {
         assert.deepStrictEqual(config, expectedConfig);
-      } catch (e) {
-        console.log(e);
-        assert.fail('assertion failed');
+        callback(null, 'some-data');
+      } catch (e: any) {
+        callback(e);
       }
-    }
-
-    it.only('should encode a request without excludeFromIndexes', done => {
-      datastore.request_ = (config: RequestConfig) => {
-        evaluateConfig(config);
-        done();
-      };
-      const key = datastore.key(['Post', 'Post1']);
-      datastore.save({
+    };
+    const key = datastore.key(['Post', 'Post1']);
+    it.only('should encode a request without excludeFromIndexes', async () => {
+      const results = await datastore.save({
         key,
         data: {},
       });
+      assert.deepStrictEqual(results, ['some-data']);
     });
-    it('should ignore non-existent property in excludeFromIndexes', done => {
-      datastore.request_ = (config: RequestConfig) => {
-        evaluateConfig(config);
-        done();
-      };
-      const key = datastore.key(['Post', 'Post1']);
-      datastore.save({
+    it('should ignore non-existent property in excludeFromIndexes', async () => {
+      const results = await datastore.save({
         key,
         data: {},
         excludeFromIndexes: [
@@ -63,6 +54,7 @@ describe('NoMocks', () => {
           'non_exist_property.*', // should also be ignored
         ],
       });
+      assert.deepStrictEqual(results, ['some-data']);
     });
   });
 });
