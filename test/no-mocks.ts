@@ -38,14 +38,14 @@ describe('NoMocks', () => {
       }
     };
     const key = datastore.key(['Post', 'Post1']);
-    it.only('should encode a request without excludeFromIndexes', async () => {
+    it('should encode a request without excludeFromIndexes', async () => {
       const results = await datastore.save({
         key,
         data: {},
       });
       assert.deepStrictEqual(results, ['some-data']);
     });
-    it('should ignore non-existent property in excludeFromIndexes', async () => {
+    it.only('should ignore non-existent property in excludeFromIndexes', async () => {
       const results = await datastore.save({
         key,
         data: {},
