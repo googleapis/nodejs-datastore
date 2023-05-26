@@ -116,5 +116,62 @@ describe('NoMocks', () => {
         assert.deepStrictEqual(results, ['some-data']);
       });
     });
+    describe('when the property is not contained in excludeFromIndexes and the property is an array', () => {
+      const datastore = new Datastore({
+        namespace: `${Date.now()}`,
+      });
+      const namespace = datastore.namespace;
+      const key = datastore.key(['Post', 'Post1']);
+      it('should encode a request when there is no wildcard', async () => {
+        const expectedConfig = getExpectedConfig(
+          {k: {stringValue: 'v'}},
+          namespace
+        );
+        datastore.request_ = (
+          config: RequestConfig,
+          callback: RequestCallback
+        ) => {
+          try {
+            assert.deepStrictEqual(config, expectedConfig);
+            callback(null, 'some-data');
+          } catch (e: any) {
+            callback(e);
+          }
+        };
+        const results = await datastore.save({
+          key,
+          data: {k: 'v'},
+          excludeFromIndexes: [
+            'non_exist_property[]', // this just ignored
+          ],
+        });
+        assert.deepStrictEqual(results, ['some-data']);
+      });
+      it('should encode a request when using a wildcard', async () => {
+        const expectedConfig = getExpectedConfig(
+          {k: {stringValue: 'v'}},
+          namespace
+        );
+        datastore.request_ = (
+          config: RequestConfig,
+          callback: RequestCallback
+        ) => {
+          try {
+            assert.deepStrictEqual(config, expectedConfig);
+            callback(null, 'some-data');
+          } catch (e: any) {
+            callback(e);
+          }
+        };
+        const results = await datastore.save({
+          key,
+          data: {k: 'v'},
+          excludeFromIndexes: [
+            'non_exist_property[].*', // this just ignored
+          ],
+        });
+        assert.deepStrictEqual(results, ['some-data']);
+      });
+    });
   });
 });

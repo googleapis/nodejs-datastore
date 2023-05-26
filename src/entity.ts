@@ -855,6 +855,7 @@ export namespace entity {
       if (
         firstPathPartIsArray &&
         // check also if the property in question is actually an array value.
+        typeof entity.properties![firstPathPart] !== 'undefined' &&
         entity.properties![firstPathPart].arrayValue &&
         // check if wildcard is not applied
         !hasWildCard
@@ -879,7 +880,12 @@ export namespace entity {
             );
           }
         });
-      } else if (firstPathPartIsArray && hasWildCard && remainderPath === '*') {
+      } else if (
+        firstPathPartIsArray &&
+        hasWildCard &&
+        remainderPath === '*' &&
+        typeof entity.properties![firstPathPart] !== 'undefined'
+      ) {
         const array = entity.properties![firstPathPart].arrayValue;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         array.values.forEach((value: any) => {
@@ -898,7 +904,7 @@ export namespace entity {
             excludePathFromEntity(entity, newPath);
           });
         } else {
-          if (entity.properties![firstPathPart]) {
+          if (typeof entity.properties![firstPathPart] !== 'undefined') {
             if (hasWildCard && remainderPath === '*') {
               const parentEntity =
                 entity.properties![firstPathPart].entityValue;
