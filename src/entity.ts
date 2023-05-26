@@ -898,22 +898,26 @@ export namespace entity {
             excludePathFromEntity(entity, newPath);
           });
         } else {
-          if (hasWildCard && remainderPath === '*') {
-            const parentEntity = entity.properties![firstPathPart].entityValue;
+          if (entity.properties![firstPathPart]) {
+            if (hasWildCard && remainderPath === '*') {
+              const parentEntity =
+                entity.properties![firstPathPart].entityValue;
 
-            if (parentEntity) {
-              Object.keys(parentEntity.properties).forEach(path => {
-                const newPath = parentEntity.properties[path].arrayValue
-                  ? path + '[].*'
-                  : path + '.*';
-                excludePathFromEntity(parentEntity, newPath);
-              });
+              if (parentEntity) {
+                Object.keys(parentEntity.properties).forEach(path => {
+                  const newPath = parentEntity.properties[path].arrayValue
+                    ? path + '[].*'
+                    : path + '.*';
+                  excludePathFromEntity(parentEntity, newPath);
+                });
+              } else {
+                excludePathFromEntity(entity, firstPathPart);
+              }
             } else {
-              excludePathFromEntity(entity, firstPathPart);
+              const parentEntity =
+                entity.properties![firstPathPart].entityValue;
+              excludePathFromEntity(parentEntity, remainderPath);
             }
-          } else {
-            const parentEntity = entity.properties![firstPathPart].entityValue;
-            excludePathFromEntity(parentEntity, remainderPath);
           }
         }
       }
