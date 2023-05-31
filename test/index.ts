@@ -30,7 +30,7 @@ import * as extend from 'extend';
 const v1 = require('../src/v1/index.js');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fakeEntity: any = {
+const fakeEntityInit: any = {
   KEY_SYMBOL: Symbol('fake key symbol'),
   Int: class {
     value: {};
@@ -81,6 +81,8 @@ const fakeEntity: any = {
   findLargeProperties_: entity.findLargeProperties_,
   URLSafeKey: entity.URLSafeKey,
 };
+
+const fakeEntity: any = {};
 
 let googleAuthOverride: Function | null;
 function fakeGoogleAuth(...args: Array<{}>) {
@@ -153,7 +155,7 @@ describe('Datastore', () => {
 
   const OPTIONS = {
     projectId: PROJECT_ID,
-    apiEndpoint: 'http://endpoint',
+    apiEndpoint: 'http://localhost',
     credentials: {},
     keyFilename: 'key/file',
     email: 'email',
@@ -161,6 +163,7 @@ describe('Datastore', () => {
   };
 
   before(() => {
+    Object.assign(fakeEntity, fakeEntityInit);
     Datastore = proxyquire('../src', {
       './entity.js': {entity: fakeEntity},
       './index-class.js': {Index: FakeIndex},
@@ -175,6 +178,8 @@ describe('Datastore', () => {
   });
 
   beforeEach(() => {
+    Object.assign(fakeEntity, fakeEntityInit);
+
     createInsecureOverride = null;
     googleAuthOverride = null;
 
@@ -288,14 +293,7 @@ describe('Datastore', () => {
       assert.strictEqual((datastore.options as any).port, port);
     });
 
-    it('should set grpc ssl credentials if custom endpoint', () => {
-      const determineBaseUrl_ = Datastore.prototype.determineBaseUrl_;
-
-      Datastore.prototype.determineBaseUrl_ = function () {
-        Datastore.prototype.determineBaseUrl_ = determineBaseUrl_;
-        this.customEndpoint_ = true;
-      };
-
+    it('should set grpc ssl credentials if localhost custom endpoint', () => {
       const fakeInsecureCreds = {};
       createInsecureOverride = () => {
         return fakeInsecureCreds;

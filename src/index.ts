@@ -291,7 +291,7 @@ const urlSafeKey = new entity.URLSafeKey();
  * @example Creating Records
  * ```
  * // New entities can be created and persisted with {@link Datastore#save}.
- * // The entitiy must have a key to be saved. If you don't specify an
+ * // The entity must have a key to be saved. If you don't specify an
  * // identifier for the key, one is generated for you.
  * //
  * // We will create a key with a `name` identifier, "Google".
@@ -505,8 +505,13 @@ class Datastore extends DatastoreRequest {
       },
       options
     );
-    if (this.customEndpoint_) {
-      this.options.sslCreds = grpc.credentials.createInsecure();
+    const isUsingEmulator =
+      this.baseUrl_ &&
+      (this.baseUrl_.includes('localhost') ||
+        this.baseUrl_.includes('127.0.0.1') ||
+        this.baseUrl_.includes('::1'));
+    if (this.customEndpoint_ && isUsingEmulator) {
+      this.options.sslCreds ??= grpc.credentials.createInsecure();
     }
 
     this.auth = new GoogleAuth(this.options);
