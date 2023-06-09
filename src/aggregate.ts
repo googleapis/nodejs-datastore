@@ -202,7 +202,6 @@ class Count extends AggregateField {
  *
  */
 abstract class PropertyAggregateField extends AggregateField {
-  property_?: string;
   abstract operator: string;
 
   /**
@@ -210,9 +209,8 @@ abstract class PropertyAggregateField extends AggregateField {
    *
    * @param {string} property
    */
-  constructor(property: string) {
+  constructor(public property_: string) {
     super();
-    this.property_ = property;
   }
 
   /**
@@ -220,16 +218,13 @@ abstract class PropertyAggregateField extends AggregateField {
    *
    */
   toProto(): any {
-    const aggregation = Object.assign(
-      {},
-      this.property_ ? {property: {name: this.property_}} : null
-    );
-    const aggregationObject: any = {};
-    aggregationObject[this.operator] = aggregation;
+    const aggregation = this.property_
+      ? {property: {name: this.property_}}
+      : {};
     return Object.assign(
       {operator: this.operator},
       this.alias_ ? {alias: this.alias_} : null,
-      aggregationObject
+      {[this.operator]: aggregation}
     );
   }
 }
