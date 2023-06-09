@@ -715,15 +715,6 @@ class Datastore extends DatastoreRequest {
   }
 
   /**
-   * Gets the database id that all requests will be run against.
-   *
-   * @param {any} [reqOpts] The request operations to add the databaseId to
-   */
-  addDatabaseIdToRequest(reqOpts: any): void {
-    addDatabaseIdToRequest(this, reqOpts);
-  }
-
-  /**
    * Import entities into this project from a remote file.
    *
    * @param {ImportEntitiesConfig} config Configuration object.
