@@ -455,23 +455,17 @@ describe('Query', () => {
       dataClient['commit'] = (
         request: any,
         options: any,
-        callback: () => void
+        callback: (err?: unknown) => void
       ) => {
-        // These asserts here don't seem to bubble up to the test runner.
-        if (
-          request.databaseId !== SECOND_DATABASE_ID ||
-          request.projectId !== projectId ||
-          !options ||
-          !options.headers ||
-          options.headers['google-cloud-resource-prefix'] !==
+        try {
+          assert.strictEqual(request.databaseId, SECOND_DATABASE_ID);
+          assert.strictEqual(request.projectId, projectId);
+          assert.strictEqual(
+            options.headers['google-cloud-resource-prefix'],
             `projects/${projectId}`
-        ) {
-          // We have to do the assert check like this.
-          // Otherwise, assert.strictEqual will not bubble up to the generated layer
-          const failMessage =
-            'asserts fail for should pass the database id to the generated layer';
-          console.warn(failMessage);
-          assert.fail(failMessage);
+          );
+        } catch (e) {
+          callback(e);
         }
         callback();
       };
