@@ -35,7 +35,7 @@ function main(projectId, outputUrlPrefix) {
   /**
    *  Client-assigned labels.
    */
-  // const labels = 1234
+  // const labels = [1,2,3,4]
   /**
    *  Description of what data from the project is included in the export.
    */

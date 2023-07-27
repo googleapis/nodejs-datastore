@@ -35,7 +35,7 @@ function main(projectId, inputUrl) {
   /**
    *  Client-assigned labels.
    */
-  // const labels = 1234
+  // const labels = [1,2,3,4]
   /**
    *  Required. The full resource URL of the external storage location. Currently, only
    *  Google Cloud Storage is supported. So input_url should be of the form:
