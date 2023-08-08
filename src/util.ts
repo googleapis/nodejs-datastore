@@ -12,7 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export function addDatabaseIdToRequest(datastore: any, reqOpts: any) {
+import {Datastore} from './index';
+import {RequestOptions} from '../src/request';
+
+export function addDatabaseIdToRequest(
+  datastore: Datastore,
+  reqOpts: RequestOptions
+) {
   if (datastore.options && datastore.options.databaseId) {
     reqOpts.databaseId = datastore.options.databaseId;
   }

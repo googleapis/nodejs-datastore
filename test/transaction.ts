@@ -24,6 +24,7 @@ import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {addDatabaseIdToRequest} from '../src/util';
+import {RequestConfig, RequestOptions} from '../src/request';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -62,8 +63,8 @@ describe('Transaction', () => {
     request_() {},
     projectId: PROJECT_ID,
     namespace: NAMESPACE,
-    addDatabaseIdToRequest(d: any, r: any) {
-      addDatabaseIdToRequest(d, r);
+    addDatabaseIdToRequest(datastore: Datastore, reqOpts: RequestOptions) {
+      addDatabaseIdToRequest(datastore, reqOpts);
     },
   } as {} as Datastore;
 
@@ -586,7 +587,7 @@ describe('Transaction', () => {
           },
         } as {} as TransactionOptions;
 
-        transaction.request_ = config => {
+        transaction.request_ = (config: RequestConfig) => {
           assert.deepStrictEqual(config.reqOpts, options);
           done();
         };
