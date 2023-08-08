@@ -808,6 +808,7 @@ describe('entity', () => {
     });
 
     it('should emit warning on out of bounce int', done => {
+      // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
       const largeIntValue = 9223372036854775807;
       const property = 'largeInt';
       const expectedWarning =
