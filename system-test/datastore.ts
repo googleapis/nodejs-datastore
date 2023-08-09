@@ -1171,6 +1171,113 @@ describe('Datastore', () => {
         const [results] = await datastore.runAggregationQuery(aggregate);
         assert.deepStrictEqual(results, [{property_1: 23.375}]);
       });
+      it('should run an average aggregation with a list of aggregates', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.average('appearances'),
+            AggregateField.average('appearances'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [
+          {property_1: 23.375, property_2: 23.375},
+        ]);
+      });
+      it('should run an average aggregation having other filters', async () => {
+        const q = datastore
+          .createQuery('Character')
+          .filter('family', 'Stark')
+          .filter('appearances', '>=', 20);
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.average('appearances').alias('avg1'));
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{avg1: 28.166666666666668}]);
+      });
+      it('should run an average aggregate filter with an alias', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.average('appearances').alias('avg1'));
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{avg1: 23.375}]);
+      });
+      it('should do multiple average aggregations with aliases', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.average('appearances').alias('avg1'),
+            AggregateField.average('appearances').alias('avg2'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{avg1: 23.375, avg2: 23.375}]);
+      });
+      it('should run an average aggregation filter with a limit', async () => {
+        const q = datastore.createQuery('Character').limit(5);
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregation(AggregateField.average('appearances'));
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 18.2}]);
+      });
+      it('should run an average aggregate filter with a limit and an alias', async () => {
+        const q = datastore.createQuery('Character').limit(7);
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.average('appearances').alias('avg1'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{avg1: 22}]);
+      });
+      it('should run an average aggregate filter against a non-numeric property value', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.average('family').alias('avg1')]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{avg1: null}]);
+      });
+      it('should run an average aggregate filter against __key__ property value', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.average('__key__').alias('avg1')]);
+        try {
+          await datastore.runAggregationQuery(aggregate);
+        } catch (err: any) {
+          assert.strictEqual(
+            err.message,
+            '3 INVALID_ARGUMENT: Aggregations are not supported for the property: __key__'
+          );
+        }
+      });
+      it('should run an average aggregate filter against a query that returns no results', async () => {
+        const q = datastore
+          .createQuery('Character')
+          .filter('family', 'NoMatch');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.average('appearances').alias('avg1'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{avg1: null}]);
+      });
+      it('should run an average aggregate filter against a query from before the data creation', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.average('appearances').alias('avg1'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate, {
+          readTime: timeBeforeDataCreation,
+        });
+        assert.deepStrictEqual(results, [{avg1: 23.375}]);
+      });
     });
     describe('with a count filter', () => {
       it('should run a count aggregation', async () => {
