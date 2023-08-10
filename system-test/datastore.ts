@@ -26,6 +26,7 @@ import {entity} from '../src/entity';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 
 describe('Datastore', () => {
+  let timeBeforeDataCreation: number;
   const testKinds: string[] = [];
   const datastore = new Datastore({
     namespace: `${Date.now()}`,
@@ -676,12 +677,17 @@ describe('Datastore', () => {
     ];
 
     before(async () => {
+      function sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
       const keysToSave = keys.map((key, index) => {
         return {
           key,
           data: characters[index],
         };
       });
+      timeBeforeDataCreation = Date.now();
+      await sleep(1000);
       await datastore.save(keysToSave);
     });
 
@@ -702,6 +708,13 @@ describe('Datastore', () => {
         .start(info!.endCursor!);
       const [secondEntities] = await datastore.runQuery(secondQ);
       assert.strictEqual(secondEntities!.length, 3);
+    });
+
+    it('should query the datastore with snapshot read', async () => {
+      const q = datastore.createQuery('Character').hasAncestor(ancestor);
+      const options = {readTime: timeBeforeDataCreation};
+      const [entities] = await datastore.runQuery(q, options);
+      assert.strictEqual(entities!.length, 0);
     });
 
     it('should not go over a limit', async () => {
