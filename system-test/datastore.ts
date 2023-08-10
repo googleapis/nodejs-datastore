@@ -21,10 +21,9 @@ import {Datastore, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
-import {PropertyFilter, EntityFilter, and, or} from '../src/filter';
+import {PropertyFilter, and, or} from '../src/filter';
 import {entity} from '../src/entity';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
-import {GoogleError} from 'google-gax';
 
 describe('Datastore', () => {
   let timeBeforeDataCreation: number;
