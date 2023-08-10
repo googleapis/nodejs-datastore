@@ -711,6 +711,13 @@ describe('Datastore', () => {
       assert.strictEqual(secondEntities!.length, 3);
     });
 
+    it('should query the datastore with snapshot read', async () => {
+      const q = datastore.createQuery('Character').hasAncestor(ancestor);
+      const options = {readTime: timeBeforeDataCreation};
+      const [entities] = await datastore.runQuery(q, options);
+      assert.strictEqual(entities!.length, 0);
+    });
+
     it('should not go over a limit', async () => {
       const limit = 3;
       const q = datastore
@@ -1023,7 +1030,6 @@ describe('Datastore', () => {
         const [results] = await datastore.runAggregationQuery(aggregate);
         assert.deepStrictEqual(results, [{sum1: 154}]);
       });
-      // TODO: Add these tests to average
       it('should run a sum aggregate filter against a non-numeric property value', async () => {
         const q = datastore.createQuery('Character');
         const aggregate = datastore

@@ -891,11 +891,24 @@ class DatastoreRequest {
     query: Query,
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
+    // TODO: This needs to be refactored later:
+    // TODO: Create a separate function (getSharedOptionsOnly) that only accepts options as a parameter and do two the first two if statements in it
+    // TODO: Call getSharedOptionsOnly here and in makeRequest in createReadStream
     const sharedQueryOpts = {} as SharedQueryOptions;
     if (options.consistency) {
       const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
       sharedQueryOpts.readOptions = {
         readConsistency: code,
+      };
+    }
+    if (options.readTime) {
+      if (sharedQueryOpts.readOptions === undefined) {
+        sharedQueryOpts.readOptions = {};
+      }
+      const readTime = options.readTime;
+      const seconds = readTime / 1000;
+      sharedQueryOpts.readOptions.readTime = {
+        seconds: Math.floor(seconds),
       };
     }
     if (query.namespace) {
