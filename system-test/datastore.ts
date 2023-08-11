@@ -1044,6 +1044,7 @@ describe('Datastore', () => {
           .addAggregations([AggregateField.sum('__key__').alias('sum1')]);
         try {
           await datastore.runAggregationQuery(aggregate);
+          assert.fail('The request should have failed.');
         } catch (err: any) {
           assert.strictEqual(
             err.message,
@@ -1157,6 +1158,7 @@ describe('Datastore', () => {
           .addAggregations([AggregateField.average('__key__').alias('avg1')]);
         try {
           await datastore.runAggregationQuery(aggregate);
+          assert.fail('The request should have failed.');
         } catch (err: any) {
           assert.strictEqual(
             err.message,
