@@ -1115,7 +1115,7 @@ export interface ConsistencyProtoCode {
 }
 export type AllocateIdsResponse = [
   entity.Key[],
-  google.datastore.v1.IAllocateIdsResponse
+  google.datastore.v1.IAllocateIdsResponse,
 ];
 export interface AllocateIdsCallback {
   (
