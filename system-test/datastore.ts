@@ -1381,12 +1381,14 @@ describe('Datastore', () => {
       {
         name: 'Rickard',
         family: 'Stark',
+        // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
         appearances: 9223372036854775807,
         alive: false,
       },
       {
         name: 'Eddard',
         family: 'Stark',
+        // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
         appearances: 9223372036854775807,
         alive: false,
       },
