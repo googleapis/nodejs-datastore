@@ -1070,7 +1070,7 @@ describe('Datastore', () => {
         const [results] = await datastore.runAggregationQuery(aggregate, {
           readTime: timeBeforeDataCreation,
         });
-        assert.deepStrictEqual(results, [{sum1: 187}]);
+        assert.deepStrictEqual(results, [{sum1: 0}]);
       });
       it('should run a sum aggregation with a list of aggregates', async () => {
         const q = datastore.createQuery('Character');
@@ -1281,7 +1281,7 @@ describe('Datastore', () => {
         const [results] = await datastore.runAggregationQuery(aggregate, {
           readTime: timeBeforeDataCreation,
         });
-        assert.deepStrictEqual(results, [{avg1: 23.375}]);
+        assert.deepStrictEqual(results, [{avg1: null}]);
       });
     });
     describe('with a count filter', () => {
