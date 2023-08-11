@@ -1598,9 +1598,9 @@ describe('Datastore', () => {
         const query = transaction.createQuery('Company');
         const aggregateQuery = transaction
           .createAggregationQuery(query)
-          .sum('appearances', 'total appearances');
+          .sum('rating', 'total rating');
         const [result] = await aggregateQuery.run();
-        assert.deepStrictEqual(result, [{'total appearances': 0}]);
+        assert.deepStrictEqual(result, [{'total rating': 200}]);
         await transaction.commit();
       });
       it('should aggregate query within a average transaction', async () => {
@@ -1609,9 +1609,9 @@ describe('Datastore', () => {
         const query = transaction.createQuery('Company');
         const aggregateQuery = transaction
           .createAggregationQuery(query)
-          .average('appearances', 'average appearances');
+          .average('rating', 'average rating');
         const [result] = await aggregateQuery.run();
-        assert.deepStrictEqual(result, [{'average appearances': null}]);
+        assert.deepStrictEqual(result, [{'average rating': 100}]);
         await transaction.commit();
       });
     });
