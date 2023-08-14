@@ -89,8 +89,8 @@ describe('Request', () => {
     v1FakeClientOverride = null;
     request = new Request();
     request.datastore = {
-      addDatabaseIdToRequest(d: any, r: any) {
-        addDatabaseIdToRequest(d, r);
+      addDatabaseIdToRequest(datastore: ds.Datastore, reqOpts: RequestOptions) {
+        addDatabaseIdToRequest(datastore, reqOpts);
       },
     };
   });
@@ -1631,8 +1631,11 @@ describe('Request', () => {
             callback(null, PROJECT_ID);
           },
         },
-        addDatabaseIdToRequest(d: any, r: any) {
-          addDatabaseIdToRequest(d, r);
+        addDatabaseIdToRequest(
+          datastore: ds.Datastore,
+          reqOpts: RequestOptions
+        ) {
+          addDatabaseIdToRequest(datastore, reqOpts);
         },
       };
     });
