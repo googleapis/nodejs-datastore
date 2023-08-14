@@ -8,13 +8,13 @@
   ],
   "repository": "googleapis/nodejs-datastore",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "scripts": {
     "test": "mocha --timeout=600000"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^7.5.1",
+    "@google-cloud/datastore": "^8.0.0",
     "sinon": "^15.0.0"
   },
   "devDependencies": {
