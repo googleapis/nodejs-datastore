@@ -363,26 +363,30 @@ describe('Datastore', () => {
       });
       it('should ensure save respects the databaseId parameter per key', async () => {
         // First write entities to the database by specifying the database in the key
+        interface DatastoreData {
+          key: entity.Key;
+          data: any;
+        }
         const otherDatastore = new Datastore({
           namespace: `${Date.now()}`,
           databaseId: SECOND_DATABASE_ID,
         });
         const dataD1 = Object.assign({}, post);
         dataD1.author = 'D1';
-        const dataS1 = Object.assign({}, post);
-        dataS1.author = 'S1';
-        const dataS2 = Object.assign({}, post);
-        dataS2.author = 'S2';
-        const dataS3 = Object.assign({}, post);
-        dataS3.author = 'S3';
+        const secondaryIndices = [1, 2, 3];
+        const secondaryData: DatastoreData[] = secondaryIndices.map(number => {
+          const authorName = 'secondary author ' + number.toString();
+          const keyName = 'secondary key ' + number.toString();
+          const postData = Object.assign({}, post);
+          postData.author = authorName;
+          return {key: otherDatastore.key(['Post', keyName]), data: postData};
+        });
         const postKeyDefault1 = datastore.key(['Post', 'postD1']);
-        const postKeySecondary1 = otherDatastore.key(['Post', 'postS1']);
-        const postKeySecondary2 = otherDatastore.key(['Post', 'postS2']);
-        const postKeySecondary3 = otherDatastore.key(['Post', 'postS3']);
         await datastore.save({key: postKeyDefault1, data: dataD1});
-        await otherDatastore.save({key: postKeySecondary1, data: dataS1});
-        await otherDatastore.save({key: postKeySecondary2, data: dataS2});
-        await otherDatastore.save({key: postKeySecondary3, data: dataS3});
+        // Save all data to the secondary database
+        await Promise.all(
+          secondaryData.map(async datum => otherDatastore.save(datum))
+        );
         // Next, ensure that the default database has the right records
         const query = datastore
           .createQuery('Post')
@@ -391,35 +395,21 @@ describe('Datastore', () => {
         assert.strictEqual(defaultDatastoreResults.length, 1);
         assert.strictEqual(defaultDatastoreResults[0].author, 'D1');
         // Next, ensure that the other database has the right records
-        const queryS1 = otherDatastore
-          .createQuery('Post')
-          .hasAncestor(postKeySecondary1);
-        const [secondDatastoreResults1] = await otherDatastore.runQuery(
-          queryS1
+        await Promise.all(
+          secondaryData.map(async datum => {
+            const query = otherDatastore
+              .createQuery('Post')
+              .hasAncestor(datum.key);
+            const [results] = await otherDatastore.runQuery(query);
+            assert.strictEqual(results.length, 1);
+            assert.strictEqual(results[0].author, datum.data.author);
+          })
         );
-        assert.strictEqual(secondDatastoreResults1.length, 1);
-        assert.strictEqual(secondDatastoreResults1[0].author, 'S1');
-        const queryS2 = otherDatastore
-          .createQuery('Post')
-          .hasAncestor(postKeySecondary2);
-        const [secondDatastoreResults2] = await otherDatastore.runQuery(
-          queryS2
-        );
-        assert.strictEqual(secondDatastoreResults2.length, 1);
-        assert.strictEqual(secondDatastoreResults2[0].author, 'S2');
-        const queryS3 = otherDatastore
-          .createQuery('Post')
-          .hasAncestor(postKeySecondary3);
-        const [secondDatastoreResults3] = await otherDatastore.runQuery(
-          queryS3
-        );
-        assert.strictEqual(secondDatastoreResults3.length, 1);
-        assert.strictEqual(secondDatastoreResults3[0].author, 'S3');
         // Cleanup
         await datastore.delete(postKeyDefault1);
-        await otherDatastore.delete(postKeySecondary1);
-        await otherDatastore.delete(postKeySecondary2);
-        await otherDatastore.delete(postKeySecondary3);
+        await Promise.all(
+          secondaryData.map(datum => otherDatastore.delete(datum.key))
+        );
       });
     });
 
