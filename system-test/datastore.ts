@@ -315,9 +315,10 @@ describe('Datastore', () => {
     });
 
     describe('multi-db support for read and write operations', () => {
+      const keyHierarchy = ['Post', 'post1'];
       it('should run a query with another database', async () => {
         // First verify that a record gets written to datastore
-        const postKey = datastore.key(['Post', 'post1']);
+        const postKey = datastore.key(keyHierarchy);
         await datastore.save({key: postKey, data: post});
         const query = datastore.createQuery('Post').hasAncestor(postKey);
         const [defaultDatastoreResults] = await datastore.runQuery(query);
@@ -338,7 +339,7 @@ describe('Datastore', () => {
       });
       it('should ensure save works with another database', async () => {
         // First verify that the default database is empty
-        const postKey = datastore.key(['Post', 'post1']);
+        const postKey = datastore.key(keyHierarchy);
         const query = datastore.createQuery('Post').hasAncestor(postKey);
         const [defaultDatastoreResults] = await datastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 0);
