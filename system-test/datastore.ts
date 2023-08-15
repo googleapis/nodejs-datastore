@@ -374,8 +374,8 @@ describe('Datastore', () => {
         const defaultAuthor = 'default database author';
         const defaultData = Object.assign({}, post);
         defaultData.author = defaultAuthor;
-        const postKeyDefault1 = datastore.key(['Post', 'post key 1']);
-        await datastore.save({key: postKeyDefault1, data: defaultData});
+        const defaultPostKey = datastore.key(['Post', 'default post key']);
+        await datastore.save({key: defaultPostKey, data: defaultData});
         // Save all data to the secondary database
         const secondaryIndices = [1, 2, 3];
         const secondaryData: DatastoreData[] = secondaryIndices.map(number => {
@@ -392,9 +392,7 @@ describe('Datastore', () => {
           secondaryData.map(async datum => secondaryDatastore.save(datum))
         );
         // Next, ensure that the default database has the right records
-        const query = datastore
-          .createQuery('Post')
-          .hasAncestor(postKeyDefault1);
+        const query = datastore.createQuery('Post').hasAncestor(defaultPostKey);
         const [defaultDatastoreResults] = await datastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 1);
         assert.strictEqual(defaultDatastoreResults[0].author, defaultAuthor);
@@ -410,7 +408,7 @@ describe('Datastore', () => {
           })
         );
         // Cleanup
-        await datastore.delete(postKeyDefault1);
+        await datastore.delete(defaultPostKey);
         await Promise.all(
           secondaryData.map(datum => secondaryDatastore.delete(datum.key))
         );
