@@ -362,30 +362,34 @@ describe('Datastore', () => {
         await otherDatastore.delete(postKey);
       });
       it('should ensure save respects the databaseId parameter per key', async () => {
-        // First write entities to the database by specifying the database in the key
         interface DatastoreData {
           key: entity.Key;
           data: any;
         }
-        const otherDatastore = new Datastore({
+        const secondaryDatastore = new Datastore({
           namespace: `${Date.now()}`,
           databaseId: SECOND_DATABASE_ID,
         });
-        const dataD1 = Object.assign({}, post);
-        dataD1.author = 'D1';
+        // Save all data to the default database
+        const defaultAuthor = 'default database author';
+        const defaultData = Object.assign({}, post);
+        defaultData.author = defaultAuthor;
+        const postKeyDefault1 = datastore.key(['Post', 'post key 1']);
+        await datastore.save({key: postKeyDefault1, data: defaultData});
+        // Save all data to the secondary database
         const secondaryIndices = [1, 2, 3];
         const secondaryData: DatastoreData[] = secondaryIndices.map(number => {
           const authorName = 'secondary author ' + number.toString();
           const keyName = 'secondary key ' + number.toString();
           const postData = Object.assign({}, post);
           postData.author = authorName;
-          return {key: otherDatastore.key(['Post', keyName]), data: postData};
+          return {
+            key: secondaryDatastore.key(['Post', keyName]),
+            data: postData,
+          };
         });
-        const postKeyDefault1 = datastore.key(['Post', 'postD1']);
-        await datastore.save({key: postKeyDefault1, data: dataD1});
-        // Save all data to the secondary database
         await Promise.all(
-          secondaryData.map(async datum => otherDatastore.save(datum))
+          secondaryData.map(async datum => secondaryDatastore.save(datum))
         );
         // Next, ensure that the default database has the right records
         const query = datastore
@@ -393,14 +397,14 @@ describe('Datastore', () => {
           .hasAncestor(postKeyDefault1);
         const [defaultDatastoreResults] = await datastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 1);
-        assert.strictEqual(defaultDatastoreResults[0].author, 'D1');
+        assert.strictEqual(defaultDatastoreResults[0].author, defaultAuthor);
         // Next, ensure that the other database has the right records
         await Promise.all(
           secondaryData.map(async datum => {
-            const query = otherDatastore
+            const query = secondaryDatastore
               .createQuery('Post')
               .hasAncestor(datum.key);
-            const [results] = await otherDatastore.runQuery(query);
+            const [results] = await secondaryDatastore.runQuery(query);
             assert.strictEqual(results.length, 1);
             assert.strictEqual(results[0].author, datum.data.author);
           })
@@ -408,7 +412,7 @@ describe('Datastore', () => {
         // Cleanup
         await datastore.delete(postKeyDefault1);
         await Promise.all(
-          secondaryData.map(datum => otherDatastore.delete(datum.key))
+          secondaryData.map(datum => secondaryDatastore.delete(datum.key))
         );
       });
     });
