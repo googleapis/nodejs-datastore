@@ -1602,7 +1602,13 @@ describe('Datastore', () => {
         const aggregateQuery = transaction
           .createAggregationQuery(query)
           .sum('rating', 'total rating');
-        const [result] = await aggregateQuery.run();
+        let result;
+        try {
+          [result] = await aggregateQuery.run();
+        } catch (e) {
+          await transaction.rollback();
+          assert.fail('The aggregation query run should have been successful');
+        }
         assert.deepStrictEqual(result, [{'total rating': 200}]);
         await transaction.commit();
       });
@@ -1613,7 +1619,13 @@ describe('Datastore', () => {
         const aggregateQuery = transaction
           .createAggregationQuery(query)
           .average('rating', 'average rating');
-        const [result] = await aggregateQuery.run();
+        let result;
+        try {
+          [result] = await aggregateQuery.run();
+        } catch (e) {
+          await transaction.rollback();
+          assert.fail('The aggregation query run should have been successful');
+        }
         assert.deepStrictEqual(result, [{'average rating': 100}]);
         await transaction.commit();
       });
