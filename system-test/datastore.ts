@@ -1014,6 +1014,7 @@ describe('Datastore', () => {
         assert.deepStrictEqual(results, [{sum1: 187, sum2: 187}]);
       });
       it('should run a sum aggregation filter with a limit', async () => {
+        // When using a limit the test appears to use data points with the lowest appearance values.
         const q = datastore.createQuery('Character').limit(5);
         const aggregate = datastore
           .createAggregationQuery(q)
