@@ -276,28 +276,8 @@ class DatastoreRequest {
     }
 
     const makeRequest = (keys: entity.Key[] | KeyProto[]) => {
-      const reqOpts: RequestOptions = {
-        keys,
-      };
-
-      if (options.consistency) {
-        const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
-
-        reqOpts.readOptions = {
-          readConsistency: code,
-        };
-      }
-      if (options.readTime) {
-        if (reqOpts.readOptions === undefined) {
-          reqOpts.readOptions = {};
-        }
-        const readTime = options.readTime;
-        const seconds = readTime / 1000;
-        reqOpts.readOptions.readTime = {
-          seconds: Math.floor(seconds),
-        };
-      }
-
+      const reqOpts = this.getSharedOptionsOnly(options);
+      Object.assign(reqOpts, {keys});
       this.request_(
         {
           client: 'DatastoreClient',
@@ -887,13 +867,9 @@ class DatastoreRequest {
     return stream;
   }
 
-  private getSharedQueryOptions(
-    query: Query,
-    options: RunQueryStreamOptions = {}
+  private getSharedOptionsOnly(
+    options: RunQueryStreamOptions
   ): SharedQueryOptions {
-    // TODO: This needs to be refactored later:
-    // TODO: Create a separate function (getSharedOptionsOnly) that only accepts options as a parameter and do two the first two if statements in it
-    // TODO: Call getSharedOptionsOnly here and in makeRequest in createReadStream
     const sharedQueryOpts = {} as SharedQueryOptions;
     if (options.consistency) {
       const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
@@ -911,6 +887,14 @@ class DatastoreRequest {
         seconds: Math.floor(seconds),
       };
     }
+    return sharedQueryOpts;
+  }
+
+  private getSharedQueryOptions(
+    query: Query,
+    options: RunQueryStreamOptions = {}
+  ): SharedQueryOptions {
+    const sharedQueryOpts = this.getSharedOptionsOnly(options);
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
         namespaceId: query.namespace,
@@ -1204,7 +1188,7 @@ export type DeleteResponse = CommitResponse;
  * that a callback is omitted.
  */
 promisifyAll(DatastoreRequest, {
-  exclude: ['getSharedQueryOptions'],
+  exclude: ['getSharedOptionsOnly', 'getSharedQueryOptions'],
 });
 
 /**
