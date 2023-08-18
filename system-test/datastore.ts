@@ -1249,6 +1249,22 @@ describe('Datastore', () => {
         assert.deepStrictEqual(results, [{total: 7}]);
       });
     });
+    describe('with multiple types of filters', () => {
+      it('should run multiple types of aggregations with a list of aggregates', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.count(),
+            AggregateField.sum('appearances'),
+            AggregateField.average('appearances'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [
+          {property_1: 8, property_2: 187, property_3: 23.375},
+        ]);
+      });
+    });
     it('should filter by ancestor', async () => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
       const [entities] = await datastore.runQuery(q);
