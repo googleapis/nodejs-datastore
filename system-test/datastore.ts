@@ -1417,7 +1417,7 @@ describe('Datastore', () => {
     after(async () => {
       await datastore.delete(keys);
     });
-    it('should run a sum aggregation', async () => {
+    it('should run a sum aggregation with an overflow dataset', async () => {
       const q = datastore.createQuery('Character');
       const aggregate = datastore
         .createAggregationQuery(q)
@@ -1425,7 +1425,7 @@ describe('Datastore', () => {
       const [results] = await datastore.runAggregationQuery(aggregate);
       assert.deepStrictEqual(results, [{property_1: -18446744073709552000}]);
     });
-    it('should run an average aggregation', async () => {
+    it('should run an average aggregation with an overflow dataset', async () => {
       const q = datastore.createQuery('Character');
       const aggregate = datastore
         .createAggregationQuery(q)
