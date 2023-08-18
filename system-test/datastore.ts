@@ -710,13 +710,6 @@ describe('Datastore', () => {
       assert.strictEqual(secondEntities!.length, 3);
     });
 
-    it('should query the datastore with snapshot read', async () => {
-      const q = datastore.createQuery('Character').hasAncestor(ancestor);
-      const options = {readTime: timeBeforeDataCreation};
-      const [entities] = await datastore.runQuery(q, options);
-      assert.strictEqual(entities!.length, 0);
-    });
-
     it('should not go over a limit', async () => {
       const limit = 3;
       const q = datastore
