@@ -316,7 +316,7 @@ describe('Datastore', () => {
 
     describe('multi-db support for read and write operations', () => {
       const keyHierarchy = ['Post', 'post1'];
-      it.only('should run a query with another database', async () => {
+      it('should run a query with another database', async () => {
         // First verify that a record gets written to datastore
         const postKey = datastore.key(keyHierarchy);
         await datastore.save({key: postKey, data: post});
