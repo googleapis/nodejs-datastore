@@ -1131,7 +1131,48 @@ describe('Datastore', () => {
   });
 
   describe('transactions', () => {
+    it.only('should run in a transaction', async () => {
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      const transaction = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      printTimeElasped('Before begin transaction');
+      await transaction.run();
+      printTimeElasped('After begin transaction');
+      await transaction.get(key);
+      printTimeElasped('After fetch');
+      transaction.save({key, data: obj});
+      printTimeElasped('After save');
+      await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      delete entity[datastore.KEY];
+      assert.deepStrictEqual(entity, obj);
+    });
+
+    /*
     it('should run in a transaction', async () => {
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      const transaction = datastore.transaction();
+      await transaction.run();
+      await transaction.get(key);
+      transaction.save({key, data: obj});
+      await transaction.commit();
+      const [entity] = await datastore.get(key);
+      delete entity[datastore.KEY];
+      assert.deepStrictEqual(entity, obj);
+    });
+    */
+
+    it('should run in a transaction with transaction begin', async () => {
       const key = datastore.key(['Company', 'Google']);
       const obj = {
         url: 'www.google.com',
