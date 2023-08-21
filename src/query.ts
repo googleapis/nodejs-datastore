@@ -22,6 +22,7 @@ import {EntityFilter, isFilter, AllowedFilterValueType} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
+import {google} from '../protos/protos';
 
 export type Operator =
   | '='
@@ -600,6 +601,7 @@ export interface RunQueryOptions {
   readTime?: number;
   gaxOptions?: CallOptions;
   wrapNumbers?: boolean | IntegerTypeCastOptions;
+  newTransaction?: google.datastore.v1.ITransactionOptions | null;
 }
 
 export interface RunQueryCallback {

@@ -297,6 +297,12 @@ class DatastoreRequest {
           seconds: Math.floor(seconds),
         };
       }
+      if (options.newTransaction) {
+        if (reqOpts.readOptions === undefined) {
+          reqOpts.readOptions = {};
+        }
+        reqOpts.readOptions.newTransaction = options.newTransaction;
+      }
 
       this.request_(
         {
@@ -1149,6 +1155,7 @@ export interface SharedQueryOptions {
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {
+    newTransaction?: google.datastore.v1.ITransactionOptions | null;
     readConsistency?: number;
     transaction?: string;
     readTime?: ITimestamp;

@@ -24,6 +24,7 @@ import {AggregateField} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, and, or} from '../src/filter';
 import {entity} from '../src/entity';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
+import {RunQueryOptions} from '../src/query';
 
 describe('Datastore', () => {
   const testKinds: string[] = [];
@@ -1131,7 +1132,7 @@ describe('Datastore', () => {
   });
 
   describe('transactions', () => {
-    it.only('should run in a transaction', async () => {
+    it('should run in a transaction', async () => {
       const key = datastore.key(['Company', 'Google']);
       const obj = {
         url: 'www.google.com',
@@ -1148,11 +1149,49 @@ describe('Datastore', () => {
       printTimeElasped('After fetch');
       transaction.save({key, data: obj});
       printTimeElasped('After save');
-      await transaction.commit();
+      const committedResults = await transaction.commit();
       printTimeElasped('After commit');
       const [entity] = await datastore.get(key);
       delete entity[datastore.KEY];
       assert.deepStrictEqual(entity, obj);
+    });
+
+    async function getTransactionId(options?: RunQueryOptions) {
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      const transaction = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      printTimeElasped('Before begin transaction');
+      await transaction.run();
+      printTimeElasped('After begin transaction');
+      await transaction.get(key, options);
+      printTimeElasped('After fetch');
+      transaction.save({key, data: obj});
+      printTimeElasped('After save');
+      const committedResults = await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      delete entity[datastore.KEY];
+      return transaction.id;
+    }
+
+    it.only('should run in a transaction with second transaction', async () => {
+      const id = await getTransactionId();
+      if (id) {
+        console.log(id.toString());
+      }
+      await getTransactionId({
+        newTransaction: {
+          readWrite: {
+            previousTransaction: id,
+          },
+        },
+      });
     });
 
     /*
