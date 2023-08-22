@@ -1156,7 +1156,10 @@ describe('Datastore', () => {
       assert.deepStrictEqual(entity, obj);
     });
 
-    async function getTransactionId(options?: RunQueryOptions) {
+    async function getTransactionId(
+      options?: RunQueryOptions,
+      options2?: RunQueryOptions
+    ) {
       const key = datastore.key(['Company', 'Google']);
       const obj = {
         url: 'www.google.com',
@@ -1170,7 +1173,9 @@ describe('Datastore', () => {
       await transaction.run();
       printTimeElasped('After begin transaction');
       await transaction.get(key, options);
-      printTimeElasped('After fetch');
+      printTimeElasped('After fetch 1');
+      await transaction.get(key, options2);
+      printTimeElasped('After fetch 2');
       transaction.save({key, data: obj});
       printTimeElasped('After save');
       const committedResults = await transaction.commit();
@@ -1185,13 +1190,25 @@ describe('Datastore', () => {
       if (id) {
         console.log(id.toString());
       }
-      await getTransactionId({
+      const id2 = await getTransactionId();
+      if (id2) {
+        console.log(id2.toString());
+      }
+      const options = {
         newTransaction: {
           readWrite: {
             previousTransaction: id,
           },
         },
-      });
+      };
+      const options2 = {
+        newTransaction: {
+          readWrite: {
+            previousTransaction: id2,
+          },
+        },
+      };
+      await getTransactionId(options, options2);
     });
 
     /*
