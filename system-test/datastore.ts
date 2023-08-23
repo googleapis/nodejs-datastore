@@ -1156,6 +1156,109 @@ describe('Datastore', () => {
       assert.deepStrictEqual(entity, obj);
     });
 
+    it('should run without begin transaction in a transaction', async () => {
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      const transaction = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      printTimeElasped('Before begin transaction');
+      printTimeElasped('After begin transaction');
+      await transaction.get(key);
+      printTimeElasped('After fetch');
+      transaction.save({key, data: obj});
+      printTimeElasped('After save');
+      const committedResults = await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      delete entity[datastore.KEY];
+      assert.deepStrictEqual(entity, obj);
+    });
+
+    it('should run without begin transaction and also new transaction with previous txn that doesnt exist yet', async () => {
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      const transaction = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      const options = {
+        newTransaction: {
+          readWrite: {
+            previousTransaction: Buffer.from('734'),
+          },
+        },
+      };
+      // const options = {};
+      printTimeElasped('Before begin transaction');
+      printTimeElasped('After begin transaction');
+      await transaction.get(key, options);
+      printTimeElasped('After fetch');
+      const committedResults = await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      // delete entity[datastore.KEY];
+      assert.deepStrictEqual(entity, obj);
+    });
+
+    it.only('should run with begin transaction and also new transaction with an existing transaction', async () => {
+      Before begin transaction: 0
+      After begin transaction: 3102
+      After fetch: 3362
+      After save: 3362
+      After commit: 3471
+      Before begin transaction: 3572
+      After begin transaction: 3572
+      After fetch: 3671
+      After commit: 3787
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      // First do a transaction so that we have an id to provide in the next transaction
+      const transaction1 = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      printTimeElasped('Before begin transaction');
+      await transaction1.run();
+      printTimeElasped('After begin transaction');
+      await transaction1.get(key);
+      printTimeElasped('After fetch');
+      transaction1.save({key, data: obj});
+      printTimeElasped('After save');
+      const committedResults1 = await transaction1.commit();
+      printTimeElasped('After commit');
+      const [entity1] = await datastore.get(key);
+      delete entity1[datastore.KEY];
+      // Do a second transaction where we provide the id from the first transaction in the second transaction
+      const transaction = datastore.transaction();
+      const options = {
+        newTransaction: {
+          readWrite: {
+            previousTransaction: transaction.id,
+          },
+        },
+      };
+      printTimeElasped('Before begin transaction');
+      printTimeElasped('After begin transaction');
+      await transaction.get(key, options);
+      printTimeElasped('After fetch');
+      const committedResults = await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      // delete entity[datastore.KEY];
+      // assert.deepStrictEqual(entity, obj);
+    });
+
     async function getTransactionId(
       options?: RunQueryOptions,
       options2?: RunQueryOptions,
@@ -1177,7 +1280,7 @@ describe('Datastore', () => {
       return transaction.id;
     }
 
-    it.only('should run previous transaction in a transaction', async () => {
+    it('should run previous transaction in a transaction', async () => {
       const key = datastore.key(['Company', 'Google']);
       const obj = {
         url: 'test',
