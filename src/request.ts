@@ -1012,6 +1012,7 @@ class DatastoreRequest {
         );
       }
 
+      // TODO: Perhaps we should add more read options here (newTransaction, readTime)
       reqOpts.readOptions = {
         transaction: this.id,
       };

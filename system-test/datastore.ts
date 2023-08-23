@@ -1182,7 +1182,12 @@ describe('Datastore', () => {
       const obj = {
         url: 'test',
       };
-      datastore.save({key, data: obj});
+      await datastore.save({key, data: obj});
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      printTimeElasped('Before begin transaction');
       const transaction = datastore.transaction();
       await transaction.run();
       const options = {
@@ -1194,6 +1199,7 @@ describe('Datastore', () => {
       };
       const results = await transaction.get(key, options);
       await transaction.commit();
+      printTimeElasped('After commit');
       console.log(results);
     });
 
