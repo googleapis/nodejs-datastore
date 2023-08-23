@@ -1013,9 +1013,18 @@ class DatastoreRequest {
       }
 
       // TODO: Perhaps we should add more read options here (newTransaction, readTime)
+      if (reqOpts.readOptions) {
+        Object.assign(reqOpts.readOptions, {transaction: this.id});
+      } else {
+        reqOpts.readOptions = {
+          transaction: this.id,
+        };
+      }
+      /*
       reqOpts.readOptions = {
         transaction: this.id,
       };
+       */
     }
 
     datastore.auth.getProjectId((err, projectId) => {
