@@ -1230,6 +1230,53 @@ describe('Datastore', () => {
       assert.deepStrictEqual(entity, obj);
     });
 
+    it.only('should run two transactions in a row', async () => {
+      /*
+        24cc5967ecd2fe3809a33fdf81b4852893b87885
+        Before begin transaction: 0
+        After begin transaction: 3001
+        After fetch: 3108
+        After save: 3109
+        After commit: 3221
+        Before begin transaction: 3306
+        After begin transaction: 3306
+        After fetch: 3419
+        After commit: 3478
+       */
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      // First do a transaction so that we have an id to provide in the next transaction
+      const transaction1 = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      printTimeElasped('Before begin transaction');
+      await transaction1.run();
+      printTimeElasped('After begin transaction');
+      await transaction1.get(key);
+      printTimeElasped('After fetch');
+      transaction1.save({key, data: obj});
+      printTimeElasped('After save');
+      const committedResults1 = await transaction1.commit();
+      printTimeElasped('After commit');
+      const [entity1] = await datastore.get(key);
+      delete entity1[datastore.KEY];
+      // Do a second transaction where we provide the id from the first transaction in the second transaction
+      const transaction = datastore.transaction();
+      printTimeElasped('Before begin transaction');
+      printTimeElasped('After begin transaction');
+      await transaction.get(key);
+      printTimeElasped('After fetch');
+      const committedResults = await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      // delete entity[datastore.KEY];
+      // assert.deepStrictEqual(entity, obj);
+    });
+
     it('should run without begin transaction and also new transaction with an existing transaction', async () => {
       /*
       2c30626d18eca5fffd28214cebfe2ce4370353fe
@@ -1242,6 +1289,16 @@ describe('Datastore', () => {
       After begin transaction: 3572
       After fetch: 3671
       After commit: 3787
+      24cc5967ecd2fe3809a33fdf81b4852893b87885
+      Before begin transaction: 0
+      After begin transaction: 3176
+      After fetch: 3271
+      After save: 3271
+      After commit: 3387
+      Before begin transaction: 3488
+      After begin transaction: 3488
+      After fetch: 3602
+      After commit: 3684
       */
       const key = datastore.key(['Company', 'Google']);
       const obj = {
@@ -1284,7 +1341,7 @@ describe('Datastore', () => {
       // assert.deepStrictEqual(entity, obj);
     });
 
-    it.only('should run with begin transaction and also new transaction with an existing transaction', async () => {
+    it('should run with begin transaction and also new transaction with an existing transaction', async () => {
       /*
       2c30626d18eca5fffd28214cebfe2ce4370353fe
       Before begin transaction: 0
@@ -1296,6 +1353,16 @@ describe('Datastore', () => {
       After begin transaction: 3377
       After fetch: 3567
       After commit: 3639
+      24cc5967ecd2fe3809a33fdf81b4852893b87885
+      Before begin transaction: 0
+      After begin transaction: 3814
+      After fetch: 3905
+      After save: 3906
+      After commit: 4033
+      Before begin transaction: 4115
+      After begin transaction: 4228
+      After fetch: 4301
+      After commit: 4416
       */
       const key = datastore.key(['Company', 'Google']);
       const obj = {
