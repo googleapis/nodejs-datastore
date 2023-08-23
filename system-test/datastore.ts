@@ -1269,7 +1269,7 @@ describe('Datastore', () => {
       const options = {
         newTransaction: {
           readWrite: {
-            previousTransaction: transaction.id,
+            previousTransaction: transaction1.id,
           },
         },
       };
@@ -1323,7 +1323,7 @@ describe('Datastore', () => {
       const options = {
         newTransaction: {
           readWrite: {
-            previousTransaction: transaction.id,
+            previousTransaction: transaction1.id,
           },
         },
       };
