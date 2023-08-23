@@ -1158,34 +1158,46 @@ describe('Datastore', () => {
 
     async function getTransactionId(
       options?: RunQueryOptions,
-      options2?: RunQueryOptions
+      options2?: RunQueryOptions,
+      urlParam?: string
     ) {
+      const url = urlParam ?? 'www.google.com';
       const key = datastore.key(['Company', 'Google']);
       const obj = {
-        url: 'www.google.com',
+        url,
       };
       const transaction = datastore.transaction();
-      const startTime = new Date().getTime();
-      function printTimeElasped(label: string) {
-        console.log(`${label}: ${new Date().getTime() - startTime}`);
-      }
-      printTimeElasped('Before begin transaction');
       await transaction.run();
-      printTimeElasped('After begin transaction');
-      await transaction.get(key, options);
-      printTimeElasped('After fetch 1');
-      await transaction.get(key, options2);
-      printTimeElasped('After fetch 2');
+      const results1 = await transaction.get(key, options);
+      const results2 = await transaction.get(key, options2);
       transaction.save({key, data: obj});
-      printTimeElasped('After save');
-      const committedResults = await transaction.commit();
-      printTimeElasped('After commit');
+      await transaction.commit();
       const [entity] = await datastore.get(key);
       delete entity[datastore.KEY];
       return transaction.id;
     }
 
-    it.only('should run in a transaction with second transaction', async () => {
+    it.only('should run previous transaction in a transaction', async () => {
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'test',
+      };
+      datastore.save({key, data: obj});
+      const transaction = datastore.transaction();
+      await transaction.run();
+      const options = {
+        newTransaction: {
+          readWrite: {
+            previousTransaction: Buffer.from('734'),
+          },
+        },
+      };
+      const results = await transaction.get(key, options);
+      await transaction.commit();
+      console.log(results);
+    });
+
+    it('should run in a transaction with second transaction', async () => {
       const id = await getTransactionId();
       if (id) {
         console.log(id.toString());
@@ -1209,6 +1221,36 @@ describe('Datastore', () => {
         },
       };
       await getTransactionId(options, options2);
+    });
+
+    it('should run in a transaction with second transaction and compare results', async () => {
+      const id = await getTransactionId(undefined, undefined, 'url1');
+      if (id) {
+        console.log(id.toString());
+      }
+      const id2 = await getTransactionId(undefined, undefined, 'url2');
+      if (id2) {
+        console.log(id2.toString());
+      }
+      const options = {
+        newTransaction: {
+          readWrite: {
+            previousTransaction: id,
+          },
+        },
+      };
+      await getTransactionId(options);
+    });
+
+    it('should run when previous transaction is some non-existent transaction', async () => {
+      const options = {
+        newTransaction: {
+          readWrite: {
+            previousTransaction: Buffer.from('734'), // Create some random buffer here
+          },
+        },
+      };
+      await getTransactionId(options);
     });
 
     /*
