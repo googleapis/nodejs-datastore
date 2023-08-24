@@ -1195,6 +1195,39 @@ describe('Datastore', () => {
       assert.deepStrictEqual(entity, obj);
     });
 
+    it('should run without begin transaction and new transaction options', async () => {
+      /*
+      Before begin transaction: 0
+      After begin transaction: 0
+      After fetch: 2928
+      After save: 2929
+      After commit: 3140
+      */
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com',
+      };
+      const transaction = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      const options = {
+        newTransaction: {},
+      };
+      printTimeElasped('Before begin transaction');
+      printTimeElasped('After begin transaction');
+      await transaction.get(key, options);
+      printTimeElasped('After fetch');
+      transaction.save({key, data: obj});
+      printTimeElasped('After save');
+      const committedResults = await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      delete entity[datastore.KEY];
+      assert.deepStrictEqual(entity, obj);
+    });
+
     it('should run without begin transaction and also new transaction with previous txn that doesnt exist yet', async () => {
       /*
       2c30626d18eca5fffd28214cebfe2ce4370353fe
@@ -1450,6 +1483,64 @@ describe('Datastore', () => {
       await transaction.commit();
       printTimeElasped('After commit');
       console.log(results);
+    });
+
+    it('should run two write transactions and then read referencing the first transaction', async () => {
+      const key = datastore.key(['Company', 'Google']);
+      const obj = {
+        url: 'www.google.com1',
+      };
+      // First do a transaction so that we have an id to provide in the next transaction
+      const transaction1 = datastore.transaction();
+      const startTime = new Date().getTime();
+      function printTimeElasped(label: string) {
+        console.log(`${label}: ${new Date().getTime() - startTime}`);
+      }
+      printTimeElasped('Before begin transaction');
+      await transaction1.run();
+      printTimeElasped('After begin transaction');
+      await transaction1.get(key);
+      printTimeElasped('After fetch');
+      transaction1.save({key, data: obj});
+      printTimeElasped('After save');
+      const committedResults1 = await transaction1.commit();
+      printTimeElasped('After commit');
+      const [entity1] = await datastore.get(key);
+      delete entity1[datastore.KEY];
+      // Second do another write transaction
+      const transaction2 = datastore.transaction();
+      const obj2 = {
+        url: 'www.google.com2',
+      };
+      printTimeElasped('Before begin transaction');
+      await transaction2.run();
+      printTimeElasped('After begin transaction');
+      await transaction2.get(key);
+      printTimeElasped('After fetch');
+      transaction2.save({key, data: obj2});
+      printTimeElasped('After save');
+      const committedResults2 = await transaction2.commit();
+      printTimeElasped('After commit');
+      const [entity2] = await datastore.get(key);
+      delete entity2[datastore.KEY];
+      // Do a third transaction where we provide the id from the first transaction in the third transaction
+      const transaction = datastore.transaction();
+      const options = {
+        newTransaction: {
+          readWrite: {
+            previousTransaction: transaction1.id,
+          },
+        },
+      };
+      printTimeElasped('Before begin transaction');
+      await transaction.run();
+      printTimeElasped('After begin transaction');
+      await transaction.get(key, options);
+      printTimeElasped('After fetch');
+      const committedResults = await transaction.commit();
+      printTimeElasped('After commit');
+      const [entity] = await datastore.get(key);
+      console.log(entity); // Will be www.google.com2
     });
 
     it('should run in a transaction with second transaction', async () => {
