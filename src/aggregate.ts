@@ -170,7 +170,9 @@ abstract class AggregateField {
    * @returns {AggregateField}
    */
   alias(alias?: string): AggregateField {
-    this.alias_ = alias;
+    if (alias) {
+      this.alias_ = alias;
+    }
     return this;
   }
 

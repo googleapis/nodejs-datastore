@@ -142,35 +142,62 @@ describe('Query', () => {
           );
           assert.deepStrictEqual(aggregateQuery.aggregations, aggregateFields);
         }
-        it('should compare equivalent count aggregation queries', () => {
-          compareAggregations(
-            generateAggregateQuery().count('total1').count('total2'),
-            ['total1', 'total2'].map(alias =>
-              AggregateField.count().alias(alias)
-            )
-          );
+        describe('comparing aggregations with an alias', async () => {
+          it('should compare equivalent count aggregation queries', () => {
+            compareAggregations(
+              generateAggregateQuery().count('total1').count('total2'),
+              ['total1', 'total2'].map(alias =>
+                AggregateField.count().alias(alias)
+              )
+            );
+          });
+          it('should compare equivalent sum aggregation queries', () => {
+            compareAggregations(
+              generateAggregateQuery()
+                .sum('property1', 'alias1')
+                .sum('property2', 'alias2'),
+              [
+                AggregateField.sum('property1').alias('alias1'),
+                AggregateField.sum('property2').alias('alias2'),
+              ]
+            );
+          });
+          it('should compare equivalent average aggregation queries', () => {
+            compareAggregations(
+              generateAggregateQuery()
+                .average('property1', 'alias1')
+                .average('property2', 'alias2'),
+              [
+                AggregateField.average('property1').alias('alias1'),
+                AggregateField.average('property2').alias('alias2'),
+              ]
+            );
+          });
         });
-        it('should compare equivalent sum aggregation queries', () => {
-          compareAggregations(
-            generateAggregateQuery()
-              .sum('property1', 'alias1')
-              .sum('property2', 'alias2'),
-            [
-              AggregateField.sum('property1').alias('alias1'),
-              AggregateField.sum('property2').alias('alias2'),
-            ]
-          );
-        });
-        it('should compare equivalent average aggregation queries', () => {
-          compareAggregations(
-            generateAggregateQuery()
-              .average('property1', 'alias1')
-              .average('property2', 'alias2'),
-            [
-              AggregateField.average('property1').alias('alias1'),
-              AggregateField.average('property2').alias('alias2'),
-            ]
-          );
+        describe('comparing aggregations without an alias', async () => {
+          it('should compare equivalent count aggregation queries', () => {
+            compareAggregations(
+              generateAggregateQuery().count().count(),
+              ['total1', 'total2'].map(() => AggregateField.count())
+            );
+          });
+          it.only('should compare equivalent sum aggregation queries', () => {
+            compareAggregations(
+              generateAggregateQuery().sum('property1').sum('property2'),
+              [AggregateField.sum('property1'), AggregateField.sum('property2')]
+            );
+          });
+          it('should compare equivalent average aggregation queries', () => {
+            compareAggregations(
+              generateAggregateQuery()
+                .average('property1')
+                .average('property2'),
+              [
+                AggregateField.average('property1'),
+                AggregateField.average('property2'),
+              ]
+            );
+          });
         });
       });
     });
