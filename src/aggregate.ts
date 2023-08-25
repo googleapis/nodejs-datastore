@@ -163,7 +163,7 @@ abstract class AggregateField {
   }
 
   /**
-   * Gets a copy of the Count aggregate field.
+   * Sets the alias on the aggregate field that should be used.
    *
    * @param {string} alias The label used in the results to describe this
    * aggregate field when a query is run.
