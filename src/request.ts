@@ -276,7 +276,7 @@ class DatastoreRequest {
     }
 
     const makeRequest = (keys: entity.Key[] | KeyProto[]) => {
-      const reqOpts = this.getSharedOptionsOnly(options);
+      const reqOpts = this.getRequestOptions(options);
       Object.assign(reqOpts, {keys});
       this.request_(
         {
@@ -576,7 +576,7 @@ class DatastoreRequest {
       setImmediate(callback, e as Error);
       return;
     }
-    const sharedQueryOpts = this.getSharedQueryOptions(query.query, options);
+    const sharedQueryOpts = this.getQueryOptions(query.query, options);
     const aggregationQueryOptions: AggregationQueryOptions = {
       nestedQuery: queryProto,
       aggregations: query.toProto(),
@@ -791,7 +791,7 @@ class DatastoreRequest {
         setImmediate(onResultSet, e as Error);
         return;
       }
-      const sharedQueryOpts = this.getSharedQueryOptions(query, options);
+      const sharedQueryOpts = this.getQueryOptions(query, options);
 
       const reqOpts: RequestOptions = sharedQueryOpts;
       reqOpts.query = queryProto;
@@ -867,7 +867,7 @@ class DatastoreRequest {
     return stream;
   }
 
-  private getSharedOptionsOnly(
+  private getRequestOptions(
     options: RunQueryStreamOptions
   ): SharedQueryOptions {
     const sharedQueryOpts = {} as SharedQueryOptions;
@@ -890,11 +890,11 @@ class DatastoreRequest {
     return sharedQueryOpts;
   }
 
-  private getSharedQueryOptions(
+  private getQueryOptions(
     query: Query,
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
-    const sharedQueryOpts = this.getSharedOptionsOnly(options);
+    const sharedQueryOpts = this.getRequestOptions(options);
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
         namespaceId: query.namespace,
@@ -1188,7 +1188,7 @@ export type DeleteResponse = CommitResponse;
  * that a callback is omitted.
  */
 promisifyAll(DatastoreRequest, {
-  exclude: ['getSharedOptionsOnly', 'getSharedQueryOptions'],
+  exclude: ['getQueryOptions', 'getRequestOptions'],
 });
 
 /**
