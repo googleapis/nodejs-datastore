@@ -677,6 +677,7 @@ describe('Datastore', () => {
     ];
 
     before(async () => {
+      // This function is used for testing snapshot reads by getting a time and then sleeping before adding data.
       function sleep(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
       }
