@@ -181,7 +181,7 @@ describe('Query', () => {
               ['total1', 'total2'].map(() => AggregateField.count())
             );
           });
-          it.only('should compare equivalent sum aggregation queries', () => {
+          it('should compare equivalent sum aggregation queries', () => {
             compareAggregations(
               generateAggregateQuery().sum('property1').sum('property2'),
               [AggregateField.sum('property1'), AggregateField.sum('property2')]

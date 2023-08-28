@@ -1066,6 +1066,14 @@ describe('Datastore', () => {
         });
         assert.deepStrictEqual(results, [{sum1: 0}]);
       });
+      it('should run a sum aggregate filter using the alias function, but with no alias', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.sum('appearances').alias()]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 187}]);
+      });
     });
     describe('with an average filter', () => {
       it('should run an average aggregation', async () => {
@@ -1184,6 +1192,14 @@ describe('Datastore', () => {
         });
         assert.deepStrictEqual(results, [{avg1: null}]);
       });
+      it('should run an average aggregate filter using the alias function, but with no alias', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.average('appearances').alias()]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 23.375}]);
+      });
     });
     describe('with a count filter', () => {
       it('should run a count aggregation', async () => {
@@ -1247,6 +1263,14 @@ describe('Datastore', () => {
           .addAggregations([AggregateField.count().alias('total')]);
         const [results] = await datastore.runAggregationQuery(aggregate);
         assert.deepStrictEqual(results, [{total: 7}]);
+      });
+      it('should run a count aggregate filter using the alias function, but with no alias', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([AggregateField.count().alias()]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [{property_1: 8}]);
       });
     });
     describe('with multiple types of filters', () => {
