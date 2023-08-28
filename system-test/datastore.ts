@@ -1289,6 +1289,49 @@ describe('Datastore', () => {
           {property_1: 8, property_2: 187, property_3: 23.375},
         ]);
       });
+      it('should run multiple types of aggregations with and without aliases', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.count(),
+            AggregateField.average('appearances'),
+            AggregateField.count().alias('alias_count'),
+            AggregateField.sum('appearances').alias('alias_sum'),
+            AggregateField.average('appearances').alias('alias_average'),
+          ]);
+        const [results] = await datastore.runAggregationQuery(aggregate);
+        assert.deepStrictEqual(results, [
+          {
+            property_1: 8,
+            property_2: 23.375,
+            alias_count: 8,
+            alias_sum: 187,
+            alias_average: 23.375,
+          },
+        ]);
+      });
+      it('should throw an error when too many aggregations are run', async () => {
+        const q = datastore.createQuery('Character');
+        const aggregate = datastore
+          .createAggregationQuery(q)
+          .addAggregations([
+            AggregateField.count(),
+            AggregateField.sum('appearances'),
+            AggregateField.average('appearances'),
+            AggregateField.count().alias('alias_count'),
+            AggregateField.sum('appearances').alias('alias_sum'),
+            AggregateField.average('appearances').alias('alias_average'),
+          ]);
+        try {
+          await datastore.runAggregationQuery(aggregate);
+        } catch (err: any) {
+          assert.strictEqual(
+            err.message,
+            '3 INVALID_ARGUMENT: The maximum number of aggregations allowed in an aggregation query is 5. Received: 6'
+          );
+        }
+      });
     });
     it('should filter by ancestor', async () => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
