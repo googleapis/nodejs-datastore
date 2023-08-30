@@ -1378,17 +1378,12 @@ describe('Datastore', () => {
 
     it('should export, then import entities', async function () {
       setupForDelay(this);
-      console.log('Before set retries');
       this.retries(3);
-      console.log('After set retries');
       delay(this);
-      console.log('After delay');
       const [exportOperation] = await datastore.export({bucket});
       await exportOperation.promise();
-      console.log('After export');
 
       const [files] = await bucket.getFiles({maxResults: 1});
-      console.log('After get files');
       const [exportedFile] = files;
       assert.ok(exportedFile.name.includes('overall_export_metadata'));
 
