@@ -1399,7 +1399,7 @@ describe('Datastore', () => {
         ).inputUrl,
         `gs://${exportedFile.bucket.name}/${exportedFile.name}`
       );
-      console.log('Before import');
+
       await importOperation.cancel();
     });
   });
