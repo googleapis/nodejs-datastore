@@ -1330,10 +1330,7 @@ describe('Datastore', () => {
       test.currentAttempt++;
     };
     const delay = async (test: Mocha.Context) => {
-      console.log('Before call current retry');
       const retries = test.currentAttempt - 1;
-      console.log(`retries: ${retries}`);
-      console.log('After call current retry');
       if (retries === 0) return; // no retry on the first attempt.
       // see: https://cloud.google.com/storage/docs/exponential-backoff:
       const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
@@ -1351,7 +1348,7 @@ describe('Datastore', () => {
         consoleInfoFunction = console.info;
       });
 
-      it.only('should be sure that the delay function emits console info messages', async function () {
+      it('should be sure that the delay function emits console info messages', async function () {
         // Override console.info to track the number of times it is called.
         console.info = consoleInfoFunction;
         console.info = (message: any) => {
