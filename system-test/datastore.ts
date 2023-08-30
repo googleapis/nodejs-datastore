@@ -677,7 +677,9 @@ describe('Datastore', () => {
     ];
 
     before(async () => {
-      // This function is used for testing snapshot reads by getting a time and then sleeping before adding data.
+      // This 'sleep' function is used to ensure that when data is saved to datastore,
+      // the time on the server is far enough ahead to be sure to be later than timeBeforeDataCreation
+      // so that when we read at timeBeforeDataCreation we get a snapshot of data before the save.
       function sleep(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
       }
