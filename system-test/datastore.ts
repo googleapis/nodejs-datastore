@@ -1323,6 +1323,12 @@ describe('Datastore', () => {
     const gcs = new Storage();
     const bucket = gcs.bucket('nodejs-datastore-system-tests');
 
+    const setupForDelay = (test: Mocha.Context) => {
+      if (!test.currentAttempt || typeof test.currentAttempt !== 'number') {
+        test.currentAttempt = 0;
+      }
+      test.currentAttempt++;
+    };
     const delay = async (test: Mocha.Context) => {
       console.log('Before call current retry');
       const retries = test.currentAttempt - 1;
@@ -1331,18 +1337,50 @@ describe('Datastore', () => {
       if (retries === 0) return; // no retry on the first attempt.
       // see: https://cloud.google.com/storage/docs/exponential-backoff:
       const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
-      test.currentRetry++;
       return new Promise(done => {
         console.info(`retrying "${test.test?.title}" in ${ms}ms`);
         setTimeout(done, ms);
       });
     };
 
-    it.only('should export, then import entities', async function () {
-      if (!this.currentAttempt || typeof this.currentAttempt !== 'number') {
-        this.currentAttempt = 0;
-      }
-      this.currentAttempt++;
+    describe('running tests against the delay function', () => {
+      let consoleInfoFunction: (message: string) => void;
+      let infoLogCount = 0;
+
+      before(async () => {
+        consoleInfoFunction = console.info;
+      });
+
+      it.only('should be sure that the delay function emits console info messages', async function () {
+        // Override console.info to track the number of times it is called.
+        console.info = consoleInfoFunction;
+        console.info = (message: any) => {
+          infoLogCount++;
+          consoleInfoFunction(message);
+        };
+        // Run code that will typically be used in any test with the delay function.
+        setupForDelay(this);
+        const numberOfRetries = 4;
+        this.retries(numberOfRetries);
+        delay(this);
+        // Throw an error on every retry except the last one
+        if (this.currentAttempt < numberOfRetries) {
+          throw Error(
+            'This is not the last retry so throw an error to force the test to run again'
+          );
+        }
+        // Check that the attempt number and the number of times console.info is called is correct.
+        assert.strictEqual(infoLogCount, numberOfRetries - 1);
+        assert.strictEqual(this.currentAttempt, numberOfRetries);
+      });
+
+      after(async () => {
+        console.info = consoleInfoFunction;
+      });
+    });
+
+    it('should export, then import entities', async function () {
+      setupForDelay(this);
       console.log('Before set retries');
       this.retries(3);
       console.log('After set retries');
@@ -1371,7 +1409,6 @@ describe('Datastore', () => {
       );
       console.log('Before import');
       await importOperation.cancel();
-      throw Error('Did not succeed');
     });
   });
 
