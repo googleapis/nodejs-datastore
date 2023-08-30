@@ -1324,21 +1324,29 @@ describe('Datastore', () => {
     const bucket = gcs.bucket('nodejs-datastore-system-tests');
 
     const delay = async (test: Mocha.Context) => {
-      const retries = test.currentRetry();
-      if (retries === 0) return; // no retry on the first failure.
+      console.log('Before call current retry');
+      const retries = test.currentAttempt - 1;
+      console.log(`retries: ${retries}`);
+      console.log('After call current retry');
+      if (retries === 0) return; // no retry on the first attempt.
       // see: https://cloud.google.com/storage/docs/exponential-backoff:
       const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
+      test.currentRetry++;
       return new Promise(done => {
-        console.info(`retrying "${test.title}" in ${ms}ms`);
+        console.info(`retrying "${test.test?.title}" in ${ms}ms`);
         setTimeout(done, ms);
       });
     };
 
     it.only('should export, then import entities', async function () {
+      if (!this.currentAttempt || typeof this.currentAttempt !== 'number') {
+        this.currentAttempt = 0;
+      }
+      this.currentAttempt++;
       console.log('Before set retries');
       this.retries(3);
       console.log('After set retries');
-      await delay(this);
+      delay(this);
       console.log('After delay');
       const [exportOperation] = await datastore.export({bucket});
       await exportOperation.promise();
@@ -1363,6 +1371,7 @@ describe('Datastore', () => {
       );
       console.log('Before import');
       await importOperation.cancel();
+      throw Error('Did not succeed');
     });
   });
 
