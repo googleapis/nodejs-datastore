@@ -48,6 +48,26 @@ describe('Datastore', () => {
   // TODO/DX ensure indexes before testing, and maybe? cleanup indexes after
   //  possible implications with kokoro project
 
+  // Gets the read time of the latest save so that the test isn't flakey due to race condition.
+  async function getReadTime(path: [{kind: string; name: string}]) {
+    const projectId = await datastore.getProjectId();
+    const request = {
+      keys: [
+        {
+          path,
+          partitionId: {namespaceId: datastore.namespace},
+        },
+      ],
+      projectId,
+    };
+    const dataClient = datastore.clients_.get('DatastoreClient');
+    let results: any;
+    if (dataClient) {
+      results = await dataClient['lookup'](request);
+    }
+    return parseInt(results[0].readTime.seconds) * 1000;
+  }
+
   after(async () => {
     async function deleteEntities(kind: string) {
       const query = datastore.createQuery(kind).select('__key__');
@@ -689,8 +709,16 @@ describe('Datastore', () => {
           data: characters[index],
         };
       });
-      timeBeforeDataCreation = Date.now();
-      await sleep(1000);
+      // Save for a key so that a read time can be accessed for snapshot reads.
+      const dummyData = Object.assign(Object.assign({}, keysToSave[0]), {
+        data: {},
+      });
+      await datastore.save(dummyData);
+      timeBeforeDataCreation = await getReadTime([
+        {kind: 'Character', name: 'Rickard'},
+      ]);
+      // Sleep for 3 seconds so that any future reads will be later than timeBeforeDataCreation.
+      await sleep(3000);
       await datastore.save(keysToSave);
     });
 
