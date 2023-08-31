@@ -710,10 +710,10 @@ describe('Datastore', () => {
         };
       });
       // Save for a key so that a read time can be accessed for snapshot reads.
-      const dummyData = Object.assign(Object.assign({}, keysToSave[0]), {
+      const emptyData = Object.assign(Object.assign({}, keysToSave[0]), {
         data: {},
       });
-      await datastore.save(dummyData);
+      await datastore.save(emptyData);
       timeBeforeDataCreation = await getReadTime([
         {kind: 'Character', name: 'Rickard'},
       ]);
