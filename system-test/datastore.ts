@@ -1348,7 +1348,7 @@ describe('Datastore', () => {
         consoleInfoFunction = console.info;
       });
 
-      it.only('should be sure that the delay function emits console info messages', async function () {
+      it('should be sure that the delay function emits console info messages', async function () {
         // Override console.info to track the number of times it is called.
         console.info = (message: string) => {
           infoLogCount++;
