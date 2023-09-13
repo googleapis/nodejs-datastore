@@ -170,11 +170,13 @@ describe('Transaction', () => {
       }
     }
 
-    beforeEach(async () => {
+    before(async () => {
+      // Get a copy of the Gapic layer so that we don't make changes to it thereby impacting other tests.
       const gapic = Object.freeze({
         v1: require('../src/v1'),
       });
-      // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+      // A call has not been made yet to the Gapic layer so the data client has not been initialized.
+      // Here we initialize the data client in code so that it's functions can be mocked out.
       datastore.clients_.set(
         dataClientName,
         new gapic.v1[dataClientName](options)
