@@ -154,6 +154,23 @@ describe('Transaction', () => {
     let dataClient: ClientStub | undefined;
     let originalCommitMethod: Function;
 
+    function mockCommitAndCompare(compareRequest: any) {
+      if (dataClient) {
+        dataClient.commit = (
+          request: any,
+          options: any,
+          callback: (err?: unknown) => void
+        ) => {
+          try {
+            assert.deepStrictEqual(request, compareRequest);
+          } catch (e) {
+            callback(e);
+          }
+          callback();
+        };
+      }
+    }
+
     beforeEach(async () => {
       const gapic = Object.freeze({
         v1: require('../src/v1'),
@@ -184,35 +201,21 @@ describe('Transaction', () => {
       const path = [kind, id];
       const obj = {url};
       const localKey = datastore.key(path);
-      // Mock out commit and show value that commit receives
-      if (dataClient) {
-        dataClient.commit = (
-          request: any,
-          options: any,
-          callback: (err?: unknown) => void
-        ) => {
-          try {
-            assert.deepStrictEqual(request, {
-              projectId,
-              mode: 'NON_TRANSACTIONAL', // Even though a transaction object is used, this runs as a non-transaction.
-              mutations: [
-                {
-                  upsert: {
-                    key: {
-                      path: [{kind, id}],
-                      partitionId: {namespaceId: namespace},
-                    },
-                    properties: {url: {stringValue: url}},
-                  },
-                },
-              ],
-            });
-          } catch (e) {
-            callback(e);
-          }
-          callback();
-        };
-      }
+      mockCommitAndCompare({
+        projectId,
+        mode: 'NON_TRANSACTIONAL', // Even though a transaction object is used, this runs as a non-transaction.
+        mutations: [
+          {
+            upsert: {
+              key: {
+                path: [{kind, id}],
+                partitionId: {namespaceId: namespace},
+              },
+              properties: {url: {stringValue: url}},
+            },
+          },
+        ],
+      });
       transactionWithoutMock.save({key: localKey, data: obj});
       await transactionWithoutMock.commit();
     });
