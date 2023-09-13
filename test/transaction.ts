@@ -194,9 +194,31 @@ describe('Transaction', () => {
     });
 
     it('should execute read and commit as a non-transaction', async () => {
+      const kind = 'Product';
+      const id = 123;
       if (dataClient) {
-        dataClient.lookup = (r: any, o: any, callback: () => void) => {
-          callback(); // Callback does not send back a transaction id because new transaction property is not provided.
+        dataClient.lookup = (
+          request: any,
+          options: any,
+          callback: (err: any, res: any) => void
+        ) => {
+          // Assert does not expect new transaction property in read options.
+          assert.deepStrictEqual(request, {
+            keys: [
+              {
+                path: [{kind, id}],
+                partitionId: {namespaceId: namespace},
+              },
+            ],
+            projectId,
+          });
+          callback(null, {
+            found: [],
+            missing: [],
+            deferred: [],
+            readTime: {seconds: '1694620982', nanos: 393313000},
+            transaction: Buffer.from(''), // Callback does not send back a transaction id because new transaction property is not provided.
+          });
         };
       }
       mockCommitAndCompare({
@@ -204,7 +226,7 @@ describe('Transaction', () => {
         mode: 'NON_TRANSACTIONAL', // Even though a transaction object is used, this runs as a non-transaction.
         mutations: [],
       });
-      await transactionWithoutMock.get(datastore.key(['Product', 123]));
+      await transactionWithoutMock.get(datastore.key([kind, id]));
       await transactionWithoutMock.commit();
     });
   });
