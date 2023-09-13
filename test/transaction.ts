@@ -152,7 +152,6 @@ describe('Transaction', () => {
     const transactionWithoutMock = datastore.transaction();
     const dataClientName = 'DatastoreClient';
     let dataClient: ClientStub | undefined;
-    let originalCommitMethod: Function;
 
     function mockCommitAndCompare(compareRequest: any) {
       if (dataClient) {
@@ -181,17 +180,6 @@ describe('Transaction', () => {
         new gapic.v1[dataClientName](options)
       );
       dataClient = datastore.clients_.get(dataClientName);
-      if (dataClient && dataClient.commit) {
-        originalCommitMethod = dataClient.commit;
-      }
-    });
-
-    afterEach(() => {
-      // Commit has likely been mocked out in these tests.
-      // We should reassign commit back to its original value for the rest of the tests.
-      if (dataClient && originalCommitMethod) {
-        dataClient.commit = originalCommitMethod;
-      }
     });
 
     it('should execute as a non-transaction', async () => {
