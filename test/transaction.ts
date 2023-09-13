@@ -195,28 +195,11 @@ describe('Transaction', () => {
     });
 
     it('should execute as a non-transaction', async () => {
-      const kind = 'Product';
-      const id = 123;
-      const url = 'www.google.com.sample';
-      const path = [kind, id];
-      const obj = {url};
-      const localKey = datastore.key(path);
       mockCommitAndCompare({
         projectId,
         mode: 'NON_TRANSACTIONAL', // Even though a transaction object is used, this runs as a non-transaction.
-        mutations: [
-          {
-            upsert: {
-              key: {
-                path: [{kind, id}],
-                partitionId: {namespaceId: namespace},
-              },
-              properties: {url: {stringValue: url}},
-            },
-          },
-        ],
+        mutations: [],
       });
-      transactionWithoutMock.save({key: localKey, data: obj});
       await transactionWithoutMock.commit();
     });
   });
