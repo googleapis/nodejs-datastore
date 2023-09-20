@@ -25,6 +25,7 @@ import {RequestConfig} from '../src/request';
 import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
+const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
@@ -143,6 +144,9 @@ function FakeV1() {}
 
 const sandbox = sinon.createSandbox();
 
+async.each(
+    [{}, {databaseId: SECOND_DATABASE_ID}],
+    (clientOptions: DatastoreOptions) => {
 describe('Datastore', () => {
   let Datastore: typeof ds.Datastore;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -153,7 +157,7 @@ describe('Datastore', () => {
 
   const DATASTORE_PROJECT_ID_CACHED = process.env.DATASTORE_PROJECT_ID;
 
-  const OPTIONS = {
+  const DEFAULT_OPTIONS = {
     projectId: PROJECT_ID,
     apiEndpoint: 'http://localhost',
     credentials: {},
@@ -161,6 +165,8 @@ describe('Datastore', () => {
     email: 'email',
     namespace: NAMESPACE,
   };
+
+  const OPTIONS = Object.assign(DEFAULT_OPTIONS, clientOptions);
 
   before(() => {
     Object.assign(fakeEntity, fakeEntityInit);
@@ -2164,4 +2170,5 @@ describe('Datastore', () => {
       assert.strictEqual(otherDatastore.getDatabaseId(), SECOND_DATABASE_ID);
     });
   });
+});
 });
