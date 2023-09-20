@@ -65,7 +65,6 @@ describe('Transaction', () => {
   const DEFAULT_DATASTORE = {
     request_() {},
     projectId: PROJECT_ID,
-    databaseId: SECOND_DATABASE_ID,
     namespace: NAMESPACE,
   } as {} as Datastore;
 
