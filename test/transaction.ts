@@ -18,13 +18,11 @@ import * as assert from 'assert';
 import {afterEach, beforeEach, before, describe, it} from 'mocha';
 import * as proxyquire from 'proxyquire';
 
-// import {google} from '../proto/datastore';
 import {Datastore, DatastoreRequest, Query, TransactionOptions} from '../src';
 import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
-import {addDatabaseIdToRequest} from '../src/util';
-import {RequestConfig, RequestOptions} from '../src/request';
+import {RequestConfig} from '../src/request';
 import {SECOND_DATABASE_ID} from './index';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
