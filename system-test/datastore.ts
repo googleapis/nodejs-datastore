@@ -17,7 +17,7 @@ import {readFileSync} from 'fs';
 import * as path from 'path';
 import {after, before, describe, it} from 'mocha';
 import * as yaml from 'js-yaml';
-import {Datastore, Index} from '../src';
+import {Datastore, DatastoreOptions, Index} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
@@ -25,14 +25,25 @@ import {PropertyFilter, and, or} from '../src/filter';
 import {entity} from '../src/entity';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 
+const async = require('async');
+
 const SECOND_DATABASE_ID = 'multidb-test';
 
+async.each(
+    [
+      {
+        namespace: `${Date.now()}`,
+      },
+      {
+        databaseId: SECOND_DATABASE_ID,
+        namespace: `${Date.now()}`,
+      },
+    ],
+    (clientOptions: DatastoreOptions) => {
 describe('Datastore', () => {
   let timeBeforeDataCreation: number;
   const testKinds: string[] = [];
-  const datastore = new Datastore({
-    namespace: `${Date.now()}`,
-  });
+  const datastore = new Datastore(clientOptions);
   // Override the Key method so we can track what keys are created during the
   // tests. They are then deleted in the `after` hook.
   const key = datastore.key;
@@ -1965,4 +1976,5 @@ describe('Datastore', () => {
       assert.strictEqual(entities.length, 0);
     });
   });
+});
 });
