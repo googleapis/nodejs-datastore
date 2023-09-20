@@ -25,6 +25,7 @@ import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {addDatabaseIdToRequest} from '../src/util';
 import {RequestConfig, RequestOptions} from '../src/request';
+import {SECOND_DATABASE_ID} from './index';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -62,6 +63,7 @@ describe('Transaction', () => {
   const DATASTORE = {
     request_() {},
     projectId: PROJECT_ID,
+    databaseId: SECOND_DATABASE_ID,
     namespace: NAMESPACE,
     addDatabaseIdToRequest(datastore: Datastore, reqOpts: RequestOptions) {
       addDatabaseIdToRequest(datastore, reqOpts);
