@@ -347,19 +347,21 @@ describe('Datastore', () => {
     });
 
     describe('multi-db support for read and write operations', () => {
+      const namespace = `${Date.now()}`;
       const keyHierarchy = ['Post', 'post1'];
+      const defaultDatastore = new Datastore({namespace});
       it('should run a query with another database', async () => {
         // First verify that a record gets written to datastore
-        const postKey = datastore.key(keyHierarchy);
-        await datastore.save({key: postKey, data: post});
-        const query = datastore.createQuery('Post').hasAncestor(postKey);
-        const [defaultDatastoreResults] = await datastore.runQuery(query);
+        const postKey = defaultDatastore.key(keyHierarchy);
+        await defaultDatastore.save({key: postKey, data: post});
+        const query = defaultDatastore.createQuery('Post').hasAncestor(postKey);
+        const [defaultDatastoreResults] = await defaultDatastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 1);
-        const [entity] = await datastore.get(postKey);
+        const [entity] = await defaultDatastore.get(postKey);
         assert.strictEqual(entity.author, 'Silvano');
         // With another database, verify that a query returns no results
         const otherDatastore = new Datastore({
-          namespace: `${Date.now()}`,
+          namespace,
           databaseId: SECOND_DATABASE_ID,
         });
         const [secondDatastoreResults] = await otherDatastore.runQuery(query);
@@ -367,27 +369,27 @@ describe('Datastore', () => {
         const [otherEntity] = await otherDatastore.get(postKey);
         assert(typeof otherEntity === 'undefined');
         // Cleanup
-        await datastore.delete(postKey);
+        await defaultDatastore.delete(postKey);
       });
       it('should ensure save works with another database', async () => {
         // First verify that the default database is empty
-        const postKey = datastore.key(keyHierarchy);
-        const query = datastore.createQuery('Post').hasAncestor(postKey);
-        const [defaultDatastoreResults] = await datastore.runQuery(query);
+        const postKey = defaultDatastore.key(keyHierarchy);
+        const query = defaultDatastore.createQuery('Post').hasAncestor(postKey);
+        const [defaultDatastoreResults] = await defaultDatastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 0);
-        const [originalSecondaryResults] = await datastore.runQuery(query);
+        const [originalSecondaryResults] = await defaultDatastore.runQuery(query);
         assert.strictEqual(originalSecondaryResults.length, 0);
-        const [entity] = await datastore.get(postKey);
+        const [entity] = await defaultDatastore.get(postKey);
         assert(typeof entity === 'undefined');
         // With another database, verify that saving to the database works
         const otherDatastore = new Datastore({
-          namespace: `${Date.now()}`,
+          namespace,
           databaseId: SECOND_DATABASE_ID,
         });
         await otherDatastore.save({key: postKey, data: post});
         const [secondDatastoreResults] = await otherDatastore.runQuery(query);
         assert.strictEqual(secondDatastoreResults.length, 1);
-        const [originalResults] = await datastore.runQuery(query);
+        const [originalResults] = await defaultDatastore.runQuery(query);
         assert.strictEqual(originalResults.length, 0);
         const [otherEntity] = await otherDatastore.get(postKey);
         assert.strictEqual(otherEntity.author, 'Silvano');
@@ -407,8 +409,8 @@ describe('Datastore', () => {
         const defaultAuthor = 'default database author';
         const defaultData = Object.assign({}, post);
         defaultData.author = defaultAuthor;
-        const defaultPostKey = datastore.key(['Post', 'default post key']);
-        await datastore.save({key: defaultPostKey, data: defaultData});
+        const defaultPostKey = defaultDatastore.key(['Post', 'default post key']);
+        await defaultDatastore.save({key: defaultPostKey, data: defaultData});
         // Save all data to the secondary database
         const secondaryIndices = [1, 2, 3];
         const secondaryData: DatastoreData[] = secondaryIndices.map(number => {
@@ -425,8 +427,8 @@ describe('Datastore', () => {
           secondaryData.map(async datum => secondaryDatastore.save(datum))
         );
         // Next, ensure that the default database has the right records
-        const query = datastore.createQuery('Post').hasAncestor(defaultPostKey);
-        const [defaultDatastoreResults] = await datastore.runQuery(query);
+        const query = defaultDatastore.createQuery('Post').hasAncestor(defaultPostKey);
+        const [defaultDatastoreResults] = await defaultDatastore.runQuery(query);
         assert.strictEqual(defaultDatastoreResults.length, 1);
         assert.strictEqual(defaultDatastoreResults[0].author, defaultAuthor);
         // Next, ensure that the other database has the right records
@@ -441,7 +443,7 @@ describe('Datastore', () => {
           })
         );
         // Cleanup
-        await datastore.delete(defaultPostKey);
+        await defaultDatastore.delete(defaultPostKey);
         await Promise.all(
           secondaryData.map(datum => secondaryDatastore.delete(datum.key))
         );
