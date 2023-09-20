@@ -65,9 +65,6 @@ describe('Transaction', () => {
     projectId: PROJECT_ID,
     databaseId: SECOND_DATABASE_ID,
     namespace: NAMESPACE,
-    addDatabaseIdToRequest(datastore: Datastore, reqOpts: RequestOptions) {
-      addDatabaseIdToRequest(datastore, reqOpts);
-    },
   } as {} as Datastore;
 
   function key(path: Path) {
