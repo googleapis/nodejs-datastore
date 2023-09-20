@@ -18,12 +18,13 @@ import * as assert from 'assert';
 import {afterEach, beforeEach, before, describe, it} from 'mocha';
 import * as proxyquire from 'proxyquire';
 
-import {Datastore, DatastoreRequest, Query, TransactionOptions} from '../src';
+import {Datastore, DatastoreOptions, DatastoreRequest, Query, TransactionOptions} from '../src';
 import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {RequestConfig} from '../src/request';
 import {SECOND_DATABASE_ID} from './index';
+const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -51,6 +52,9 @@ const fakePfy = Object.assign({}, pfy, {
   },
 });
 
+async.each(
+    [{}, {databaseId: SECOND_DATABASE_ID}],
+    (clientOptions: DatastoreOptions) => {
 describe('Transaction', () => {
   let Transaction: typeof tsTypes.Transaction;
   let transaction: tsTypes.Transaction;
@@ -58,12 +62,14 @@ describe('Transaction', () => {
   const PROJECT_ID = 'project-id';
   const NAMESPACE = 'a-namespace';
 
-  const DATASTORE = {
+  const DEFAULT_DATASTORE = {
     request_() {},
     projectId: PROJECT_ID,
     databaseId: SECOND_DATABASE_ID,
     namespace: NAMESPACE,
   } as {} as Datastore;
+
+  const DATASTORE = Object.assign(DEFAULT_DATASTORE, clientOptions);
 
   function key(path: Path) {
     return new entity.Key({path: arrify(path)});
@@ -752,4 +758,5 @@ describe('Transaction', () => {
       transaction.upsert({key, data: {}});
     });
   });
+});
 });
