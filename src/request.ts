@@ -57,7 +57,6 @@ import {
 import {Datastore} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';
-import {addDatabaseIdToRequest} from './util';
 
 /**
  * A map of read consistency values to proto codes.
@@ -993,7 +992,9 @@ class DatastoreRequest {
       }
     }
 
-    addDatabaseIdToRequest(datastore, reqOpts);
+    if (datastore.options && datastore.options.databaseId) {
+      reqOpts.databaseId = datastore.options.databaseId;
+    }
 
     if (method === 'rollback') {
       reqOpts.transaction = this.id;
