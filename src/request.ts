@@ -1013,7 +1013,7 @@ class DatastoreRequest {
     } else {
       datastore.auth.getProjectId(makeGapicCall);
     }
-    function makeGapicCall(err: any, projectId: any){
+    function makeGapicCall(err: any, projectId: any) {
       if (err) {
         callback!(err);
         return;
@@ -1021,8 +1021,8 @@ class DatastoreRequest {
       const clientName = config.client;
       if (!datastore.clients_.has(clientName)) {
         datastore.clients_.set(
-            clientName,
-            new gapic.v1[clientName](datastore.options)
+          clientName,
+          new gapic.v1[clientName](datastore.options)
         );
       }
       const gaxClient = datastore.clients_.get(clientName);
