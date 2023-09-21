@@ -1007,13 +1007,7 @@ class DatastoreRequest {
         transaction: this.id,
       };
     }
-    const datastoreProjectId = datastore?.options?.projectId;
-    if (datastoreProjectId) {
-      makeGapicCall(null, datastoreProjectId);
-    } else {
-      datastore.auth.getProjectId(makeGapicCall);
-    }
-    function makeGapicCall(err: any, projectId: any) {
+    datastore.auth.getProjectId((err, projectId) => {
       if (err) {
         callback!(err);
         return;
