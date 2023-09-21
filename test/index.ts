@@ -145,7 +145,7 @@ function FakeV1() {}
 const sandbox = sinon.createSandbox();
 
 async.each(
-    [{}, {databaseId: SECOND_DATABASE_ID}],
+    [{namespace: `${Date.now()}`}, {namespace: `second-db-${Date.now()}`, databaseId: SECOND_DATABASE_ID}],
     (clientOptions: DatastoreOptions) => {
 describe('Datastore', () => {
   let Datastore: typeof ds.Datastore;

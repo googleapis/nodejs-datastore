@@ -36,7 +36,7 @@ async.each(
       },
       {
         databaseId: SECOND_DATABASE_ID,
-        namespace: `${Date.now()}`,
+        namespace: `second-db-${Date.now()}`,
       },
     ],
     (clientOptions: DatastoreOptions) => {
