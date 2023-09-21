@@ -1007,6 +1007,7 @@ class DatastoreRequest {
         transaction: this.id,
       };
     }
+    
     datastore.auth.getProjectId((err, projectId) => {
       if (err) {
         callback!(err);
