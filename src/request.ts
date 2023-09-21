@@ -1147,6 +1147,7 @@ export interface RequestConfig {
   reqOpts?: RequestOptions;
 }
 export interface SharedQueryOptions {
+  databaseId?: string;
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {
@@ -1156,7 +1157,6 @@ export interface SharedQueryOptions {
   };
 }
 export interface RequestOptions extends SharedQueryOptions {
-  databaseId?: string;
   mutations?: google.datastore.v1.IMutation[];
   keys?: Entity;
   transactionOptions?: {
