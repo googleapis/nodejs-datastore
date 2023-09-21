@@ -1034,7 +1034,7 @@ class DatastoreRequest {
       });
       const requestFn = gaxClient![method].bind(gaxClient, reqOpts, gaxOpts);
       callback(null, requestFn);
-    }
+    });
   }
 
   /**
