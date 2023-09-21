@@ -751,6 +751,18 @@ describe('Datastore', () => {
       assert.strictEqual(results!.length, limit);
     });
 
+    /*
+    it('should not experience latency', async () => {
+      const limit = 3;
+      const q = datastore
+        .createQuery('Character')
+        .hasAncestor(ancestor)
+        .limit(limit);
+      const [results] = await datastore.runQuery(q);
+      assert.strictEqual(results!.length, limit);
+    });
+    */
+
     it('should run a query as a stream', done => {
       const q = datastore.createQuery('Character').hasAncestor(ancestor);
       let resultsReturned = 0;
