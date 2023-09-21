@@ -1,5 +1,9 @@
+import * as assert from 'assert';
 import {before, describe} from 'mocha';
 import * as ds from '../../src';
+import * as proxyquire from 'proxyquire';
+
+function FakeV1() {}
 
 describe('Commit', () => {
   let Datastore: typeof ds.Datastore;
@@ -8,9 +12,32 @@ describe('Commit', () => {
 
   const PROJECT_ID = 'project-id';
   const NAMESPACE = 'namespace';
+  const clientName = 'DatastoreClient';
+
+  // This function is used for doing assertion checks.
+  // The idea is to check that the right request gets passed to the commit function in the Gapic layer.
+  function setCommitComparison(compareFn: (request: any) => void) {
+    const dataClient = datastore.clients_.get(clientName);
+    if (dataClient) {
+      dataClient.commit = (
+        request: any,
+        options: any,
+        callback: (err?: unknown) => void
+      ) => {
+        try {
+          compareFn(request);
+        } catch (e) {
+          callback(e);
+        }
+        callback();
+      };
+    }
+  }
 
   before(() => {
-    const clientName = 'DatastoreClient';
+    Datastore = proxyquire('../../src', {
+      './v1': FakeV1,
+    }).Datastore;
     const options = {
       projectId: PROJECT_ID,
       namespace: NAMESPACE,
@@ -22,10 +49,19 @@ describe('Commit', () => {
     // We don't want to make this call because it would make a grpc request.
     // So we just add the data client to the map.
     const gapic = Object.freeze({
-      v1: require('../src/v1'),
+      v1: require('../../src/v1'),
     });
     datastore.clients_.set(clientName, new gapic.v1[clientName](options));
-    // Mock out commit and just have it pass back the information passed into it through the callback.
-    // This way we can easily use assertion checks to see what reached the gapic layer.
+  });
+
+  it('should not experience latency when fetching the project', async () => {
+    const startTime = Date.now();
+    setCommitComparison(() => {
+      const endTime = Date.now();
+      const callTime = endTime - startTime;
+      // Testing locally reveals callTime is usually about 1.
+      assert(callTime < 100);
+    });
+    await datastore.save([]);
   });
 });
