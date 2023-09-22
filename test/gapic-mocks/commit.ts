@@ -70,12 +70,12 @@ describe('Commit', () => {
 
   it('should not experience latency when fetching the project', async () => {
     const startTime = Date.now();
-    setCommitComparison(() => {
-      const endTime = Date.now();
-      const callTime = endTime - startTime;
-      // Testing locally reveals callTime is usually about 1.
-      assert(callTime < 100);
-    });
+    setCommitComparison(() => {});
     await datastore.save([]);
+    const endTime = Date.now();
+    const callTime = endTime - startTime;
+    console.log(`call time: ${callTime}`);
+    // Testing locally reveals callTime is usually about 1.
+    assert(callTime < 100);
   });
 });
