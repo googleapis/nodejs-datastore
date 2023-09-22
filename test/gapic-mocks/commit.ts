@@ -16,6 +16,8 @@ import * as assert from 'assert';
 import {before, describe} from 'mocha';
 import * as ds from '../../src';
 import * as proxyquire from 'proxyquire';
+import * as gax from 'google-gax';
+const {grpc} = new gax.GrpcClient();
 
 function FakeV1() {}
 
