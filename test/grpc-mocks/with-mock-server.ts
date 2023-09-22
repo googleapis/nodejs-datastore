@@ -23,6 +23,7 @@ describe('Datastore/Unary', () => {
   let server: MockServer;
   let service: MockService;
   let datastore: Datastore;
+  const projectId = 'project-id';
 
   before(async () => {
     // make sure we have everything initialized before starting tests
@@ -31,6 +32,7 @@ describe('Datastore/Unary', () => {
     });
     datastore = new Datastore({
       apiEndpoint: `localhost:${port}`,
+      projectId,
     });
     service = new DatastoreClientMockService(server);
   });
@@ -56,7 +58,12 @@ describe('Datastore/Unary', () => {
       service.setService({
         RunQuery: emitTableNotExistsError,
       });
-      await datastore.runQuery(query);
+      const gaxOptions = {
+        retryRequestOptions: {
+          currentRetryAttempt: 0,
+        },
+      };
+      await datastore.runQuery(query, {gaxOptions});
       // const [entities] = await datastore.runQuery(query);
     });
   });
