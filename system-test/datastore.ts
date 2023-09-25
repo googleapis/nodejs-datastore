@@ -726,6 +726,29 @@ describe('Datastore', () => {
       await datastore.delete(keys);
     });
 
+    it.only('should run multiple queries with low latency', async () => {
+      const projectId = await datastore.getProjectId();
+      const startTime = Date.now();
+      const size = 50; // will be set in different value
+      await Promise.all(
+        Array.from(Array(size)).map(() =>
+          (async () => {
+            const newDatastore = new Datastore({projectId});
+            const cid = 'dm:4783269862244352:6109546586112000';
+            await newDatastore.runQuery(
+              newDatastore
+                .createQuery('ChatMessage')
+                .filter('cids', cid)
+                .limit(200)
+            );
+          })()
+        )
+      );
+      const endTime = Date.now();
+      const callTime = endTime - startTime;
+      console.log(`call time: ${callTime}`);
+    });
+
     it('should limit queries', async () => {
       const q = datastore
         .createQuery('Character')
