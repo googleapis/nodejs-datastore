@@ -49,7 +49,7 @@ describe('Datastore/Unary', () => {
         RunQuery: emitTableNotExistsError,
       });
     });
-    it.only('should not experience latency when making the grpc call', async () => {
+    it('should not experience latency when making the grpc call', async () => {
       // const startTime = Date.now();
       callStartTime = Date.now();
       const kind = 'Character';
