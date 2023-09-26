@@ -203,10 +203,6 @@ describe('Datastore', () => {
   });
 
   describe('instantiation', () => {
-    function setHost(host: string) {
-      process.env.DATASTORE_EMULATOR_HOST = host;
-    }
-
     it('should initialize an empty Client map', () => {
       assert(datastore.clients_ instanceof Map);
       assert.strictEqual(datastore.clients_.size, 0);
@@ -293,7 +289,7 @@ describe('Datastore', () => {
       assert.strictEqual((datastore.options as any).port, port);
     });
 
-    it('should set ssl credentials if using a custom endpoint', () => {
+    it('should set grpc ssl credentials if localhost custom endpoint', () => {
       const fakeInsecureCreds = {};
       createInsecureOverride = () => {
         return fakeInsecureCreds;
@@ -305,6 +301,10 @@ describe('Datastore', () => {
     });
 
     describe('checking ssl credentials are set correctly with custom endpoints', () => {
+      function setHost(host: string) {
+        process.env.DATASTORE_EMULATOR_HOST = host;
+      }
+      
       const sslCreds = gax.grpc.ChannelCredentials.createSsl();
       const fakeInsecureCreds = {
         insecureCredProperty: 'insecureCredPropertyValue',
