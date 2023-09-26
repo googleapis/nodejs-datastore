@@ -203,6 +203,10 @@ describe('Datastore', () => {
   });
 
   describe('instantiation', () => {
+    function setHost(host: string) {
+      process.env.DATASTORE_EMULATOR_HOST = host;
+    }
+
     it('should initialize an empty Client map', () => {
       assert(datastore.clients_ instanceof Map);
       assert.strictEqual(datastore.clients_.size, 0);
@@ -289,7 +293,8 @@ describe('Datastore', () => {
       assert.strictEqual((datastore.options as any).port, port);
     });
 
-    it('should set grpc ssl credentials if localhost custom endpoint', () => {
+    it('should set ssl credentials if using a custom endpoint and an emulator', () => {
+      setHost(OPTIONS.apiEndpoint);
       const fakeInsecureCreds = {};
       createInsecureOverride = () => {
         return fakeInsecureCreds;
@@ -298,6 +303,94 @@ describe('Datastore', () => {
       const datastore = new Datastore(OPTIONS);
 
       assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
+    });
+
+    describe('checking ssl credentials are set correctly with custom endpoints', () => {
+      const sslCreds = gax.grpc.ChannelCredentials.createSsl();
+      const fakeInsecureCreds = {
+        insecureCredProperty: 'insecureCredPropertyValue',
+      };
+
+      beforeEach(() => {
+        createInsecureOverride = () => {
+          return fakeInsecureCreds;
+        };
+      });
+
+      describe('without DATASTORE_EMULATOR_HOST environment variable set', () => {
+        beforeEach(() => {
+          delete process.env.DATASTORE_EMULATOR_HOST;
+        });
+
+        it('should use ssl credentials provided', () => {
+          const options = {
+            apiEndpoint: OPTIONS.apiEndpoint,
+            sslCreds,
+          };
+          const datastore = new Datastore(options);
+          assert.strictEqual(datastore.options.sslCreds, sslCreds);
+        });
+
+        it('should not set ssl credentials when ssl credentials are not provided', () => {
+          const datastore = new Datastore({
+            apiEndpoint: 'http://localhost',
+          });
+          assert.strictEqual(datastore.options.sslCreds, undefined);
+        });
+      });
+      describe('with DATASTORE_EMULATOR_HOST environment variable set', () => {
+        beforeEach(() => {
+          delete process.env.DATASTORE_EMULATOR_HOST;
+        });
+
+        describe('with DATASTORE_EMULATOR_HOST set to localhost', () => {
+          const host = 'http://localhost:8080';
+          beforeEach(() => {
+            setHost(host);
+          });
+
+          it('should use ssl credentials provided', () => {
+            const datastore = new Datastore({
+              apiEndpoint: host,
+              sslCreds,
+            });
+            assert.strictEqual(datastore.options.sslCreds, sslCreds);
+          });
+
+          it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+            const datastore = new Datastore({
+              apiEndpoint: host,
+            });
+            assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
+          });
+        });
+
+        describe('with DATASTORE_EMULATOR_HOST set to remote host', () => {
+          const host = 'http://remote:8080';
+          beforeEach(() => {
+            setHost('http://some-remote-host');
+          });
+
+          it('should use ssl credentials provided', () => {
+            const datastore = new Datastore({
+              apiEndpoint: host,
+              sslCreds,
+            });
+            assert.strictEqual(datastore.options.sslCreds, sslCreds);
+          });
+
+          it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+            const datastore = new Datastore({
+              apiEndpoint: host,
+            });
+            assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
+          });
+        });
+
+        after(() => {
+          delete process.env.DATASTORE_EMULATOR_HOST;
+        });
+      });
     });
 
     it('should cache a local GoogleAuth instance', () => {
