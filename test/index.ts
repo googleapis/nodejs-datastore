@@ -318,13 +318,14 @@ describe('Datastore', () => {
       });
 
       describe('without DATASTORE_EMULATOR_HOST environment variable set', () => {
+        const apiEndpoint = OPTIONS.apiEndpoint;
         beforeEach(() => {
           delete process.env.DATASTORE_EMULATOR_HOST;
         });
 
         it('should use ssl credentials provided', () => {
           const options = {
-            apiEndpoint: OPTIONS.apiEndpoint,
+            apiEndpoint,
             sslCreds,
           };
           const datastore = new Datastore(options);
@@ -333,7 +334,7 @@ describe('Datastore', () => {
 
         it('should not set ssl credentials when ssl credentials are not provided', () => {
           const datastore = new Datastore({
-            apiEndpoint: 'http://localhost',
+            apiEndpoint,
           });
           assert.strictEqual(datastore.options.sslCreds, undefined);
         });
@@ -344,14 +345,14 @@ describe('Datastore', () => {
         });
 
         describe('with DATASTORE_EMULATOR_HOST set to localhost', () => {
-          const host = 'http://localhost:8080';
+          const apiEndpoint = 'http://localhost:8080';
           beforeEach(() => {
-            setHost(host);
+            setHost(apiEndpoint);
           });
 
           it('should use ssl credentials provided', () => {
             const datastore = new Datastore({
-              apiEndpoint: host,
+              apiEndpoint,
               sslCreds,
             });
             assert.strictEqual(datastore.options.sslCreds, sslCreds);
@@ -359,21 +360,21 @@ describe('Datastore', () => {
 
           it('should use insecure ssl credentials when ssl credentials are not provided', () => {
             const datastore = new Datastore({
-              apiEndpoint: host,
+              apiEndpoint,
             });
             assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
           });
         });
 
         describe('with DATASTORE_EMULATOR_HOST set to remote host', () => {
-          const host = 'http://remote:8080';
+          const apiEndpoint = 'http://remote:8080';
           beforeEach(() => {
-            setHost('http://some-remote-host');
+            setHost(apiEndpoint);
           });
 
           it('should use ssl credentials provided', () => {
             const datastore = new Datastore({
-              apiEndpoint: host,
+              apiEndpoint,
               sslCreds,
             });
             assert.strictEqual(datastore.options.sslCreds, sslCreds);
@@ -381,7 +382,7 @@ describe('Datastore', () => {
 
           it('should use insecure ssl credentials when ssl credentials are not provided', () => {
             const datastore = new Datastore({
-              apiEndpoint: host,
+              apiEndpoint,
             });
             assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
           });
