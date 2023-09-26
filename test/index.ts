@@ -293,8 +293,7 @@ describe('Datastore', () => {
       assert.strictEqual((datastore.options as any).port, port);
     });
 
-    it('should set ssl credentials if using a custom endpoint and an emulator', () => {
-      setHost(OPTIONS.apiEndpoint);
+    it('should set ssl credentials if using a custom endpoint', () => {
       const fakeInsecureCreds = {};
       createInsecureOverride = () => {
         return fakeInsecureCreds;
@@ -318,25 +317,43 @@ describe('Datastore', () => {
       });
 
       describe('without DATASTORE_EMULATOR_HOST environment variable set', () => {
-        const apiEndpoint = OPTIONS.apiEndpoint;
         beforeEach(() => {
           delete process.env.DATASTORE_EMULATOR_HOST;
         });
 
-        it('should use ssl credentials provided', () => {
-          const options = {
-            apiEndpoint,
-            sslCreds,
-          };
-          const datastore = new Datastore(options);
-          assert.strictEqual(datastore.options.sslCreds, sslCreds);
-        });
-
-        it('should not set ssl credentials when ssl credentials are not provided', () => {
-          const datastore = new Datastore({
-            apiEndpoint,
+        describe('using a localhost endpoint', () => {
+          const apiEndpoint = 'http://localhost:8080';
+          it('should use ssl credentials provided', () => {
+            const options = {
+              apiEndpoint,
+              sslCreds,
+            };
+            const datastore = new Datastore(options);
+            assert.strictEqual(datastore.options.sslCreds, sslCreds);
           });
-          assert.strictEqual(datastore.options.sslCreds, undefined);
+          it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+            const datastore = new Datastore({
+              apiEndpoint,
+            });
+            assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
+          });
+        });
+        describe('using a remote endpoint', () => {
+          const apiEndpoint = 'http://remote:8080';
+          it('should use ssl credentials provided', () => {
+            const options = {
+              apiEndpoint,
+              sslCreds,
+            };
+            const datastore = new Datastore(options);
+            assert.strictEqual(datastore.options.sslCreds, sslCreds);
+          });
+          it('should not set ssl credentials when ssl credentials are not provided', () => {
+            const datastore = new Datastore({
+              apiEndpoint,
+            });
+            assert.strictEqual(datastore.options.sslCreds, undefined);
+          });
         });
       });
       describe('with DATASTORE_EMULATOR_HOST environment variable set', () => {
