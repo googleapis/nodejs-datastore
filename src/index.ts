@@ -505,7 +505,14 @@ class Datastore extends DatastoreRequest {
       },
       options
     );
-    if (this.customEndpoint_ && process.env.DATASTORE_EMULATOR_HOST) {
+    const isUsingLocalhost =
+      this.baseUrl_ &&
+      (this.baseUrl_.includes('localhost') ||
+        this.baseUrl_.includes('127.0.0.1') ||
+        this.baseUrl_.includes('::1'));
+    const isEmulatorVariableSet = process.env.DATASTORE_EMULATOR_HOST;
+    const isUsingEmulator = isUsingLocalhost || isEmulatorVariableSet;
+    if (this.customEndpoint_ && isUsingEmulator) {
       this.options.sslCreds ??= grpc.credentials.createInsecure();
     }
 
