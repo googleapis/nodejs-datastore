@@ -304,7 +304,7 @@ describe('Datastore', () => {
       function setHost(host: string) {
         process.env.DATASTORE_EMULATOR_HOST = host;
       }
-      
+
       const sslCreds = gax.grpc.ChannelCredentials.createSsl();
       const fakeInsecureCreds = {
         insecureCredProperty: 'insecureCredPropertyValue',
@@ -324,6 +324,7 @@ describe('Datastore', () => {
         describe('using a localhost endpoint', () => {
           const apiEndpoint = 'http://localhost:8080';
           it('should use ssl credentials provided', () => {
+            // SSL credentials provided in the constructor should always be used.
             const options = {
               apiEndpoint,
               sslCreds,
@@ -332,6 +333,8 @@ describe('Datastore', () => {
             assert.strictEqual(datastore.options.sslCreds, sslCreds);
           });
           it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+            // When using a localhost endpoint it is assumed that the emulator is being used.
+            // Therefore, sslCreds should be set to insecure credentials to skip authentication.
             const datastore = new Datastore({
               apiEndpoint,
             });
@@ -341,6 +344,7 @@ describe('Datastore', () => {
         describe('using a remote endpoint', () => {
           const apiEndpoint = 'http://remote:8080';
           it('should use ssl credentials provided', () => {
+            // SSL credentials provided in the constructor should always be used.
             const options = {
               apiEndpoint,
               sslCreds,
@@ -349,6 +353,9 @@ describe('Datastore', () => {
             assert.strictEqual(datastore.options.sslCreds, sslCreds);
           });
           it('should not set ssl credentials when ssl credentials are not provided', () => {
+            // When using a remote endpoint without DATASTORE_EMULATOR_HOST set,
+            // it is assumed that the emulator is not being used.
+            // This test captures the case where users use a regional endpoint.
             const datastore = new Datastore({
               apiEndpoint,
             });
@@ -368,6 +375,7 @@ describe('Datastore', () => {
           });
 
           it('should use ssl credentials provided', () => {
+            // SSL credentials provided in the constructor should always be used.
             const datastore = new Datastore({
               apiEndpoint,
               sslCreds,
@@ -376,6 +384,8 @@ describe('Datastore', () => {
           });
 
           it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+            // When DATASTORE_EMULATOR_HOST is set it is assumed that the emulator is being used.
+            // Therefore, sslCreds should be set to insecure credentials to skip authentication.
             const datastore = new Datastore({
               apiEndpoint,
             });
@@ -390,6 +400,7 @@ describe('Datastore', () => {
           });
 
           it('should use ssl credentials provided', () => {
+            // SSL credentials provided in the constructor should always be used.
             const datastore = new Datastore({
               apiEndpoint,
               sslCreds,
@@ -398,6 +409,8 @@ describe('Datastore', () => {
           });
 
           it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+            // When DATASTORE_EMULATOR_HOST is set it is assumed that the emulator is being used.
+            // Therefore, sslCreds should be set to insecure credentials to skip authentication.
             const datastore = new Datastore({
               apiEndpoint,
             });
