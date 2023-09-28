@@ -2240,8 +2240,9 @@ describe('Datastore', () => {
     async.each(
       onSaveTests,
       (onSaveTest: {properties: any; entitiesWithoutKey: any}) => {
-        it('should pass the right properties to upsert on save', async () => {
-          console.log(`Running with parameters ${onSaveTest}`);
+        it(`should pass the right properties to upsert on save with parameters: ${JSON.stringify(
+          onSaveTest
+        )}`, async () => {
           const properties = onSaveTest.properties;
           const entitiesWithoutKey = onSaveTest.entitiesWithoutKey;
           const datastore = new Datastore({
