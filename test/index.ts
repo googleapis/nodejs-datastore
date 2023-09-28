@@ -2220,48 +2220,54 @@ describe('Datastore', () => {
         it(`should pass the right properties to upsert on save with parameters: ${JSON.stringify(
           onSaveTest
         )}`, async () => {
-          const properties = onSaveTest.properties;
           const datastore = new Datastore({
             namespace: `${Date.now()}`,
           });
-          const namespace = datastore.namespace;
-          const key = datastore.key(['Post', 'Post1']);
-          const expectedConfig = {
-            client: 'DatastoreClient',
-            method: 'commit',
-            gaxOpts: {},
-            reqOpts: {
-              mutations: [
-                {
-                  upsert: {
-                    key: {
-                      path: [{kind: 'Post', name: 'Post1'}],
-                      partitionId: {
-                        namespaceId: namespace,
+          {
+            // This block of code mocks out request_ to check values passed into it.
+            const expectedConfig = {
+              client: 'DatastoreClient',
+              method: 'commit',
+              gaxOpts: {},
+              reqOpts: {
+                mutations: [
+                  {
+                    upsert: {
+                      key: {
+                        path: [{kind: 'Post', name: 'Post1'}],
+                        partitionId: {
+                          namespaceId: datastore.namespace,
+                        },
                       },
+                      properties: onSaveTest.properties,
                     },
-                    properties,
                   },
-                },
-              ],
-            },
-          };
-          // Mock out the request function to compare config passed into it.
-          datastore.request_ = (
-            config: RequestConfig,
-            callback: RequestCallback
-          ) => {
-            try {
-              assert.deepStrictEqual(config, expectedConfig);
-              callback(null, 'some-data');
-            } catch (e: any) {
-              callback(e);
-            }
-          };
-          // Attach key to entities parameter passed in.
-          const entities = Object.assign({key}, onSaveTest.entitiesWithoutKey);
-          const results = await datastore.save(entities);
-          assert.deepStrictEqual(results, ['some-data']);
+                ],
+              },
+            };
+            // Mock out the request function to compare config passed into it.
+            datastore.request_ = (
+              config: RequestConfig,
+              callback: RequestCallback
+            ) => {
+              try {
+                assert.deepStrictEqual(config, expectedConfig);
+                callback(null, 'some-data');
+              } catch (e: any) {
+                callback(e);
+              }
+            };
+          }
+          {
+            // Attach key to entities parameter passed in and run save with those parameters.
+            const key = datastore.key(['Post', 'Post1']);
+            const entities = Object.assign(
+              {key},
+              onSaveTest.entitiesWithoutKey
+            );
+            const results = await datastore.save(entities);
+            assert.deepStrictEqual(results, ['some-data']);
+          }
         });
       }
     );
