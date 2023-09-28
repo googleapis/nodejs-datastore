@@ -2214,29 +2214,6 @@ describe('Datastore', () => {
       },
     ];
 
-    function getExpectedConfig(properties: any, namespace: string | undefined) {
-      return {
-        client: 'DatastoreClient',
-        method: 'commit',
-        gaxOpts: {},
-        reqOpts: {
-          mutations: [
-            {
-              upsert: {
-                key: {
-                  path: [{kind: 'Post', name: 'Post1'}],
-                  partitionId: {
-                    namespaceId: namespace,
-                  },
-                },
-                properties,
-              },
-            },
-          ],
-        },
-      };
-    }
-
     async.each(
       onSaveTests,
       (onSaveTest: {properties: any; entitiesWithoutKey: any}) => {
@@ -2249,7 +2226,26 @@ describe('Datastore', () => {
           });
           const namespace = datastore.namespace;
           const key = datastore.key(['Post', 'Post1']);
-          const expectedConfig = getExpectedConfig(properties, namespace);
+          const expectedConfig = {
+            client: 'DatastoreClient',
+            method: 'commit',
+            gaxOpts: {},
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [{kind: 'Post', name: 'Post1'}],
+                      partitionId: {
+                        namespaceId: namespace,
+                      },
+                    },
+                    properties,
+                  },
+                },
+              ],
+            },
+          };
           // Mock out the request function to compare config passed into it.
           datastore.request_ = (
             config: RequestConfig,
