@@ -26,6 +26,8 @@ import {RequestCallback, RequestConfig} from '../src/request';
 import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
+import * as protos from '../protos/protos';
+import {google} from '../protos/protos';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
@@ -2155,7 +2157,6 @@ describe('Datastore', () => {
 
   describe('Without using mocks', () => {
     const Datastore = OriginalDatastore;
-    // TODO: Set type for properties.
     const onSaveTests = [
       {
         // When the property is contained in excludeFromIndexes
@@ -2216,7 +2217,10 @@ describe('Datastore', () => {
 
     async.each(
       onSaveTests,
-      (onSaveTest: {properties: any; entitiesWithoutKey: any}) => {
+      (onSaveTest: {
+        properties: google.datastore.v1.IValue;
+        entitiesWithoutKey: Entities;
+      }) => {
         it(`should pass the right properties to upsert on save with parameters: ${JSON.stringify(
           onSaveTest
         )}`, async () => {
