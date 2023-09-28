@@ -2156,7 +2156,6 @@ describe('Datastore', () => {
   });
 
   describe('Without using mocks', () => {
-    const Datastore = OriginalDatastore;
     const onSaveTests = [
       {
         // When the property is contained in excludeFromIndexes
@@ -2224,7 +2223,7 @@ describe('Datastore', () => {
         it(`should pass the right properties to upsert on save with parameters: ${JSON.stringify(
           onSaveTest
         )}`, async () => {
-          const datastore = new Datastore({
+          const datastore = new OriginalDatastore({
             namespace: `${Date.now()}`,
           });
           {
