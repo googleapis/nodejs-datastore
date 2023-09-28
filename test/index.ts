@@ -29,6 +29,7 @@ import * as extend from 'extend';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
+const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fakeEntityInit: any = {
@@ -2154,117 +2155,125 @@ describe('Datastore', () => {
 
   describe('Without using mocks', () => {
     const Datastore = OriginalDatastore;
-    describe('using save to evaluate excludeFromIndexes', () => {
-      function getExpectedConfig(
-        properties: any,
-        namespace: string | undefined
-      ) {
-        return {
-          client: 'DatastoreClient',
-          method: 'commit',
-          gaxOpts: {},
-          reqOpts: {
-            mutations: [
-              {
-                upsert: {
-                  key: {
-                    path: [{kind: 'Post', name: 'Post1'}],
-                    partitionId: {
-                      namespaceId: namespace,
-                    },
-                  },
-                  properties,
-                },
-              },
-            ],
-          },
-        };
-      }
+    // TODO: Set type for properties.
+    const onSaveTests = [
+      {
+        // When the property is contained in excludeFromIndexes
+        // then save should encode request without excludeFromIndexes
+        properties: {k: {stringValue: 'v'}},
+        entitiesWithoutKey: {data: {k: 'v'}},
+      },
+      {
+        // When the property is contained in excludeFromIndexes
+        // then save should ignore non-existent property in excludeFromIndexes
+        properties: {k: {stringValue: 'v', excludeFromIndexes: true}},
+        entitiesWithoutKey: {
+          data: {k: 'v'},
+          excludeFromIndexes: ['k', 'k.*'],
+        },
+      },
+      {
+        // When the property is not contained in excludeFromIndexes
+        // then save should encode a request without excludeFromIndexes
+        properties: {},
+        entitiesWithoutKey: {data: {}},
+      },
+      {
+        // When the property is not contained in excludeFromIndexes
+        // then save should ignore non-existent property in excludeFromIndexes
+        properties: {},
+        entitiesWithoutKey: {
+          data: {},
+          excludeFromIndexes: [
+            'non_exist_property', // this just ignored
+            'non_exist_property.*', // should also be ignored
+          ],
+        },
+      },
+      {
+        // When the property is not contained in excludeFromIndexes and the property is an array
+        // then save should encode a request properly when there is no wildcard
+        properties: {k: {stringValue: 'v'}},
+        entitiesWithoutKey: {
+          data: {k: 'v'},
+          excludeFromIndexes: [
+            'non_exist_property[]', // this just ignored
+          ],
+        },
+      },
+      {
+        // When the property is not contained in excludeFromIndexes and the property is an array
+        // then save should encode a request properly using a wildcard
+        properties: {k: {stringValue: 'v'}},
+        entitiesWithoutKey: {
+          data: {k: 'v'},
+          excludeFromIndexes: [
+            'non_exist_property[].*', // this just ignored
+          ],
+        },
+      },
+    ];
 
-      async function runExcludeFromIndexesTest(
-        properties: any,
-        entitiesWithoutKey: any
-      ) {
-        const datastore = new Datastore({
-          namespace: `${Date.now()}`,
+    function getExpectedConfig(properties: any, namespace: string | undefined) {
+      return {
+        client: 'DatastoreClient',
+        method: 'commit',
+        gaxOpts: {},
+        reqOpts: {
+          mutations: [
+            {
+              upsert: {
+                key: {
+                  path: [{kind: 'Post', name: 'Post1'}],
+                  partitionId: {
+                    namespaceId: namespace,
+                  },
+                },
+                properties,
+              },
+            },
+          ],
+        },
+      };
+    }
+
+    async function runExcludeFromIndexesTest(
+      properties: any,
+      entitiesWithoutKey: any
+    ) {
+      const datastore = new Datastore({
+        namespace: `${Date.now()}`,
+      });
+      const namespace = datastore.namespace;
+      const key = datastore.key(['Post', 'Post1']);
+      const entities = Object.assign({key}, entitiesWithoutKey);
+      const expectedConfig = getExpectedConfig(properties, namespace);
+      datastore.request_ = (
+        config: RequestConfig,
+        callback: RequestCallback
+      ) => {
+        try {
+          assert.deepStrictEqual(config, expectedConfig);
+          callback(null, 'some-data');
+        } catch (e: any) {
+          callback(e);
+        }
+      };
+      const results = await datastore.save(entities);
+      assert.deepStrictEqual(results, ['some-data']);
+    }
+
+    async.each(
+      onSaveTests,
+      (onSaveTest: {properties: any; entitiesWithoutKey: any}) => {
+        it('should pass the right properties to upsert on save', async () => {
+          console.log(`Running with parameters ${onSaveTest}`);
+          await runExcludeFromIndexesTest(
+            onSaveTest.properties,
+            onSaveTest.entitiesWithoutKey
+          );
         });
-        const namespace = datastore.namespace;
-        const key = datastore.key(['Post', 'Post1']);
-        const entities = Object.assign({key}, entitiesWithoutKey);
-        const expectedConfig = getExpectedConfig(properties, namespace);
-        datastore.request_ = (
-          config: RequestConfig,
-          callback: RequestCallback
-        ) => {
-          try {
-            assert.deepStrictEqual(config, expectedConfig);
-            callback(null, 'some-data');
-          } catch (e: any) {
-            callback(e);
-          }
-        };
-        const results = await datastore.save(entities);
-        assert.deepStrictEqual(results, ['some-data']);
       }
-      describe('when the property is contained in excludeFromIndexes', () => {
-        it('should encode a request without excludeFromIndexes', async () => {
-          const properties = {k: {stringValue: 'v'}};
-          const entitiesWithoutKey = {
-            data: {k: 'v'},
-          };
-          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
-        });
-        it('should ignore non-existent property in excludeFromIndexes', async () => {
-          const properties = {k: {stringValue: 'v', excludeFromIndexes: true}};
-          const entitiesWithoutKey = {
-            data: {k: 'v'},
-            excludeFromIndexes: ['k', 'k.*'],
-          };
-          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
-        });
-      });
-      describe('when the property is not contained in excludeFromIndexes', () => {
-        it('should encode a request without excludeFromIndexes', async () => {
-          const properties = {};
-          const entitiesWithoutKey = {
-            data: {},
-          };
-          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
-        });
-        it('should ignore non-existent property in excludeFromIndexes', async () => {
-          const properties = {};
-          const entitiesWithoutKey = {
-            data: {},
-            excludeFromIndexes: [
-              'non_exist_property', // this just ignored
-              'non_exist_property.*', // should also be ignored
-            ],
-          };
-          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
-        });
-      });
-      describe('when the property is not contained in excludeFromIndexes and the property is an array', () => {
-        it('should encode a request when there is no wildcard', async () => {
-          const properties = {k: {stringValue: 'v'}};
-          const entitiesWithoutKey = {
-            data: {k: 'v'},
-            excludeFromIndexes: [
-              'non_exist_property[]', // this just ignored
-            ],
-          };
-          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
-        });
-        it('should encode a request when using a wildcard', async () => {
-          const properties = {k: {stringValue: 'v'}};
-          const entitiesWithoutKey = {
-            data: {k: 'v'},
-            excludeFromIndexes: [
-              'non_exist_property[].*', // this just ignored
-            ],
-          };
-          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
-        });
-      });
-    });
+    );
   });
 });
