@@ -906,7 +906,11 @@ export namespace entity {
             excludePathFromEntity(entity, newPath);
           });
         } else {
-          if (hasWildCard && remainderPath === '*' && isFirstPathPartDefined) {
+          if (
+            hasWildCard &&
+            remainderPath === '*' &&
+            isFirstPathPartDefined
+          ) {
             const parentEntity = entity.properties![firstPathPart].entityValue;
 
             if (parentEntity) {
