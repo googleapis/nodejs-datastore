@@ -910,6 +910,7 @@ export namespace entity {
             entity.properties![firstPathPart] !== undefined
           ) {
             const parentEntity = entity.properties![firstPathPart].entityValue;
+            
             if (parentEntity) {
               Object.keys(parentEntity.properties).forEach(path => {
                 const newPath = parentEntity.properties[path].arrayValue
