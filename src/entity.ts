@@ -856,8 +856,8 @@ export namespace entity {
         entity.properties![firstPathPart] !== undefined;
       if (
         firstPathPartIsArray &&
-        // check also if the property in question is actually an array value.
         isFirstPathPartDefined &&
+        // check also if the property in question is actually an array value.
         entity.properties![firstPathPart].arrayValue &&
         // check if wildcard is not applied
         !hasWildCard
