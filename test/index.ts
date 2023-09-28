@@ -2215,148 +2215,54 @@ describe('Datastore', () => {
           await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
         });
         it('should ignore non-existent property in excludeFromIndexes', async () => {
-          const datastore = new Datastore({
-            namespace: `${Date.now()}`,
-          });
-          const namespace = datastore.namespace;
-          const key = datastore.key(['Post', 'Post1']);
-          const expectedConfig = getExpectedConfig(
-            {k: {stringValue: 'v', excludeFromIndexes: true}},
-            namespace
-          );
-          datastore.request_ = (
-            config: RequestConfig,
-            callback: RequestCallback
-          ) => {
-            try {
-              assert.deepStrictEqual(config, expectedConfig);
-              callback(null, 'some-data');
-            } catch (e: any) {
-              callback(e);
-            }
-          };
-          const results = await datastore.save({
-            key,
+          const properties = {k: {stringValue: 'v', excludeFromIndexes: true}};
+          const entitiesWithoutKey = {
             data: {k: 'v'},
             excludeFromIndexes: ['k', 'k.*'],
-          });
-          assert.deepStrictEqual(results, ['some-data']);
+          };
+          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
         });
       });
       describe('when the property is not contained in excludeFromIndexes', () => {
         it('should encode a request without excludeFromIndexes', async () => {
-          const datastore = new Datastore({
-            namespace: `${Date.now()}`,
-          });
-          const namespace = datastore.namespace;
-          const key = datastore.key(['Post', 'Post1']);
-          const expectedConfig = getExpectedConfig({}, namespace);
-          datastore.request_ = (
-            config: RequestConfig,
-            callback: RequestCallback
-          ) => {
-            try {
-              assert.deepStrictEqual(config, expectedConfig);
-              callback(null, 'some-data');
-            } catch (e: any) {
-              callback(e);
-            }
-          };
-          const results = await datastore.save({
-            key,
+          const properties = {};
+          const entitiesWithoutKey = {
             data: {},
-          });
-          assert.deepStrictEqual(results, ['some-data']);
+          };
+          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
         });
         it('should ignore non-existent property in excludeFromIndexes', async () => {
-          const datastore = new Datastore({
-            namespace: `${Date.now()}`,
-          });
-          const namespace = datastore.namespace;
-          const key = datastore.key(['Post', 'Post1']);
-          const expectedConfig = getExpectedConfig({}, namespace);
-          datastore.request_ = (
-            config: RequestConfig,
-            callback: RequestCallback
-          ) => {
-            try {
-              assert.deepStrictEqual(config, expectedConfig);
-              callback(null, 'some-data');
-            } catch (e: any) {
-              callback(e);
-            }
-          };
-          const results = await datastore.save({
-            key,
+          const properties = {};
+          const entitiesWithoutKey = {
             data: {},
             excludeFromIndexes: [
               'non_exist_property', // this just ignored
               'non_exist_property.*', // should also be ignored
             ],
-          });
-          assert.deepStrictEqual(results, ['some-data']);
+          };
+          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
         });
       });
       describe('when the property is not contained in excludeFromIndexes and the property is an array', () => {
         it('should encode a request when there is no wildcard', async () => {
-          const datastore = new Datastore({
-            namespace: `${Date.now()}`,
-          });
-          const namespace = datastore.namespace;
-          const key = datastore.key(['Post', 'Post1']);
-          const expectedConfig = getExpectedConfig(
-            {k: {stringValue: 'v'}},
-            namespace
-          );
-          datastore.request_ = (
-            config: RequestConfig,
-            callback: RequestCallback
-          ) => {
-            try {
-              assert.deepStrictEqual(config, expectedConfig);
-              callback(null, 'some-data');
-            } catch (e: any) {
-              callback(e);
-            }
-          };
-          const results = await datastore.save({
-            key,
+          const properties = {k: {stringValue: 'v'}};
+          const entitiesWithoutKey = {
             data: {k: 'v'},
             excludeFromIndexes: [
               'non_exist_property[]', // this just ignored
             ],
-          });
-          assert.deepStrictEqual(results, ['some-data']);
+          };
+          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
         });
         it('should encode a request when using a wildcard', async () => {
-          const datastore = new Datastore({
-            namespace: `${Date.now()}`,
-          });
-          const namespace = datastore.namespace;
-          const key = datastore.key(['Post', 'Post1']);
-          const expectedConfig = getExpectedConfig(
-            {k: {stringValue: 'v'}},
-            namespace
-          );
-          datastore.request_ = (
-            config: RequestConfig,
-            callback: RequestCallback
-          ) => {
-            try {
-              assert.deepStrictEqual(config, expectedConfig);
-              callback(null, 'some-data');
-            } catch (e: any) {
-              callback(e);
-            }
-          };
-          const results = await datastore.save({
-            key,
+          const properties = {k: {stringValue: 'v'}};
+          const entitiesWithoutKey = {
             data: {k: 'v'},
             excludeFromIndexes: [
               'non_exist_property[].*', // this just ignored
             ],
-          });
-          assert.deepStrictEqual(results, ['some-data']);
+          };
+          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
         });
       });
     });
