@@ -4,6 +4,29 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [8.1.0](https://github.com/googleapis/nodejs-datastore/compare/v8.0.0...v8.1.0) (2023-09-07)
+
+
+### Features
+
+* Sum and average aggregation queries ([#1097](https://github.com/googleapis/nodejs-datastore/issues/1097)) ([44ba6f8](https://github.com/googleapis/nodejs-datastore/commit/44ba6f8f84ef3e33aa1c07b0808a42bcf871b8c6))
+
+
+### Bug Fixes
+
+* Simplify logic for HTTP/1.1 REST fallback option ([#1138](https://github.com/googleapis/nodejs-datastore/issues/1138)) ([4cefaea](https://github.com/googleapis/nodejs-datastore/commit/4cefaeab2ee8af800303f09495883aa1a5a28632))
+
+## [8.0.0](https://github.com/googleapis/nodejs-datastore/compare/v7.5.1...v8.0.0) (2023-08-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade to Node 14
+
+### Miscellaneous Chores
+
+* Upgrade to Node 14 ([b7904f1](https://github.com/googleapis/nodejs-datastore/commit/b7904f12b1d398a5b0e6fefc2a002c404f9e7d3d))
+
 ## [7.5.1](https://github.com/googleapis/nodejs-datastore/compare/v7.5.0...v7.5.1) (2023-04-11)
 
 
