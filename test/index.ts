@@ -2237,41 +2237,33 @@ describe('Datastore', () => {
       };
     }
 
-    async function runExcludeFromIndexesTest(
-      properties: any,
-      entitiesWithoutKey: any
-    ) {
-      const datastore = new Datastore({
-        namespace: `${Date.now()}`,
-      });
-      const namespace = datastore.namespace;
-      const key = datastore.key(['Post', 'Post1']);
-      const entities = Object.assign({key}, entitiesWithoutKey);
-      const expectedConfig = getExpectedConfig(properties, namespace);
-      datastore.request_ = (
-        config: RequestConfig,
-        callback: RequestCallback
-      ) => {
-        try {
-          assert.deepStrictEqual(config, expectedConfig);
-          callback(null, 'some-data');
-        } catch (e: any) {
-          callback(e);
-        }
-      };
-      const results = await datastore.save(entities);
-      assert.deepStrictEqual(results, ['some-data']);
-    }
-
     async.each(
       onSaveTests,
       (onSaveTest: {properties: any; entitiesWithoutKey: any}) => {
         it('should pass the right properties to upsert on save', async () => {
           console.log(`Running with parameters ${onSaveTest}`);
-          await runExcludeFromIndexesTest(
-            onSaveTest.properties,
-            onSaveTest.entitiesWithoutKey
-          );
+          const properties = onSaveTest.properties;
+          const entitiesWithoutKey = onSaveTest.entitiesWithoutKey;
+          const datastore = new Datastore({
+            namespace: `${Date.now()}`,
+          });
+          const namespace = datastore.namespace;
+          const key = datastore.key(['Post', 'Post1']);
+          const entities = Object.assign({key}, entitiesWithoutKey);
+          const expectedConfig = getExpectedConfig(properties, namespace);
+          datastore.request_ = (
+            config: RequestConfig,
+            callback: RequestCallback
+          ) => {
+            try {
+              assert.deepStrictEqual(config, expectedConfig);
+              callback(null, 'some-data');
+            } catch (e: any) {
+              callback(e);
+            }
+          };
+          const results = await datastore.save(entities);
+          assert.deepStrictEqual(results, ['some-data']);
         });
       }
     );
