@@ -21,7 +21,7 @@ import {PassThrough, Readable} from 'stream';
 import * as ds from '../src';
 import {Datastore, DatastoreOptions} from '../src';
 import {Datastore as OriginalDatastore} from '../src';
-import {entity, Entity, EntityProto, EntityObject} from '../src/entity';
+import {entity, Entity, EntityProto, EntityObject, Entities} from '../src/entity';
 import {RequestCallback, RequestConfig} from '../src/request';
 import * as is from 'is';
 import * as sinon from 'sinon';
@@ -2180,35 +2180,46 @@ describe('Datastore', () => {
           },
         };
       }
-      describe('when the property is contained in excludeFromIndexes', () => {
+
+      async function runExcludeFromIndexesTest(
+        properties: any,
+        entitiesWithoutKey: any
+      ) {
         const datastore = new Datastore({
           namespace: `${Date.now()}`,
         });
         const namespace = datastore.namespace;
         const key = datastore.key(['Post', 'Post1']);
+        const entities = Object.assign({key}, entitiesWithoutKey);
+        const expectedConfig = getExpectedConfig(properties, namespace);
+        datastore.request_ = (
+          config: RequestConfig,
+          callback: RequestCallback
+        ) => {
+          try {
+            assert.deepStrictEqual(config, expectedConfig);
+            callback(null, 'some-data');
+          } catch (e: any) {
+            callback(e);
+          }
+        };
+        const results = await datastore.save(entities);
+        assert.deepStrictEqual(results, ['some-data']);
+      }
+      describe('when the property is contained in excludeFromIndexes', () => {
         it('should encode a request without excludeFromIndexes', async () => {
-          const expectedConfig = getExpectedConfig(
-            {k: {stringValue: 'v'}},
-            namespace
-          );
-          datastore.request_ = (
-            config: RequestConfig,
-            callback: RequestCallback
-          ) => {
-            try {
-              assert.deepStrictEqual(config, expectedConfig);
-              callback(null, 'some-data');
-            } catch (e: any) {
-              callback(e);
-            }
-          };
-          const results = await datastore.save({
-            key,
+          const properties = {k: {stringValue: 'v'}};
+          const entitiesWithoutKey = {
             data: {k: 'v'},
-          });
-          assert.deepStrictEqual(results, ['some-data']);
+          };
+          await runExcludeFromIndexesTest(properties, entitiesWithoutKey);
         });
         it('should ignore non-existent property in excludeFromIndexes', async () => {
+          const datastore = new Datastore({
+            namespace: `${Date.now()}`,
+          });
+          const namespace = datastore.namespace;
+          const key = datastore.key(['Post', 'Post1']);
           const expectedConfig = getExpectedConfig(
             {k: {stringValue: 'v', excludeFromIndexes: true}},
             namespace
@@ -2233,24 +2244,24 @@ describe('Datastore', () => {
         });
       });
       describe('when the property is not contained in excludeFromIndexes', () => {
-        const datastore = new Datastore({
-          namespace: `${Date.now()}`,
-        });
-        const namespace = datastore.namespace;
-        const expectedConfig = getExpectedConfig({}, namespace);
-        datastore.request_ = (
-          config: RequestConfig,
-          callback: RequestCallback
-        ) => {
-          try {
-            assert.deepStrictEqual(config, expectedConfig);
-            callback(null, 'some-data');
-          } catch (e: any) {
-            callback(e);
-          }
-        };
-        const key = datastore.key(['Post', 'Post1']);
         it('should encode a request without excludeFromIndexes', async () => {
+          const datastore = new Datastore({
+            namespace: `${Date.now()}`,
+          });
+          const namespace = datastore.namespace;
+          const key = datastore.key(['Post', 'Post1']);
+          const expectedConfig = getExpectedConfig({}, namespace);
+          datastore.request_ = (
+            config: RequestConfig,
+            callback: RequestCallback
+          ) => {
+            try {
+              assert.deepStrictEqual(config, expectedConfig);
+              callback(null, 'some-data');
+            } catch (e: any) {
+              callback(e);
+            }
+          };
           const results = await datastore.save({
             key,
             data: {},
@@ -2258,6 +2269,23 @@ describe('Datastore', () => {
           assert.deepStrictEqual(results, ['some-data']);
         });
         it('should ignore non-existent property in excludeFromIndexes', async () => {
+          const datastore = new Datastore({
+            namespace: `${Date.now()}`,
+          });
+          const namespace = datastore.namespace;
+          const key = datastore.key(['Post', 'Post1']);
+          const expectedConfig = getExpectedConfig({}, namespace);
+          datastore.request_ = (
+            config: RequestConfig,
+            callback: RequestCallback
+          ) => {
+            try {
+              assert.deepStrictEqual(config, expectedConfig);
+              callback(null, 'some-data');
+            } catch (e: any) {
+              callback(e);
+            }
+          };
           const results = await datastore.save({
             key,
             data: {},
@@ -2270,12 +2298,12 @@ describe('Datastore', () => {
         });
       });
       describe('when the property is not contained in excludeFromIndexes and the property is an array', () => {
-        const datastore = new Datastore({
-          namespace: `${Date.now()}`,
-        });
-        const namespace = datastore.namespace;
-        const key = datastore.key(['Post', 'Post1']);
         it('should encode a request when there is no wildcard', async () => {
+          const datastore = new Datastore({
+            namespace: `${Date.now()}`,
+          });
+          const namespace = datastore.namespace;
+          const key = datastore.key(['Post', 'Post1']);
           const expectedConfig = getExpectedConfig(
             {k: {stringValue: 'v'}},
             namespace
@@ -2301,6 +2329,11 @@ describe('Datastore', () => {
           assert.deepStrictEqual(results, ['some-data']);
         });
         it('should encode a request when using a wildcard', async () => {
+          const datastore = new Datastore({
+            namespace: `${Date.now()}`,
+          });
+          const namespace = datastore.namespace;
+          const key = datastore.key(['Post', 'Post1']);
           const expectedConfig = getExpectedConfig(
             {k: {stringValue: 'v'}},
             namespace
