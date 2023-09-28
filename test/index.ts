@@ -2244,14 +2244,13 @@ describe('Datastore', () => {
           onSaveTest
         )}`, async () => {
           const properties = onSaveTest.properties;
-          const entitiesWithoutKey = onSaveTest.entitiesWithoutKey;
           const datastore = new Datastore({
             namespace: `${Date.now()}`,
           });
           const namespace = datastore.namespace;
           const key = datastore.key(['Post', 'Post1']);
-          const entities = Object.assign({key}, entitiesWithoutKey);
           const expectedConfig = getExpectedConfig(properties, namespace);
+          // Mock out the request function to compare config passed into it.
           datastore.request_ = (
             config: RequestConfig,
             callback: RequestCallback
@@ -2263,6 +2262,8 @@ describe('Datastore', () => {
               callback(e);
             }
           };
+          // Attach key to entities parameter passed in.
+          const entities = Object.assign({key}, onSaveTest.entitiesWithoutKey);
           const results = await datastore.save(entities);
           assert.deepStrictEqual(results, ['some-data']);
         });
