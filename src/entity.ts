@@ -904,26 +904,25 @@ export namespace entity {
             excludePathFromEntity(entity, newPath);
           });
         } else {
-          if (typeof entity.properties![firstPathPart] !== 'undefined') {
-            if (hasWildCard && remainderPath === '*') {
-              const parentEntity =
-                entity.properties![firstPathPart].entityValue;
-
-              if (parentEntity) {
-                Object.keys(parentEntity.properties).forEach(path => {
-                  const newPath = parentEntity.properties[path].arrayValue
-                    ? path + '[].*'
-                    : path + '.*';
-                  excludePathFromEntity(parentEntity, newPath);
-                });
-              } else {
-                excludePathFromEntity(entity, firstPathPart);
-              }
+          if (
+            hasWildCard &&
+            remainderPath === '*' &&
+            entity.properties![firstPathPart] !== undefined
+          ) {
+            const parentEntity = entity.properties![firstPathPart].entityValue;
+            if (parentEntity) {
+              Object.keys(parentEntity.properties).forEach(path => {
+                const newPath = parentEntity.properties[path].arrayValue
+                  ? path + '[].*'
+                  : path + '.*';
+                excludePathFromEntity(parentEntity, newPath);
+              });
             } else {
-              const parentEntity =
-                entity.properties![firstPathPart].entityValue;
-              excludePathFromEntity(parentEntity, remainderPath);
+              excludePathFromEntity(entity, firstPathPart);
             }
+          } else if (entity.properties![firstPathPart] !== undefined) {
+            const parentEntity = entity.properties![firstPathPart].entityValue;
+            excludePathFromEntity(parentEntity, remainderPath);
           }
         }
       }

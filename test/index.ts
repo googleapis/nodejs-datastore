@@ -21,7 +21,13 @@ import {PassThrough, Readable} from 'stream';
 import * as ds from '../src';
 import {Datastore, DatastoreOptions} from '../src';
 import {Datastore as OriginalDatastore} from '../src';
-import {entity, Entity, EntityProto, EntityObject, Entities} from '../src/entity';
+import {
+  entity,
+  Entity,
+  EntityProto,
+  EntityObject,
+  Entities,
+} from '../src/entity';
 import {RequestCallback, RequestConfig} from '../src/request';
 import * as is from 'is';
 import * as sinon from 'sinon';
