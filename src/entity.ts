@@ -843,6 +843,8 @@ export namespace entity {
       const splitPath = path.split(delimiter);
       const firstPathPart = splitPath.shift()!;
       const remainderPath = splitPath.join(delimiter).replace(/^(\.|\[\])/, '');
+      const isFirstPathPartUndefined =
+        entity.properties![firstPathPart] !== undefined;
 
       if (
         !(entity.properties && entity.properties[firstPathPart]) &&
@@ -855,7 +857,7 @@ export namespace entity {
       if (
         firstPathPartIsArray &&
         // check also if the property in question is actually an array value.
-        entity.properties![firstPathPart] !== undefined &&
+        isFirstPathPartUndefined &&
         entity.properties![firstPathPart].arrayValue &&
         // check if wildcard is not applied
         !hasWildCard
@@ -884,7 +886,7 @@ export namespace entity {
         firstPathPartIsArray &&
         hasWildCard &&
         remainderPath === '*' &&
-        entity.properties![firstPathPart] !== undefined
+        isFirstPathPartUndefined
       ) {
         const array = entity.properties![firstPathPart].arrayValue;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -907,7 +909,7 @@ export namespace entity {
           if (
             hasWildCard &&
             remainderPath === '*' &&
-            entity.properties![firstPathPart] !== undefined
+            isFirstPathPartUndefined
           ) {
             const parentEntity = entity.properties![firstPathPart].entityValue;
 
@@ -921,7 +923,7 @@ export namespace entity {
             } else {
               excludePathFromEntity(entity, firstPathPart);
             }
-          } else if (entity.properties![firstPathPart] !== undefined) {
+          } else if (isFirstPathPartUndefined) {
             const parentEntity = entity.properties![firstPathPart].entityValue;
             excludePathFromEntity(parentEntity, remainderPath);
           }
