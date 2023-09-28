@@ -884,7 +884,7 @@ export namespace entity {
         firstPathPartIsArray &&
         hasWildCard &&
         remainderPath === '*' &&
-        typeof entity.properties![firstPathPart] !== 'undefined'
+        entity.properties![firstPathPart] !== undefined
       ) {
         const array = entity.properties![firstPathPart].arrayValue;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
