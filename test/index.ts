@@ -2195,7 +2195,7 @@ async.each(
       });
 
       describe('Without using mocks', () => {
-        describe('onSave tests', () => {
+        describe('on save tests', () => {
           const onSaveTests = [
             {
               description:
