@@ -40,8 +40,9 @@ import * as is from 'is';
 import {Transform, pipeline} from 'stream';
 
 import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
+import {AggregateField} from './aggregate';
 import Key = entity.Key;
-export {Entity, Key};
+export {Entity, Key, AggregateField};
 import {PropertyFilter, and, or} from './filter';
 export {PropertyFilter, and, or};
 import {
@@ -697,6 +698,16 @@ class Datastore extends DatastoreRequest {
       }),
       () => {}
     );
+  }
+
+  /**
+   * Gets the database id that all requests will be run against.
+   *
+   * @returns {string} The database id that the current client is set to that
+   *    requests will run against.
+   */
+  getDatabaseId(): string | undefined {
+    return this.options.databaseId;
   }
 
   getProjectId(): Promise<string> {
@@ -1817,8 +1828,8 @@ promisifyAll(Datastore, {
     'double',
     'isDouble',
     'geoPoint',
+    'getDatabaseId',
     'getProjectId',
-    'getSharedQueryOptions',
     'isGeoPoint',
     'index',
     'int',
@@ -1898,6 +1909,7 @@ export interface DatastoreOptions extends GoogleAuthOptions {
   namespace?: string;
   apiEndpoint?: string;
   sslCreds?: ChannelCredentials;
+  databaseId?: string;
 }
 
 export interface KeyToLegacyUrlSafeCallback {
