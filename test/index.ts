@@ -2195,124 +2195,125 @@ async.each(
       });
 
       describe('Without using mocks', () => {
-        const onSaveTests = [
-          {
-            // When the property is contained in excludeFromIndexes
-            // then save should encode request without excludeFromIndexes
-            properties: {k: {stringValue: 'v'}},
-            entitiesWithoutKey: {data: {k: 'v'}},
-          },
-          {
-            // When the property is contained in excludeFromIndexes
-            // then save should ignore non-existent property in excludeFromIndexes
-            properties: {k: {stringValue: 'v', excludeFromIndexes: true}},
-            entitiesWithoutKey: {
-              data: {k: 'v'},
-              excludeFromIndexes: ['k', 'k.*'],
+        describe('onSave tests', () => {
+          const onSaveTests = [
+            {
+              description:
+                'should encode a save request without excludeFromIndexes',
+              properties: {k: {stringValue: 'v'}},
+              entitiesWithoutKey: {data: {k: 'v'}},
             },
-          },
-          {
-            // When the property is not contained in excludeFromIndexes
-            // then save should encode a request without excludeFromIndexes
-            properties: {},
-            entitiesWithoutKey: {data: {}},
-          },
-          {
-            // When the property is not contained in excludeFromIndexes
-            // then save should ignore non-existent property in excludeFromIndexes
-            properties: {},
-            entitiesWithoutKey: {
-              data: {},
-              excludeFromIndexes: [
-                'non_exist_property', // this just ignored
-                'non_exist_property.*', // should also be ignored
-              ],
+            {
+              description:
+                'should add exclude from indexes to property k and ignore excludeFromIndexes with wildcard',
+              properties: {k: {stringValue: 'v', excludeFromIndexes: true}},
+              entitiesWithoutKey: {
+                data: {k: 'v'},
+                excludeFromIndexes: ['k', 'k.*'],
+              },
             },
-          },
-          {
-            // When the property is not contained in excludeFromIndexes and the property is an array
-            // then save should encode a request properly when there is no wildcard
-            properties: {k: {stringValue: 'v'}},
-            entitiesWithoutKey: {
-              data: {k: 'v'},
-              excludeFromIndexes: [
-                'non_exist_property[]', // this just ignored
-              ],
+            {
+              description:
+                'should encode a save request without properties and without excludeFromIndexes',
+              properties: {},
+              entitiesWithoutKey: {data: {}},
             },
-          },
-          {
-            // When the property is not contained in excludeFromIndexes and the property is an array
-            // then save should encode a request properly using a wildcard
-            properties: {k: {stringValue: 'v'}},
-            entitiesWithoutKey: {
-              data: {k: 'v'},
-              excludeFromIndexes: [
-                'non_exist_property[].*', // this just ignored
-              ],
+            {
+              description:
+                'should encode a save request with no properties ignoring excludeFromIndexes for a property not on save data',
+              properties: {},
+              entitiesWithoutKey: {
+                data: {},
+                excludeFromIndexes: [
+                  'non_exist_property', // this just ignored
+                  'non_exist_property.*', // should also be ignored
+                ],
+              },
             },
-          },
-        ];
+            {
+              description:
+                'should encode a save request with one property ignoring excludeFromIndexes for a property not on save data',
+              properties: {k: {stringValue: 'v'}},
+              entitiesWithoutKey: {
+                data: {k: 'v'},
+                excludeFromIndexes: [
+                  'non_exist_property[]', // this just ignored
+                ],
+              },
+            },
+            {
+              description:
+                'should encode a save request with one property ignoring excludeFromIndexes for a property with a wildcard not on save data',
+              properties: {k: {stringValue: 'v'}},
+              entitiesWithoutKey: {
+                data: {k: 'v'},
+                excludeFromIndexes: [
+                  'non_exist_property[].*', // this just ignored
+                ],
+              },
+            },
+          ];
 
-        async.each(
-          onSaveTests,
-          (onSaveTest: {
-            properties: google.datastore.v1.IValue;
-            entitiesWithoutKey: Entities;
-          }) => {
-            it(`should pass the right properties to upsert on save with parameters: ${JSON.stringify(
-              onSaveTest
-            )}`, async () => {
-              const datastore = new OriginalDatastore({
-                namespace: `${Date.now()}`,
-              });
-              {
-                // This block of code mocks out request_ to check values passed into it.
-                const expectedConfig = {
-                  client: 'DatastoreClient',
-                  method: 'commit',
-                  gaxOpts: {},
-                  reqOpts: {
-                    mutations: [
-                      {
-                        upsert: {
-                          key: {
-                            path: [{kind: 'Post', name: 'Post1'}],
-                            partitionId: {
-                              namespaceId: datastore.namespace,
+          async.each(
+            onSaveTests,
+            (onSaveTest: {
+              description: string;
+              properties: google.datastore.v1.IValue;
+              entitiesWithoutKey: Entities;
+            }) => {
+              it(`should pass the right properties to upsert on save with parameters: ${onSaveTest.description}`, async () => {
+                const datastore = new OriginalDatastore({
+                  namespace: `${Date.now()}`,
+                });
+                {
+                  // This block of code mocks out request_ to check values passed into it.
+                  const expectedConfig = {
+                    client: 'DatastoreClient',
+                    method: 'commit',
+                    gaxOpts: {},
+                    reqOpts: {
+                      mutations: [
+                        {
+                          upsert: {
+                            key: {
+                              path: [{kind: 'Post', name: 'Post1'}],
+                              partitionId: {
+                                namespaceId: datastore.namespace,
+                              },
                             },
+                            properties: onSaveTest.properties,
                           },
-                          properties: onSaveTest.properties,
                         },
-                      },
-                    ],
-                  },
-                };
-                // Mock out the request function to compare config passed into it.
-                datastore.request_ = (
-                  config: RequestConfig,
-                  callback: RequestCallback
-                ) => {
-                  try {
-                    assert.deepStrictEqual(config, expectedConfig);
-                    callback(null, 'some-data');
-                  } catch (e: any) {
-                    callback(e);
-                  }
-                };
-              }
-              {
-                // Attach key to entities parameter passed in and run save with those parameters.
-                const key = datastore.key(['Post', 'Post1']);
-                const entities = Object.assign(
-                  {key},
-                  onSaveTest.entitiesWithoutKey
-                );
-                const results = await datastore.save(entities);
-                assert.deepStrictEqual(results, ['some-data']);
-              }
-            });
-          }
-        );
+                      ],
+                    },
+                  };
+                  // Mock out the request function to compare config passed into it.
+                  datastore.request_ = (
+                    config: RequestConfig,
+                    callback: RequestCallback
+                  ) => {
+                    try {
+                      assert.deepStrictEqual(config, expectedConfig);
+                      callback(null, 'some-data');
+                    } catch (e: any) {
+                      callback(e);
+                    }
+                  };
+                }
+                {
+                  // Attach key to entities parameter passed in and run save with those parameters.
+                  const key = datastore.key(['Post', 'Post1']);
+                  const entities = Object.assign(
+                    {key},
+                    onSaveTest.entitiesWithoutKey
+                  );
+                  const results = await datastore.save(entities);
+                  assert.deepStrictEqual(results, ['some-data']);
+                }
+              });
+            }
+          );
+        });
       });
 
       describe('multi-db support', () => {
