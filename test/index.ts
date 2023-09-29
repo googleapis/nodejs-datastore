@@ -2261,7 +2261,7 @@ async.each(
               properties: google.datastore.v1.IValue;
               entitiesWithoutKey: Entities;
             }) => {
-              it(`should pass the right properties to upsert on save with parameters: ${onSaveTest.description}`, async () => {
+              it(`${onSaveTest.description}`, async () => {
                 const datastore = new OriginalDatastore({
                   namespace: `${Date.now()}`,
                 });
