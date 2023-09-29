@@ -20,15 +20,23 @@ import {PassThrough, Readable} from 'stream';
 
 import * as ds from '../src';
 import {Datastore, DatastoreOptions} from '../src';
-import {entity, Entity, EntityProto, EntityObject} from '../src/entity';
-import {RequestConfig} from '../src/request';
+import {Datastore as OriginalDatastore} from '../src';
+import {
+  entity,
+  Entity,
+  EntityProto,
+  EntityObject,
+  Entities,
+} from '../src/entity';
+import {RequestCallback, RequestConfig} from '../src/request';
 import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
-const async = require('async');
+import {google} from '../protos/protos';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
+const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fakeEntityInit: any = {
@@ -314,6 +322,139 @@ async.each(
           const datastore = new Datastore(OPTIONS);
 
           assert.strictEqual(datastore.options.sslCreds, fakeInsecureCreds);
+        });
+
+        describe('checking ssl credentials are set correctly with custom endpoints', () => {
+          function setHost(host: string) {
+            process.env.DATASTORE_EMULATOR_HOST = host;
+          }
+
+          const sslCreds = gax.grpc.ChannelCredentials.createSsl();
+          const fakeInsecureCreds = {
+            insecureCredProperty: 'insecureCredPropertyValue',
+          };
+
+          beforeEach(() => {
+            createInsecureOverride = () => {
+              return fakeInsecureCreds;
+            };
+          });
+
+          describe('without DATASTORE_EMULATOR_HOST environment variable set', () => {
+            beforeEach(() => {
+              delete process.env.DATASTORE_EMULATOR_HOST;
+            });
+
+            describe('using a localhost endpoint', () => {
+              const apiEndpoint = 'http://localhost:8080';
+              it('should use ssl credentials provided', () => {
+                // SSL credentials provided in the constructor should always be used.
+                const options = {
+                  apiEndpoint,
+                  sslCreds,
+                };
+                const datastore = new Datastore(options);
+                assert.strictEqual(datastore.options.sslCreds, sslCreds);
+              });
+              it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+                // When using a localhost endpoint it is assumed that the emulator is being used.
+                // Therefore, sslCreds should be set to insecure credentials to skip authentication.
+                const datastore = new Datastore({
+                  apiEndpoint,
+                });
+                assert.strictEqual(
+                  datastore.options.sslCreds,
+                  fakeInsecureCreds
+                );
+              });
+            });
+            describe('using a remote endpoint', () => {
+              const apiEndpoint = 'http://remote:8080';
+              it('should use ssl credentials provided', () => {
+                // SSL credentials provided in the constructor should always be used.
+                const options = {
+                  apiEndpoint,
+                  sslCreds,
+                };
+                const datastore = new Datastore(options);
+                assert.strictEqual(datastore.options.sslCreds, sslCreds);
+              });
+              it('should not set ssl credentials when ssl credentials are not provided', () => {
+                // When using a remote endpoint without DATASTORE_EMULATOR_HOST set,
+                // it is assumed that the emulator is not being used.
+                // This test captures the case where users use a regional endpoint.
+                const datastore = new Datastore({
+                  apiEndpoint,
+                });
+                assert.strictEqual(datastore.options.sslCreds, undefined);
+              });
+            });
+          });
+          describe('with DATASTORE_EMULATOR_HOST environment variable set', () => {
+            beforeEach(() => {
+              delete process.env.DATASTORE_EMULATOR_HOST;
+            });
+
+            describe('with DATASTORE_EMULATOR_HOST set to localhost', () => {
+              const apiEndpoint = 'http://localhost:8080';
+              beforeEach(() => {
+                setHost(apiEndpoint);
+              });
+
+              it('should use ssl credentials provided', () => {
+                // SSL credentials provided in the constructor should always be used.
+                const datastore = new Datastore({
+                  apiEndpoint,
+                  sslCreds,
+                });
+                assert.strictEqual(datastore.options.sslCreds, sslCreds);
+              });
+
+              it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+                // When DATASTORE_EMULATOR_HOST is set it is assumed that the emulator is being used.
+                // Therefore, sslCreds should be set to insecure credentials to skip authentication.
+                const datastore = new Datastore({
+                  apiEndpoint,
+                });
+                assert.strictEqual(
+                  datastore.options.sslCreds,
+                  fakeInsecureCreds
+                );
+              });
+            });
+
+            describe('with DATASTORE_EMULATOR_HOST set to remote host', () => {
+              const apiEndpoint = 'http://remote:8080';
+              beforeEach(() => {
+                setHost(apiEndpoint);
+              });
+
+              it('should use ssl credentials provided', () => {
+                // SSL credentials provided in the constructor should always be used.
+                const datastore = new Datastore({
+                  apiEndpoint,
+                  sslCreds,
+                });
+                assert.strictEqual(datastore.options.sslCreds, sslCreds);
+              });
+
+              it('should use insecure ssl credentials when ssl credentials are not provided', () => {
+                // When DATASTORE_EMULATOR_HOST is set it is assumed that the emulator is being used.
+                // Therefore, sslCreds should be set to insecure credentials to skip authentication.
+                const datastore = new Datastore({
+                  apiEndpoint,
+                });
+                assert.strictEqual(
+                  datastore.options.sslCreds,
+                  fakeInsecureCreds
+                );
+              });
+            });
+
+            after(() => {
+              delete process.env.DATASTORE_EMULATOR_HOST;
+            });
+          });
         });
 
         it('should cache a local GoogleAuth instance', () => {
@@ -2183,6 +2324,128 @@ async.each(
           const key = datastore.keyFromLegacyUrlsafe(encodedKey);
           assert.strictEqual(key.kind, 'Task');
           assert.strictEqual(key.name, 'Test');
+        });
+      });
+
+      describe('without using mocks', () => {
+        describe('on save tests', () => {
+          const onSaveTests = [
+            {
+              description:
+                'should encode a save request without excludeFromIndexes',
+              properties: {k: {stringValue: 'v'}},
+              entitiesWithoutKey: {data: {k: 'v'}},
+            },
+            {
+              description:
+                'should add exclude from indexes to property k and ignore excludeFromIndexes with wildcard',
+              properties: {k: {stringValue: 'v', excludeFromIndexes: true}},
+              entitiesWithoutKey: {
+                data: {k: 'v'},
+                excludeFromIndexes: ['k', 'k.*'],
+              },
+            },
+            {
+              description:
+                'should encode a save request without properties and without excludeFromIndexes',
+              properties: {},
+              entitiesWithoutKey: {data: {}},
+            },
+            {
+              description:
+                'should encode a save request with no properties ignoring excludeFromIndexes for a property not on save data',
+              properties: {},
+              entitiesWithoutKey: {
+                data: {},
+                excludeFromIndexes: [
+                  'non_exist_property', // this just ignored
+                  'non_exist_property.*', // should also be ignored
+                ],
+              },
+            },
+            {
+              description:
+                'should encode a save request with one property ignoring excludeFromIndexes for a property not on save data',
+              properties: {k: {stringValue: 'v'}},
+              entitiesWithoutKey: {
+                data: {k: 'v'},
+                excludeFromIndexes: [
+                  'non_exist_property[]', // this just ignored
+                ],
+              },
+            },
+            {
+              description:
+                'should encode a save request with one property ignoring excludeFromIndexes for a property with a wildcard not on save data',
+              properties: {k: {stringValue: 'v'}},
+              entitiesWithoutKey: {
+                data: {k: 'v'},
+                excludeFromIndexes: [
+                  'non_exist_property[].*', // this just ignored
+                ],
+              },
+            },
+          ];
+
+          async.each(
+            onSaveTests,
+            (onSaveTest: {
+              description: string;
+              properties: google.datastore.v1.IValue;
+              entitiesWithoutKey: Entities;
+            }) => {
+              it(`${onSaveTest.description}`, async () => {
+                const datastore = new OriginalDatastore({
+                  namespace: `${Date.now()}`,
+                });
+                {
+                  // This block of code mocks out request_ to check values passed into it.
+                  const expectedConfig = {
+                    client: 'DatastoreClient',
+                    method: 'commit',
+                    gaxOpts: {},
+                    reqOpts: {
+                      mutations: [
+                        {
+                          upsert: {
+                            key: {
+                              path: [{kind: 'Post', name: 'Post1'}],
+                              partitionId: {
+                                namespaceId: datastore.namespace,
+                              },
+                            },
+                            properties: onSaveTest.properties,
+                          },
+                        },
+                      ],
+                    },
+                  };
+                  // Mock out the request function to compare config passed into it.
+                  datastore.request_ = (
+                    config: RequestConfig,
+                    callback: RequestCallback
+                  ) => {
+                    try {
+                      assert.deepStrictEqual(config, expectedConfig);
+                      callback(null, 'some-data');
+                    } catch (e: any) {
+                      callback(e);
+                    }
+                  };
+                }
+                {
+                  // Attach key to entities parameter passed in and run save with those parameters.
+                  const key = datastore.key(['Post', 'Post1']);
+                  const entities = Object.assign(
+                    {key},
+                    onSaveTest.entitiesWithoutKey
+                  );
+                  const results = await datastore.save(entities);
+                  assert.deepStrictEqual(results, ['some-data']);
+                }
+              });
+            }
+          );
         });
       });
 
