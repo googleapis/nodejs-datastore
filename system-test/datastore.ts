@@ -1989,7 +1989,7 @@ async.each(
         });
       });
 
-      describe.only('importing and exporting entities', () => {
+      describe('importing and exporting entities', () => {
         const gcs = new Storage();
         const bucket = gcs.bucket('nodejs-datastore-system-tests');
         let currentAttempt = 0;
