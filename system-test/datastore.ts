@@ -2015,6 +2015,7 @@ async.each(
           let infoLogCount = 0;
 
           before(async () => {
+            infoLogCount = 0;
             consoleInfoFunction = console.info;
           });
 
