@@ -2037,7 +2037,7 @@ async.each(
               );
             }
             // Check that the attempt number and the number of times console.info is called is correct.
-            assert.strictEqual(infoLogCount, numberOfRetries - 1);
+            assert.strictEqual(infoLogCount, numberOfRetries);
             assert.strictEqual(this.currentAttempt, numberOfRetries);
           });
 
