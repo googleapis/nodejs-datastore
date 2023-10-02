@@ -2028,9 +2028,9 @@ async.each(
             setupForDelay(this);
             const numberOfRetries = 4;
             this.retries(numberOfRetries);
-            delay(this);
+            setImmediate(() => delay(this));
             // Throw an error on every retry except the last one
-            if (this.currentAttempt < numberOfRetries) {
+            if (this.currentAttempt <= numberOfRetries) {
               throw Error(
                 'This is not the last retry so throw an error to force the test to run again'
               );
