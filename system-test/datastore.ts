@@ -1857,7 +1857,16 @@ async.each(
         });
 
         describe('aggregate query within a transaction', async () => {
-          // TODO: Add a test here to verify what data is here at this time
+          it('should run a query and return the results', async () => {
+            // Add a test here to verify what the data is at this time.
+            // This will be a valuable reference for tests in this describe block.
+            const query = datastore.createQuery('Company');
+            const [results] = await datastore.runQuery(query);
+            assert.deepStrictEqual(
+              results.map(result => result.rating),
+              [100, 100]
+            );
+          });
           it('should aggregate query within a count transaction', async () => {
             const transaction = datastore.transaction();
             await transaction.run();
