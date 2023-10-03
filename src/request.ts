@@ -1042,6 +1042,7 @@ class DatastoreRequest {
     });
   }
 
+  // Example comment
   /**
    * Make a request to the API endpoint. Properties to indicate a transactional
    * or non-transactional operation are added automatically.
