@@ -1427,6 +1427,7 @@ export namespace entity {
   }
 }
 
+// Example
 export interface ValueProto {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [index: string]: any;
