@@ -972,6 +972,7 @@ class DatastoreRequest {
     });
   }
 
+  // Some comment
   /**
    * @private
    */
