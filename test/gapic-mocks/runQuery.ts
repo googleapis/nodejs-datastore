@@ -14,114 +14,80 @@
 
 import * as assert from 'assert';
 import {before, describe} from 'mocha';
-import * as ds from '../../src';
-import * as proxyquire from 'proxyquire';
-import * as gax from 'google-gax';
-import {DatastoreClient} from '../../src';
+import {DatastoreClient, Datastore} from '../../src';
 import * as protos from '../../protos/protos';
-import {Callback, CallOptions} from 'google-gax';
-const {grpc} = new gax.GrpcClient();
 
-class FakeDatastoreClient extends DatastoreClient {
-  runQuery(
-    request: protos.google.datastore.v1.IRunQueryRequest,
-    optionsOrCallback?:
-      | CallOptions
-      | Callback<
-          protos.google.datastore.v1.IRunQueryResponse,
-          protos.google.datastore.v1.IRunQueryRequest | null | undefined,
-          {} | null | undefined
-        >,
-    callback?: Callback<
-      protos.google.datastore.v1.IRunQueryResponse,
-      protos.google.datastore.v1.IRunQueryRequest | null | undefined,
-      {} | null | undefined
-    >
-  ): Promise<
-    [
-      protos.google.datastore.v1.IRunQueryResponse,
-      protos.google.datastore.v1.IRunQueryRequest | undefined,
-      {} | undefined,
-    ]
-  > {
-    console.log('runQuery function');
-    return new Promise(() => {});
-  }
-}
-
-class FakeDatastoreAdminClient {
-  static get scopes() {
-    return [
-      'https://www.googleapis.com/auth/cloud-platform',
-      'https://www.googleapis.com/auth/datastore',
-    ];
-  }
-}
-
-describe('Commit', () => {
-  let Datastore: typeof ds.Datastore;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let datastore: any;
-
+describe('Run Query', () => {
   const PROJECT_ID = 'project-id';
   const NAMESPACE = 'namespace';
   const clientName = 'DatastoreClient';
+  const options = {
+    projectId: PROJECT_ID,
+    namespace: NAMESPACE,
+  };
+  const datastore = new Datastore(options);
 
   // This function is used for doing assertion checks.
   // The idea is to check that the right request gets passed to the commit function in the Gapic layer.
-  function setCommitComparison(compareFn: (request: any) => void) {
+  function setRunQueryComparison(
+    compareFn: (request: protos.google.datastore.v1.IRunQueryRequest) => void
+  ) {
     const dataClient = datastore.clients_.get(clientName);
     if (dataClient) {
       dataClient.runQuery = (
         request: any,
         options: any,
-        callback: (err?: unknown) => void
+        callback: (
+          err?: unknown,
+          res?: protos.google.datastore.v1.IRunQueryResponse
+        ) => void
       ) => {
         try {
           compareFn(request);
         } catch (e) {
           callback(e);
         }
-        callback();
+        callback(null, {
+          batch: {
+            moreResults:
+              protos.google.datastore.v1.QueryResultBatch.MoreResultsType
+                .NO_MORE_RESULTS,
+          },
+        });
       };
     }
   }
 
   before(() => {
-    Datastore = proxyquire('../../src', {
-      './v1': {
-        DatastoreClient: FakeDatastoreClient,
-        DatastoreAdminClient: FakeDatastoreAdminClient,
-      },
-    }).Datastore;
-    const options = {
-      projectId: PROJECT_ID,
-      namespace: NAMESPACE,
-    };
-    datastore = new Datastore(options);
-    console.log('test');
     // By default, datastore.clients_ is an empty map.
     // To mock out commit we need the map to contain the Gapic data client.
     // Normally a call to the data client through the datastore object would initialize it.
     // We don't want to make this call because it would make a grpc request.
     // So we just add the data client to the map.
-    /*
     const gapic = Object.freeze({
       v1: require('../../src/v1'),
     });
     datastore.clients_.set(clientName, new gapic.v1[clientName](options));
-     */
   });
 
-  it.only('should not experience latency when fetching the project', async () => {
+  it.only('should pass read time into run query for transactions', async () => {
     const query = datastore.createQuery('Task');
-    const startTime = Date.now();
-    // setCommitComparison(() => {});
+    setRunQueryComparison(
+      (request: protos.google.datastore.v1.IRunQueryRequest) => {
+        assert.deepStrictEqual(request, {
+          partitionId: {
+            namespaceId: 'namespace',
+          },
+          query: {
+            distinctOn: [],
+            kind: [{name: 'Task'}],
+            order: [],
+            projection: [],
+          },
+          projectId: 'project-id',
+        });
+      }
+    );
     await datastore.runQuery(query);
-    const endTime = Date.now();
-    const callTime = endTime - startTime;
-    console.log(`call time: ${callTime}`);
-    // Testing locally reveals callTime is usually about 1.
-    assert(callTime < 100);
   });
 });
