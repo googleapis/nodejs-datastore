@@ -70,11 +70,15 @@ describe('Run Query', () => {
     datastore.clients_.set(clientName, new gapic.v1[clientName](options));
   });
 
-  it.only('should pass read time into run query for transactions', async () => {
-    const query = datastore.createQuery('Task');
+  it.only('should pass read time into runQuery for transactions', async () => {
     setRunQueryComparison(
       (request: protos.google.datastore.v1.IRunQueryRequest) => {
         assert.deepStrictEqual(request, {
+          readOptions: {
+            readTime: {
+              seconds: 77,
+            },
+          },
           partitionId: {
             namespaceId: 'namespace',
           },
@@ -88,6 +92,8 @@ describe('Run Query', () => {
         });
       }
     );
-    await datastore.runQuery(query);
+    const transaction = datastore.transaction();
+    const query = datastore.createQuery('Task');
+    await transaction.runQuery(query, {readTime: 77000});
   });
 });
