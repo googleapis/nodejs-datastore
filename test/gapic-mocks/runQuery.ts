@@ -70,7 +70,7 @@ describe('Run Query', () => {
     datastore.clients_.set(clientName, new gapic.v1[clientName](options));
   });
 
-  it.only('should pass read time into runQuery for transactions', async () => {
+  it('should pass read time into runQuery for transactions', async () => {
     setRunQueryComparison(
       (request: protos.google.datastore.v1.IRunQueryRequest) => {
         assert.deepStrictEqual(request, {
