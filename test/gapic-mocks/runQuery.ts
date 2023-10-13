@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import * as assert from 'assert';
-import {before, describe} from 'mocha';
+import {describe} from 'mocha';
 import {DatastoreClient, Datastore} from '../../src';
 import * as protos from '../../protos/protos';
 
@@ -26,6 +26,15 @@ describe('Run Query', () => {
     namespace: NAMESPACE,
   };
   const datastore = new Datastore(options);
+  // By default, datastore.clients_ is an empty map.
+  // To mock out commit we need the map to contain the Gapic data client.
+  // Normally a call to the data client through the datastore object would initialize it.
+  // We don't want to make this call because it would make a grpc request.
+  // So we just add the data client to the map.
+  const gapic = Object.freeze({
+    v1: require('../../src/v1'),
+  });
+  datastore.clients_.set(clientName, new gapic.v1[clientName](options));
 
   // This function is used for doing assertion checks.
   // The idea is to check that the right request gets passed to the commit function in the Gapic layer.
@@ -57,18 +66,6 @@ describe('Run Query', () => {
       };
     }
   }
-
-  before(() => {
-    // By default, datastore.clients_ is an empty map.
-    // To mock out commit we need the map to contain the Gapic data client.
-    // Normally a call to the data client through the datastore object would initialize it.
-    // We don't want to make this call because it would make a grpc request.
-    // So we just add the data client to the map.
-    const gapic = Object.freeze({
-      v1: require('../../src/v1'),
-    });
-    datastore.clients_.set(clientName, new gapic.v1[clientName](options));
-  });
 
   it('should pass read time into runQuery for transactions', async () => {
     setRunQueryComparison(
