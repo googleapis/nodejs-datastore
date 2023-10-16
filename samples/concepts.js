@@ -847,9 +847,9 @@ class Query extends TestHelper {
       .filter(
         and([
           new PropertyFilter('created', '>', new Date('1990-01-01T00:00:00z')),
-          new PropertyFilter('created', '<', new Date('2000-12-31T23:59:59z'))
+          new PropertyFilter('created', '<', new Date('2000-12-31T23:59:59z')),
         ])
-      )
+      );
     // [END datastore_inequality_range]
 
     return this.datastore.runQuery(query);
