@@ -68,10 +68,12 @@ describe('Run Query', () => {
   }
 
   it('should pass read time into runQuery for transactions', async () => {
+    const id = 'test-id';
     setRunQueryComparison(
       (request: protos.google.datastore.v1.IRunQueryRequest) => {
         assert.deepStrictEqual(request, {
           readOptions: {
+            transaction: id,
             readTime: {
               seconds: 77,
             },
@@ -89,7 +91,7 @@ describe('Run Query', () => {
         });
       }
     );
-    const transaction = datastore.transaction();
+    const transaction = datastore.transaction({id});
     const query = datastore.createQuery('Task');
     await transaction.runQuery(query, {readTime: 77000});
   });
