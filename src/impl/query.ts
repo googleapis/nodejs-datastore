@@ -16,12 +16,12 @@
 
 import arrify = require('arrify');
 import {Key} from 'readline';
-import {Datastore} from '.';
-import {Entity} from './entity';
-import {EntityFilter, isFilter, AllowedFilterValueType} from './filter';
-import {Transaction} from './transaction';
+import {Datastore} from '../index';
+import {Entity} from '../entity';
+import {EntityFilter, isFilter, AllowedFilterValueType} from '../filter';
+import {Transaction} from '../transaction';
 import {CallOptions} from 'google-gax';
-import {RunQueryStreamOptions} from '../src/request';
+import {RunQueryStreamOptions} from '../request';
 
 export type Operator =
   | '='
