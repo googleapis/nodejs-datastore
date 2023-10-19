@@ -85,12 +85,6 @@ class Query {
   limitVal: number;
   offsetVal: number;
 
-  constructor(scope?: Datastore | Transaction, kinds?: string[] | null);
-  constructor(
-    scope?: Datastore | Transaction,
-    namespace?: string | null,
-    kinds?: string[]
-  );
   constructor(
     scope?: Datastore | Transaction,
     namespaceOrKinds?: string | string[] | null,
