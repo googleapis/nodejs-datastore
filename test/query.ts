@@ -22,11 +22,20 @@ import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, or} from '../src/filter';
 import {entity} from '../src/entity';
 import {SECOND_DATABASE_ID} from './index';
+import * as sinon from 'sinon';
+import * as gaxInstance from 'google-gax';
+
+class fakeGaxInstance {
+  warn(code: string, message: string, warnType?: string) {
+    process.emitWarning('test-warning');
+  }
+}
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
   const NAMESPACE = 'Namespace';
   const KINDS = ['Kind'];
+  const sandbox = sinon.createSandbox();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let query: any;
@@ -294,6 +303,11 @@ describe('Query', () => {
     });
   });
   it('should issue a warning when a Filter instance is not provided', done => {
+    sandbox.stub(query, 'getWarn').callsFake(() => {
+      return (code: string, message: string, warnType?: string) => {
+        process.emitWarning(message);
+      };
+    });
     const onWarning = (warning: {message: unknown}) => {
       assert.strictEqual(
         warning.message,
