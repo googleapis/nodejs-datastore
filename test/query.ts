@@ -23,13 +23,6 @@ import {PropertyFilter, EntityFilter, or} from '../src/filter';
 import {entity} from '../src/entity';
 import {SECOND_DATABASE_ID} from './index';
 import * as sinon from 'sinon';
-import * as gaxInstance from 'google-gax';
-
-class fakeGaxInstance {
-  warn(code: string, message: string, warnType?: string) {
-    process.emitWarning('test-warning');
-  }
-}
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
