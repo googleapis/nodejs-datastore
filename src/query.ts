@@ -1,7 +1,7 @@
-import {Query as QueryImpl} from './impl/query';
+import * as QueryImplModule from './impl/query';
 import {Datastore, Transaction} from './index';
 
-class Query extends QueryImpl {
+class Query extends QueryImplModule.Query {
   constructor(scope?: Datastore | Transaction, kinds?: string[] | null);
   constructor(
     scope?: Datastore | Transaction,
@@ -17,4 +17,15 @@ class Query extends QueryImpl {
   }
 }
 
+export {Operator} from './impl/query';
+export {OrderOptions} from './impl/query';
+export {Order} from './impl/query';
+export {Filter} from './impl/query';
+export {QueryProto} from './impl/query';
 export {Query};
+export {IntegerTypeCastOptions} from './impl/query';
+export {RunQueryOptions} from './impl/query';
+export {RunQueryCallback} from './impl/query';
+export {RunQueryResponse} from './impl/query';
+export {RunAggregateQueryResponse} from './impl/query';
+export {RunQueryInfo} from './impl/query';
