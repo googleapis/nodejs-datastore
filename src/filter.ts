@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Operator, Filter as IFilter} from './exported/query';
+import {Operator, Filter as IFilter} from './query';
 import {entity} from './entity';
 import Key = entity.Key;
 

@@ -18,7 +18,7 @@ import * as extend from 'extend';
 import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity, entity} from '../src/entity';
-import {IntegerTypeCastOptions} from '../src/exported/query';
+import {IntegerTypeCastOptions} from '../src/query';
 import {PropertyFilter, EntityFilter, and} from '../src/filter';
 
 export function outOfBoundsError(opts: {

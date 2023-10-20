@@ -22,7 +22,7 @@ import {google} from '../protos/protos';
 
 import {Datastore, TransactionOptions} from '.';
 import {entity, Entity, Entities} from './entity';
-import {Query} from './exported/query';
+import {Query} from './query';
 import {
   CommitCallback,
   CommitResponse,
