@@ -16,6 +16,7 @@ import * as assert from 'assert';
 import {beforeEach, describe, it} from 'mocha';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const {Query} = require('../src/query');
+const QueryImplModule = require('../src/impl/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
@@ -303,7 +304,14 @@ describe('Query', () => {
       done();
     };
     process.on('warning', onWarning);
-    new Query(['kind1']).filter('name', 'Stephen');
+    const testOverrides = {warningCode: 'unique-warning'};
+    const query = new QueryImplModule.Query(
+      undefined,
+      undefined,
+      ['kind1'],
+      testOverrides
+    );
+    query.filter('name', 'Stephen');
   });
   describe('filter with Filter class', () => {
     it('should support filter with Filter', () => {
