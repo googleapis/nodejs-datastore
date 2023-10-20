@@ -22,6 +22,7 @@ import {EntityFilter, isFilter, AllowedFilterValueType} from '../filter';
 import {Transaction} from '../transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../request';
+import * as gaxInstance from 'google-gax';
 
 export type Operator =
   | '='
@@ -48,6 +49,10 @@ export interface Filter {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   val: any;
   op: Operator;
+}
+
+interface TestOverrides {
+  warningCode?: string;
 }
 
 /**
@@ -84,11 +89,13 @@ class Query {
   endVal: string | Buffer | null;
   limitVal: number;
   offsetVal: number;
+  private warningCode: string | undefined;
 
   constructor(
     scope?: Datastore | Transaction,
     namespaceOrKinds?: string | string[] | null,
-    kinds?: string[]
+    kinds?: string[],
+    overrides?: TestOverrides
   ) {
     let namespace = namespaceOrKinds as string | null;
     if (!kinds) {
@@ -160,6 +167,7 @@ class Query {
      * @type {number}
      */
     this.offsetVal = -1;
+    this.warningCode = overrides?.warningCode;
   }
 
   /**
@@ -217,7 +225,8 @@ class Query {
     value?: AllowedFilterValueType<T>
   ): Query {
     if (arguments.length > 1) {
-      process.emitWarning(
+      gaxInstance.warn(
+        this.warningCode ?? 'filter',
         'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
       );
     }
