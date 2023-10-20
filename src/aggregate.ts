@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Query} from './index';
-import {RunQueryOptions, RunQueryResponse} from './query';
+import {RunQueryOptions, RunQueryResponse} from './export/query';
 import {RequestCallback} from './request';
 const AGGREGATE_QUERY = Symbol('AGGREGATE_QUERY');
 

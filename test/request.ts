@@ -25,7 +25,7 @@ import {PassThrough, Transform} from 'stream';
 import {google} from '../protos/protos';
 import * as ds from '../src';
 import {entity, Entity, KeyProto} from '../src/entity.js';
-import {IntegerTypeCastOptions, Query, QueryProto} from '../src/query.js';
+import {IntegerTypeCastOptions, Query, QueryProto} from '../src/export/query';
 import {outOfBoundsError} from './entity';
 import {
   AllocateIdsResponse,
@@ -71,7 +71,7 @@ describe('Request', () => {
     Request = proxyquire('../src/request', {
       '@google-cloud/promisify': fakePfy,
       './entity': {entity},
-      './query': {Query: FakeQuery},
+      './export/query': {Query: FakeQuery},
       './v1': fakeV1,
     }).DatastoreRequest;
   });

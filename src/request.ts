@@ -53,7 +53,7 @@ import {
   RunQueryOptions,
   RunQueryResponse,
   RunQueryCallback,
-} from './query';
+} from './export/query';
 import {Datastore} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';

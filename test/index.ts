@@ -184,7 +184,7 @@ async.each(
         Datastore = proxyquire('../src', {
           './entity.js': {entity: fakeEntity},
           './index-class.js': {Index: FakeIndex},
-          './query.js': {Query: FakeQuery},
+          './export/query.js': {Query: FakeQuery},
           './transaction.js': {Transaction: FakeTransaction},
           './v1': FakeV1,
           'google-auth-library': {

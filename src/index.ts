@@ -52,7 +52,7 @@ import {
   IIndex,
   Index,
 } from './index-class';
-import {Query} from './query';
+import {Query} from './export/query';
 import {
   DatastoreRequest,
   CommitCallback,

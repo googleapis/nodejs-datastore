@@ -15,8 +15,8 @@
 import * as assert from 'assert';
 import {beforeEach, describe, it} from 'mocha';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const {Query} = require('../src/query');
-const QueryImplModule = require('../src/impl/query');
+const {Query} = require('../src/export/query');
+const QueryImplModule = require('../src/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
