@@ -297,11 +297,9 @@ describe('Query', () => {
   });
   it('should issue a warning when a Filter instance is not provided', done => {
     const query = new Query(['kind1']);
-    sandbox.stub(query, 'getWarn').callsFake(() => {
-      return (code: string, message: string, warnType?: string) => {
-        process.emitWarning(message);
-      };
-    });
+    query.warn = (code: string, message: string, warnType?: string) => {
+      process.emitWarning(message);
+    };
     const onWarning = (warning: {message: unknown}) => {
       assert.strictEqual(
         warning.message,

@@ -22,7 +22,7 @@ import {EntityFilter, isFilter, AllowedFilterValueType} from './filter';
 import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
-import {warn} from 'google-gax';
+import {warn as gaxWarn} from 'google-gax';
 
 export type Operator =
   | '='
@@ -85,6 +85,7 @@ class Query {
   endVal: string | Buffer | null;
   limitVal: number;
   offsetVal: number;
+  private warn = gaxWarn;
 
   constructor(scope?: Datastore | Transaction, kinds?: string[] | null);
   constructor(
@@ -224,8 +225,7 @@ class Query {
     value?: AllowedFilterValueType<T>
   ): Query {
     if (arguments.length > 1) {
-      const warn = this.getWarn();
-      warn(
+      this.warn(
         'filter',
         'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
       );
@@ -254,10 +254,6 @@ class Query {
       }
     }
     return this;
-  }
-
-  private getWarn() {
-    return warn;
   }
 
   /**
