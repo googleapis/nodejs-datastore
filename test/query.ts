@@ -296,6 +296,7 @@ describe('Query', () => {
     });
   });
   it('should issue a warning when a Filter instance is not provided', done => {
+    const query = new Query(['kind1']);
     sandbox.stub(query, 'getWarn').callsFake(() => {
       return (code: string, message: string, warnType?: string) => {
         process.emitWarning(message);
@@ -310,7 +311,7 @@ describe('Query', () => {
       done();
     };
     process.on('warning', onWarning);
-    new Query(['kind1']).filter('name', 'Stephen');
+    query.filter('name', 'Stephen');
   });
   describe('filter with Filter class', () => {
     it('should support filter with Filter', () => {
