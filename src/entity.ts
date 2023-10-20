@@ -16,7 +16,7 @@
 import arrify = require('arrify');
 import * as extend from 'extend';
 import * as is from 'is';
-import {Query, QueryProto, IntegerTypeCastOptions} from './query';
+import {Query, QueryProto, IntegerTypeCastOptions} from './exported/query';
 import {PathType} from '.';
 import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
