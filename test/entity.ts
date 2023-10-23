@@ -1929,7 +1929,7 @@ describe('entity', () => {
 
       const query = ds
         .createQuery('Kind1')
-        .filter('name', 'John')
+        .filter(new PropertyFilter('name', '=', 'John'))
         .start('start')
         .end('end')
         .groupBy(['name'])
