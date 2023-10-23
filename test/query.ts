@@ -17,7 +17,7 @@ import {beforeEach, describe, it} from 'mocha';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const {Query} = require('../src/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-import {and, Datastore} from '../src';
+import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, or} from '../src/filter';
 import {entity} from '../src/entity';
@@ -208,9 +208,7 @@ describe('Query', () => {
   describe('filter', () => {
     it('should support filtering', () => {
       const now = new Date();
-      const query = new Query(['kind1']).filter(
-        new PropertyFilter('date', '<=', now)
-      );
+      const query = new Query(['kind1']).filter('date', '<=', now);
       const filter = query.filters[0];
 
       assert.strictEqual(filter.name, 'date');
@@ -220,18 +218,15 @@ describe('Query', () => {
 
     it('should recognize all the different operators', () => {
       const now = new Date();
-      const query = new Query(['kind1']).filter(
-        and([
-          new PropertyFilter('date', '<=', now),
-          new PropertyFilter('name', '=', 'Title'),
-          new PropertyFilter('count', '>', 20),
-          new PropertyFilter('size', '<', 10),
-          new PropertyFilter('something', '>=', 11),
-          new PropertyFilter('neProperty', '!=', 12),
-          new PropertyFilter('inProperty', 'IN', 13),
-          new PropertyFilter('notInProperty', 'NOT_IN', 14),
-        ])
-      );
+      const query = new Query(['kind1'])
+        .filter('date', '<=', now)
+        .filter('name', '=', 'Title')
+        .filter('count', '>', 20)
+        .filter('size', '<', 10)
+        .filter('something', '>=', 11)
+        .filter('neProperty', '!=', 12)
+        .filter('inProperty', 'IN', 13)
+        .filter('notInProperty', 'NOT_IN', 14);
 
       assert.strictEqual(query.filters[0].name, 'date');
       assert.strictEqual(query.filters[0].op, '<=');
@@ -267,16 +262,16 @@ describe('Query', () => {
     });
 
     it('should remove any whitespace surrounding the filter name', () => {
-      const query = new Query(['kind1']).filter(
-        new PropertyFilter('   count    ', '>', 123)
-      );
+      const query = new Query(['kind1']).filter('   count    ', '>', 123);
 
       assert.strictEqual(query.filters[0].name, 'count');
     });
 
     it('should remove any whitespace surrounding the operator', () => {
       const query = new Query(['kind1']).filter(
-        new PropertyFilter('count', '       <        ', 123)
+        'count',
+        '       <        ',
+        123
       );
 
       assert.strictEqual(query.filters[0].op, '<');
