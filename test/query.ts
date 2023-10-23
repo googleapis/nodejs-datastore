@@ -218,6 +218,17 @@ describe('Query', () => {
       process.on('warning', onWarning);
       new Query(['kind1']).filter('name', 'Stephen');
     });
+    it('should not issue a warning again when a Filter instance is not provided', done => {
+      const onWarning = () => {
+        assert.fail();
+      };
+      process.on('warning', onWarning);
+      new Query(['kind1']).filter('name', 'Stephen');
+      setImmediate(() => {
+        process.removeListener('warning', onWarning);
+        done();
+      });
+    });
     it('should support filtering', () => {
       const now = new Date();
       const query = new Query(['kind1']).filter('date', '<=', now);
