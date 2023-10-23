@@ -98,7 +98,7 @@ export class PropertyFilter<T extends string>
         property: {
           name: this.name,
         },
-        op: OP_TO_OPERATOR.get(this.op),
+        op: (OP_TO_OPERATOR.get(this.op) as Operator).trim() as Operator,
         value: entity.encodeValue(this.val, this.name),
       },
     };
