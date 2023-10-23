@@ -81,7 +81,7 @@ export class PropertyFilter<T extends string>
    */
   constructor(
     public name: T,
-    public op: Operator | string,
+    public op: Operator,
     public val: AllowedFilterValueType<T>
   ) {
     super();
@@ -98,7 +98,7 @@ export class PropertyFilter<T extends string>
         property: {
           name: this.name,
         },
-        op: (OP_TO_OPERATOR.get(this.op) as Operator).trim() as Operator,
+        op: OP_TO_OPERATOR.get(this.op),
         value: entity.encodeValue(this.val, this.name),
       },
     };
