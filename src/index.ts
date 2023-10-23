@@ -215,7 +215,7 @@ const urlSafeKey = new entity.URLSafeKey();
  * // Multiple records can be found that match criteria with
  * // {@link Query#filter}.
  * //-
- * query.filter('location', 'CA');
+ * query.filter(new PropertyFilter('location', '=', 'CA'));
  *
  * //-
  * // Records can also be ordered with {@link Query#order}.
@@ -1335,8 +1335,8 @@ class Datastore extends DatastoreRequest {
    * //-
    * const query = datastore.createQuery('Company');
    * const companyQuery = query
-   *   .filter('geoPoint.latitude', datastore.double(40.123))
-   *   .filter('geoPoint.longitude', datastore.double(-74.0447));
+   *   .filter(new PropertyFilter('geoPoint.latitude', '=', datastore.double(40.123)))
+   *   .filter(new PropertyFilter('geoPoint.longitude', '=', datastore.double(-74.0447)));
    * ```
    */
   static geoPoint(coordinates: entity.Coordinates) {
