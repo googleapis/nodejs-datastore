@@ -1989,7 +1989,11 @@ describe('entity', () => {
 
       const query = ds
         .createQuery('Kind1')
-        .filter('__key__', 'IN', [new entity.Key({path: ['Kind1', 'key1']})]);
+        .filter(
+          new PropertyFilter('__key__', 'IN', [
+            new entity.Key({path: ['Kind1', 'key1']}),
+          ])
+        );
 
       assert.deepStrictEqual(
         testEntity.queryToQueryProto(query),
