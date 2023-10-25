@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,4 +17,3 @@
 // ** All changes to this file may be overwritten. **
 
 export {DatastoreClient} from './datastore_client';
-export {DatastoreAdminClient} from './datastore_admin_client';
