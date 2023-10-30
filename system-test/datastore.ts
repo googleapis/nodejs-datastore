@@ -1643,146 +1643,148 @@ async.each(
         });
       });
 
-  describe('querying the datastore with an overflow data set', () => {
-    const keys = [
-      // Paths:
-      ['Rickard'],
-      ['Rickard', 'Character', 'Eddard'],
-    ].map(path => {
-      return datastore.key(['Book', 'GoT', 'Character'].concat(path));
-    });
-    const characters = [
-      {
-        name: 'Rickard',
-        family: 'Stark',
-        // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-        appearances: 9223372036854775807,
-        alive: false,
-      },
-      {
-        name: 'Eddard',
-        family: 'Stark',
-        // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-        appearances: 9223372036854775807,
-        alive: false,
-      },
-    ];
-    before(async () => {
-      const keysToSave = keys.map((key, index) => {
-        return {
-          key,
-          data: characters[index],
-        };
+      describe('querying the datastore with an overflow data set', () => {
+        const keys = [
+          // Paths:
+          ['Rickard'],
+          ['Rickard', 'Character', 'Eddard'],
+        ].map(path => {
+          return datastore.key(['Book', 'GoT', 'Character'].concat(path));
+        });
+        const characters = [
+          {
+            name: 'Rickard',
+            family: 'Stark',
+            // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+            appearances: 9223372036854775807,
+            alive: false,
+          },
+          {
+            name: 'Eddard',
+            family: 'Stark',
+            // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+            appearances: 9223372036854775807,
+            alive: false,
+          },
+        ];
+        before(async () => {
+          const keysToSave = keys.map((key, index) => {
+            return {
+              key,
+              data: characters[index],
+            };
+          });
+          await datastore.save(keysToSave);
+        });
+        after(async () => {
+          await datastore.delete(keys);
+        });
+        it('should run a sum aggregation with an overflow dataset', async () => {
+          const q = datastore.createQuery('Character');
+          const aggregate = datastore
+            .createAggregationQuery(q)
+            .addAggregation(AggregateField.sum('appearances'));
+          const [results] = await datastore.runAggregationQuery(aggregate);
+          assert.deepStrictEqual(results, [
+            {property_1: -18446744073709552000},
+          ]);
+        });
+        it('should run an average aggregation with an overflow dataset', async () => {
+          const q = datastore.createQuery('Character');
+          const aggregate = datastore
+            .createAggregationQuery(q)
+            .addAggregation(AggregateField.average('appearances'));
+          const [results] = await datastore.runAggregationQuery(aggregate);
+          assert.deepStrictEqual(results, [{property_1: -9223372036854776000}]);
+        });
       });
-      await datastore.save(keysToSave);
-    });
-    after(async () => {
-      await datastore.delete(keys);
-    });
-    it('should run a sum aggregation with an overflow dataset', async () => {
-      const q = datastore.createQuery('Character');
-      const aggregate = datastore
-        .createAggregationQuery(q)
-        .addAggregation(AggregateField.sum('appearances'));
-      const [results] = await datastore.runAggregationQuery(aggregate);
-      assert.deepStrictEqual(results, [{property_1: -18446744073709552000}]);
-    });
-    it('should run an average aggregation with an overflow dataset', async () => {
-      const q = datastore.createQuery('Character');
-      const aggregate = datastore
-        .createAggregationQuery(q)
-        .addAggregation(AggregateField.average('appearances'));
-      const [results] = await datastore.runAggregationQuery(aggregate);
-      assert.deepStrictEqual(results, [{property_1: -9223372036854776000}]);
-    });
-  });
-  describe('querying the datastore with an NaN in the data set', () => {
-    const keys = [
-      // Paths:
-      ['Rickard'],
-      ['Rickard', 'Character', 'Eddard'],
-    ].map(path => {
-      return datastore.key(['Book', 'GoT', 'Character'].concat(path));
-    });
-    const characters = [
-      {
-        name: 'Rickard',
-        family: 'Stark',
-        appearances: 4,
-        alive: false,
-      },
-      {
-        name: 'Eddard',
-        family: 'Stark',
-        appearances: null,
-        alive: false,
-      },
-    ];
-    before(async () => {
-      const keysToSave = keys.map((key, index) => {
-        return {
-          key,
-          data: characters[index],
-        };
+      describe('querying the datastore with an NaN in the data set', () => {
+        const keys = [
+          // Paths:
+          ['Rickard'],
+          ['Rickard', 'Character', 'Eddard'],
+        ].map(path => {
+          return datastore.key(['Book', 'GoT', 'Character'].concat(path));
+        });
+        const characters = [
+          {
+            name: 'Rickard',
+            family: 'Stark',
+            appearances: 4,
+            alive: false,
+          },
+          {
+            name: 'Eddard',
+            family: 'Stark',
+            appearances: null,
+            alive: false,
+          },
+        ];
+        before(async () => {
+          const keysToSave = keys.map((key, index) => {
+            return {
+              key,
+              data: characters[index],
+            };
+          });
+          await datastore.save(keysToSave);
+        });
+        after(async () => {
+          await datastore.delete(keys);
+        });
+        it('should run a sum aggregation', async () => {
+          const q = datastore.createQuery('Character');
+          const aggregate = datastore
+            .createAggregationQuery(q)
+            .addAggregation(AggregateField.sum('appearances'));
+          const [results] = await datastore.runAggregationQuery(aggregate);
+          assert.deepStrictEqual(results, [{property_1: 4}]);
+        });
+        it('should run an average aggregation', async () => {
+          const q = datastore.createQuery('Character');
+          const aggregate = datastore
+            .createAggregationQuery(q)
+            .addAggregation(AggregateField.average('appearances'));
+          const [results] = await datastore.runAggregationQuery(aggregate);
+          assert.deepStrictEqual(results, [{property_1: 4}]);
+        });
       });
-      await datastore.save(keysToSave);
-    });
-    after(async () => {
-      await datastore.delete(keys);
-    });
-    it('should run a sum aggregation', async () => {
-      const q = datastore.createQuery('Character');
-      const aggregate = datastore
-        .createAggregationQuery(q)
-        .addAggregation(AggregateField.sum('appearances'));
-      const [results] = await datastore.runAggregationQuery(aggregate);
-      assert.deepStrictEqual(results, [{property_1: 4}]);
-    });
-    it('should run an average aggregation', async () => {
-      const q = datastore.createQuery('Character');
-      const aggregate = datastore
-        .createAggregationQuery(q)
-        .addAggregation(AggregateField.average('appearances'));
-      const [results] = await datastore.runAggregationQuery(aggregate);
-      assert.deepStrictEqual(results, [{property_1: 4}]);
-    });
-  });
-  describe('transactions', () => {
-    before(async () => {
-      // This 'sleep' function is used to ensure that when data is saved to datastore,
-      // the time on the server is far enough ahead to be sure to be later than timeBeforeDataCreation
-      // so that when we read at timeBeforeDataCreation we get a snapshot of data before the save.
-      const key = datastore.key(['Company', 'Google']);
-      function sleep(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
-      // Save for a key so that a read time can be accessed for snapshot reads.
-      const emptyData = {
-        key,
-        data: {},
-      };
-      await datastore.save(emptyData);
-      timeBeforeDataCreation = await getReadTime([
-        {kind: 'Company', name: 'Google'},
-      ]);
-      // Sleep for 3 seconds so that any future reads will be later than timeBeforeDataCreation.
-      await sleep(3000);
-    });
+      describe('transactions', () => {
+        before(async () => {
+          // This 'sleep' function is used to ensure that when data is saved to datastore,
+          // the time on the server is far enough ahead to be sure to be later than timeBeforeDataCreation
+          // so that when we read at timeBeforeDataCreation we get a snapshot of data before the save.
+          const key = datastore.key(['Company', 'Google']);
+          function sleep(ms: number) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+          }
+          // Save for a key so that a read time can be accessed for snapshot reads.
+          const emptyData = {
+            key,
+            data: {},
+          };
+          await datastore.save(emptyData);
+          timeBeforeDataCreation = await getReadTime([
+            {kind: 'Company', name: 'Google'},
+          ]);
+          // Sleep for 3 seconds so that any future reads will be later than timeBeforeDataCreation.
+          await sleep(3000);
+        });
 
-    it('should run in a transaction', async () => {
-      const key = datastore.key(['Company', 'Google']);
-      const obj = {
-        url: 'www.google.com',
-      };
-      const transaction = datastore.transaction();
-      await transaction.run();
-      await transaction.get(key);
-      transaction.save({key, data: obj});
-      await transaction.commit();
-      const [entity] = await datastore.get(key);
-      delete entity[datastore.KEY];
-      assert.deepStrictEqual(entity, obj);
-    });
+        it('should run in a transaction', async () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          const transaction = datastore.transaction();
+          await transaction.run();
+          await transaction.get(key);
+          transaction.save({key, data: obj});
+          await transaction.commit();
+          const [entity] = await datastore.get(key);
+          delete entity[datastore.KEY];
+          assert.deepStrictEqual(entity, obj);
+        });
 
         it('should commit all saves and deletes at the end', async () => {
           const deleteKey = datastore.key(['Company', 'Subway']);
@@ -1854,23 +1856,25 @@ async.each(
           assert.strictEqual(incompleteKey.path.length, 2);
         });
 
-    it('should query within a transaction at a previous read time', async () => {
-      const transaction = datastore.transaction();
-      await transaction.run();
-      const query = transaction.createQuery('Company');
-      let entitiesBefore;
-      let entitiesNow;
-      try {
-        [entitiesBefore] = await query.run({readTime: timeBeforeDataCreation});
-        [entitiesNow] = await query.run({});
-      } catch (e) {
-        await transaction.rollback();
-        return;
-      }
-      assert.strictEqual(entitiesBefore!.length, 0);
-      assert(entitiesNow!.length > 0);
-      await transaction.commit();
-    });
+        it('should query within a transaction at a previous read time', async () => {
+          const transaction = datastore.transaction();
+          await transaction.run();
+          const query = transaction.createQuery('Company');
+          let entitiesBefore;
+          let entitiesNow;
+          try {
+            [entitiesBefore] = await query.run({
+              readTime: timeBeforeDataCreation,
+            });
+            [entitiesNow] = await query.run({});
+          } catch (e) {
+            await transaction.rollback();
+            return;
+          }
+          assert.strictEqual(entitiesBefore!.length, 0);
+          assert(entitiesNow!.length > 0);
+          await transaction.commit();
+        });
 
         describe('aggregate query within a transaction', async () => {
           it('should run a query and return the results', async () => {
