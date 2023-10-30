@@ -4,6 +4,46 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [8.2.2](https://github.com/googleapis/nodejs-datastore/compare/v8.2.1...v8.2.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* **deps:** Update google-gax ([#1173](https://github.com/googleapis/nodejs-datastore/issues/1173)) ([8237b15](https://github.com/googleapis/nodejs-datastore/commit/8237b152aa906cac55117cdeaf7a8bda85e94ac7))
+
+## [8.2.1](https://github.com/googleapis/nodejs-datastore/compare/v8.2.0...v8.2.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* Make aggregation query requests run properly inside a transaction ([#1166](https://github.com/googleapis/nodejs-datastore/issues/1166)) ([263804b](https://github.com/googleapis/nodejs-datastore/commit/263804b768322de39bf87b4c5265c303a2bda173))
+
+## [8.2.0](https://github.com/googleapis/nodejs-datastore/compare/v8.1.0...v8.2.0) (2023-10-02)
+
+
+### Features
+
+* Support for using multiple databases in datastore ([#1090](https://github.com/googleapis/nodejs-datastore/issues/1090)) ([10ce563](https://github.com/googleapis/nodejs-datastore/commit/10ce563dae7e1164d3ee23a5887265c9de7b106f))
+
+
+### Bug Fixes
+
+* Allow users to set environment variable to connect to emulator running on docker ([#1164](https://github.com/googleapis/nodejs-datastore/issues/1164)) ([a41741b](https://github.com/googleapis/nodejs-datastore/commit/a41741b1412b1854aeecbe50441aa85015c3d399))
+* Check property existence for exclude from indexes with wildcard ([#1114](https://github.com/googleapis/nodejs-datastore/issues/1114)) ([e6b8ef7](https://github.com/googleapis/nodejs-datastore/commit/e6b8ef74ff10107943d0ae194f9a8d540d8557c1))
+* **deps:** Update dependency sinon to v16 ([#1150](https://github.com/googleapis/nodejs-datastore/issues/1150)) ([0d8b715](https://github.com/googleapis/nodejs-datastore/commit/0d8b7153fc156a4b55e965f39161bd5c19bffff6))
+
+## [8.1.0](https://github.com/googleapis/nodejs-datastore/compare/v8.0.0...v8.1.0) (2023-09-07)
+
+
+### Features
+
+* Sum and average aggregation queries ([#1097](https://github.com/googleapis/nodejs-datastore/issues/1097)) ([44ba6f8](https://github.com/googleapis/nodejs-datastore/commit/44ba6f8f84ef3e33aa1c07b0808a42bcf871b8c6))
+
+
+### Bug Fixes
+
+* Simplify logic for HTTP/1.1 REST fallback option ([#1138](https://github.com/googleapis/nodejs-datastore/issues/1138)) ([4cefaea](https://github.com/googleapis/nodejs-datastore/commit/4cefaeab2ee8af800303f09495883aa1a5a28632))
+
 ## [8.0.0](https://github.com/googleapis/nodejs-datastore/compare/v7.5.1...v8.0.0) (2023-08-09)
 
 

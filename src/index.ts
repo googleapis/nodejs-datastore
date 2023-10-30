@@ -505,11 +505,13 @@ class Datastore extends DatastoreRequest {
       },
       options
     );
-    const isUsingEmulator =
+    const isUsingLocalhost =
       this.baseUrl_ &&
       (this.baseUrl_.includes('localhost') ||
         this.baseUrl_.includes('127.0.0.1') ||
         this.baseUrl_.includes('::1'));
+    const isEmulatorVariableSet = process.env.DATASTORE_EMULATOR_HOST;
+    const isUsingEmulator = isUsingLocalhost || isEmulatorVariableSet;
     if (this.customEndpoint_ && isUsingEmulator) {
       this.options.sslCreds ??= grpc.credentials.createInsecure();
     }
@@ -698,6 +700,16 @@ class Datastore extends DatastoreRequest {
       }),
       () => {}
     );
+  }
+
+  /**
+   * Gets the database id that all requests will be run against.
+   *
+   * @returns {string} The database id that the current client is set to that
+   *    requests will run against.
+   */
+  getDatabaseId(): string | undefined {
+    return this.options.databaseId;
   }
 
   getProjectId(): Promise<string> {
@@ -1818,6 +1830,7 @@ promisifyAll(Datastore, {
     'double',
     'isDouble',
     'geoPoint',
+    'getDatabaseId',
     'getProjectId',
     'isGeoPoint',
     'index',
@@ -1898,6 +1911,7 @@ export interface DatastoreOptions extends GoogleAuthOptions {
   namespace?: string;
   apiEndpoint?: string;
   sslCreds?: ChannelCredentials;
+  databaseId?: string;
 }
 
 export interface KeyToLegacyUrlSafeCallback {
