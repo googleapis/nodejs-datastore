@@ -24,7 +24,8 @@ import {
   DatastoreClient,
   DatastoreRequest,
   Query,
-  TransactionOptions, Transaction,
+  TransactionOptions,
+  Transaction,
 } from '../src';
 import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
@@ -228,7 +229,7 @@ async.each(
         });
       });
 
-      describe('run without setting up transaction id', () => {
+      describe.only('run without setting up transaction id', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
         const testResp = {

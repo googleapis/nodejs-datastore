@@ -1144,6 +1144,7 @@ export interface RequestCallback {
     b?: any
   ): void;
 }
+
 export interface RequestConfig {
   client: string;
   gaxOpts?: CallOptions;

@@ -32,6 +32,15 @@ import {
 } from './request';
 import {AggregateQuery} from './aggregate';
 
+// RequestPromiseReturnType should line up with the types in RequestCallback
+interface RequestPromiseReturnType {
+  err?: Error | null;
+  resp: any;
+}
+interface RequestAsPromise {
+  (resolve: RequestPromiseReturnType): void;
+}
+
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
  * transaction is guaranteed to be atomic, which means that transactions are
@@ -544,7 +553,20 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    this.runAsync(options).then((response: any) => {
+      const err = response.err;
+      const resp = response.resp;
+      if (err) {
+        callback(err, null, resp);
+        return;
+      }
+      this.id = resp!.transaction;
+      callback(null, this, resp);
+    });
+  }
 
+  private async runAsync(options: RunOptions) {
     const reqOpts = {
       transactionOptions: {},
     } as RequestOptions;
@@ -563,22 +585,28 @@ class Transaction extends DatastoreRequest {
       reqOpts.transactionOptions = options.transactionOptions;
     }
 
-    this.request_(
-      {
-        client: 'DatastoreClient',
-        method: 'beginTransaction',
-        reqOpts,
-        gaxOpts: options.gaxOptions,
-      },
-      (err, resp) => {
-        if (err) {
-          callback(err, null, resp);
-          return;
+    // TODO: Change this later to remove self
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+    const promiseFunction = (resolve: any) => {
+      self.request_(
+        {
+          client: 'DatastoreClient',
+          method: 'beginTransaction',
+          reqOpts,
+          gaxOpts: options.gaxOptions,
+        },
+        // In original functionality sometimes a response is provided when an error is also provided
+        // reject only allows us to pass back an error so use resolve for both error and non-error cases.
+        (err, resp) => {
+          resolve({
+            err,
+            resp,
+          });
         }
-        this.id = resp!.transaction;
-        callback(null, this, resp);
-      }
-    );
+      );
+    };
+    return new Promise(promiseFunction);
   }
 
   /**
@@ -810,6 +838,7 @@ promisifyAll(Transaction, {
     'createQuery',
     'delete',
     'insert',
+    'runAsync',
     'save',
     'update',
     'upsert',
