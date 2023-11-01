@@ -271,10 +271,11 @@ async.each(
             dataClient.beginTransaction = originalBeginTransactionMethod;
           }
         });
-        
+
         describe('should pass error back to the user', async () => {
           beforeEach(() => {
-            // Mock out begin transaction and show value that begin transaction receives
+            // Mock out begin transaction and send error back to the user
+            // from the Gapic layer.
             if (dataClient) {
               dataClient.beginTransaction = (
                 request: any,
@@ -312,7 +313,8 @@ async.each(
         });
         describe('should pass response back to the user', async () => {
           beforeEach(() => {
-            // Mock out begin transaction and show value that begin transaction receives
+            // Mock out begin transaction and send a response
+            // back to the user from the Gapic layer.
             if (dataClient) {
               dataClient.beginTransaction = (
                 request: any,
