@@ -37,8 +37,11 @@ interface RequestPromiseReturnType {
   err?: Error | null;
   resp: any;
 }
+interface RequestResolveFunction {
+  (callbackData: RequestPromiseReturnType): void;
+}
 interface RequestAsPromise {
-  (resolve: RequestPromiseReturnType): void;
+  (resolve: RequestResolveFunction): void;
 }
 
 /**
@@ -554,7 +557,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    this.runAsync(options).then((response: any) => {
+    this.runAsync(options).then((response: RequestPromiseReturnType) => {
       const err = response.err;
       const resp = response.resp;
       if (err) {
@@ -566,7 +569,9 @@ class Transaction extends DatastoreRequest {
     });
   }
 
-  private async runAsync(options: RunOptions) {
+  private async runAsync(
+    options: RunOptions
+  ): Promise<RequestPromiseReturnType> {
     const reqOpts = {
       transactionOptions: {},
     } as RequestOptions;
@@ -584,7 +589,7 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const promiseFunction = (resolve: any) => {
+    const promiseFunction: RequestAsPromise = resolve => {
       this.request_(
         {
           client: 'DatastoreClient',
