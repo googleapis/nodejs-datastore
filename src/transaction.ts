@@ -35,7 +35,7 @@ import {AggregateQuery} from './aggregate';
 // RequestPromiseReturnType should line up with the types in RequestCallback
 interface RequestPromiseReturnType {
   err?: Error | null;
-  resp: any;
+  resp: any; // TODO: Replace with google.datastore.v1.IBeginTransactionResponse and address downstream issues
 }
 interface RequestResolveFunction {
   (callbackData: RequestPromiseReturnType): void;
@@ -572,9 +572,9 @@ class Transaction extends DatastoreRequest {
   private async runAsync(
     options: RunOptions
   ): Promise<RequestPromiseReturnType> {
-    const reqOpts = {
+    const reqOpts: RequestOptions = {
       transactionOptions: {},
-    } as RequestOptions;
+    };
 
     if (options.readOnly || this.readOnly) {
       reqOpts.transactionOptions!.readOnly = {};
@@ -589,7 +589,9 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const promiseFunction: RequestAsPromise = resolve => {
+    const promiseFunction: RequestAsPromise = (
+      resolve: RequestResolveFunction
+    ) => {
       this.request_(
         {
           client: 'DatastoreClient',
