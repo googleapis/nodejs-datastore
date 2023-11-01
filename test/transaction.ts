@@ -271,9 +271,7 @@ async.each(
             dataClient.beginTransaction = originalBeginTransactionMethod;
           }
         });
-
-        // Cases: send error back - with callback, with promise
-        // Case: send run response back
+        
         describe('should pass error back to the user', async () => {
           beforeEach(() => {
             // Mock out begin transaction and show value that begin transaction receives
