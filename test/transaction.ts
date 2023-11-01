@@ -24,7 +24,7 @@ import {
   DatastoreClient,
   DatastoreRequest,
   Query,
-  TransactionOptions,
+  TransactionOptions, Transaction,
 } from '../src';
 import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
@@ -32,6 +32,8 @@ import * as sinon from 'sinon';
 import {ClientStub} from 'google-gax';
 import {RequestConfig} from '../src/request';
 import {SECOND_DATABASE_ID} from './index';
+import {google} from '../protos/protos';
+import {RunCallback} from '../src/transaction';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -223,6 +225,86 @@ async.each(
           }
           transactionWithoutMock.save({key: localKey, data: obj});
           await transactionWithoutMock.commit();
+        });
+      });
+
+      describe.only('run without setting up transaction id', () => {
+        const testResp = {transaction: 'some-response'};
+        const namespace = 'run-without-mock';
+        const projectId = 'project-id';
+        const testErrorMessage = 'test-error';
+        const options = {
+          projectId,
+          namespace,
+        };
+        const datastore = new Datastore(options);
+        const transactionWithoutMock = datastore.transaction();
+        const dataClientName = 'DatastoreClient';
+        let dataClient: ClientStub | undefined;
+        let originalBeginTransactionMethod: Function;
+
+        beforeEach(async () => {
+          const gapic = Object.freeze({
+            v1: require('../src/v1'),
+          });
+          // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+          datastore.clients_.set(
+            dataClientName,
+            new gapic.v1[dataClientName](options)
+          );
+          dataClient = datastore.clients_.get(dataClientName);
+          if (dataClient && dataClient.beginTransaction) {
+            originalBeginTransactionMethod = dataClient.beginTransaction;
+          }
+        });
+
+        afterEach(() => {
+          // Commit has likely been mocked out in these tests.
+          // We should reassign commit back to its original value for the rest of the tests.
+          if (dataClient && originalBeginTransactionMethod) {
+            dataClient.beginTransaction = originalBeginTransactionMethod;
+          }
+        });
+
+        // Cases: send error back - with callback, with promise
+        // Case: send run response back
+        describe('should pass error back to the user', async () => {
+          beforeEach(() => {
+            // Mock out begin transaction and show value that begin transaction receives
+            if (dataClient) {
+              dataClient.beginTransaction = (
+                request: any,
+                options: any,
+                callback: (err: unknown, resp: any) => void
+              ) => {
+                callback(new Error(testErrorMessage), testResp);
+              };
+            }
+          });
+
+          it('should send back the error when awaiting a promise', async () => {
+            try {
+              await transactionWithoutMock.run();
+              assert.fail('The run call should have failed.');
+            } catch (error: any) {
+              // TODO: Substitute type any
+              assert.strictEqual(error['message'], testErrorMessage);
+            }
+          });
+          it('should send back the error when using a callback', done => {
+            const runCallback: RunCallback = (
+              error: Error | null,
+              transaction: Transaction | null,
+              response?: google.datastore.v1.IBeginTransactionResponse
+            ) => {
+              assert(error);
+              assert.strictEqual(error.message, testErrorMessage);
+              assert.strictEqual(transaction, null);
+              assert.strictEqual(response, testResp);
+              done();
+            };
+            transactionWithoutMock.run({}, runCallback);
+          });
         });
       });
 
