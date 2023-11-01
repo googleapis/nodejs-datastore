@@ -32,6 +32,8 @@ import {
 } from './request';
 import {AggregateQuery} from './aggregate';
 
+// Some comment
+
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
  * transaction is guaranteed to be atomic, which means that transactions are
