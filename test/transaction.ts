@@ -228,8 +228,12 @@ async.each(
         });
       });
 
-      describe.only('run without setting up transaction id', () => {
-        const testResp = {transaction: 'some-response'};
+      describe('run without setting up transaction id', () => {
+        // These tests were created so that when transaction.run is restructured we
+        // can be confident that it works the same way as before.
+        const testResp = {
+          transaction: Buffer.from(Array.from(Array(100).keys())),
+        };
         const namespace = 'run-without-mock';
         const projectId = 'project-id';
         const testErrorMessage = 'test-error';
@@ -301,6 +305,38 @@ async.each(
               assert.strictEqual(error.message, testErrorMessage);
               assert.strictEqual(transaction, null);
               assert.strictEqual(response, testResp);
+              done();
+            };
+            transactionWithoutMock.run({}, runCallback);
+          });
+        });
+        describe('should pass response back to the user', async () => {
+          beforeEach(() => {
+            // Mock out begin transaction and show value that begin transaction receives
+            if (dataClient) {
+              dataClient.beginTransaction = (
+                request: any,
+                options: any,
+                callback: (err: unknown, resp: any) => void
+              ) => {
+                callback(null, testResp);
+              };
+            }
+          });
+          it('should send back the response when awaiting a promise', async () => {
+            const [transaction, resp] = await transactionWithoutMock.run();
+            assert.strictEqual(transaction, transactionWithoutMock);
+            assert.strictEqual(resp, testResp);
+          });
+          it('should send back the response when using a callback', done => {
+            const runCallback: RunCallback = (
+              error: Error | null,
+              transaction: Transaction | null,
+              response?: google.datastore.v1.IBeginTransactionResponse
+            ) => {
+              assert.strictEqual(error, null);
+              assert.strictEqual(response, testResp);
+              assert.strictEqual(transaction, transactionWithoutMock);
               done();
             };
             transactionWithoutMock.run({}, runCallback);
