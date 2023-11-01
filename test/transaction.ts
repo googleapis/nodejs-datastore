@@ -149,87 +149,87 @@ async.each(
         });
       });
 
-  describe('commit without setting up transaction id', () => {
-    const namespace = 'commit-without-mock';
-    const projectId = 'project-id';
-    const options = {
-      projectId,
-      namespace,
-    };
-    const datastore = new Datastore(options);
-    const transactionWithoutMock = datastore.transaction();
-    const dataClientName = 'DatastoreClient';
-    let dataClient: ClientStub | undefined;
-    let originalCommitMethod: Function;
-
-    beforeEach(async () => {
-      const gapic = Object.freeze({
-        v1: require('../src/v1'),
-      });
-      // Datastore Gapic clients haven't been initialized yet so we initialize them here.
-      datastore.clients_.set(
-        dataClientName,
-        new gapic.v1[dataClientName](options)
-      );
-      dataClient = datastore.clients_.get(dataClientName);
-      if (dataClient && dataClient.commit) {
-        originalCommitMethod = dataClient.commit;
-      }
-    });
-
-    afterEach(() => {
-      // Commit has likely been mocked out in these tests.
-      // We should reassign commit back to its original value for the rest of the tests.
-      if (dataClient && originalCommitMethod) {
-        dataClient.commit = originalCommitMethod;
-      }
-    });
-
-    it('should execute as a non-transaction', async () => {
-      const kind = 'Product';
-      const id = 123;
-      const url = 'www.google.com.sample';
-      const path = [kind, id];
-      const obj = {url};
-      const localKey = datastore.key(path);
-      // Mock out commit and show value that commit receives
-      if (dataClient) {
-        dataClient.commit = (
-          request: any,
-          options: any,
-          callback: (err?: unknown) => void
-        ) => {
-          try {
-            assert.deepStrictEqual(request, {
-              projectId,
-              mode: 'NON_TRANSACTIONAL', // Even though a transaction object is used, this runs as a non-transaction.
-              mutations: [
-                {
-                  upsert: {
-                    key: {
-                      path: [{kind, id}],
-                      partitionId: {namespaceId: namespace},
-                    },
-                    properties: {url: {stringValue: url}},
-                  },
-                },
-              ],
-            });
-          } catch (e) {
-            callback(e);
-          }
-          callback();
+      describe('commit without setting up transaction id', () => {
+        const namespace = 'commit-without-mock';
+        const projectId = 'project-id';
+        const options = {
+          projectId,
+          namespace,
         };
-      }
-      transactionWithoutMock.save({key: localKey, data: obj});
-      await transactionWithoutMock.commit();
-    });
-  });
+        const datastore = new Datastore(options);
+        const transactionWithoutMock = datastore.transaction();
+        const dataClientName = 'DatastoreClient';
+        let dataClient: ClientStub | undefined;
+        let originalCommitMethod: Function;
 
-  describe('commit', () => {
-    beforeEach(() => {
-      transaction.id = TRANSACTION_ID;
-    });
+        beforeEach(async () => {
+          const gapic = Object.freeze({
+            v1: require('../src/v1'),
+          });
+          // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+          datastore.clients_.set(
+            dataClientName,
+            new gapic.v1[dataClientName](options)
+          );
+          dataClient = datastore.clients_.get(dataClientName);
+          if (dataClient && dataClient.commit) {
+            originalCommitMethod = dataClient.commit;
+          }
+        });
+
+        afterEach(() => {
+          // Commit has likely been mocked out in these tests.
+          // We should reassign commit back to its original value for the rest of the tests.
+          if (dataClient && originalCommitMethod) {
+            dataClient.commit = originalCommitMethod;
+          }
+        });
+
+        it('should execute as a non-transaction', async () => {
+          const kind = 'Product';
+          const id = 123;
+          const url = 'www.google.com.sample';
+          const path = [kind, id];
+          const obj = {url};
+          const localKey = datastore.key(path);
+          // Mock out commit and show value that commit receives
+          if (dataClient) {
+            dataClient.commit = (
+              request: any,
+              options: any,
+              callback: (err?: unknown) => void
+            ) => {
+              try {
+                assert.deepStrictEqual(request, {
+                  projectId,
+                  mode: 'NON_TRANSACTIONAL', // Even though a transaction object is used, this runs as a non-transaction.
+                  mutations: [
+                    {
+                      upsert: {
+                        key: {
+                          path: [{kind, id}],
+                          partitionId: {namespaceId: namespace},
+                        },
+                        properties: {url: {stringValue: url}},
+                      },
+                    },
+                  ],
+                });
+              } catch (e) {
+                callback(e);
+              }
+              callback();
+            };
+          }
+          transactionWithoutMock.save({key: localKey, data: obj});
+          await transactionWithoutMock.commit();
+        });
+      });
+
+      describe('commit', () => {
+        beforeEach(() => {
+          transaction.id = TRANSACTION_ID;
+        });
 
         afterEach(() => {
           sinon.restore();
