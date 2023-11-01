@@ -584,12 +584,8 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-
-    // TODO: Change this later to remove self
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
     const promiseFunction = (resolve: any) => {
-      self.request_(
+      this.request_(
         {
           client: 'DatastoreClient',
           method: 'beginTransaction',
