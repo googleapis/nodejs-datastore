@@ -174,6 +174,9 @@ async.each(
         let originalBeginTransactionMethod: Function;
 
         beforeEach(async () => {
+          // In this before hook, save the original beginTransaction method in a variable.
+          // After tests are finished, reassign beginTransaction to the variable.
+          // This way, mocking beginTransaction in this block doesn't affect other tests.
           const gapic = Object.freeze({
             v1: require('../src/v1'),
           });
@@ -189,8 +192,8 @@ async.each(
         });
 
         afterEach(() => {
-          // Commit has likely been mocked out in these tests.
-          // We should reassign commit back to its original value for the rest of the tests.
+          // beginTransaction has likely been mocked out in these tests.
+          // We should reassign beginTransaction back to its original value for tests outside this block.
           if (dataClient && originalBeginTransactionMethod) {
             dataClient.beginTransaction = originalBeginTransactionMethod;
           }
