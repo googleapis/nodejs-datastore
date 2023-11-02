@@ -40,7 +40,7 @@ interface RequestPromiseReturnType {
 interface RequestResolveFunction {
   (callbackData: RequestPromiseReturnType): void;
 }
-interface RequestAsPromise {
+interface RequestAsPromiseCallback {
   (resolve: RequestResolveFunction): void;
 }
 
@@ -596,7 +596,7 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const promiseFunction: RequestAsPromise = (
+    const promiseFunction: RequestAsPromiseCallback = (
       resolve: RequestResolveFunction
     ) => {
       this.request_(
