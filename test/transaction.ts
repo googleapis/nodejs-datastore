@@ -30,11 +30,12 @@ import {
 import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
-import {ClientStub} from 'google-gax';
+import {Callback, CallOptions, ClientStub} from 'google-gax';
 import {RequestConfig} from '../src/request';
 import {SECOND_DATABASE_ID} from './index';
 import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
+import * as protos from '../protos/protos';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -201,9 +202,15 @@ async.each(
             // from the Gapic layer.
             if (dataClient) {
               dataClient.beginTransaction = (
-                request: any,
-                options: any,
-                callback: (err: unknown, resp: any) => void
+                request: protos.google.datastore.v1.IBeginTransactionRequest,
+                options: CallOptions,
+                callback: Callback<
+                  protos.google.datastore.v1.IBeginTransactionResponse,
+                  | protos.google.datastore.v1.IBeginTransactionRequest
+                  | null
+                  | undefined,
+                  {} | null | undefined
+                >
               ) => {
                 callback(new Error(testErrorMessage), testResp);
               };
@@ -240,9 +247,15 @@ async.each(
             // back to the user from the Gapic layer.
             if (dataClient) {
               dataClient.beginTransaction = (
-                request: any,
-                options: any,
-                callback: (err: unknown, resp: any) => void
+                  request: protos.google.datastore.v1.IBeginTransactionRequest,
+                  options: CallOptions,
+                  callback: Callback<
+                      protos.google.datastore.v1.IBeginTransactionResponse,
+                      | protos.google.datastore.v1.IBeginTransactionRequest
+                      | null
+                      | undefined,
+                      {} | null | undefined
+                  >
               ) => {
                 callback(null, testResp);
               };
