@@ -29,6 +29,7 @@ import {
   DatastoreRequest,
   RequestOptions,
   PrepareEntityObjectResponse,
+  TransactionState,
 } from './request';
 import {AggregateQuery} from './aggregate';
 
@@ -42,6 +43,12 @@ interface RequestResolveFunction {
 }
 interface RequestAsPromiseCallback {
   (resolve: RequestResolveFunction): void;
+}
+
+// Data types in CommitPromiseReturnType should line up with CommitCallback
+interface CommitPromiseReturnType {
+  err?: Error | null;
+  resp?: google.datastore.v1.ICommitResponse;
 }
 
 /**
@@ -99,6 +106,7 @@ class Transaction extends DatastoreRequest {
 
     // Queue the requests to make when we send the transactional commit.
     this.requests_ = [];
+    this.state = TransactionState.NOT_STARTED;
   }
 
   /*! Developer Documentation
@@ -162,6 +170,47 @@ class Transaction extends DatastoreRequest {
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     this.runCommit(gaxOptions, callback);
+    // TODO: Add call to commitAsync here and handle result in the .then hook
+    /*
+    this.commitAsync(gaxOptions).then((response: CommitPromiseReturnType) => {
+      callback(response.err, response.resp);
+    });
+     */
+  }
+
+  // The promise that commitAsync uses should always resolve and never reject.
+  // The data it resolves with will contain response and error information.
+  private async commitAsync(
+    gaxOptions: CallOptions
+  ): Promise<CommitPromiseReturnType> {
+    if (this.state === TransactionState.NOT_STARTED) {
+      const release = await this.mutex.acquire();
+      try {
+        try {
+          if (this.state === TransactionState.NOT_STARTED) {
+            const runResults = await this.runAsync({gaxOptions});
+            this.parseRunSuccess(runResults);
+          }
+        } finally {
+          // TODO: Check that error actually reaches user
+          release(); // TODO: Be sure to release the mutex in the error state
+        }
+      } catch (err: any) {
+        return await new Promise(resolve => {
+          // resp from the beginTransaction call never reaches the user
+          // if we allowed it to then the return type of commit would need to change
+          resolve({err});
+        });
+      }
+    }
+    return await new Promise(resolve => {
+      this.runCommit(
+        gaxOptions,
+        (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
+          resolve({err, resp});
+        }
+      );
+    });
   }
 
   /**
@@ -446,15 +495,37 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.runAsync(options).then((response: RequestPromiseReturnType) => {
-      this.parseRunAsync(response, callback);
-    });
+    if (this.state === TransactionState.NOT_STARTED) {
+      this.mutex.acquire().then(release => {
+        this.runAsync(options).then((response: RequestPromiseReturnType) => {
+          // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
+          release();
+          this.parseRunAsync(response, callback);
+        });
+      });
+    } else {
+      process.emitWarning(
+        'run has already been called and should not be called again.'
+      );
+    }
   }
 
+  private runCommit(gaxOptions?: CallOptions): Promise<CommitResponse>;
+  private runCommit(callback: CommitCallback): void;
+  private runCommit(gaxOptions: CallOptions, callback: CommitCallback): void;
   private runCommit(
-    gaxOptions: CallOptions,
-    callback: CommitCallback
+    gaxOptionsOrCallback?: CallOptions | CommitCallback,
+    cb?: CommitCallback
   ): void | Promise<CommitResponse> {
+    const callback =
+      typeof gaxOptionsOrCallback === 'function'
+        ? gaxOptionsOrCallback
+        : typeof cb === 'function'
+        ? cb
+        : () => {};
+    const gaxOptions =
+      typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
+
     if (this.skipCommit) {
       setImmediate(callback);
       return;
@@ -578,9 +649,16 @@ class Transaction extends DatastoreRequest {
       callback(err, null, resp);
       return;
     }
-    this.id = resp!.transaction;
+    this.parseRunSuccess(response);
     callback(null, this, resp);
   }
+
+  private parseRunSuccess(response: RequestPromiseReturnType) {
+    const resp = response.resp;
+    this.id = resp!.transaction;
+    this.state = TransactionState.IN_PROGRESS;
+  }
+
   // TODO: Replace with #runAsync when pack and play error is gone
   private async runAsync(
     options: RunOptions
@@ -855,6 +933,8 @@ promisifyAll(Transaction, {
     'delete',
     'insert',
     'runAsync',
+    'parseRunAsync',
+    'parseTransactionResponse',
     'save',
     'update',
     'upsert',
