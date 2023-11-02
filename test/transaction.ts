@@ -247,15 +247,15 @@ async.each(
             // back to the user from the Gapic layer.
             if (dataClient) {
               dataClient.beginTransaction = (
-                  request: protos.google.datastore.v1.IBeginTransactionRequest,
-                  options: CallOptions,
-                  callback: Callback<
-                      protos.google.datastore.v1.IBeginTransactionResponse,
-                      | protos.google.datastore.v1.IBeginTransactionRequest
-                      | null
-                      | undefined,
-                      {} | null | undefined
-                  >
+                request: protos.google.datastore.v1.IBeginTransactionRequest,
+                options: CallOptions,
+                callback: Callback<
+                  protos.google.datastore.v1.IBeginTransactionResponse,
+                  | protos.google.datastore.v1.IBeginTransactionRequest
+                  | null
+                  | undefined,
+                  {} | null | undefined
+                >
               ) => {
                 callback(null, testResp);
               };
