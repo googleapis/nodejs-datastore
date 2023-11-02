@@ -556,19 +556,26 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     this.runAsync(options).then((response: RequestPromiseReturnType) => {
-      const err = response.err;
-      const resp = response.resp;
-      if (err) {
-        callback(err, null, resp);
-        return;
-      }
-      this.id = resp!.transaction;
-      callback(null, this, resp);
+      this.parseRunAsync(response, callback);
     });
   }
 
+  // TODO: Replace with #parseRunAsync when pack and play error is gone
+  private parseRunAsync(
+    response: RequestPromiseReturnType,
+    callback: RunCallback
+  ): void {
+    const err = response.err;
+    const resp = response.resp;
+    if (err) {
+      callback(err, null, resp);
+      return;
+    }
+    this.id = resp!.transaction;
+    callback(null, this, resp);
+  }
+  // TODO: Replace with #runAsync when pack and play error is gone
   private async runAsync(
     options: RunOptions
   ): Promise<RequestPromiseReturnType> {
