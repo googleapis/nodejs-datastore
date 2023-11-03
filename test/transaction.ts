@@ -31,7 +31,7 @@ import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {Callback, CallOptions, ClientStub} from 'google-gax';
-import {RequestConfig} from '../src/request';
+import {CommitCallback, RequestConfig} from '../src/request';
 import {SECOND_DATABASE_ID} from './index';
 import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
@@ -281,6 +281,177 @@ async.each(
               done();
             };
             transactionWithoutMock.run({}, runCallback);
+          });
+          // TODO: Add a test here for calling commit
+          describe('commit without setting up transaction id when run returns a response', () => {
+            // These tests were created so that when transaction.commit is restructured we
+            // can be confident that it works the same way as before.
+            const testCommitResp = {
+              mutationResults: [
+                {
+                  key: {
+                    path: [
+                      {
+                        kind: 'some-kind',
+                      },
+                    ],
+                  },
+                },
+              ],
+            };
+            const namespace = 'run-without-mock';
+            const projectId = 'project-id';
+            const testErrorMessage = 'test-commit-error';
+            const options = {
+              projectId,
+              namespace,
+            };
+            const datastore = new Datastore(options);
+            let transactionWithoutMock: Transaction;
+            const dataClientName = 'DatastoreClient';
+            let dataClient: ClientStub | undefined;
+            let originalCommitMethod: Function;
+
+            beforeEach(async () => {
+              // Create a fresh transaction for each test because transaction state changes after a commit.
+              transactionWithoutMock = datastore.transaction();
+              // In this before hook, save the original beginTransaction method in a variable.
+              // After tests are finished, reassign beginTransaction to the variable.
+              // This way, mocking beginTransaction in this block doesn't affect other tests.
+              const gapic = Object.freeze({
+                v1: require('../src/v1'),
+              });
+              // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+              datastore.clients_.set(
+                dataClientName,
+                new gapic.v1[dataClientName](options)
+              );
+              dataClient = datastore.clients_.get(dataClientName);
+              if (dataClient && dataClient.commit) {
+                originalCommitMethod = dataClient.commit;
+              }
+              if (dataClient && dataClient.beginTransaction) {
+                dataClient.beginTransaction = (
+                  request: protos.google.datastore.v1.IBeginTransactionRequest,
+                  options: CallOptions,
+                  callback: Callback<
+                    protos.google.datastore.v1.IBeginTransactionResponse,
+                    | protos.google.datastore.v1.IBeginTransactionRequest
+                    | null
+                    | undefined,
+                    {} | null | undefined
+                  >
+                ) => {
+                  callback(null, testResp);
+                };
+              }
+            });
+
+            afterEach(() => {
+              // beginTransaction has likely been mocked out in these tests.
+              // We should reassign beginTransaction back to its original value for tests outside this block.
+              if (dataClient && originalCommitMethod) {
+                dataClient.commit = originalCommitMethod;
+              }
+            });
+
+            describe('should pass error back to the user', async () => {
+              beforeEach(() => {
+                // Mock out begin transaction and send error back to the user
+                // from the Gapic layer.
+                if (dataClient) {
+                  dataClient.commit = (
+                    request: protos.google.datastore.v1.ICommitRequest,
+                    options: CallOptions,
+                    callback: Callback<
+                      protos.google.datastore.v1.ICommitResponse,
+                      | protos.google.datastore.v1.ICommitRequest
+                      | null
+                      | undefined,
+                      {} | null | undefined
+                    >
+                  ) => {
+                    callback(new Error(testErrorMessage), testCommitResp);
+                  };
+                }
+              });
+
+              it('should send back the error when awaiting a promise', async () => {
+                try {
+                  await transactionWithoutMock.run();
+                  await transactionWithoutMock.commit();
+                  assert.fail('The run call should have failed.');
+                } catch (error: any) {
+                  // TODO: Substitute type any
+                  assert.strictEqual(error['message'], testErrorMessage);
+                }
+              });
+              it('should send back the error when using a callback', done => {
+                const commitCallback: CommitCallback = (
+                  error: Error | null | undefined,
+                  response?: google.datastore.v1.ICommitResponse
+                ) => {
+                  assert(error);
+                  assert.strictEqual(error.message, testErrorMessage);
+                  assert.strictEqual(response, testCommitResp);
+                  done();
+                };
+                transactionWithoutMock.run(
+                  (
+                    error: Error | null,
+                    transaction: Transaction | null,
+                    response?: google.datastore.v1.IBeginTransactionResponse
+                  ) => {
+                    transactionWithoutMock.commit(commitCallback);
+                  }
+                );
+              });
+            });
+            describe('should pass response back to the user', async () => {
+              beforeEach(() => {
+                // Mock out begin transaction and send a response
+                // back to the user from the Gapic layer.
+                if (dataClient) {
+                  dataClient.commit = (
+                    request: protos.google.datastore.v1.ICommitRequest,
+                    options: CallOptions,
+                    callback: Callback<
+                      protos.google.datastore.v1.ICommitResponse,
+                      | protos.google.datastore.v1.ICommitRequest
+                      | null
+                      | undefined,
+                      {} | null | undefined
+                    >
+                  ) => {
+                    callback(null, testCommitResp);
+                  };
+                }
+              });
+              it('should send back the response when awaiting a promise', async () => {
+                await transactionWithoutMock.run();
+                const [commitResults] = await transactionWithoutMock.commit();
+                assert.strictEqual(commitResults, testCommitResp);
+              });
+              it('should send back the response when using a callback', done => {
+                const commitCallback: CommitCallback = (
+                  error: Error | null | undefined,
+                  response?: google.datastore.v1.ICommitResponse
+                ) => {
+                  assert.strictEqual(error, null);
+                  assert.strictEqual(response, testCommitResp);
+                  done();
+                };
+                transactionWithoutMock.run(
+                  (
+                    error: Error | null,
+                    transaction: Transaction | null,
+                    response?: google.datastore.v1.IBeginTransactionResponse
+                  ) => {
+                    transactionWithoutMock.commit(commitCallback);
+                  }
+                );
+              });
+            });
           });
         });
       });
