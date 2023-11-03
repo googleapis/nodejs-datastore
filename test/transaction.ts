@@ -57,6 +57,8 @@ const fakePfy = Object.assign({}, pfy, {
       'createQuery',
       'delete',
       'insert',
+      'parseRunAsync',
+      'parseTransactionResponse',
       'runAsync',
       'save',
       'update',

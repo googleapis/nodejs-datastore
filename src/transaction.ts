@@ -171,11 +171,9 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     this.runCommit(gaxOptions, callback);
     // TODO: Add call to commitAsync here and handle result in the .then hook
-    /*
     this.commitAsync(gaxOptions).then((response: CommitPromiseReturnType) => {
       callback(response.err, response.resp);
     });
-     */
   }
 
   // The promise that commitAsync uses should always resolve and never reject.
@@ -196,11 +194,7 @@ class Transaction extends DatastoreRequest {
           release(); // TODO: Be sure to release the mutex in the error state
         }
       } catch (err: any) {
-        return await new Promise(resolve => {
-          // resp from the beginTransaction call never reaches the user
-          // if we allowed it to then the return type of commit would need to change
-          resolve({err});
-        });
+        return {err};
       }
     }
     return await new Promise(resolve => {
