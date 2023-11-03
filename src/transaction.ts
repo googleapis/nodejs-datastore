@@ -495,19 +495,20 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    if (this.state === TransactionState.NOT_STARTED) {
-      this.mutex.acquire().then(release => {
-        this.runAsync(options).then((response: RequestPromiseReturnType) => {
-          // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
-          release();
-          this.parseRunAsync(response, callback);
-        });
-      });
-    } else {
+    // TODO: Whenever run is called a second time and a warning is emitted then do nothing.
+    // TODO: This means rewriting many tests so that they don't use the same transaction object.
+    if (this.state !== TransactionState.NOT_STARTED) {
       process.emitWarning(
         'run has already been called and should not be called again.'
       );
     }
+    this.mutex.acquire().then(release => {
+      this.runAsync(options).then((response: RequestPromiseReturnType) => {
+        // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
+        release();
+        this.parseRunAsync(response, callback);
+      });
+    });
   }
 
   private runCommit(gaxOptions?: CallOptions): Promise<CommitResponse>;
@@ -932,9 +933,9 @@ promisifyAll(Transaction, {
     'createQuery',
     'delete',
     'insert',
-    'runAsync',
     'parseRunAsync',
     'parseTransactionResponse',
+    'runAsync',
     'save',
     'update',
     'upsert',
