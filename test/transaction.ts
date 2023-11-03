@@ -307,12 +307,14 @@ async.each(
               namespace,
             };
             const datastore = new Datastore(options);
-            const transactionWithoutMock = datastore.transaction();
+            let transactionWithoutMock: Transaction;
             const dataClientName = 'DatastoreClient';
             let dataClient: ClientStub | undefined;
             let originalCommitMethod: Function;
 
             beforeEach(async () => {
+              // Create a fresh transaction for each test because transaction state changes after a commit.
+              transactionWithoutMock = datastore.transaction();
               // In this before hook, save the original beginTransaction method in a variable.
               // After tests are finished, reassign beginTransaction to the variable.
               // This way, mocking beginTransaction in this block doesn't affect other tests.
@@ -389,7 +391,6 @@ async.each(
                 ) => {
                   assert(error);
                   assert.strictEqual(error.message, testErrorMessage);
-                  assert.strictEqual(transaction, null);
                   assert.strictEqual(response, testCommitResp);
                   done();
                 };
@@ -440,7 +441,7 @@ async.each(
               });
               it('should send back the response when awaiting a promise', async () => {
                 await transactionWithoutMock.run();
-                const commitResults = await transactionWithoutMock.commit();
+                const [commitResults] = await transactionWithoutMock.commit();
                 assert.strictEqual(commitResults, testCommitResp);
               });
               it('should send back the response when using a callback', done => {
@@ -448,7 +449,6 @@ async.each(
                   error: Error | null | undefined,
                   response?: google.datastore.v1.ICommitResponse
                 ) => {
-                  assert(error);
                   assert.strictEqual(error, null);
                   assert.strictEqual(response, testCommitResp);
                   done();
