@@ -503,11 +503,16 @@ class Transaction extends DatastoreRequest {
       );
     }
     this.mutex.acquire().then(release => {
-      this.runAsync(options).then((response: RequestPromiseReturnType) => {
-        // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
-        release();
-        this.parseRunAsync(response, callback);
-      });
+      this.runAsync(options)
+        .then((response: RequestPromiseReturnType) => {
+          // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
+          release();
+          this.parseRunAsync(response, callback);
+        })
+        .catch((err: any) => {
+          // TODO: Remove this catch block
+          callback(Error('The error should always be caught by then'), this);
+        });
     });
   }
 

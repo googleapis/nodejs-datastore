@@ -358,6 +358,19 @@ async.each(
                   ) => {
                     callback(new Error(testErrorMessage), testCommitResp);
                   };
+                  dataClient.beginTransaction = (
+                    request: protos.google.datastore.v1.IBeginTransactionRequest,
+                    options: CallOptions,
+                    callback: Callback<
+                      protos.google.datastore.v1.IBeginTransactionResponse,
+                      | protos.google.datastore.v1.IBeginTransactionRequest
+                      | null
+                      | undefined,
+                      {} | null | undefined
+                    >
+                  ) => {
+                    callback(null, testResp);
+                  };
                 }
               });
 
@@ -410,6 +423,20 @@ async.each(
                     >
                   ) => {
                     callback(null, testCommitResp);
+                  };
+                  // TODO: See if eliminating this mock will fix the problem
+                  dataClient.beginTransaction = (
+                    request: protos.google.datastore.v1.IBeginTransactionRequest,
+                    options: CallOptions,
+                    callback: Callback<
+                      protos.google.datastore.v1.IBeginTransactionResponse,
+                      | protos.google.datastore.v1.IBeginTransactionRequest
+                      | null
+                      | undefined,
+                      {} | null | undefined
+                    >
+                  ) => {
+                    callback(null, testResp);
                   };
                 }
               });
