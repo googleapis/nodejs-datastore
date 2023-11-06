@@ -691,7 +691,7 @@ class Transaction extends DatastoreRequest {
 
   // TODO: Replace with #parseRunAsync when pack and play error is gone
   #parseRunAsync(
-    response: PassThroughReturnType<any>,
+    response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>,
     callback: RunCallback
   ): void {
     const err = response.err;
