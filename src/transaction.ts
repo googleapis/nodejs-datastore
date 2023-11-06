@@ -210,37 +210,6 @@ class Transaction extends DatastoreRequest {
     this.#beginWithCallback(gaxOptions, promise, callback);
   }
 
-  // The promise that commitAsync uses should always resolve and never reject.
-  // The data it resolves with will contain response and error information.
-  async #commitAsync(
-    gaxOptions: CallOptions
-  ): Promise<CommitPromiseReturnType> {
-    if (this.#state === TransactionState.NOT_STARTED) {
-      const release = await this.#mutex.acquire();
-      try {
-        try {
-          if (this.#state === TransactionState.NOT_STARTED) {
-            const runResults = await this.runAsync({gaxOptions});
-            this.#parseRunSuccess(runResults);
-          }
-        } finally {
-          // TODO: Check that error actually reaches user
-          release(); // TODO: Be sure to release the mutex in the error state
-        }
-      } catch (err: any) {
-        return {err};
-      }
-    }
-    return await new Promise(resolve => {
-      this.#runCommit(
-        gaxOptions,
-        (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
-          resolve({err, resp});
-        }
-      );
-    });
-  }
-
   async #withBeginTransaction<T>(
     gaxOptions: CallOptions,
     promise: Promise<PassThroughReturnType<T>>
@@ -400,7 +369,6 @@ class Transaction extends DatastoreRequest {
     });
   }
 
-  /*
   get(
     keys: entity.Key | entity.Key[],
     options?: CreateReadStreamOptions
@@ -423,11 +391,10 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     const promise = new Promise(resolve => {
-      super.get(keys, options, callback);
+      super.get(keys, options, ());
     });
-    super.get(keys, options, callback);
+
   }
-   */
 
   /**
    * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `insert`.
