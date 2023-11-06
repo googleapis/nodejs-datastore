@@ -54,7 +54,7 @@ const fakePfy = Object.assign({}, pfy, {
     promisified = true;
     assert.deepStrictEqual(options.exclude, [
       'createAggregationQuery',
-      'commitAsync',
+      '#commitAsync',
       'createQuery',
       'delete',
       'insert',
