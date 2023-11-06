@@ -557,7 +557,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     this.#runAsync(options).then((response: RequestPromiseReturnType) => {
-      this.#parseRunAsync(response, callback);
+      this.#processBeginResults(response, callback);
     });
   }
 
@@ -570,7 +570,7 @@ class Transaction extends DatastoreRequest {
    * response as arguments.
    *
    **/
-  #parseRunAsync(
+  #processBeginResults(
     response: RequestPromiseReturnType,
     callback: RunCallback
   ): void {
