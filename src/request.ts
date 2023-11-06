@@ -57,7 +57,7 @@ import {
 import {Datastore} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';
-import {Mutex} from 'async-mutex';
+
 
 /**
  * A map of read consistency values to proto codes.
@@ -73,20 +73,6 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
 // TODO: Typescript had difficulty working with enums before.
 // TODO: Try to get enums working instead of using static properties.
 
-export class TransactionState {
-  static NOT_TRANSACTION = Symbol('NON_TRANSACTION');
-  static NOT_STARTED = Symbol('NOT_STARTED');
-  // IN_PROGRESS currently tracks the expired state as well
-  static IN_PROGRESS = Symbol('IN_PROGRESS');
-}
-
-/*
-export enum TransactionState {
-  NOT_TRANSACTION,
-  NOT_STARTED,
-  IN_PROGRESS
-}
- */
 /**
  * Handle logic for Datastore API operations. Handles request logic for
  * Datastore.
@@ -108,8 +94,6 @@ class DatastoreRequest {
     | Entity;
   datastore!: Datastore;
   // TODO: Replace protected with a symbol for better data hiding.
-  protected mutex = new Mutex();
-  protected state: Symbol = TransactionState.NOT_TRANSACTION;
   [key: string]: Entity;
 
   /**

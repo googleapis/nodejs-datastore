@@ -29,9 +29,12 @@ import {
   DatastoreRequest,
   RequestOptions,
   PrepareEntityObjectResponse,
-  TransactionState,
+  CreateReadStreamOptions,
+  GetResponse,
+  GetCallback,
 } from './request';
 import {AggregateQuery} from './aggregate';
+import {Mutex} from 'async-mutex';
 
 // RequestPromiseReturnType should line up with the types in RequestCallback
 interface RequestPromiseReturnType {
@@ -49,6 +52,13 @@ interface RequestAsPromiseCallback {
 interface CommitPromiseReturnType {
   err?: Error | null;
   resp?: google.datastore.v1.ICommitResponse;
+}
+
+class TransactionState {
+  static NOT_TRANSACTION = Symbol('NON_TRANSACTION');
+  static NOT_STARTED = Symbol('NOT_STARTED');
+  // IN_PROGRESS currently tracks the expired state as well
+  static IN_PROGRESS = Symbol('IN_PROGRESS');
 }
 
 /**
@@ -77,6 +87,8 @@ class Transaction extends DatastoreRequest {
   request: Function;
   modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
+  #mutex = new Mutex();
+  #state: Symbol = TransactionState.NOT_TRANSACTION;
   constructor(datastore: Datastore, options?: TransactionOptions) {
     super();
     /**
@@ -106,7 +118,7 @@ class Transaction extends DatastoreRequest {
 
     // Queue the requests to make when we send the transactional commit.
     this.requests_ = [];
-    this.state = TransactionState.NOT_STARTED;
+    this.#state = TransactionState.NOT_STARTED;
   }
 
   /*! Developer Documentation
@@ -181,13 +193,13 @@ class Transaction extends DatastoreRequest {
   private async commitAsync(
     gaxOptions: CallOptions
   ): Promise<CommitPromiseReturnType> {
-    if (this.state === TransactionState.NOT_STARTED) {
-      const release = await this.mutex.acquire();
+    if (this.#state === TransactionState.NOT_STARTED) {
+      const release = await this.#mutex.acquire();
       try {
         try {
-          if (this.state === TransactionState.NOT_STARTED) {
+          if (this.#state === TransactionState.NOT_STARTED) {
             const runResults = await this.runAsync({gaxOptions});
-            this.parseRunSuccess(runResults);
+            this.#parseRunSuccess(runResults);
           }
         } finally {
           // TODO: Check that error actually reaches user
@@ -343,6 +355,30 @@ class Transaction extends DatastoreRequest {
     });
   }
 
+  get(
+    keys: entity.Key | entity.Key[],
+    options?: CreateReadStreamOptions
+  ): Promise<GetResponse>;
+  get(keys: entity.Key | entity.Key[], callback: GetCallback): void;
+  get(
+    keys: entity.Key | entity.Key[],
+    options: CreateReadStreamOptions,
+    callback: GetCallback
+  ): void;
+  get(
+    keys: entity.Key | entity.Key[],
+    optionsOrCallback?: CreateReadStreamOptions | GetCallback,
+    cb?: GetCallback
+  ): void | Promise<GetResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    super.get(keys, options, callback);
+  }
+
   /**
    * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `insert`.
    *
@@ -491,17 +527,17 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // TODO: Whenever run is called a second time and a warning is emitted then do nothing.
     // TODO: This means rewriting many tests so that they don't use the same transaction object.
-    if (this.state !== TransactionState.NOT_STARTED) {
+    if (this.#state !== TransactionState.NOT_STARTED) {
       process.emitWarning(
         'run has already been called and should not be called again.'
       );
     }
-    this.mutex.acquire().then(release => {
+    this.#mutex.acquire().then(release => {
       this.runAsync(options)
         .then((response: RequestPromiseReturnType) => {
           // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
           release();
-          this.parseRunAsync(response, callback);
+          this.#parseRunAsync(response, callback);
         })
         .catch((err: any) => {
           // TODO: Remove this catch block
@@ -639,7 +675,7 @@ class Transaction extends DatastoreRequest {
   }
 
   // TODO: Replace with #parseRunAsync when pack and play error is gone
-  private parseRunAsync(
+  #parseRunAsync(
     response: RequestPromiseReturnType,
     callback: RunCallback
   ): void {
@@ -649,14 +685,14 @@ class Transaction extends DatastoreRequest {
       callback(err, null, resp);
       return;
     }
-    this.parseRunSuccess(response);
+    this.#parseRunSuccess(response);
     callback(null, this, resp);
   }
 
-  private parseRunSuccess(response: RequestPromiseReturnType) {
+  #parseRunSuccess(response: RequestPromiseReturnType) {
     const resp = response.resp;
     this.id = resp!.transaction;
-    this.state = TransactionState.IN_PROGRESS;
+    this.#state = TransactionState.IN_PROGRESS;
   }
 
   // TODO: Replace with #runAsync when pack and play error is gone
