@@ -561,6 +561,15 @@ class Transaction extends DatastoreRequest {
     });
   }
 
+  /**
+   * This function parses results from a beginTransaction call
+   *
+   * @param {RequestPromiseReturnType} response The response from a call to
+   * begin a transaction.
+   * @param {RunCallback} callback A callback that accepts an error and a
+   * response as arguments.
+   *
+   **/
   #parseRunAsync(
     response: RequestPromiseReturnType,
     callback: RunCallback
@@ -575,6 +584,14 @@ class Transaction extends DatastoreRequest {
     }
   }
 
+  /**
+   * This async function makes a beginTransaction call and returns a promise with
+   * the information returned from the call that was made.
+   *
+   * @param {RunOptions} options The options used for a beginTransaction call.
+   *
+   *
+   **/
   async #runAsync(options: RunOptions): Promise<RequestPromiseReturnType> {
     const reqOpts: RequestOptions = {
       transactionOptions: {},
