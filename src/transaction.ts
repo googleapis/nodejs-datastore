@@ -589,6 +589,7 @@ class Transaction extends DatastoreRequest {
    * the information returned from the call that was made.
    *
    * @param {RunOptions} options The options used for a beginTransaction call.
+   * @returns {Promise<RequestPromiseReturnType>}
    *
    *
    **/
