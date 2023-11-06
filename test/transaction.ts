@@ -459,8 +459,15 @@ async.each(
       });
 
       describe('commit', () => {
-        beforeEach(() => {
+        beforeEach(done => {
           transaction.id = TRANSACTION_ID;
+          transaction.request_ = (config, callback) => {
+            done();
+            callback(null, {
+              transaction: Buffer.from(Array.from(Array(100).keys())),
+            });
+          };
+          transaction.run();
         });
 
         afterEach(() => {

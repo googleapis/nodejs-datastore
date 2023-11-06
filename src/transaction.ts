@@ -181,7 +181,7 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    this.runCommit(gaxOptions, callback);
+    // this.runCommit(gaxOptions, callback);
     // TODO: Add call to commitAsync here and handle result in the .then hook
     this.commitAsync(gaxOptions).then((response: CommitPromiseReturnType) => {
       callback(response.err, response.resp);
