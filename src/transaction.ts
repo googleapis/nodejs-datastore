@@ -181,14 +181,14 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    this.commitAsync(gaxOptions).then((response: CommitPromiseReturnType) => {
+    this.#commitAsync(gaxOptions).then((response: CommitPromiseReturnType) => {
       callback(response.err, response.resp);
     });
   }
 
   // The promise that commitAsync uses should always resolve and never reject.
   // The data it resolves with will contain response and error information.
-  private async commitAsync(
+  async #commitAsync(
     gaxOptions: CallOptions
   ): Promise<CommitPromiseReturnType> {
     if (this.#state === TransactionState.NOT_STARTED) {
@@ -208,7 +208,7 @@ class Transaction extends DatastoreRequest {
       }
     }
     return await new Promise(resolve => {
-      this.runCommit(
+      this.#runCommit(
         gaxOptions,
         (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
           resolve({err, resp});
@@ -544,10 +544,10 @@ class Transaction extends DatastoreRequest {
     });
   }
 
-  private runCommit(gaxOptions?: CallOptions): Promise<CommitResponse>;
-  private runCommit(callback: CommitCallback): void;
-  private runCommit(gaxOptions: CallOptions, callback: CommitCallback): void;
-  private runCommit(
+  #runCommit(gaxOptions?: CallOptions): Promise<CommitResponse>;
+  #runCommit(callback: CommitCallback): void;
+  #runCommit(gaxOptions: CallOptions, callback: CommitCallback): void;
+  #runCommit(
     gaxOptionsOrCallback?: CallOptions | CommitCallback,
     cb?: CommitCallback
   ): void | Promise<CommitResponse> {
@@ -963,7 +963,7 @@ export interface RunOptions {
 promisifyAll(Transaction, {
   exclude: [
     'createAggregationQuery',
-    'commitAsync',
+    '#commitAsync',
     'createQuery',
     'delete',
     'insert',
