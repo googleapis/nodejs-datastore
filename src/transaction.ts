@@ -48,11 +48,6 @@ interface RequestAsPromiseCallback {
   (resolve: RequestResolveFunction): void;
 }
 
-// Data types in CommitPromiseReturnType should line up with CommitCallback
-interface CommitPromiseReturnType {
-  err?: Error | null;
-  resp?: google.datastore.v1.ICommitResponse;
-}
 interface PassThroughReturnType<T> {
   err?: Error | null;
   resp?: T;
