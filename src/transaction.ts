@@ -556,13 +556,12 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.runAsync(options).then((response: RequestPromiseReturnType) => {
-      this.parseRunAsync(response, callback);
+    this.#runAsync(options).then((response: RequestPromiseReturnType) => {
+      this.#parseRunAsync(response, callback);
     });
   }
 
-  // TODO: Replace with #parseRunAsync when pack and play error is gone
-  private parseRunAsync(
+  #parseRunAsync(
     response: RequestPromiseReturnType,
     callback: RunCallback
   ): void {
@@ -575,10 +574,8 @@ class Transaction extends DatastoreRequest {
     this.id = resp!.transaction;
     callback(null, this, resp);
   }
-  // TODO: Replace with #runAsync when pack and play error is gone
-  private async runAsync(
-    options: RunOptions
-  ): Promise<RequestPromiseReturnType> {
+
+  async #runAsync(options: RunOptions): Promise<RequestPromiseReturnType> {
     const reqOpts: RequestOptions = {
       transactionOptions: {},
     };
@@ -848,7 +845,7 @@ promisifyAll(Transaction, {
     'createQuery',
     'delete',
     'insert',
-    'runAsync',
+    '#runAsync',
     'save',
     'update',
     'upsert',
