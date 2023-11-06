@@ -36,16 +36,11 @@ import {
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
 
-// RequestPromiseReturnType should line up with the types in RequestCallback
-interface RequestPromiseReturnType {
-  err?: Error | null;
-  resp: any; // TODO: Replace with google.datastore.v1.IBeginTransactionResponse and address downstream issues
+interface RequestResolveFunction<T> {
+  (callbackData: PassThroughReturnType<T>): void;
 }
-interface RequestResolveFunction {
-  (callbackData: RequestPromiseReturnType): void;
-}
-interface RequestAsPromiseCallback {
-  (resolve: RequestResolveFunction): void;
+interface RequestAsPromiseCallback<T> {
+  (resolve: RequestResolveFunction<T>): void;
 }
 
 interface PassThroughReturnType<T> {
@@ -131,7 +126,7 @@ class Transaction extends DatastoreRequest {
    */
 
   #beginWithCallback<T>(
-    gaxOptions: CallOptions,
+    gaxOptions: CallOptions | undefined,
     promise: Promise<PassThroughReturnType<T>>,
     callback: (err?: Error | null, resp?: T) => void
   ) {
@@ -206,7 +201,7 @@ class Transaction extends DatastoreRequest {
   }
 
   async #withBeginTransaction<T>(
-    gaxOptions: CallOptions,
+    gaxOptions: CallOptions | undefined,
     promise: Promise<PassThroughReturnType<T>>
   ): Promise<PassThroughReturnType<T>> {
     if (this.#state === TransactionState.NOT_STARTED) {
@@ -385,10 +380,13 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const promise = new Promise(resolve => {
-      super.get(keys, options, ());
+    type getPromiseType = PassThroughReturnType<GetResponse>;
+    const promise: Promise<getPromiseType> = new Promise(resolve => {
+      super.get(keys, options, (err?: Error | null, resp?: GetResponse) => {
+        resolve({err, resp});
+      });
     });
-
+    this.#beginWithCallback(options.gaxOptions, promise, callback);
   }
 
   /**
@@ -546,11 +544,16 @@ class Transaction extends DatastoreRequest {
     }
     this.#mutex.acquire().then(release => {
       this.runAsync(options)
-        .then((response: RequestPromiseReturnType) => {
-          // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
-          release();
-          this.#parseRunAsync(response, callback);
-        })
+        // TODO: Replace type with google.datastore.v1.IBeginTransactionResponse and address downstream issues
+        .then(
+          (
+            response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>
+          ) => {
+            // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
+            release();
+            this.#parseRunAsync(response, callback);
+          }
+        )
         .catch((err: any) => {
           // TODO: Remove this catch block
           callback(Error('The error should always be caught by then'), this);
@@ -688,7 +691,7 @@ class Transaction extends DatastoreRequest {
 
   // TODO: Replace with #parseRunAsync when pack and play error is gone
   #parseRunAsync(
-    response: RequestPromiseReturnType,
+    response: PassThroughReturnType<any>,
     callback: RunCallback
   ): void {
     const err = response.err;
@@ -701,7 +704,7 @@ class Transaction extends DatastoreRequest {
     callback(null, this, resp);
   }
 
-  #parseRunSuccess(response: RequestPromiseReturnType) {
+  #parseRunSuccess(response: PassThroughReturnType<any>) {
     const resp = response.resp;
     this.id = resp!.transaction;
     this.#state = TransactionState.IN_PROGRESS;
@@ -710,7 +713,7 @@ class Transaction extends DatastoreRequest {
   // TODO: Replace with #runAsync when pack and play error is gone
   private async runAsync(
     options: RunOptions
-  ): Promise<RequestPromiseReturnType> {
+  ): Promise<PassThroughReturnType<any>> {
     const reqOpts: RequestOptions = {
       transactionOptions: {},
     };
@@ -728,8 +731,8 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const promiseFunction: RequestAsPromiseCallback = (
-      resolve: RequestResolveFunction
+    const promiseFunction: RequestAsPromiseCallback<any> = (
+      resolve: RequestResolveFunction<any>
     ) => {
       this.request_(
         {
