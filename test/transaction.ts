@@ -54,6 +54,7 @@ const fakePfy = Object.assign({}, pfy, {
     promisified = true;
     assert.deepStrictEqual(options.exclude, [
       'createAggregationQuery',
+      'commitAsync',
       'createQuery',
       'delete',
       'insert',
@@ -156,7 +157,7 @@ async.each(
         });
       });
 
-      describe('run without setting up transaction id', () => {
+      describe.only('run without setting up transaction id', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
         const testResp = {

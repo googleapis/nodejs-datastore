@@ -184,6 +184,8 @@ class Transaction extends DatastoreRequest {
     // this.runCommit(gaxOptions, callback);
     // TODO: Add call to commitAsync here and handle result in the .then hook
     this.commitAsync(gaxOptions).then((response: CommitPromiseReturnType) => {
+      console.log(response.err);
+      console.log(response.resp);
       callback(response.err, response.resp);
     });
   }
@@ -193,6 +195,7 @@ class Transaction extends DatastoreRequest {
   private async commitAsync(
     gaxOptions: CallOptions
   ): Promise<CommitPromiseReturnType> {
+    console.log('test');
     if (this.#state === TransactionState.NOT_STARTED) {
       const release = await this.#mutex.acquire();
       try {
@@ -213,6 +216,7 @@ class Transaction extends DatastoreRequest {
       this.runCommit(
         gaxOptions,
         (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
+          console.log('resolving');
           resolve({err, resp});
         }
       );
@@ -652,10 +656,12 @@ class Transaction extends DatastoreRequest {
       (err, resp) => {
         if (err) {
           // Rollback automatically for the user.
+          console.log('rolling back');
           this.rollback(() => {
             // Provide the error & API response from the failed commit to the
             // user. Even a failed rollback should be transparent. RE:
             // https://github.com/GoogleCloudPlatform/google-cloud-node/pull/1369#discussion_r66833976
+            console.log('rolled back');
             callback(err, resp);
           });
           return;
@@ -965,6 +971,7 @@ export interface RunOptions {
 promisifyAll(Transaction, {
   exclude: [
     'createAggregationQuery',
+    'commitAsync',
     'createQuery',
     'delete',
     'insert',
