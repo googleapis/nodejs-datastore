@@ -135,6 +135,18 @@ class Transaction extends DatastoreRequest {
    *      the final commit request with.
    */
 
+  #beginWithCallback<T>(
+    gaxOptions: CallOptions,
+    promise: Promise<PassThroughReturnType<T>>,
+    callback: (err?: Error | null, resp?: T) => void
+  ) {
+    this.#withBeginTransaction(gaxOptions, promise).then(
+      (response: PassThroughReturnType<T>) => {
+        callback(response.err, response.resp);
+      }
+    );
+  }
+
   /**
    * Commit the remote transaction and finalize the current transaction
    * instance.
@@ -195,11 +207,7 @@ class Transaction extends DatastoreRequest {
         }
       );
     });
-    this.#withBeginTransaction(gaxOptions, promise).then(
-      (response: commitPromiseType) => {
-        callback(response.err, response.resp);
-      }
-    );
+    this.#beginWithCallback(gaxOptions, promise, callback);
   }
 
   // The promise that commitAsync uses should always resolve and never reject.
