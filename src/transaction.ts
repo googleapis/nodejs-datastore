@@ -569,10 +569,10 @@ class Transaction extends DatastoreRequest {
     const resp = response.resp;
     if (err) {
       callback(err, null, resp);
-      return;
+    } else {
+      this.id = resp!.transaction;
+      callback(null, this, resp);
     }
-    this.id = resp!.transaction;
-    callback(null, this, resp);
   }
 
   async #runAsync(options: RunOptions): Promise<RequestPromiseReturnType> {
