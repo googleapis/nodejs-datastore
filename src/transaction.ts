@@ -22,7 +22,13 @@ import {google} from '../protos/protos';
 
 import {Datastore, TransactionOptions} from '.';
 import {entity, Entity, Entities} from './entity';
-import {Query} from './query';
+import {
+  Query,
+  RunQueryCallback,
+  RunQueryInfo,
+  RunQueryOptions,
+  RunQueryResponse,
+} from './query';
 import {
   CommitCallback,
   CommitResponse,
@@ -36,6 +42,10 @@ import {
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
 
+type RunQueryResponseOptional = [
+  Entity[] | undefined,
+  RunQueryInfo | undefined,
+];
 interface RequestResolveFunction<T> {
   (callbackData: PassThroughReturnType<T>): void;
 }
@@ -380,8 +390,8 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    type getPromiseType = PassThroughReturnType<GetResponse>;
-    const promise: Promise<getPromiseType> = new Promise(resolve => {
+    type promiseType = PassThroughReturnType<GetResponse>;
+    const promise: Promise<promiseType> = new Promise(resolve => {
       super.get(keys, options, (err?: Error | null, resp?: GetResponse) => {
         resolve({err, resp});
       });
@@ -752,6 +762,42 @@ class Transaction extends DatastoreRequest {
       );
     };
     return new Promise(promiseFunction);
+  }
+
+  runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
+  runQuery(
+    query: Query,
+    options: RunQueryOptions,
+    callback: RunQueryCallback
+  ): void;
+  runQuery(query: Query, callback: RunQueryCallback): void;
+  runQuery(
+    query: Query,
+    optionsOrCallback?: RunQueryOptions | RunQueryCallback,
+    cb?: RunQueryCallback
+  ): void | Promise<RunQueryResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    type promiseType = PassThroughReturnType<RunQueryResponseOptional>;
+    const promise: Promise<promiseType> = new Promise(resolve => {
+      super.runQuery(
+        query,
+        options,
+        (err: Error | null, entities?: Entity[], info?: RunQueryInfo) => {
+          resolve({err, resp: [entities, info]});
+        }
+      );
+    });
+    this.#withBeginTransaction(options.gaxOptions, promise).then(
+      (response: PassThroughReturnType<RunQueryResponseOptional>) => {
+        const error = response.err ? response.err : null;
+        callback(error, response.resp);
+      }
+    );
   }
 
   /**
