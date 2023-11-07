@@ -463,6 +463,7 @@ async.each(
             // These tests were created so that when transaction.runAggregateQuery is restructured we
             // can be confident that it works the same way as before.
 
+            const runAggregationQueryUserResp = [{'average rating': 100}];
             const runAggregationQueryResp = {
               batch: {
                 aggregationResults: [
@@ -589,7 +590,7 @@ async.each(
                 ) => {
                   assert(error);
                   assert.strictEqual(error.message, testErrorMessage);
-                  assert.strictEqual(response, runAggregationQueryResp);
+                  assert.deepStrictEqual(response, runAggregationQueryUserResp);
                   done();
                 };
                 transactionWithoutMock.run(
@@ -631,9 +632,9 @@ async.each(
                 const allResults =
                   await transactionWithoutMock.runAggregationQuery(aggregate);
                 const [runAggregateQueryResults] = allResults;
-                assert.strictEqual(
+                assert.deepStrictEqual(
                   runAggregateQueryResults,
-                  runAggregationQueryResp
+                  runAggregationQueryUserResp
                 );
               });
               it('should send back the response when using a callback', done => {
@@ -642,7 +643,7 @@ async.each(
                   response?: any
                 ) => {
                   assert.strictEqual(error, null);
-                  assert.strictEqual(response, runAggregationQueryResp);
+                  assert.deepStrictEqual(response, runAggregationQueryUserResp);
                   done();
                 };
                 transactionWithoutMock.run(

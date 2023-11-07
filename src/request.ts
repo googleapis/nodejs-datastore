@@ -588,7 +588,6 @@ class DatastoreRequest {
     const reqOpts: RunAggregationQueryRequest = Object.assign(sharedQueryOpts, {
       aggregationQuery: aggregationQueryOptions,
     });
-    console.log('Making run aggregation query call');
     this.request_(
       {
         client: 'DatastoreClient',
