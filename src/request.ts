@@ -597,10 +597,6 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
-        console.log('Run aggregation response');
-        console.log(err);
-        console.log(res);
-        console.log(JSON.stringify(res));
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
           const finalResults = results
@@ -617,7 +613,6 @@ class DatastoreRequest {
                 )
               )
             );
-          console.log('calling callback');
           callback(err, finalResults);
         } else {
           callback(err, res);

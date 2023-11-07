@@ -260,8 +260,6 @@ class Transaction extends DatastoreRequest {
       }
     }
     const promiseResults = await new Promise(resolver);
-    console.log('Promise results');
-    console.log(promiseResults);
     return promiseResults;
   }
 
@@ -819,10 +817,6 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     type promiseType = PassThroughReturnType<PassThroughReturnType<any>>;
-    const someOtherPromise = new Promise(resolve => {
-      console.log('some other');
-      resolve('something');
-    });
     type resolverType = (
       resolve: (
         value:
@@ -830,26 +824,18 @@ class Transaction extends DatastoreRequest {
           | PromiseLike<PassThroughReturnType<any>>
       ) => void
     ) => void;
-    console.log('call runAggregationQuery');
     const resolver: resolverType = resolve => {
-      console.log('resolving');
       super.runAggregationQuery(
         query,
         options,
         (err?: Error | null, resp?: any) => {
-          console.log('resolved');
           resolve({err, resp});
         }
       );
     };
-    console.log('some-function');
     this.#someFunction(options.gaxOptions, resolver).then(
       (response: promiseType) => {
-        console.log('passing into callback');
         const error = response.err ? response.err : null;
-        console.log('passing into callback 2');
-        console.log(error);
-        console.log(response.resp);
         callback(error, response.resp);
       }
     );
