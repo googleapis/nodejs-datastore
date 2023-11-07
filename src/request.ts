@@ -58,7 +58,6 @@ import {Datastore} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';
 
-
 /**
  * A map of read consistency values to proto codes.
  *
@@ -589,6 +588,7 @@ class DatastoreRequest {
     const reqOpts: RunAggregationQueryRequest = Object.assign(sharedQueryOpts, {
       aggregationQuery: aggregationQueryOptions,
     });
+    console.log('Making run aggregation query call');
     this.request_(
       {
         client: 'DatastoreClient',
@@ -597,6 +597,9 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
+        console.log('Run aggregation response');
+        console.log(err);
+        console.log(res);
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
           const finalResults = results
@@ -613,6 +616,7 @@ class DatastoreRequest {
                 )
               )
             );
+          console.log('calling callback');
           callback(err, finalResults);
         } else {
           callback(err, res);

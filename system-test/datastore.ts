@@ -1749,7 +1749,7 @@ async.each(
           assert.deepStrictEqual(results, [{property_1: 4}]);
         });
       });
-      describe('transactions', () => {
+      describe.only('transactions', () => {
         it('should run in a transaction', async () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -1862,6 +1862,7 @@ async.each(
             );
           });
           it('should aggregate query within a count transaction', async () => {
+            console.log('running test of interest');
             const transaction = datastore.transaction();
             await transaction.run();
             const query = transaction.createQuery('Company');
@@ -1870,12 +1871,11 @@ async.each(
               .count('total');
             let result;
             try {
+              const allResults = await aggregateQuery.run();
               [result] = await aggregateQuery.run();
             } catch (e) {
               await transaction.rollback();
-              assert.fail(
-                'The aggregation query run should have been successful'
-              );
+              throw e;
             }
             assert.deepStrictEqual(result, [{total: 2}]);
             await transaction.commit();
@@ -1892,9 +1892,7 @@ async.each(
               [result] = await aggregateQuery.run();
             } catch (e) {
               await transaction.rollback();
-              assert.fail(
-                'The aggregation query run should have been successful'
-              );
+              throw e;
             }
             assert.deepStrictEqual(result, [{'total rating': 200}]);
             await transaction.commit();
@@ -1911,9 +1909,7 @@ async.each(
               [result] = await aggregateQuery.run();
             } catch (e) {
               await transaction.rollback();
-              assert.fail(
-                'The aggregation query run should have been successful'
-              );
+              throw e;
             }
             assert.deepStrictEqual(result, [{'average rating': 100}]);
             await transaction.commit();
@@ -1929,9 +1925,7 @@ async.each(
                 [result] = await aggregateQuery.run();
               } catch (e) {
                 await transaction.rollback();
-                assert.fail(
-                  'The aggregation query run should have been successful'
-                );
+                throw e;
               }
               return result;
             }

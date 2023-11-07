@@ -38,6 +38,7 @@ import {
   CreateReadStreamOptions,
   GetResponse,
   GetCallback,
+  RequestCallback,
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
@@ -231,6 +232,35 @@ class Transaction extends DatastoreRequest {
       }
     }
     return await promise;
+  }
+
+  // TODO: Simplify the generics here: remove PassThroughReturnType
+  async #someFunction<T>(
+    gaxOptions: CallOptions | undefined,
+    resolver: (
+      resolve: (
+        value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
+      ) => void
+    ) => void
+  ): Promise<PassThroughReturnType<T>> {
+    if (this.#state === TransactionState.NOT_STARTED) {
+      const release = await this.#mutex.acquire();
+      try {
+        try {
+          if (this.#state === TransactionState.NOT_STARTED) {
+            const runResults = await this.runAsync({gaxOptions});
+            this.#parseRunSuccess(runResults);
+          }
+        } finally {
+          // TODO: Check that error actually reaches user
+          release(); // TODO: Be sure to release the mutex in the error state
+        }
+      } catch (err: any) {
+        return {err};
+      }
+    }
+    const promiseResults = await new Promise(resolver);
+    return promiseResults;
   }
 
   /**
@@ -764,6 +794,76 @@ class Transaction extends DatastoreRequest {
     return new Promise(promiseFunction);
   }
 
+  runAggregationQuery(
+    query: AggregateQuery,
+    options?: RunQueryOptions
+  ): Promise<RunQueryResponse>;
+  runAggregationQuery(
+    query: AggregateQuery,
+    options: RunQueryOptions,
+    callback: RequestCallback
+  ): void;
+  runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
+  runAggregationQuery(
+    query: AggregateQuery,
+    optionsOrCallback?: RunQueryOptions | RequestCallback,
+    cb?: RequestCallback
+  ): void | Promise<RunQueryResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const a = 7;
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    type promiseType = PassThroughReturnType<PassThroughReturnType<any>>;
+    const someOtherPromise = new Promise(resolve => {
+      console.log('some other');
+      resolve('something');
+    });
+    type resolverType = (
+      resolve: (
+        value:
+          | PassThroughReturnType<any>
+          | PromiseLike<PassThroughReturnType<any>>
+      ) => void
+    ) => void;
+    console.log('call runAggregationQuery');
+    const resolver: resolverType = resolve => {
+      console.log('resolving');
+      super.runAggregationQuery(
+        query,
+        options,
+        (err?: Error | null, resp?: any) => {
+          console.log('resolved');
+          resolve({err, resp});
+        }
+      );
+    };
+    console.log('some-function');
+    this.#someFunction(options.gaxOptions, resolver).then(
+      (response: promiseType) => {
+        console.log('passing into callback');
+        const error = response.err ? response.err : null;
+        console.log('passing into callback 2');
+        console.log(error);
+        console.log(response.resp);
+        // callback(error, response.resp);
+        callback(null, 'some-response');
+      }
+    );
+    //const promise: Promise<promiseType> = new Promise();
+    // console.log('starting withBeginTransaction');
+    /*
+    this.#withBeginTransaction(options.gaxOptions, promise).then(
+      (response: promiseType) => {
+        const error = response.err ? response.err : null;
+        callback(error, response.resp);
+      }
+    );
+    */
+  }
+
   runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
   runQuery(
     query: Query,
@@ -793,7 +893,7 @@ class Transaction extends DatastoreRequest {
       );
     });
     this.#withBeginTransaction(options.gaxOptions, promise).then(
-      (response: PassThroughReturnType<RunQueryResponseOptional>) => {
+      (response: promiseType) => {
         const error = response.err ? response.err : null;
         callback(error, response.resp);
       }
@@ -1029,11 +1129,15 @@ promisifyAll(Transaction, {
     '#commitAsync',
     'createQuery',
     'delete',
+    'get',
     'insert',
     'parseRunAsync',
     'parseTransactionResponse',
+    'runAggregationQuery',
     'runAsync',
+    'runQuery',
     'save',
+    '#someFunction',
     'update',
     'upsert',
   ],

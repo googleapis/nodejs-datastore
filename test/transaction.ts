@@ -57,10 +57,13 @@ const fakePfy = Object.assign({}, pfy, {
       '#commitAsync',
       'createQuery',
       'delete',
+      'get',
       'insert',
       'parseRunAsync',
       'parseTransactionResponse',
+      'runAggregationQuery',
       'runAsync',
+      'runQuery',
       'save',
       'update',
       'upsert',
@@ -157,7 +160,7 @@ async.each(
         });
       });
 
-      describe.only('run without setting up transaction id', () => {
+      describe('run without setting up transaction id', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
         const testResp = {
