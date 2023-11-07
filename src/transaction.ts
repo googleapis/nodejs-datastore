@@ -621,8 +621,7 @@ class Transaction extends DatastoreRequest {
           reqOpts,
           gaxOpts: options.gaxOptions,
         },
-        // In original functionality sometimes a response is provided when an error is also provided
-        // reject only allows us to pass back an error so use resolve for both error and non-error cases.
+        // Always use resolve because then this function can return both the error and the response
         (err, resp) => {
           resolve({
             err,
