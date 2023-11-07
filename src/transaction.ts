@@ -47,16 +47,22 @@ type RunQueryResponseOptional = [
   Entity[] | undefined,
   RunQueryInfo | undefined,
 ];
+interface PassThroughReturnType<T> {
+  err?: Error | null;
+  resp?: T;
+}
 interface RequestResolveFunction<T> {
   (callbackData: PassThroughReturnType<T>): void;
 }
 interface RequestAsPromiseCallback<T> {
   (resolve: RequestResolveFunction<T>): void;
 }
-
-interface PassThroughReturnType<T> {
-  err?: Error | null;
-  resp?: T;
+interface ResolverType<T> {
+  (
+    resolve: (
+      value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
+    ) => void
+  ): void;
 }
 
 class TransactionState {
@@ -813,18 +819,10 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' && optionsOrCallback
         ? optionsOrCallback
         : {};
-    const a = 7;
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     type promiseType = PassThroughReturnType<PassThroughReturnType<any>>;
-    type resolverType = (
-      resolve: (
-        value:
-          | PassThroughReturnType<any>
-          | PromiseLike<PassThroughReturnType<any>>
-      ) => void
-    ) => void;
-    const resolver: resolverType = resolve => {
+    const resolver: ResolverType<any> = resolve => {
       super.runAggregationQuery(
         query,
         options,
@@ -839,16 +837,6 @@ class Transaction extends DatastoreRequest {
         callback(error, response.resp);
       }
     );
-    //const promise: Promise<promiseType> = new Promise();
-    // console.log('starting withBeginTransaction');
-    /*
-    this.#withBeginTransaction(options.gaxOptions, promise).then(
-      (response: promiseType) => {
-        const error = response.err ? response.err : null;
-        callback(error, response.resp);
-      }
-    );
-    */
   }
 
   runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
