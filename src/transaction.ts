@@ -260,6 +260,8 @@ class Transaction extends DatastoreRequest {
       }
     }
     const promiseResults = await new Promise(resolver);
+    console.log('Promise results');
+    console.log(promiseResults);
     return promiseResults;
   }
 
@@ -848,8 +850,7 @@ class Transaction extends DatastoreRequest {
         console.log('passing into callback 2');
         console.log(error);
         console.log(response.resp);
-        // callback(error, response.resp);
-        callback(null, 'some-response');
+        callback(error, response.resp);
       }
     );
     //const promise: Promise<promiseType> = new Promise();
@@ -1129,13 +1130,10 @@ promisifyAll(Transaction, {
     '#commitAsync',
     'createQuery',
     'delete',
-    'get',
     'insert',
     'parseRunAsync',
     'parseTransactionResponse',
-    'runAggregationQuery',
     'runAsync',
-    'runQuery',
     'save',
     '#someFunction',
     'update',

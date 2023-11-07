@@ -58,14 +58,12 @@ const fakePfy = Object.assign({}, pfy, {
       '#commitAsync',
       'createQuery',
       'delete',
-      'get',
       'insert',
       'parseRunAsync',
       'parseTransactionResponse',
-      'runAggregationQuery',
       'runAsync',
-      'runQuery',
       'save',
+      '#someFunction',
       'update',
       'upsert',
     ]);
@@ -576,7 +574,8 @@ async.each(
               it('should send back the error when awaiting a promise', async () => {
                 try {
                   await transactionWithoutMock.run();
-                  await transactionWithoutMock.runAggregationQuery(aggregate);
+                  const results =
+                    await transactionWithoutMock.runAggregationQuery(aggregate);
                   assert.fail('The run call should have failed.');
                 } catch (error: any) {
                   // TODO: Substitute type any
