@@ -822,10 +822,14 @@ async.each(
                 error: Error | null | undefined,
                 response?: google.datastore.v1.ICommitResponse
               ) => {
-                assert(error);
-                assert.strictEqual(error.message, testErrorMessage);
-                assert.strictEqual(response, testCommitResp);
-                done();
+                try {
+                  assert(error);
+                  assert.strictEqual(error.message, testErrorMessage);
+                  assert.strictEqual(response, testCommitResp);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transactionWrapper.transaction.run(() => {
                 transactionWrapper.transaction.commit(commitCallback);
@@ -851,9 +855,13 @@ async.each(
                 error: Error | null | undefined,
                 response?: google.datastore.v1.ICommitResponse
               ) => {
-                assert.strictEqual(error, null);
-                assert.strictEqual(response, testCommitResp);
-                done();
+                try {
+                  assert.strictEqual(error, null);
+                  assert.strictEqual(response, testCommitResp);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transactionWrapper.transaction.run(() => {
                 transactionWrapper.transaction.commit(commitCallback);
@@ -930,10 +938,14 @@ async.each(
                 error: Error | null | undefined,
                 response?: any
               ) => {
-                assert(error);
-                assert.strictEqual(error.message, testErrorMessage);
-                assert.deepStrictEqual(response, runAggregationQueryUserResp);
-                done();
+                try {
+                  assert(error);
+                  assert.strictEqual(error.message, testErrorMessage);
+                  assert.deepStrictEqual(response, runAggregationQueryUserResp);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transaction.run(() => {
                 transaction.runAggregationQuery(
@@ -966,9 +978,13 @@ async.each(
                 error: Error | null | undefined,
                 response?: any
               ) => {
-                assert.strictEqual(error, null);
-                assert.deepStrictEqual(response, runAggregationQueryUserResp);
-                done();
+                try {
+                  assert.strictEqual(error, null);
+                  assert.deepStrictEqual(response, runAggregationQueryUserResp);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transaction.run(() => {
                 transaction.runAggregationQuery(
@@ -1032,10 +1048,14 @@ async.each(
                 error: Error | null | undefined,
                 response?: any
               ) => {
-                assert(error);
-                assert.strictEqual(error.message, testErrorMessage);
-                assert.deepStrictEqual(response, undefined);
-                done();
+                try {
+                  assert(error);
+                  assert.strictEqual(error.message, testErrorMessage);
+                  assert.deepStrictEqual(response, undefined);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transaction.run(() => {
                 transaction.runQuery(q, callback);
@@ -1064,9 +1084,13 @@ async.each(
                 error: Error | null | undefined,
                 response?: any
               ) => {
-                assert.strictEqual(error, null);
-                assert.deepStrictEqual(response, runQueryUserResp);
-                done();
+                try {
+                  assert.strictEqual(error, null);
+                  assert.deepStrictEqual(response, runQueryUserResp);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transaction.run(() => {
                 transaction.runQuery(q, callback);
@@ -1108,7 +1132,7 @@ async.each(
               nanos: 201398000,
             },
           };
-          const getUserResp: string = 'post1';
+          const getUserResp = 'post1';
           const testErrorMessage = 'test-run-Query-error';
           let transactionWrapper: MockedTransactionWrapper;
           let transaction: Transaction;
@@ -1151,10 +1175,14 @@ async.each(
                 error: Error | null | undefined,
                 response?: any
               ) => {
-                assert(error);
-                assert.strictEqual(error.message, testErrorMessage);
-                assert.deepStrictEqual(response, undefined);
-                done();
+                try {
+                  assert(error);
+                  assert.strictEqual(error.message, testErrorMessage);
+                  assert.deepStrictEqual(response, undefined);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transaction.run(() => {
                 transaction.get(key, callback);
@@ -1176,10 +1204,14 @@ async.each(
                 error: Error | null | undefined,
                 response?: any
               ) => {
-                const result = response[transactionWrapper.datastore.KEY];
-                assert.strictEqual(error, null);
-                assert.deepStrictEqual(result.name, getUserResp);
-                done();
+                try {
+                  const result = response[transactionWrapper.datastore.KEY];
+                  assert.strictEqual(error, null);
+                  assert.deepStrictEqual(result.name, getUserResp);
+                  done();
+                } catch (e) {
+                  done(e);
+                }
               };
               transaction.run(() => {
                 transaction.get(key, callback);
