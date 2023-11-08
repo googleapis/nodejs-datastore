@@ -980,6 +980,10 @@ async.each(
           const runQueryResp = {
             batch: {
               entityResults: [],
+              endCursor: {
+                type: 'Buffer',
+                data: Buffer.from(Array.from(Array(100).keys())),
+              },
             },
           };
           const runQueryUserResp: Entity[] = [];
@@ -1037,7 +1041,7 @@ async.each(
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
                 'runQuery',
-                runQueryUserResp,
+                runQueryResp,
                 null
               );
             });
