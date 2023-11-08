@@ -204,38 +204,15 @@ class Transaction extends DatastoreRequest {
         }
       );
     };
-    this.#someFunction(gaxOptions, resolver).then(
+    this.#withBeginTransaction(gaxOptions, resolver).then(
       (response: commitPromiseType) => {
         callback(response.err, response.resp);
       }
     );
   }
 
-  async #withBeginTransaction<T>(
-    gaxOptions: CallOptions | undefined,
-    promise: Promise<PassThroughReturnType<T>>
-  ): Promise<PassThroughReturnType<T>> {
-    if (this.#state === TransactionState.NOT_STARTED) {
-      const release = await this.#mutex.acquire();
-      try {
-        try {
-          if (this.#state === TransactionState.NOT_STARTED) {
-            const runResults = await this.runAsync({gaxOptions});
-            this.#parseRunSuccess(runResults);
-          }
-        } finally {
-          // TODO: Check that error actually reaches user
-          release(); // TODO: Be sure to release the mutex in the error state
-        }
-      } catch (err: any) {
-        return {err};
-      }
-    }
-    return await promise;
-  }
-
   // TODO: Simplify the generics here: remove PassThroughReturnType
-  async #someFunction<T>(
+  async #withBeginTransaction<T>(
     gaxOptions: CallOptions | undefined,
     resolver: (
       resolve: (
@@ -426,7 +403,7 @@ class Transaction extends DatastoreRequest {
         resolve({err, resp});
       });
     };
-    this.#someFunction(options.gaxOptions, resolver).then(
+    this.#withBeginTransaction(options.gaxOptions, resolver).then(
       (response: promiseType) => {
         callback(response.err, response.resp);
       }
@@ -829,7 +806,7 @@ class Transaction extends DatastoreRequest {
         }
       );
     };
-    this.#someFunction(options.gaxOptions, resolver).then(
+    this.#withBeginTransaction(options.gaxOptions, resolver).then(
       (response: promiseType) => {
         const error = response.err ? response.err : null;
         callback(error, response.resp);
@@ -865,7 +842,7 @@ class Transaction extends DatastoreRequest {
         }
       );
     };
-    this.#someFunction(options.gaxOptions, resolver).then(
+    this.#withBeginTransaction(options.gaxOptions, resolver).then(
       (response: promiseType) => {
         const error = response.err ? response.err : null;
         const entities = response.resp ? response.resp[0] : undefined;
@@ -1109,7 +1086,7 @@ promisifyAll(Transaction, {
     'parseTransactionResponse',
     'runAsync',
     'save',
-    '#someFunction',
+    '#withBeginTransaction',
     'update',
     'upsert',
   ],
