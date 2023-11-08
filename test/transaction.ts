@@ -687,6 +687,7 @@ async.each(
           dataClient: any; // TODO: replace with data client type
           mockedBeginTransaction: any;
           mockedFunction: any; // TODO: replace with type
+          functionsMocked: {name: string; mockedFunction: any}[];
 
           constructor() {
             const namespace = 'run-without-mock';
@@ -731,6 +732,7 @@ async.each(
               };
             }
             this.dataClient = dataClient;
+            this.functionsMocked = [];
           }
           mockGapicFunction<ResponseType>(
             functionName: string,
@@ -738,7 +740,12 @@ async.each(
             error: Error | null
           ) {
             const dataClient = this.dataClient;
+            // TODO: Check here that function hasn't been mocked out already
             if (dataClient && dataClient[functionName]) {
+              this.functionsMocked.push({
+                name: functionName,
+                mockedFunction: dataClient[functionName],
+              });
               this.mockedFunction = dataClient[functionName];
             }
             if (dataClient && dataClient[functionName]) {
@@ -764,8 +771,11 @@ async.each(
             }
           }
           // TODO: Allow several functions to be mocked, eliminate string parameter
-          resetGapicFunctions(functionName: string) {
-            this.dataClient[functionName] = this.mockedFunction;
+          resetGapicFunctions() {
+            this.functionsMocked.forEach(functionMocked => {
+              this.dataClient[functionMocked.name] =
+                functionMocked.mockedFunction;
+            });
           }
         }
 
@@ -778,7 +788,7 @@ async.each(
 
           afterEach(() => {
             transactionWrapper.resetBeginTransaction();
-            transactionWrapper.resetGapicFunctions('commit');
+            transactionWrapper.resetGapicFunctions();
           });
 
           describe('should pass error back to the user', async () => {
