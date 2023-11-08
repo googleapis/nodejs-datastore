@@ -32,7 +32,12 @@ import {Entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {Callback, CallOptions, ClientStub} from 'google-gax';
-import {CommitCallback, RequestCallback, RequestConfig} from '../src/request';
+import {
+  CommitCallback,
+  GetCallback,
+  RequestCallback,
+  RequestConfig,
+} from '../src/request';
 import {SECOND_DATABASE_ID} from './index';
 import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
@@ -974,8 +979,8 @@ async.each(
             });
           });
         });
-        describe.only('runQuery', () => {
-          // These tests were created so that when transaction.runAggregationQuery is restructured we
+        describe('runQuery', () => {
+          // These tests were created so that when transaction.runQuery is restructured we
           // can be confident that it works the same way as before.
           const runQueryResp = {
             batch: {
@@ -1065,6 +1070,119 @@ async.each(
               };
               transaction.run(() => {
                 transaction.runQuery(q, callback);
+              });
+            });
+          });
+        });
+        describe.only('get', () => {
+          // These tests were created so that when transaction.get is restructured we
+          // can be confident that it works the same way as before.
+          const getResp = {
+            found: [
+              {
+                entity: {
+                  key: {
+                    path: [
+                      {
+                        kind: 'Post',
+                        name: 'post1',
+                        idType: 'name',
+                      },
+                    ],
+                    partitionId: {
+                      projectId: 'projectId',
+                      databaseId: 'databaseId',
+                      namespaceId: 'namespaceId',
+                    },
+                  },
+                  excludeFromIndexes: false,
+                  properties: {},
+                },
+              },
+            ],
+            missing: [],
+            deferred: [],
+            transaction: testRunResp.transaction,
+            readTime: {
+              seconds: '1699470605',
+              nanos: 201398000,
+            },
+          };
+          const getUserResp: string = 'post1';
+          const testErrorMessage = 'test-run-Query-error';
+          let transactionWrapper: MockedTransactionWrapper;
+          let transaction: Transaction;
+          let q: Query;
+          let key: any; // TODO: Replace with key type
+
+          beforeEach(async () => {
+            transactionWrapper = new MockedTransactionWrapper();
+            transaction = transactionWrapper.transaction;
+            q = transactionWrapper.datastore.createQuery('Character');
+            key = transactionWrapper.datastore.key(['Company', 'Google']);
+          });
+
+          afterEach(() => {
+            transactionWrapper.resetBeginTransaction();
+            transactionWrapper.resetGapicFunctions();
+          });
+
+          describe('should pass error back to the user', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction(
+                'lookup',
+                getResp,
+                new Error(testErrorMessage)
+              );
+            });
+
+            it('should send back the error when awaiting a promise', async () => {
+              try {
+                await transaction.run();
+                await transaction.get(key);
+                assert.fail('The run call should have failed.');
+              } catch (error: any) {
+                // TODO: Substitute type any
+                assert.strictEqual(error['message'], testErrorMessage);
+              }
+            });
+            it('should send back the error when using a callback', done => {
+              const callback: GetCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                assert(error);
+                assert.strictEqual(error.message, testErrorMessage);
+                assert.deepStrictEqual(response, undefined);
+                done();
+              };
+              transaction.run(() => {
+                transaction.get(key, callback);
+              });
+            });
+          });
+          describe('should pass response back to the user', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction('lookup', getResp, null);
+            });
+            it('should send back the response when awaiting a promise', async () => {
+              await transaction.run();
+              const [results] = await transaction.get(key);
+              const result = results[transactionWrapper.datastore.KEY];
+              assert.deepStrictEqual(result.name, getUserResp);
+            });
+            it('should send back the response when using a callback', done => {
+              const callback: GetCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                const result = response[transactionWrapper.datastore.KEY];
+                assert.strictEqual(error, null);
+                assert.deepStrictEqual(result.name, getUserResp);
+                done();
+              };
+              transaction.run(() => {
+                transaction.get(key, callback);
               });
             });
           });
