@@ -665,22 +665,6 @@ async.each(
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
-        // These tests were created so that when transaction.commit is restructured we
-        // can be confident that it works the same way as before.
-        const testCommitResp = {
-          mutationResults: [
-            {
-              key: {
-                path: [
-                  {
-                    kind: 'some-kind',
-                  },
-                ],
-              },
-            },
-          ],
-        };
-        const testErrorMessage = 'test-commit-error';
 
         class MockedTransactionWrapper {
           transaction: Transaction;
@@ -780,6 +764,22 @@ async.each(
         }
 
         describe('commit', () => {
+          // These tests were created so that when transaction.commit is restructured we
+          // can be confident that it works the same way as before.
+          const testCommitResp = {
+            mutationResults: [
+              {
+                key: {
+                  path: [
+                    {
+                      kind: 'some-kind',
+                    },
+                  ],
+                },
+              },
+            ],
+          };
+          const testErrorMessage = 'test-commit-error';
           let transactionWrapper: MockedTransactionWrapper;
 
           beforeEach(async () => {
