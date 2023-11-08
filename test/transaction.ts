@@ -670,7 +670,7 @@ async.each(
       });
 
       // TODO: Add a test here for calling commit
-      describe('various functions without setting up transaction id when run returns a response', () => {
+      describe.only('various functions without setting up transaction id when run returns a response', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
         const testRunResp = {
