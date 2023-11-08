@@ -142,18 +142,6 @@ class Transaction extends DatastoreRequest {
    *      the final commit request with.
    */
 
-  #beginWithCallback<T>(
-    gaxOptions: CallOptions | undefined,
-    promise: Promise<PassThroughReturnType<T>>,
-    callback: (err?: Error | null, resp?: T) => void
-  ) {
-    this.#withBeginTransaction(gaxOptions, promise).then(
-      (response: PassThroughReturnType<T>) => {
-        callback(response.err, response.resp);
-      }
-    );
-  }
-
   /**
    * Commit the remote transaction and finalize the current transaction
    * instance.
