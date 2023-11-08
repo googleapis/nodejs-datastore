@@ -562,24 +562,26 @@ class Transaction extends DatastoreRequest {
       process.emitWarning(
         'run has already been called and should not be called again.'
       );
+      callback(null, this, {transaction: this.id});
+    } else {
+      this.#mutex.acquire().then(release => {
+        this.runAsync(options)
+          // TODO: Replace type with google.datastore.v1.IBeginTransactionResponse and address downstream issues
+          .then(
+            (
+              response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>
+            ) => {
+              // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
+              release();
+              this.#parseRunAsync(response, callback);
+            }
+          )
+          .catch((err: any) => {
+            // TODO: Remove this catch block
+            callback(Error('The error should always be caught by then'), this);
+          });
+      });
     }
-    this.#mutex.acquire().then(release => {
-      this.runAsync(options)
-        // TODO: Replace type with google.datastore.v1.IBeginTransactionResponse and address downstream issues
-        .then(
-          (
-            response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>
-          ) => {
-            // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
-            release();
-            this.#parseRunAsync(response, callback);
-          }
-        )
-        .catch((err: any) => {
-          // TODO: Remove this catch block
-          callback(Error('The error should always be caught by then'), this);
-        });
-    });
   }
 
   #runCommit(gaxOptions?: CallOptions): Promise<CommitResponse>;

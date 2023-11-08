@@ -70,7 +70,7 @@ const fakePfy = Object.assign({}, pfy, {
       'parseTransactionResponse',
       'runAsync',
       'save',
-      '#someFunction',
+      '#withBeginTransaction',
       'update',
       'upsert',
     ]);
@@ -288,7 +288,7 @@ async.each(
               response?: google.datastore.v1.IBeginTransactionResponse
             ) => {
               assert.strictEqual(error, null);
-              assert.strictEqual(response, testRunResp);
+              assert.deepStrictEqual(response, testRunResp);
               assert.strictEqual(transaction, transactionWithoutMock);
               done();
             };
@@ -670,7 +670,7 @@ async.each(
       });
 
       // TODO: Add a test here for calling commit
-      describe.only('various functions without setting up transaction id when run returns a response', () => {
+      describe('various functions without setting up transaction id when run returns a response', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
         const testRunResp = {
