@@ -1074,7 +1074,7 @@ async.each(
             });
           });
         });
-        describe.only('get', () => {
+        describe('get', () => {
           // These tests were created so that when transaction.get is restructured we
           // can be confident that it works the same way as before.
           const getResp = {
