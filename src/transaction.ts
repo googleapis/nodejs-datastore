@@ -206,15 +206,21 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     type commitPromiseType =
       PassThroughReturnType<google.datastore.v1.ICommitResponse>;
-    const promise: Promise<commitPromiseType> = new Promise(resolve => {
+    const resolver: ResolverType<
+      google.datastore.v1.ICommitResponse
+    > = resolve => {
       this.#runCommit(
         gaxOptions,
         (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
           resolve({err, resp});
         }
       );
-    });
-    this.#beginWithCallback(gaxOptions, promise, callback);
+    };
+    this.#someFunction(gaxOptions, resolver).then(
+      (response: commitPromiseType) => {
+        callback(response.err, response.resp);
+      }
+    );
   }
 
   async #withBeginTransaction<T>(
@@ -870,7 +876,9 @@ class Transaction extends DatastoreRequest {
     this.#someFunction(options.gaxOptions, resolver).then(
       (response: promiseType) => {
         const error = response.err ? response.err : null;
-        callback(error, response.resp);
+        const entities = response.resp ? response.resp[0] : undefined;
+        const info = response.resp ? response.resp[1] : undefined;
+        callback(error, entities, info);
       }
     );
   }
