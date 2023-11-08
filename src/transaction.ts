@@ -839,6 +839,7 @@ class Transaction extends DatastoreRequest {
     );
   }
 
+  /*
   runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
   runQuery(
     query: Query,
@@ -874,6 +875,7 @@ class Transaction extends DatastoreRequest {
       }
     );
   }
+  */
 
   /**
    * Insert or update the specified object(s) in the current transaction. If a
