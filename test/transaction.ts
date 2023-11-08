@@ -37,6 +37,7 @@ import {SECOND_DATABASE_ID} from './index';
 import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
 import * as protos from '../protos/protos';
+import {AggregateQuery} from '../src/aggregate';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -667,6 +668,7 @@ async.each(
         };
 
         class MockedTransactionWrapper {
+          datastore: Datastore;
           transaction: Transaction;
           dataClient: any; // TODO: replace with data client type
           mockedBeginTransaction: any;
@@ -717,6 +719,7 @@ async.each(
             }
             this.dataClient = dataClient;
             this.functionsMocked = [];
+            this.datastore = datastore;
           }
           mockGapicFunction<ResponseType>(
             functionName: string,
@@ -764,8 +767,6 @@ async.each(
         }
 
         describe('commit', () => {
-          // These tests were created so that when transaction.commit is restructured we
-          // can be confident that it works the same way as before.
           const testCommitResp = {
             mutationResults: [
               {
@@ -850,6 +851,124 @@ async.each(
               };
               transactionWrapper.transaction.run(() => {
                 transactionWrapper.transaction.commit(commitCallback);
+              });
+            });
+          });
+        });
+        describe('runAggregationQuery', () => {
+          // These tests were created so that when transaction.runAggregationQuery is restructured we
+          // can be confident that it works the same way as before.
+          const runAggregationQueryUserResp = [{'average rating': 100}];
+          const runAggregationQueryResp = {
+            batch: {
+              aggregationResults: [
+                {
+                  aggregateProperties: {
+                    'average rating': {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      doubleValue: 100,
+                      valueType: 'doubleValue',
+                    },
+                  },
+                },
+              ],
+              moreResults:
+                google.datastore.v1.QueryResultBatch.MoreResultsType
+                  .NO_MORE_RESULTS,
+              readTime: {seconds: '1699390681', nanos: 961667000},
+            },
+            query: null,
+            transaction: testRunResp.transaction,
+          };
+          const testErrorMessage = 'test-run-Aggregate-Query-error';
+          let transactionWrapper: MockedTransactionWrapper;
+          let transaction: Transaction;
+          let aggregate: AggregateQuery;
+
+          beforeEach(async () => {
+            transactionWrapper = new MockedTransactionWrapper();
+            transaction = transactionWrapper.transaction;
+            const q = transactionWrapper.datastore.createQuery('Character');
+            aggregate = transactionWrapper.datastore
+              .createAggregationQuery(q)
+              .addAggregation(AggregateField.average('appearances'));
+          });
+
+          afterEach(() => {
+            transactionWrapper.resetBeginTransaction();
+            transactionWrapper.resetGapicFunctions();
+          });
+
+          describe('should pass error back to the user', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction(
+                'runAggregationQuery',
+                runAggregationQueryResp,
+                new Error(testErrorMessage)
+              );
+            });
+
+            it('should send back the error when awaiting a promise', async () => {
+              try {
+                await transaction.run();
+                await transaction.runAggregationQuery(aggregate);
+                assert.fail('The run call should have failed.');
+              } catch (error: any) {
+                // TODO: Substitute type any
+                assert.strictEqual(error['message'], testErrorMessage);
+              }
+            });
+            it('should send back the error when using a callback', done => {
+              const runAggregateQueryCallback: RequestCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                assert(error);
+                assert.strictEqual(error.message, testErrorMessage);
+                assert.deepStrictEqual(response, runAggregationQueryUserResp);
+                done();
+              };
+              transaction.run(() => {
+                transaction.runAggregationQuery(
+                  aggregate,
+                  runAggregateQueryCallback
+                );
+              });
+            });
+          });
+          describe('should pass response back to the user', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction(
+                'runAggregationQuery',
+                runAggregationQueryResp,
+                null
+              );
+            });
+            it('should send back the response when awaiting a promise', async () => {
+              await transaction.run();
+              const allResults =
+                await transaction.runAggregationQuery(aggregate);
+              const [runAggregateQueryResults] = allResults;
+              assert.deepStrictEqual(
+                runAggregateQueryResults,
+                runAggregationQueryUserResp
+              );
+            });
+            it('should send back the response when using a callback', done => {
+              const runAggregateQueryCallback: CommitCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                assert.strictEqual(error, null);
+                assert.deepStrictEqual(response, runAggregationQueryUserResp);
+                done();
+              };
+              transaction.run(() => {
+                transaction.runAggregationQuery(
+                  aggregate,
+                  runAggregateQueryCallback
+                );
               });
             });
           });
