@@ -38,6 +38,7 @@ import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
 import * as protos from '../protos/protos';
 import {AggregateQuery} from '../src/aggregate';
+import {RunQueryCallback, RunQueryResponse} from '../src/query';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -969,6 +970,97 @@ async.each(
                   aggregate,
                   runAggregateQueryCallback
                 );
+              });
+            });
+          });
+        });
+        describe.only('runQuery', () => {
+          // These tests were created so that when transaction.runAggregationQuery is restructured we
+          // can be confident that it works the same way as before.
+          const runQueryResp = {
+            batch: {
+              entityResults: [],
+            },
+          };
+          const runQueryUserResp: Entity[] = [];
+          const testErrorMessage = 'test-run-Query-error';
+          let transactionWrapper: MockedTransactionWrapper;
+          let transaction: Transaction;
+          let q: Query;
+
+          beforeEach(async () => {
+            transactionWrapper = new MockedTransactionWrapper();
+            transaction = transactionWrapper.transaction;
+            q = transactionWrapper.datastore.createQuery('Character');
+          });
+
+          afterEach(() => {
+            transactionWrapper.resetBeginTransaction();
+            transactionWrapper.resetGapicFunctions();
+          });
+
+          describe('should pass error back to the user', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction(
+                'runQuery',
+                runQueryResp,
+                new Error(testErrorMessage)
+              );
+            });
+
+            it('should send back the error when awaiting a promise', async () => {
+              try {
+                await transaction.run();
+                await transaction.runQuery(q);
+                assert.fail('The run call should have failed.');
+              } catch (error: any) {
+                // TODO: Substitute type any
+                assert.strictEqual(error['message'], testErrorMessage);
+              }
+            });
+            it('should send back the error when using a callback', done => {
+              const callback: RunQueryCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                assert(error);
+                assert.strictEqual(error.message, testErrorMessage);
+                assert.deepStrictEqual(response, undefined);
+                done();
+              };
+              transaction.run(() => {
+                transaction.runQuery(q, callback);
+              });
+            });
+          });
+          describe('should pass response back to the user', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction(
+                'runQuery',
+                runQueryUserResp,
+                null
+              );
+            });
+            it('should send back the response when awaiting a promise', async () => {
+              await transaction.run();
+              const allResults = await transaction.runQuery(q);
+              const [runAggregateQueryResults] = allResults;
+              assert.deepStrictEqual(
+                runAggregateQueryResults,
+                runQueryUserResp
+              );
+            });
+            it('should send back the response when using a callback', done => {
+              const callback: RunQueryCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                assert.strictEqual(error, null);
+                assert.deepStrictEqual(response, runQueryUserResp);
+                done();
+              };
+              transaction.run(() => {
+                transaction.runQuery(q, callback);
               });
             });
           });
