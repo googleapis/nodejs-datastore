@@ -1749,7 +1749,7 @@ async.each(
           assert.deepStrictEqual(results, [{property_1: 4}]);
         });
       });
-      describe.only('transactions', () => {
+      describe('transactions', () => {
         it('should run in a transaction', async () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -1862,7 +1862,6 @@ async.each(
             );
           });
           it('should aggregate query within a count transaction', async () => {
-            console.log('running test of interest');
             const transaction = datastore.transaction();
             await transaction.run();
             const query = transaction.createQuery('Company');
