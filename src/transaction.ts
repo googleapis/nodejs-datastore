@@ -839,7 +839,6 @@ class Transaction extends DatastoreRequest {
     );
   }
 
-  /*
   runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
   runQuery(
     query: Query,
@@ -859,7 +858,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     type promiseType = PassThroughReturnType<RunQueryResponseOptional>;
-    const promise: Promise<promiseType> = new Promise(resolve => {
+    const resolver: ResolverType<RunQueryResponseOptional> = resolve => {
       super.runQuery(
         query,
         options,
@@ -867,15 +866,14 @@ class Transaction extends DatastoreRequest {
           resolve({err, resp: [entities, info]});
         }
       );
-    });
-    this.#withBeginTransaction(options.gaxOptions, promise).then(
+    };
+    this.#someFunction(options.gaxOptions, resolver).then(
       (response: promiseType) => {
         const error = response.err ? response.err : null;
         callback(error, response.resp);
       }
     );
   }
-  */
 
   /**
    * Insert or update the specified object(s) in the current transaction. If a
