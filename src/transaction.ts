@@ -558,29 +558,37 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // TODO: Whenever run is called a second time and a warning is emitted then do nothing.
     // TODO: This means rewriting many tests so that they don't use the same transaction object.
+    const warningMessage =
+      'run has already been called and should not be called again.';
     if (this.#state !== TransactionState.NOT_STARTED) {
-      process.emitWarning(
-        'run has already been called and should not be called again.'
-      );
+      process.emitWarning(warningMessage);
       callback(null, this, {transaction: this.id});
     } else {
       this.#mutex.acquire().then(release => {
-        // TODO: Check for not-started here?
-        this.runAsync(options)
-          // TODO: Replace type with google.datastore.v1.IBeginTransactionResponse and address downstream issues
-          .then(
-            (
-              response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>
-            ) => {
-              // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
-              release();
-              this.#parseRunAsync(response, callback);
-            }
-          )
-          .catch((err: any) => {
-            // TODO: Remove this catch block
-            callback(Error('The error should always be caught by then'), this);
-          });
+        if (this.#state === TransactionState.NOT_STARTED) {
+          this.runAsync(options)
+            // TODO: Replace type with google.datastore.v1.IBeginTransactionResponse and address downstream issues
+            .then(
+              (
+                response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>
+              ) => {
+                // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
+                release();
+                this.#parseRunAsync(response, callback);
+              }
+            )
+            .catch((err: any) => {
+              // TODO: Remove this catch block
+              callback(
+                Error('The error should always be caught by then'),
+                this
+              );
+            });
+        } else {
+          release();
+          process.emitWarning(warningMessage);
+          callback(null, this, {transaction: this.id});
+        }
       });
     }
   }
