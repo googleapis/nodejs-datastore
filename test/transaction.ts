@@ -1231,7 +1231,10 @@ async.each(
             callback(null, {
               transaction: Buffer.from(Array.from(Array(100).keys())),
             });
-            done();
+            // Delay to give the transaction mutex the opportunity to unlock before running tests.
+            setImmediate(() => {
+              done();
+            });
           };
           transaction.run();
         });
