@@ -727,9 +727,7 @@ async.each(
                   {} | null | undefined
                 >
               ) => {
-                console.log('beginTransaction called');
                 this.callBackSignaler('beginTransaction called');
-                console.log('callback signaller called');
                 callback(null, testRunResp);
               };
             }
@@ -1255,7 +1253,10 @@ async.each(
             transactionWrapper.resetGapicFunctions();
           });
 
+          // This object is used for testing the order that different events occur
+          // The events can include
           class TransactionOrderTester {
+            expectedOrder: string[] = [];
             callbackOrder: string[] = [];
             transactionWrapper: MockedTransactionWrapper;
             done: (err?: any) => void;
@@ -1263,13 +1264,7 @@ async.each(
               if (this.callbackOrder.length >= 5) {
                 try {
                   // TODO: assertion check here
-                  assert.deepStrictEqual(this.callbackOrder, [
-                    'functions called',
-                    'beginTransaction called',
-                    'run callback',
-                    'commit called',
-                    'commit callback',
-                  ]);
+                  assert.deepStrictEqual(this.callbackOrder, this.expectedOrder);
                   this.done();
                 } catch (e) {
                   this.done(e);
@@ -1281,7 +1276,6 @@ async.each(
               error: Error | null | undefined,
               response?: any
             ) => {
-              console.log('calling run callback');
               this.callbackOrder.push('run callback');
               this.checkForCompletion();
             };
@@ -1289,21 +1283,22 @@ async.each(
               error: Error | null | undefined,
               response?: google.datastore.v1.ICommitResponse
             ) => {
-              console.log('calling commit callback');
               this.callbackOrder.push('commit callback');
               this.checkForCompletion();
             };
 
             constructor(
               transactionWrapper: MockedTransactionWrapper,
-              done: (err?: any) => void
+              done: (err?: any) => void,
+              expectedOrder: string[]
             ) {
+              this.expectedOrder = expectedOrder;
               const gapicCallHandler = (call: string) => {
                 try {
                   this.callbackOrder.push(call);
                   this.checkForCompletion();
                 } catch (e) {
-                  this.done(e);
+                  done(e);
                 }
               };
               this.done = done;
@@ -1337,7 +1332,14 @@ async.each(
             it('should call the callbacks in the proper order', done => {
               const transactionOrderTester = new TransactionOrderTester(
                 transactionWrapper,
-                done
+                done,
+                [
+                  'functions called',
+                  'beginTransaction called',
+                  'run callback',
+                  'commit called',
+                  'commit callback',
+                ]
               );
               transactionOrderTester.callRun();
               transactionOrderTester.callCommit();
