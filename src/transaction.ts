@@ -556,13 +556,21 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.runAsync(options).then((response: RequestPromiseReturnType) => {
-      this.parseRunAsync(response, callback);
+    this.#runAsync(options).then((response: RequestPromiseReturnType) => {
+      this.#processBeginResults(response, callback);
     });
   }
 
-  // TODO: Replace with #parseRunAsync when pack and play error is gone
-  private parseRunAsync(
+  /**
+   * This function parses results from a beginTransaction call
+   *
+   * @param {RequestPromiseReturnType} response The response from a call to
+   * begin a transaction.
+   * @param {RunCallback} callback A callback that accepts an error and a
+   * response as arguments.
+   *
+   **/
+  #processBeginResults(
     response: RequestPromiseReturnType,
     callback: RunCallback
   ): void {
@@ -570,15 +578,22 @@ class Transaction extends DatastoreRequest {
     const resp = response.resp;
     if (err) {
       callback(err, null, resp);
-      return;
+    } else {
+      this.id = resp!.transaction;
+      callback(null, this, resp);
     }
-    this.id = resp!.transaction;
-    callback(null, this, resp);
   }
-  // TODO: Replace with #runAsync when pack and play error is gone
-  private async runAsync(
-    options: RunOptions
-  ): Promise<RequestPromiseReturnType> {
+
+  /**
+   * This async function makes a beginTransaction call and returns a promise with
+   * the information returned from the call that was made.
+   *
+   * @param {RunOptions} options The options used for a beginTransaction call.
+   * @returns {Promise<RequestPromiseReturnType>}
+   *
+   *
+   **/
+  async #runAsync(options: RunOptions): Promise<RequestPromiseReturnType> {
     const reqOpts: RequestOptions = {
       transactionOptions: {},
     };
@@ -606,8 +621,7 @@ class Transaction extends DatastoreRequest {
           reqOpts,
           gaxOpts: options.gaxOptions,
         },
-        // In original functionality sometimes a response is provided when an error is also provided
-        // reject only allows us to pass back an error so use resolve for both error and non-error cases.
+        // Always use resolve because then this function can return both the error and the response
         (err, resp) => {
           resolve({
             err,
@@ -848,7 +862,7 @@ promisifyAll(Transaction, {
     'createQuery',
     'delete',
     'insert',
-    'runAsync',
+    '#runAsync',
     'save',
     'update',
     'upsert',
