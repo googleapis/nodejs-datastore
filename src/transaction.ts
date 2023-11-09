@@ -221,7 +221,9 @@ class Transaction extends DatastoreRequest {
     ) => void
   ): Promise<PassThroughReturnType<T>> {
     if (this.#state === TransactionState.NOT_STARTED) {
+      console.log('acquiring mutex');
       const release = await this.#mutex.acquire();
+      console.log('acquired mutex');
       try {
         try {
           if (this.#state === TransactionState.NOT_STARTED) {
@@ -565,6 +567,7 @@ class Transaction extends DatastoreRequest {
       callback(null, this, {transaction: this.id});
     } else {
       this.#mutex.acquire().then(release => {
+        // TODO: Check for not-started here?
         this.runAsync(options)
           // TODO: Replace type with google.datastore.v1.IBeginTransactionResponse and address downstream issues
           .then(
@@ -573,6 +576,8 @@ class Transaction extends DatastoreRequest {
             ) => {
               // TODO: Probably release the mutex after the id is recorded, but likely doesn't matter since node is single threaded.
               release();
+              console.log('Locked');
+              console.log(this.#mutex.isLocked());
               this.#parseRunAsync(response, callback);
             }
           )
@@ -728,6 +733,7 @@ class Transaction extends DatastoreRequest {
   }
 
   #parseRunSuccess(response: PassThroughReturnType<any>) {
+    console.log('saving id');
     const resp = response.resp;
     this.id = resp!.transaction;
     this.#state = TransactionState.IN_PROGRESS;

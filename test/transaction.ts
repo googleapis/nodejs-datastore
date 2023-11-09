@@ -684,8 +684,11 @@ async.each(
           mockedBeginTransaction: any;
           mockedFunction: any; // TODO: replace with type
           functionsMocked: {name: string; mockedFunction: any}[];
+          callBackSignaler: (callbackReached: string) => void;
 
-          constructor() {
+          constructor(callBackSignaler?: (callbackReached: string) => void) {
+            const defaultCallback = () => {};
+            this.callBackSignaler = callBackSignaler ?? defaultCallback;
             const namespace = 'run-without-mock';
             const projectId = 'project-id';
             const options = {
@@ -724,6 +727,7 @@ async.each(
                   {} | null | undefined
                 >
               ) => {
+                this.callBackSignaler('beginTransaction called');
                 callback(null, testRunResp);
               };
             }
@@ -757,6 +761,7 @@ async.each(
                   {} | null | undefined
                 >
               ) => {
+                this.callBackSignaler(`${functionName} called`);
                 callback(error, response);
               };
             }
@@ -1220,6 +1225,82 @@ async.each(
               transaction.run(() => {
                 transaction.get(key, callback);
               });
+            });
+          });
+        });
+        describe('concurrency', async () => {
+          const testCommitResp = {
+            mutationResults: [
+              {
+                key: {
+                  path: [
+                    {
+                      kind: 'some-kind',
+                    },
+                  ],
+                },
+              },
+            ],
+          };
+          let transactionWrapper: MockedTransactionWrapper;
+
+          beforeEach(async () => {
+            transactionWrapper = new MockedTransactionWrapper();
+          });
+
+          afterEach(() => {
+            transactionWrapper.resetBeginTransaction();
+            transactionWrapper.resetGapicFunctions();
+          });
+
+          describe('should pass response back to the user', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction(
+                'commit',
+                testCommitResp,
+                null
+              );
+            });
+
+            it('should call the callbacks in the proper order', done => {
+              const transaction = transactionWrapper.transaction;
+              const callbackOrder: string[] = [];
+              function checkForCompletion() {
+                if (callbackOrder.length >= 5) {
+                  // TODO: assertion check here
+                  assert.deepStrictEqual(callbackOrder, [
+                    'functions called',
+                    'beginTransaction called',
+                    'run callback',
+                    'commit called',
+                    'commit callback',
+                  ]);
+                  done();
+                }
+              }
+              function gapicCallHandler(call: string): void {
+                callbackOrder.push(call);
+                checkForCompletion();
+              }
+              transactionWrapper.callBackSignaler = gapicCallHandler;
+              const runCallback: RunCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                callbackOrder.push('run callback');
+                checkForCompletion();
+              };
+              const commitCallback: CommitCallback = (
+                error: Error | null | undefined,
+                response?: google.datastore.v1.ICommitResponse
+              ) => {
+                callbackOrder.push('commit callback');
+                checkForCompletion();
+              };
+              transaction.run(runCallback);
+              transaction.commit(commitCallback);
+              callbackOrder.push('functions called');
+              checkForCompletion();
             });
           });
         });
