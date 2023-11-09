@@ -566,7 +566,9 @@ class Transaction extends DatastoreRequest {
       );
       callback(null, this, {transaction: this.id});
     } else {
+      console.log('acquiring run mutex');
       this.#mutex.acquire().then(release => {
+        console.log('run mutex acquired');
         // TODO: Check for not-started here?
         this.runAsync(options)
           // TODO: Replace type with google.datastore.v1.IBeginTransactionResponse and address downstream issues

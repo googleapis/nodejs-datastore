@@ -727,7 +727,9 @@ async.each(
                   {} | null | undefined
                 >
               ) => {
+                console.log('beginTransaction called');
                 this.callBackSignaler('beginTransaction called');
+                console.log('callback signaller called');
                 callback(null, testRunResp);
               };
             }
@@ -1228,7 +1230,7 @@ async.each(
             });
           });
         });
-        describe('concurrency', async () => {
+        describe.only('concurrency', async () => {
           const testCommitResp = {
             mutationResults: [
               {
@@ -1253,6 +1255,76 @@ async.each(
             transactionWrapper.resetGapicFunctions();
           });
 
+          class TransactionOrderTester {
+            callbackOrder: string[] = [];
+            transactionWrapper: MockedTransactionWrapper;
+            done: (err?: any) => void;
+            checkForCompletion() {
+              if (this.callbackOrder.length >= 5) {
+                try {
+                  // TODO: assertion check here
+                  assert.deepStrictEqual(this.callbackOrder, [
+                    'functions called',
+                    'beginTransaction called',
+                    'run callback',
+                    'commit called',
+                    'commit callback',
+                  ]);
+                  this.done();
+                } catch (e) {
+                  this.done(e);
+                }
+              }
+            }
+
+            runCallback: RunCallback = (
+              error: Error | null | undefined,
+              response?: any
+            ) => {
+              console.log('calling run callback');
+              this.callbackOrder.push('run callback');
+              this.checkForCompletion();
+            };
+            commitCallback: CommitCallback = (
+              error: Error | null | undefined,
+              response?: google.datastore.v1.ICommitResponse
+            ) => {
+              console.log('calling commit callback');
+              this.callbackOrder.push('commit callback');
+              this.checkForCompletion();
+            };
+
+            constructor(
+              transactionWrapper: MockedTransactionWrapper,
+              done: (err?: any) => void
+            ) {
+              const gapicCallHandler = (call: string) => {
+                try {
+                  this.callbackOrder.push(call);
+                  this.checkForCompletion();
+                } catch (e) {
+                  this.done(e);
+                }
+              };
+              this.done = done;
+              transactionWrapper.callBackSignaler = gapicCallHandler;
+              this.transactionWrapper = transactionWrapper;
+            }
+
+            callRun() {
+              this.transactionWrapper.transaction.run(this.runCallback);
+            }
+
+            callCommit() {
+              this.transactionWrapper.transaction.commit(this.commitCallback);
+            }
+
+            pushString(callbackPushed: string) {
+              this.callbackOrder.push(callbackPushed);
+              this.checkForCompletion();
+            }
+          }
+
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
@@ -1263,44 +1335,13 @@ async.each(
             });
 
             it('should call the callbacks in the proper order', done => {
-              const transaction = transactionWrapper.transaction;
-              const callbackOrder: string[] = [];
-              function checkForCompletion() {
-                if (callbackOrder.length >= 5) {
-                  // TODO: assertion check here
-                  assert.deepStrictEqual(callbackOrder, [
-                    'functions called',
-                    'beginTransaction called',
-                    'run callback',
-                    'commit called',
-                    'commit callback',
-                  ]);
-                  done();
-                }
-              }
-              function gapicCallHandler(call: string): void {
-                callbackOrder.push(call);
-                checkForCompletion();
-              }
-              transactionWrapper.callBackSignaler = gapicCallHandler;
-              const runCallback: RunCallback = (
-                error: Error | null | undefined,
-                response?: any
-              ) => {
-                callbackOrder.push('run callback');
-                checkForCompletion();
-              };
-              const commitCallback: CommitCallback = (
-                error: Error | null | undefined,
-                response?: google.datastore.v1.ICommitResponse
-              ) => {
-                callbackOrder.push('commit callback');
-                checkForCompletion();
-              };
-              transaction.run(runCallback);
-              transaction.commit(commitCallback);
-              callbackOrder.push('functions called');
-              checkForCompletion();
+              const transactionOrderTester = new TransactionOrderTester(
+                transactionWrapper,
+                done
+              );
+              transactionOrderTester.callRun();
+              transactionOrderTester.callCommit();
+              transactionOrderTester.pushString('functions called');
             });
           });
         });
