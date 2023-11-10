@@ -1758,6 +1758,33 @@ async.each(
           afterEach(async () => {
             await datastore.delete(key);
           });
+          async function doLookupPutCommit(transaction: Transaction) {
+            const [firstRead] = await transaction.get(key);
+            assert(!firstRead);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doLookupPutCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doLookupPutCommit(transaction);
+          });
+        });
+        describe('put, lookup, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
           it('should run in a transaction', async () => {
             const transaction = datastore.transaction();
             await transaction.run();
