@@ -1228,7 +1228,7 @@ async.each(
             });
           });
         });
-        describe.only('concurrency', async () => {
+        describe('concurrency', async () => {
           const testCommitResp = {
             mutationResults: [
               {
