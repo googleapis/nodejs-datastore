@@ -1750,20 +1750,35 @@ async.each(
         });
       });
       describe('transactions', () => {
-        it('should run in a transaction', async () => {
+        describe('lookup, put, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
             url: 'www.google.com',
           };
-          const transaction = datastore.transaction();
-          await transaction.run();
-          const [firstRead] = await transaction.get(key);
-          assert(!firstRead);
-          transaction.save({key, data: obj});
-          await transaction.commit();
-          const [entity] = await datastore.get(key);
-          delete entity[datastore.KEY];
-          assert.deepStrictEqual(entity, obj);
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            const [firstRead] = await transaction.get(key);
+            assert(!firstRead);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            const [firstRead] = await transaction.get(key);
+            assert(!firstRead);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          });
         });
 
         it('should commit all saves and deletes at the end', async () => {
