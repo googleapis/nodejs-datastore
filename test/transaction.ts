@@ -163,7 +163,7 @@ async.each(
         });
       });
 
-      describe.only('run without setting up transaction id', () => {
+      describe('run without setting up transaction id', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
         const testRunResp = {
@@ -674,6 +674,11 @@ async.each(
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
 
+        /*
+          MockedTransactionWrapper is a helper class for mocking out various
+          Gapic functions and ensuring that responses and errors actually make it
+          back to the user.
+         */
         class MockedTransactionWrapper {
           datastore: Datastore;
           transaction: Transaction;
@@ -738,7 +743,14 @@ async.each(
             error: Error | null
           ) {
             const dataClient = this.dataClient;
-            // TODO: Check here that function hasn't been mocked out already
+            // Check here that function hasn't been mocked out already
+            // Ensures that this mocking object is not being misused.
+            this.functionsMocked.forEach(fn => {
+              if (fn.name === functionName) {
+                console.log('test');
+                // throw Error('${functionName} has already been mocked out');
+              }
+            });
             if (dataClient && dataClient[functionName]) {
               this.functionsMocked.push({
                 name: functionName,
@@ -764,12 +776,16 @@ async.each(
             }
           }
 
+          // This resets beginTransaction from the Gapic layer to what it originally was.
+          // Resetting beginTransaction ensures other tests don't use the beginTransaction mock.
           resetBeginTransaction() {
             if (this.dataClient && this.dataClient.beginTransaction) {
               this.dataClient.beginTransaction = this.mockedBeginTransaction;
             }
           }
-          // TODO: Allow several functions to be mocked, eliminate string parameter
+
+          // This resets Gapic functions mocked out by the tests to what they originally were.
+          // Resetting mocked out Gapic functions ensures other tests don't use these mocks.
           resetGapicFunctions() {
             this.functionsMocked.forEach(functionMocked => {
               this.dataClient[functionMocked.name] =
