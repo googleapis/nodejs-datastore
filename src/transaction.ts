@@ -66,7 +66,6 @@ interface ResolverType<T> {
 }
 
 class TransactionState {
-  static NOT_TRANSACTION = Symbol('NON_TRANSACTION');
   static NOT_STARTED = Symbol('NOT_STARTED');
   // IN_PROGRESS currently tracks the expired state as well
   static IN_PROGRESS = Symbol('IN_PROGRESS');
@@ -99,7 +98,7 @@ class Transaction extends DatastoreRequest {
   modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
   #mutex = new Mutex();
-  #state: Symbol = TransactionState.NOT_TRANSACTION;
+  #state = TransactionState.NOT_STARTED;
   constructor(datastore: Datastore, options?: TransactionOptions) {
     super();
     /**
@@ -129,7 +128,6 @@ class Transaction extends DatastoreRequest {
 
     // Queue the requests to make when we send the transactional commit.
     this.requests_ = [];
-    this.#state = TransactionState.NOT_STARTED;
   }
 
   /*! Developer Documentation
