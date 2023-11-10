@@ -747,7 +747,7 @@ async.each(
             // Ensures that this mocking object is not being misused.
             this.functionsMocked.forEach(fn => {
               if (fn.name === functionName) {
-                throw Error('${functionName} has already been mocked out');
+                throw Error(`${functionName} has already been mocked out`);
               }
             });
             if (dataClient && dataClient[functionName]) {
