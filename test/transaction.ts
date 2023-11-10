@@ -747,8 +747,7 @@ async.each(
             // Ensures that this mocking object is not being misused.
             this.functionsMocked.forEach(fn => {
               if (fn.name === functionName) {
-                console.log('test');
-                // throw Error('${functionName} has already been mocked out');
+                throw Error('${functionName} has already been mocked out');
               }
             });
             if (dataClient && dataClient[functionName]) {
@@ -1292,15 +1291,23 @@ async.each(
               error: Error | null | undefined,
               response?: any
             ) => {
-              this.callbackOrder.push('run callback');
-              this.checkForCompletion();
+              try {
+                this.callbackOrder.push('run callback');
+                this.checkForCompletion();
+              } catch (e) {
+                this.done(e);
+              }
             };
             commitCallback: CommitCallback = (
               error: Error | null | undefined,
               response?: google.datastore.v1.ICommitResponse
             ) => {
-              this.callbackOrder.push('commit callback');
-              this.checkForCompletion();
+              try {
+                this.callbackOrder.push('commit callback');
+                this.checkForCompletion();
+              } catch (e) {
+                this.done(e);
+              }
             };
 
             constructor(

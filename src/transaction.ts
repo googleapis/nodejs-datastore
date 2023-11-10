@@ -221,7 +221,7 @@ class Transaction extends DatastoreRequest {
       try {
         try {
           if (this.#state === TransactionState.NOT_STARTED) {
-            const runResults = await this.runAsync({gaxOptions});
+            const runResults = await this.#runAsync({gaxOptions});
             this.#parseRunSuccess(runResults);
           }
         } finally {
