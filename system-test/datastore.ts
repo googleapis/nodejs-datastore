@@ -1785,26 +1785,23 @@ async.each(
           afterEach(async () => {
             await datastore.delete(key);
           });
+          async function doPutLookupCommit(transaction: Transaction) {
+            transaction.save({key, data: obj});
+            const [firstRead] = await transaction.get(key);
+            assert(!firstRead);
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
           it('should run in a transaction', async () => {
             const transaction = datastore.transaction();
             await transaction.run();
-            const [firstRead] = await transaction.get(key);
-            assert(!firstRead);
-            transaction.save({key, data: obj});
-            await transaction.commit();
-            const [entity] = await datastore.get(key);
-            delete entity[datastore.KEY];
-            assert.deepStrictEqual(entity, obj);
+            await doPutLookupCommit(transaction);
           });
           it('should run in a transaction without run', async () => {
             const transaction = datastore.transaction();
-            const [firstRead] = await transaction.get(key);
-            assert(!firstRead);
-            transaction.save({key, data: obj});
-            await transaction.commit();
-            const [entity] = await datastore.get(key);
-            delete entity[datastore.KEY];
-            assert.deepStrictEqual(entity, obj);
+            await doPutLookupCommit(transaction);
           });
         });
 
