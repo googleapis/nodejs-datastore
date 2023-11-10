@@ -1757,7 +1757,8 @@ async.each(
           };
           const transaction = datastore.transaction();
           await transaction.run();
-          await transaction.get(key);
+          const [firstRead] = await transaction.get(key);
+          assert(!firstRead);
           transaction.save({key, data: obj});
           await transaction.commit();
           const [entity] = await datastore.get(key);
