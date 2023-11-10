@@ -1085,7 +1085,6 @@ export interface RunOptions {
 promisifyAll(Transaction, {
   exclude: [
     'createAggregationQuery',
-    '#commitAsync',
     'createQuery',
     'delete',
     'insert',
@@ -1093,9 +1092,9 @@ promisifyAll(Transaction, {
     'parseTransactionResponse',
     'runAsync',
     'save',
-    '#withBeginTransaction',
     'update',
     'upsert',
+    '#withBeginTransaction',
   ],
 });
 

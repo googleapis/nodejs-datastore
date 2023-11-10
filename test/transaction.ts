@@ -62,7 +62,6 @@ const fakePfy = Object.assign({}, pfy, {
     promisified = true;
     assert.deepStrictEqual(options.exclude, [
       'createAggregationQuery',
-      '#commitAsync',
       'createQuery',
       'delete',
       'insert',
@@ -70,9 +69,9 @@ const fakePfy = Object.assign({}, pfy, {
       'parseTransactionResponse',
       'runAsync',
       'save',
-      '#withBeginTransaction',
       'update',
       'upsert',
+      '#withBeginTransaction',
     ]);
   },
 });
