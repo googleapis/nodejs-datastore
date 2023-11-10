@@ -546,6 +546,18 @@ class DatastoreRequest {
       );
   }
 
+  /**
+   * Datastore allows you to run aggregate queries by aggregate field.
+   *
+   * The query is run, and the results are returned as the second argument to
+   * your callback.
+   *
+   * @param {AggregateQuery} query AggregateQuery object.
+   * @param {RunQueryOptions} options Optional configuration
+   * @param {function} [callback] The callback function. If omitted, a promise is
+   * returned.
+   *
+   **/
   runAggregationQuery(
     query: AggregateQuery,
     options?: RunQueryOptions
