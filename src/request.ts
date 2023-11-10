@@ -69,9 +69,6 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   strong: 1,
 };
 
-// TODO: Typescript had difficulty working with enums before.
-// TODO: Try to get enums working instead of using static properties.
-
 /**
  * Handle logic for Datastore API operations. Handles request logic for
  * Datastore.
@@ -92,7 +89,6 @@ class DatastoreRequest {
     | Array<(err: Error | null, resp: Entity | null) => void>
     | Entity;
   datastore!: Datastore;
-  // TODO: Replace protected with a symbol for better data hiding.
   [key: string]: Entity;
 
   /**
