@@ -709,9 +709,9 @@ class Transaction extends DatastoreRequest {
   /**
    * This function parses results from a beginTransaction call
    *
-   * @param {RequestPromiseReturnType} response The response from a call to
+   * @param {RequestPromiseReturnType} [response] The response from a call to
    * begin a transaction.
-   * @param {RunCallback} callback A callback that accepts an error and a
+   * @param {RunCallback} [callback] A callback that accepts an error and a
    * response as arguments.
    *
    **/
@@ -729,6 +729,13 @@ class Transaction extends DatastoreRequest {
     }
   }
 
+  /**
+   * This function saves results from a successful beginTransaction call.
+   *
+   * @param {PassThroughReturnType<any>} [response] The response from a call to
+   * begin a transaction that completed successfully.
+   *
+   **/
   #parseRunSuccess(response: PassThroughReturnType<any>) {
     const resp = response.resp;
     this.id = resp!.transaction;
