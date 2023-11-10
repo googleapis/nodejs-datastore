@@ -65,10 +65,9 @@ interface ResolverType<T> {
   ): void;
 }
 
-class TransactionState {
-  static NOT_STARTED = Symbol('NOT_STARTED');
-  // IN_PROGRESS currently tracks the expired state as well
-  static IN_PROGRESS = Symbol('IN_PROGRESS');
+enum TransactionState {
+  NOT_STARTED,
+  IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
 }
 
 /**
@@ -227,8 +226,7 @@ class Transaction extends DatastoreRequest {
             this.#parseRunSuccess(runResults);
           }
         } finally {
-          // TODO: Check that error actually reaches user
-          release(); // TODO: Be sure to release the mutex in the error state
+          release();
         }
       } catch (err: any) {
         return {err};
