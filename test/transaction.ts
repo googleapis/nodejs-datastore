@@ -294,8 +294,8 @@ async.each(
       });
 
       describe('various functions without setting up transaction id when run returns a response', () => {
-        // These tests were created so that when transaction.run is restructured we
-        // can be confident that it works the same way as before.
+        // These tests were created to ensure that various transaction functions maintain the same behavior
+        // after being restructured to start with a run call.
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
@@ -687,7 +687,6 @@ async.each(
                 await transaction.runQuery(q);
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
