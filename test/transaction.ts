@@ -303,7 +303,7 @@ async.each(
         });
       });
 
-      describe('various functions without setting up transaction id when run returns a response', () => {
+      describe('testing various transaction functions when transaction.run returns a response', () => {
         // These tests were created to ensure that various transaction functions maintain the same behavior
         // after being restructured to start with a run call.
         const testRunResp = {
