@@ -43,7 +43,7 @@ import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
 import * as protos from '../protos/protos';
 import {AggregateQuery} from '../src/aggregate';
-import {RunQueryCallback, RunQueryResponse} from '../src/query';
+import {RunQueryCallback} from '../src/query';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -303,7 +303,7 @@ async.each(
         class MockedTransactionWrapper {
           datastore: Datastore;
           transaction: Transaction;
-          dataClient: any; // TODO: replace with data client type
+          dataClient?: ClientStub;
           mockedBeginTransaction: any;
           mockedFunction: any; // TODO: replace with type
           functionsMocked: {name: string; mockedFunction: any}[];
@@ -411,8 +411,10 @@ async.each(
           // Resetting mocked out Gapic functions ensures other tests don't use these mocks.
           resetGapicFunctions() {
             this.functionsMocked.forEach(functionMocked => {
-              this.dataClient[functionMocked.name] =
-                functionMocked.mockedFunction;
+              if (this.dataClient) {
+                this.dataClient[functionMocked.name] =
+                  functionMocked.mockedFunction;
+              }
             });
           }
         }
