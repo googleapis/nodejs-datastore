@@ -28,7 +28,7 @@ import {
   Transaction,
   AggregateField,
 } from '../src';
-import {Entity} from '../src/entity';
+import {Entity, entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {Callback, CallOptions, ClientStub} from 'google-gax';
@@ -49,9 +49,6 @@ const async = require('async');
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
 type Path = string | [string] | [string, number];
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const {entity} = require('../src/entity');
 
 let promisified = false;
 const fakePfy = Object.assign({}, pfy, {
@@ -420,6 +417,9 @@ async.each(
           }
         }
 
+        let transactionWrapper: MockedTransactionWrapper;
+        let transaction: Transaction;
+
         describe('commit', () => {
           const testCommitResp = {
             mutationResults: [
@@ -435,7 +435,6 @@ async.each(
             ],
           };
           const testErrorMessage = 'test-commit-error';
-          let transactionWrapper: MockedTransactionWrapper;
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
@@ -544,8 +543,6 @@ async.each(
             transaction: testRunResp.transaction,
           };
           const testErrorMessage = 'test-run-Aggregate-Query-error';
-          let transactionWrapper: MockedTransactionWrapper;
-          let transaction: Transaction;
           let aggregate: AggregateQuery;
 
           beforeEach(async () => {
@@ -657,8 +654,6 @@ async.each(
           };
           const runQueryUserResp: Entity[] = [];
           const testErrorMessage = 'test-run-Query-error';
-          let transactionWrapper: MockedTransactionWrapper;
-          let transaction: Transaction;
           let q: Query;
 
           beforeEach(async () => {
@@ -781,10 +776,8 @@ async.each(
           };
           const getUserResp = 'post1';
           const testErrorMessage = 'test-run-Query-error';
-          let transactionWrapper: MockedTransactionWrapper;
-          let transaction: Transaction;
           let q: Query;
-          let key: any; // TODO: Replace with key type
+          let key: entity.Key; // TODO: Replace with key type
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
