@@ -252,7 +252,6 @@ async.each(
               await transactionWithoutMock.run();
               assert.fail('The run call should have failed.');
             } catch (error: any) {
-              // TODO: Substitute type any
               assert.strictEqual(error['message'], testErrorMessage);
             }
           });
@@ -262,11 +261,14 @@ async.each(
               transaction: Transaction | null,
               response?: google.datastore.v1.IBeginTransactionResponse
             ) => {
-              assert(error);
-              assert.strictEqual(error.message, testErrorMessage);
-              assert.strictEqual(transaction, null);
-              assert.strictEqual(response, testRunResp);
-              done();
+              try {
+                assert(error);
+                assert.strictEqual(error.message, testErrorMessage);
+                assert.strictEqual(transaction, null);
+                assert.strictEqual(response, testRunResp);
+              } catch (e) {
+                done(e);
+              }
             };
             transactionWithoutMock.run({}, runCallback);
           });
@@ -288,10 +290,13 @@ async.each(
               transaction: Transaction | null,
               response?: google.datastore.v1.IBeginTransactionResponse
             ) => {
-              assert.strictEqual(error, null);
-              assert.deepStrictEqual(response, testRunResp);
-              assert.strictEqual(transaction, transactionWithoutMock);
-              done();
+              try {
+                assert.strictEqual(error, null);
+                assert.deepStrictEqual(response, testRunResp);
+                assert.strictEqual(transaction, transactionWithoutMock);
+              } catch (e) {
+                done(e);
+              }
             };
             transactionWithoutMock.run({}, runCallback);
           });
@@ -312,7 +317,7 @@ async.each(
           datastore: Datastore;
           transaction: Transaction;
           dataClient?: ClientStub;
-          mockedBeginTransaction: any;
+          mockedBeginTransaction: any; // TODO: Function
           functionsMocked: {name: string; mockedFunction: any}[];
           callBackSignaler: (callbackReached: string) => void = () => {};
 
@@ -785,7 +790,7 @@ async.each(
           const getUserResp = 'post1';
           const testErrorMessage = 'test-run-Query-error';
           let q: Query;
-          let key: entity.Key; // TODO: Replace with key type
+          let key: entity.Key;
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
