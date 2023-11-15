@@ -305,7 +305,6 @@ async.each(
           transaction: Transaction;
           dataClient?: ClientStub;
           mockedBeginTransaction: any;
-          mockedFunction: any; // TODO: replace with type
           functionsMocked: {name: string; mockedFunction: any}[];
           callBackSignaler: (callbackReached: string) => void = () => {};
 
@@ -379,7 +378,6 @@ async.each(
                 name: functionName,
                 mockedFunction: dataClient[functionName],
               });
-              this.mockedFunction = dataClient[functionName];
             }
             if (dataClient && dataClient[functionName]) {
               dataClient[functionName] = (
