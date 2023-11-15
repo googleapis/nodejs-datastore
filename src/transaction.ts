@@ -161,7 +161,7 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    this.runCommit(gaxOptions, callback);
+    this.#runCommit(gaxOptions, callback);
   }
 
   /**
@@ -451,7 +451,7 @@ class Transaction extends DatastoreRequest {
     });
   }
 
-  private runCommit(
+  #runCommit(
     gaxOptions: CallOptions,
     callback: CommitCallback
   ): void | Promise<CommitResponse> {
