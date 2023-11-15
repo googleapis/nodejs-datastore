@@ -158,25 +158,7 @@ async.each(
           assert.deepStrictEqual(transaction.requests_, []);
         });
       });
-
-      type beginTransactionSignature = (
-        request: protos.google.datastore.v1.IBeginTransactionRequest,
-        options: CallOptions,
-        callback: Callback<
-          protos.google.datastore.v1.IBeginTransactionResponse,
-          | protos.google.datastore.v1.IBeginTransactionRequest
-          | null
-          | undefined,
-          {} | null | undefined
-        >
-      ) => Promise<
-        [
-          protos.google.datastore.v1.IBeginTransactionResponse,
-          protos.google.datastore.v1.IBeginTransactionRequest | undefined,
-          {} | undefined,
-        ]
-      > | void;
-
+      
       describe('run without setting up transaction id', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
