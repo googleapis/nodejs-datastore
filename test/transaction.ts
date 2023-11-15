@@ -266,6 +266,7 @@ async.each(
                 assert.strictEqual(error.message, testErrorMessage);
                 assert.strictEqual(transaction, null);
                 assert.strictEqual(response, testRunResp);
+                done();
               } catch (e) {
                 done(e);
               }
@@ -294,6 +295,7 @@ async.each(
                 assert.strictEqual(error, null);
                 assert.deepStrictEqual(response, testRunResp);
                 assert.strictEqual(transaction, transactionWithoutMock);
+                done();
               } catch (e) {
                 done(e);
               }
