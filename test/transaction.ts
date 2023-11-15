@@ -319,6 +319,8 @@ async.each(
           dataClient?: ClientStub;
           mockedBeginTransaction: any; // TODO: Function
           functionsMocked: {name: string; mockedFunction: any}[];
+          // The callBackSignaler lets the user of this object get a signal when the mocked function is called.
+          // This is useful for tests that need to know when the mocked function is called.
           callBackSignaler: (callbackReached: string) => void = () => {};
 
           constructor() {
