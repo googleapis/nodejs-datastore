@@ -478,7 +478,6 @@ async.each(
                 await transactionWrapper.transaction.commit();
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
@@ -592,7 +591,6 @@ async.each(
                 await transaction.runAggregationQuery(aggregate);
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
@@ -824,7 +822,6 @@ async.each(
                 await transaction.get(key);
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
