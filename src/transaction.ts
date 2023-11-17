@@ -32,6 +32,18 @@ import {
 } from './request';
 import {AggregateQuery} from './aggregate';
 
+// RequestPromiseReturnType should line up with the types in RequestCallback
+interface RequestPromiseReturnType {
+  err?: Error | null;
+  resp: any; // TODO: Replace with google.datastore.v1.IBeginTransactionResponse and address downstream issues
+}
+interface RequestResolveFunction {
+  (callbackData: RequestPromiseReturnType): void;
+}
+interface RequestAsPromiseCallback {
+  (resolve: RequestResolveFunction): void;
+}
+
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
  * transaction is guaranteed to be atomic, which means that transactions are
@@ -544,10 +556,47 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    this.#runAsync(options).then((response: RequestPromiseReturnType) => {
+      this.#processBeginResults(response, callback);
+    });
+  }
 
-    const reqOpts = {
+  /**
+   * This function parses results from a beginTransaction call
+   *
+   * @param {RequestPromiseReturnType} response The response from a call to
+   * begin a transaction.
+   * @param {RunCallback} callback A callback that accepts an error and a
+   * response as arguments.
+   *
+   **/
+  #processBeginResults(
+    response: RequestPromiseReturnType,
+    callback: RunCallback
+  ): void {
+    const err = response.err;
+    const resp = response.resp;
+    if (err) {
+      callback(err, null, resp);
+    } else {
+      this.id = resp!.transaction;
+      callback(null, this, resp);
+    }
+  }
+
+  /**
+   * This async function makes a beginTransaction call and returns a promise with
+   * the information returned from the call that was made.
+   *
+   * @param {RunOptions} options The options used for a beginTransaction call.
+   * @returns {Promise<RequestPromiseReturnType>}
+   *
+   *
+   **/
+  async #runAsync(options: RunOptions): Promise<RequestPromiseReturnType> {
+    const reqOpts: RequestOptions = {
       transactionOptions: {},
-    } as RequestOptions;
+    };
 
     if (options.readOnly || this.readOnly) {
       reqOpts.transactionOptions!.readOnly = {};
@@ -562,23 +611,26 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-
-    this.request_(
-      {
-        client: 'DatastoreClient',
-        method: 'beginTransaction',
-        reqOpts,
-        gaxOpts: options.gaxOptions,
-      },
-      (err, resp) => {
-        if (err) {
-          callback(err, null, resp);
-          return;
+    const promiseFunction: RequestAsPromiseCallback = (
+      resolve: RequestResolveFunction
+    ) => {
+      this.request_(
+        {
+          client: 'DatastoreClient',
+          method: 'beginTransaction',
+          reqOpts,
+          gaxOpts: options.gaxOptions,
+        },
+        // Always use resolve because then this function can return both the error and the response
+        (err, resp) => {
+          resolve({
+            err,
+            resp,
+          });
         }
-        this.id = resp!.transaction;
-        callback(null, this, resp);
-      }
-    );
+      );
+    };
+    return new Promise(promiseFunction);
   }
 
   /**
@@ -810,6 +862,7 @@ promisifyAll(Transaction, {
     'createQuery',
     'delete',
     'insert',
+    '#runAsync',
     'save',
     'update',
     'upsert',
