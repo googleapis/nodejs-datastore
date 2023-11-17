@@ -451,6 +451,15 @@ class Transaction extends DatastoreRequest {
     });
   }
 
+  /**
+   * This function is a pass-through for the transaction.commit method
+   * It contains the business logic used for committing a transaction
+   *
+   * @param {object} [gaxOptions] Request configuration options, outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
+   * @private
+   */
   #runCommit(
     gaxOptions: CallOptions,
     callback: CommitCallback
