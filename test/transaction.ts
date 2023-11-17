@@ -158,7 +158,6 @@ async.each(
           assert.deepStrictEqual(transaction.requests_, []);
         });
       });
-      
       describe('run without setting up transaction id', () => {
         // These tests were created so that when transaction.run is restructured we
         // can be confident that it works the same way as before.
@@ -857,6 +856,138 @@ async.each(
           });
         });
       });
+
+      describe('run without setting up transaction id', () => {
+        // These tests were created so that when transaction.run is restructured we
+        // can be confident that it works the same way as before.
+        const testResp = {
+          transaction: Buffer.from(Array.from(Array(100).keys())),
+        };
+        const namespace = 'run-without-mock';
+        const projectId = 'project-id';
+        const testErrorMessage = 'test-error';
+        const options = {
+          projectId,
+          namespace,
+        };
+        const datastore = new Datastore(options);
+        const transactionWithoutMock = datastore.transaction();
+        const dataClientName = 'DatastoreClient';
+        let dataClient: ClientStub | undefined;
+        let originalBeginTransactionMethod: Function;
+
+        beforeEach(async () => {
+          // In this before hook, save the original beginTransaction method in a variable.
+          // After tests are finished, reassign beginTransaction to the variable.
+          // This way, mocking beginTransaction in this block doesn't affect other tests.
+          const gapic = Object.freeze({
+            v1: require('../src/v1'),
+          });
+          // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+          datastore.clients_.set(
+            dataClientName,
+            new gapic.v1[dataClientName](options)
+          );
+          dataClient = datastore.clients_.get(dataClientName);
+          if (dataClient && dataClient.beginTransaction) {
+            originalBeginTransactionMethod = dataClient.beginTransaction;
+          }
+        });
+
+        afterEach(() => {
+          // beginTransaction has likely been mocked out in these tests.
+          // We should reassign beginTransaction back to its original value for tests outside this block.
+          if (dataClient && originalBeginTransactionMethod) {
+            dataClient.beginTransaction = originalBeginTransactionMethod;
+          }
+        });
+
+        describe('should pass error back to the user', async () => {
+          beforeEach(() => {
+            // Mock out begin transaction and send error back to the user
+            // from the Gapic layer.
+            if (dataClient) {
+              dataClient.beginTransaction = (
+                request: protos.google.datastore.v1.IBeginTransactionRequest,
+                options: CallOptions,
+                callback: Callback<
+                  protos.google.datastore.v1.IBeginTransactionResponse,
+                  | protos.google.datastore.v1.IBeginTransactionRequest
+                  | null
+                  | undefined,
+                  {} | null | undefined
+                >
+              ) => {
+                callback(new Error(testErrorMessage), testResp);
+              };
+            }
+          });
+
+          it('should send back the error when awaiting a promise', async () => {
+            try {
+              await transactionWithoutMock.run();
+              assert.fail('The run call should have failed.');
+            } catch (error: any) {
+              // TODO: Substitute type any
+              assert.strictEqual(error['message'], testErrorMessage);
+            }
+          });
+          it('should send back the error when using a callback', done => {
+            const runCallback: RunCallback = (
+              error: Error | null,
+              transaction: Transaction | null,
+              response?: google.datastore.v1.IBeginTransactionResponse
+            ) => {
+              assert(error);
+              assert.strictEqual(error.message, testErrorMessage);
+              assert.strictEqual(transaction, null);
+              assert.strictEqual(response, testResp);
+              done();
+            };
+            transactionWithoutMock.run({}, runCallback);
+          });
+        });
+        describe('should pass response back to the user', async () => {
+          beforeEach(() => {
+            // Mock out begin transaction and send a response
+            // back to the user from the Gapic layer.
+            if (dataClient) {
+              dataClient.beginTransaction = (
+                request: protos.google.datastore.v1.IBeginTransactionRequest,
+                options: CallOptions,
+                callback: Callback<
+                  protos.google.datastore.v1.IBeginTransactionResponse,
+                  | protos.google.datastore.v1.IBeginTransactionRequest
+                  | null
+                  | undefined,
+                  {} | null | undefined
+                >
+              ) => {
+                callback(null, testResp);
+              };
+            }
+          });
+          it('should send back the response when awaiting a promise', async () => {
+            const [transaction, resp] = await transactionWithoutMock.run();
+            assert.strictEqual(transaction, transactionWithoutMock);
+            assert.strictEqual(resp, testResp);
+          });
+          it('should send back the response when using a callback', done => {
+            const runCallback: RunCallback = (
+              error: Error | null,
+              transaction: Transaction | null,
+              response?: google.datastore.v1.IBeginTransactionResponse
+            ) => {
+              assert.strictEqual(error, null);
+              assert.strictEqual(response, testResp);
+              assert.strictEqual(transaction, transactionWithoutMock);
+              done();
+            };
+            transactionWithoutMock.run({}, runCallback);
+          });
+        });
+      });
+
       describe('commit', () => {
         beforeEach(() => {
           transaction.id = TRANSACTION_ID;
