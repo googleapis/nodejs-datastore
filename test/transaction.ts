@@ -288,7 +288,7 @@ async.each(
 
       describe('testing various transaction functions when transaction.run returns a response', () => {
         // These tests were created to ensure that various transaction functions work correctly after run is called.
-        // This allows us to catch any breaking changes to processes that are meant to remain the same.
+        // This allows us to catch any breaking changes to code usages that should remain the same.
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
@@ -420,6 +420,7 @@ async.each(
         let transaction: Transaction;
 
         describe('commit', () => {
+          // These tests were created to catch regressions for transaction.commit changes.
           const testCommitResp = {
             mutationResults: [
               {
@@ -515,8 +516,7 @@ async.each(
           });
         });
         describe('runAggregationQuery', () => {
-          // These tests were created so that when transaction.runAggregationQuery is restructured we
-          // can be confident that it works the same way as before.
+          // These tests were created to catch regressions for transaction.runAggregationQuery changes.
           const runAggregationQueryUserResp = [{'average rating': 100}];
           const runAggregationQueryResp = {
             batch: {
@@ -638,8 +638,7 @@ async.each(
           });
         });
         describe('runQuery', () => {
-          // These tests were created so that when transaction.runQuery is restructured we
-          // can be confident that it works the same way as before.
+          // These tests were created to catch regressions for transaction.runQuery changes.
           const runQueryResp = {
             batch: {
               entityResults: [],
@@ -738,8 +737,7 @@ async.each(
           });
         });
         describe('get', () => {
-          // These tests were created so that when transaction.get is restructured we
-          // can be confident that it works the same way as before.
+          // These tests were created to catch regressions for transaction.get changes.
           const getResp = {
             found: [
               {
@@ -858,7 +856,7 @@ async.each(
       });
 
       describe('run without setting up transaction id', () => {
-        // These tests were created so that when transaction.run is restructured we
+        // These tests were created to catch regressions for transaction.run is restructured we
         // can be confident that it works the same way as before.
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
