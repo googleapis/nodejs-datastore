@@ -578,22 +578,19 @@ class Transaction extends DatastoreRequest {
     }
   }
 
-  #runCommit(gaxOptions?: CallOptions): Promise<CommitResponse>;
-  #runCommit(callback: CommitCallback): void;
-  #runCommit(gaxOptions: CallOptions, callback: CommitCallback): void;
+  /**
+   * This function is a pass-through for the transaction.commit method
+   * It contains the business logic used for committing a transaction
+   *
+   * @param {object} [gaxOptions] Request configuration options, outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
+   * @private
+   */
   #runCommit(
-    gaxOptionsOrCallback?: CallOptions | CommitCallback,
-    cb?: CommitCallback
+    gaxOptions: CallOptions,
+    callback: CommitCallback
   ): void | Promise<CommitResponse> {
-    const callback =
-      typeof gaxOptionsOrCallback === 'function'
-        ? gaxOptionsOrCallback
-        : typeof cb === 'function'
-        ? cb
-        : () => {};
-    const gaxOptions =
-      typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-
     if (this.skipCommit) {
       setImmediate(callback);
       return;

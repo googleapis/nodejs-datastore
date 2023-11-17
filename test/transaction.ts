@@ -28,7 +28,7 @@ import {
   Transaction,
   AggregateField,
 } from '../src';
-import {Entity} from '../src/entity';
+import {Entity, entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {Callback, CallOptions, ClientStub} from 'google-gax';
@@ -43,15 +43,12 @@ import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
 import * as protos from '../protos/protos';
 import {AggregateQuery} from '../src/aggregate';
-import {RunQueryCallback, RunQueryResponse} from '../src/query';
+import {RunQueryCallback} from '../src/query';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
 type Path = string | [string] | [string, number];
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const {entity} = require('../src/entity');
 
 let promisified = false;
 const fakePfy = Object.assign({}, pfy, {
@@ -163,512 +160,9 @@ async.each(
         });
       });
 
-      describe('run without setting up transaction id', () => {
-        // These tests were created so that when transaction.run is restructured we
-        // can be confident that it works the same way as before.
-        const testRunResp = {
-          transaction: Buffer.from(Array.from(Array(100).keys())),
-        };
-        const namespace = 'run-without-mock';
-        const projectId = 'project-id';
-        const testErrorMessage = 'test-error';
-        const options = {
-          projectId,
-          namespace,
-        };
-        const datastore = new Datastore(options);
-        const transactionWithoutMock = datastore.transaction();
-        const dataClientName = 'DatastoreClient';
-        let dataClient: ClientStub | undefined;
-        let originalBeginTransactionMethod: Function;
-
-        beforeEach(async () => {
-          // In this before hook, save the original beginTransaction method in a variable.
-          // After tests are finished, reassign beginTransaction to the variable.
-          // This way, mocking beginTransaction in this block doesn't affect other tests.
-          const gapic = Object.freeze({
-            v1: require('../src/v1'),
-          });
-          // Datastore Gapic clients haven't been initialized yet so we initialize them here.
-          datastore.clients_.set(
-            dataClientName,
-            new gapic.v1[dataClientName](options)
-          );
-          dataClient = datastore.clients_.get(dataClientName);
-          if (dataClient && dataClient.beginTransaction) {
-            originalBeginTransactionMethod = dataClient.beginTransaction;
-          }
-        });
-
-        afterEach(() => {
-          // beginTransaction has likely been mocked out in these tests.
-          // We should reassign beginTransaction back to its original value for tests outside this block.
-          if (dataClient && originalBeginTransactionMethod) {
-            dataClient.beginTransaction = originalBeginTransactionMethod;
-          }
-        });
-
-        describe('should pass error back to the user', async () => {
-          beforeEach(() => {
-            // Mock out begin transaction and send error back to the user
-            // from the Gapic layer.
-            if (dataClient) {
-              dataClient.beginTransaction = (
-                request: protos.google.datastore.v1.IBeginTransactionRequest,
-                options: CallOptions,
-                callback: Callback<
-                  protos.google.datastore.v1.IBeginTransactionResponse,
-                  | protos.google.datastore.v1.IBeginTransactionRequest
-                  | null
-                  | undefined,
-                  {} | null | undefined
-                >
-              ) => {
-                callback(new Error(testErrorMessage), testRunResp);
-              };
-            }
-          });
-
-          it('should send back the error when awaiting a promise', async () => {
-            try {
-              await transactionWithoutMock.run();
-              assert.fail('The run call should have failed.');
-            } catch (error: any) {
-              // TODO: Substitute type any
-              assert.strictEqual(error['message'], testErrorMessage);
-            }
-          });
-          it('should send back the error when using a callback', done => {
-            const runCallback: RunCallback = (
-              error: Error | null,
-              transaction: Transaction | null,
-              response?: google.datastore.v1.IBeginTransactionResponse
-            ) => {
-              assert(error);
-              assert.strictEqual(error.message, testErrorMessage);
-              assert.strictEqual(transaction, null);
-              assert.strictEqual(response, testRunResp);
-              done();
-            };
-            transactionWithoutMock.run({}, runCallback);
-          });
-        });
-        describe('should pass response back to the user', async () => {
-          beforeEach(() => {
-            // Mock out begin transaction and send a response
-            // back to the user from the Gapic layer.
-            if (dataClient) {
-              dataClient.beginTransaction = (
-                request: protos.google.datastore.v1.IBeginTransactionRequest,
-                options: CallOptions,
-                callback: Callback<
-                  protos.google.datastore.v1.IBeginTransactionResponse,
-                  | protos.google.datastore.v1.IBeginTransactionRequest
-                  | null
-                  | undefined,
-                  {} | null | undefined
-                >
-              ) => {
-                callback(null, testRunResp);
-              };
-            }
-          });
-          it('should send back the response when awaiting a promise', async () => {
-            const [transaction, resp] = await transactionWithoutMock.run();
-            assert.strictEqual(transaction, transactionWithoutMock);
-            assert.strictEqual(resp, testRunResp);
-          });
-          it('should send back the response when using a callback', done => {
-            const runCallback: RunCallback = (
-              error: Error | null,
-              transaction: Transaction | null,
-              response?: google.datastore.v1.IBeginTransactionResponse
-            ) => {
-              assert.strictEqual(error, null);
-              assert.deepStrictEqual(response, testRunResp);
-              assert.strictEqual(transaction, transactionWithoutMock);
-              done();
-            };
-            transactionWithoutMock.run({}, runCallback);
-          });
-          describe('commit without setting up transaction id when run returns a response', () => {
-            // These tests were created so that when transaction.commit is restructured we
-            // can be confident that it works the same way as before.
-            const testCommitResp = {
-              mutationResults: [
-                {
-                  key: {
-                    path: [
-                      {
-                        kind: 'some-kind',
-                      },
-                    ],
-                  },
-                },
-              ],
-            };
-            const namespace = 'run-without-mock';
-            const projectId = 'project-id';
-            const testErrorMessage = 'test-commit-error';
-            const options = {
-              projectId,
-              namespace,
-            };
-            const datastore = new Datastore(options);
-            let transactionWithoutMock: Transaction;
-            const dataClientName = 'DatastoreClient';
-            let dataClient: ClientStub | undefined;
-            let originalCommitMethod: Function;
-
-            beforeEach(async () => {
-              // Create a fresh transaction for each test because transaction state changes after a commit.
-              transactionWithoutMock = datastore.transaction();
-              // In this before hook, save the original beginTransaction method in a variable.
-              // After tests are finished, reassign beginTransaction to the variable.
-              // This way, mocking beginTransaction in this block doesn't affect other tests.
-              const gapic = Object.freeze({
-                v1: require('../src/v1'),
-              });
-              // Datastore Gapic clients haven't been initialized yet so we initialize them here.
-              datastore.clients_.set(
-                dataClientName,
-                new gapic.v1[dataClientName](options)
-              );
-              dataClient = datastore.clients_.get(dataClientName);
-              if (dataClient && dataClient.commit) {
-                originalCommitMethod = dataClient.commit;
-              }
-              if (dataClient && dataClient.beginTransaction) {
-                dataClient.beginTransaction = (
-                  request: protos.google.datastore.v1.IBeginTransactionRequest,
-                  options: CallOptions,
-                  callback: Callback<
-                    protos.google.datastore.v1.IBeginTransactionResponse,
-                    | protos.google.datastore.v1.IBeginTransactionRequest
-                    | null
-                    | undefined,
-                    {} | null | undefined
-                  >
-                ) => {
-                  callback(null, testRunResp);
-                };
-              }
-            });
-
-            afterEach(() => {
-              // beginTransaction has likely been mocked out in these tests.
-              // We should reassign beginTransaction back to its original value for tests outside this block.
-              if (dataClient && originalCommitMethod) {
-                dataClient.commit = originalCommitMethod;
-              }
-            });
-
-            describe('should pass error back to the user', async () => {
-              beforeEach(() => {
-                // Mock out begin transaction and send error back to the user
-                // from the Gapic layer.
-                if (dataClient) {
-                  dataClient.commit = (
-                    request: protos.google.datastore.v1.ICommitRequest,
-                    options: CallOptions,
-                    callback: Callback<
-                      protos.google.datastore.v1.ICommitResponse,
-                      | protos.google.datastore.v1.ICommitRequest
-                      | null
-                      | undefined,
-                      {} | null | undefined
-                    >
-                  ) => {
-                    callback(new Error(testErrorMessage), testCommitResp);
-                  };
-                }
-              });
-
-              it('should send back the error when awaiting a promise', async () => {
-                try {
-                  await transactionWithoutMock.run();
-                  await transactionWithoutMock.commit();
-                  assert.fail('The run call should have failed.');
-                } catch (error: any) {
-                  // TODO: Substitute type any
-                  assert.strictEqual(error['message'], testErrorMessage);
-                }
-              });
-              it('should send back the error when using a callback', done => {
-                const commitCallback: CommitCallback = (
-                  error: Error | null | undefined,
-                  response?: google.datastore.v1.ICommitResponse
-                ) => {
-                  assert(error);
-                  assert.strictEqual(error.message, testErrorMessage);
-                  assert.strictEqual(response, testCommitResp);
-                  done();
-                };
-                transactionWithoutMock.run(
-                  (
-                    error: Error | null,
-                    transaction: Transaction | null,
-                    response?: google.datastore.v1.IBeginTransactionResponse
-                  ) => {
-                    transactionWithoutMock.commit(commitCallback);
-                  }
-                );
-              });
-            });
-            describe('should pass response back to the user', async () => {
-              beforeEach(() => {
-                // Mock out begin transaction and send a response
-                // back to the user from the Gapic layer.
-                if (dataClient) {
-                  dataClient.commit = (
-                    request: protos.google.datastore.v1.ICommitRequest,
-                    options: CallOptions,
-                    callback: Callback<
-                      protos.google.datastore.v1.ICommitResponse,
-                      | protos.google.datastore.v1.ICommitRequest
-                      | null
-                      | undefined,
-                      {} | null | undefined
-                    >
-                  ) => {
-                    callback(null, testCommitResp);
-                  };
-                }
-              });
-              it('should send back the response when awaiting a promise', async () => {
-                await transactionWithoutMock.run();
-                const [commitResults] = await transactionWithoutMock.commit();
-                assert.strictEqual(commitResults, testCommitResp);
-              });
-              it('should send back the response when using a callback', done => {
-                const commitCallback: CommitCallback = (
-                  error: Error | null | undefined,
-                  response?: google.datastore.v1.ICommitResponse
-                ) => {
-                  assert.strictEqual(error, null);
-                  assert.strictEqual(response, testCommitResp);
-                  done();
-                };
-                transactionWithoutMock.run(
-                  (
-                    error: Error | null,
-                    transaction: Transaction | null,
-                    response?: google.datastore.v1.IBeginTransactionResponse
-                  ) => {
-                    transactionWithoutMock.commit(commitCallback);
-                  }
-                );
-              });
-            });
-          });
-          describe('runAggregationQuery without setting up transaction id when run returns a response', () => {
-            // These tests were created so that when transaction.runAggregateQuery is restructured we
-            // can be confident that it works the same way as before.
-
-            const runAggregationQueryUserResp = [{'average rating': 100}];
-            const runAggregationQueryResp = {
-              batch: {
-                aggregationResults: [
-                  {
-                    aggregateProperties: {
-                      'average rating': {
-                        meaning: 0,
-                        excludeFromIndexes: false,
-                        doubleValue: 100,
-                        valueType: 'doubleValue',
-                      },
-                    },
-                  },
-                ],
-                moreResults:
-                  google.datastore.v1.QueryResultBatch.MoreResultsType
-                    .NO_MORE_RESULTS,
-                readTime: {seconds: '1699390681', nanos: 961667000},
-              },
-              query: null,
-              transaction: testRunResp.transaction,
-            };
-            const namespace = 'run-without-mock';
-            const projectId = 'project-id';
-            const testErrorMessage = 'test-run-Aggregate-Query-error';
-            const options = {
-              projectId,
-              namespace,
-            };
-            const datastore = new Datastore(options);
-            const q = datastore.createQuery('Character');
-            const aggregate = datastore
-              .createAggregationQuery(q)
-              .addAggregation(AggregateField.average('appearances'));
-            let transactionWithoutMock: Transaction;
-            const dataClientName = 'DatastoreClient';
-            let dataClient: ClientStub | undefined;
-            let originalRunAggregateQueryMethod: Function;
-
-            beforeEach(async () => {
-              // Create a fresh transaction for each test because transaction state changes after a commit.
-              transactionWithoutMock = datastore.transaction();
-              // In this before hook, save the original beginTransaction method in a variable.
-              // After tests are finished, reassign beginTransaction to the variable.
-              // This way, mocking beginTransaction in this block doesn't affect other tests.
-              const gapic = Object.freeze({
-                v1: require('../src/v1'),
-              });
-              // Datastore Gapic clients haven't been initialized yet so we initialize them here.
-              datastore.clients_.set(
-                dataClientName,
-                new gapic.v1[dataClientName](options)
-              );
-              dataClient = datastore.clients_.get(dataClientName);
-              if (dataClient && dataClient.runAggregationQuery) {
-                originalRunAggregateQueryMethod =
-                  dataClient.runAggregationQuery;
-              }
-              if (dataClient && dataClient.beginTransaction) {
-                dataClient.beginTransaction = (
-                  request: protos.google.datastore.v1.IBeginTransactionRequest,
-                  options: CallOptions,
-                  callback: Callback<
-                    protos.google.datastore.v1.IBeginTransactionResponse,
-                    | protos.google.datastore.v1.IBeginTransactionRequest
-                    | null
-                    | undefined,
-                    {} | null | undefined
-                  >
-                ) => {
-                  callback(null, testRunResp);
-                };
-              }
-            });
-
-            afterEach(() => {
-              // beginTransaction has likely been mocked out in these tests.
-              // We should reassign beginTransaction back to its original value for tests outside this block.
-              if (dataClient && originalRunAggregateQueryMethod) {
-                dataClient.runAggregationQuery =
-                  originalRunAggregateQueryMethod;
-              }
-            });
-
-            describe('should pass error back to the user', async () => {
-              beforeEach(() => {
-                // Mock out begin transaction and send error back to the user
-                // from the Gapic layer.
-                if (dataClient) {
-                  dataClient.runAggregationQuery = (
-                    request: protos.google.datastore.v1.IRunAggregationQueryRequest,
-                    options: CallOptions,
-                    callback: Callback<
-                      protos.google.datastore.v1.IRunAggregationQueryResponse,
-                      | protos.google.datastore.v1.IRunAggregationQueryRequest
-                      | null
-                      | undefined,
-                      {} | null | undefined
-                    >
-                  ) => {
-                    callback(
-                      new Error(testErrorMessage),
-                      runAggregationQueryResp
-                    );
-                  };
-                }
-              });
-
-              it('should send back the error when awaiting a promise', async () => {
-                try {
-                  await transactionWithoutMock.run();
-                  const results =
-                    await transactionWithoutMock.runAggregationQuery(aggregate);
-                  assert.fail('The run call should have failed.');
-                } catch (error: any) {
-                  // TODO: Substitute type any
-                  assert.strictEqual(error['message'], testErrorMessage);
-                }
-              });
-              it('should send back the error when using a callback', done => {
-                const runAggregateQueryCallback: RequestCallback = (
-                  error: Error | null | undefined,
-                  response?: any
-                ) => {
-                  assert(error);
-                  assert.strictEqual(error.message, testErrorMessage);
-                  assert.deepStrictEqual(response, runAggregationQueryUserResp);
-                  done();
-                };
-                transactionWithoutMock.run(
-                  (
-                    error: Error | null,
-                    transaction: Transaction | null,
-                    response?: google.datastore.v1.IBeginTransactionResponse
-                  ) => {
-                    transactionWithoutMock.runAggregationQuery(
-                      aggregate,
-                      runAggregateQueryCallback
-                    );
-                  }
-                );
-              });
-            });
-            describe('should pass response back to the user', async () => {
-              beforeEach(() => {
-                // Mock out begin transaction and send a response
-                // back to the user from the Gapic layer.
-                if (dataClient) {
-                  dataClient.runAggregationQuery = (
-                    request: protos.google.datastore.v1.IRunAggregationQueryRequest,
-                    options: CallOptions,
-                    callback: Callback<
-                      protos.google.datastore.v1.IRunAggregationQueryResponse,
-                      | protos.google.datastore.v1.IRunAggregationQueryRequest
-                      | null
-                      | undefined,
-                      {} | null | undefined
-                    >
-                  ) => {
-                    callback(null, runAggregationQueryResp);
-                  };
-                }
-              });
-              it('should send back the response when awaiting a promise', async () => {
-                await transactionWithoutMock.run();
-                const allResults =
-                  await transactionWithoutMock.runAggregationQuery(aggregate);
-                const [runAggregateQueryResults] = allResults;
-                assert.deepStrictEqual(
-                  runAggregateQueryResults,
-                  runAggregationQueryUserResp
-                );
-              });
-              it('should send back the response when using a callback', done => {
-                const runAggregateQueryCallback: RequestCallback = (
-                  error: Error | null | undefined,
-                  response?: any
-                ) => {
-                  assert.strictEqual(error, null);
-                  assert.deepStrictEqual(response, runAggregationQueryUserResp);
-                  done();
-                };
-                transactionWithoutMock.run(
-                  (
-                    error: Error | null,
-                    transaction: Transaction | null,
-                    response?: google.datastore.v1.IBeginTransactionResponse
-                  ) => {
-                    transactionWithoutMock.runAggregationQuery(
-                      aggregate,
-                      runAggregateQueryCallback
-                    );
-                  }
-                );
-              });
-            });
-          });
-        });
-      });
-
-      describe('various functions without setting up transaction id when run returns a response', () => {
-        // These tests were created so that when transaction.run is restructured we
-        // can be confident that it works the same way as before.
+      describe('testing various transaction functions when transaction.run returns a response', () => {
+        // These tests were created to ensure that various transaction functions work correctly after run is called.
+        // This allows us to catch any breaking changes to code usages that should remain the same.
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
@@ -679,10 +173,11 @@ async.each(
         class MockedTransactionWrapper {
           datastore: Datastore;
           transaction: Transaction;
-          dataClient: any; // TODO: replace with data client type
-          mockedBeginTransaction: any;
-          mockedFunction: any; // TODO: replace with type
-          functionsMocked: {name: string; mockedFunction: any}[];
+          dataClient?: ClientStub;
+          mockedBeginTransaction: Function;
+          functionsMocked: {name: string; mockedFunction: Function}[];
+          // The callBackSignaler lets the user of this object get a signal when the mocked function is called.
+          // This is useful for tests that need to know when the mocked function is called.
           callBackSignaler: (callbackReached: string) => void = () => {};
 
           constructor() {
@@ -709,6 +204,7 @@ async.each(
             );
             const dataClient = datastore.clients_.get(dataClientName);
             // Mock begin transaction
+            this.mockedBeginTransaction = () => {};
             if (dataClient && dataClient.beginTransaction) {
               this.mockedBeginTransaction = dataClient.beginTransaction;
             }
@@ -755,7 +251,6 @@ async.each(
                 name: functionName,
                 mockedFunction: dataClient[functionName],
               });
-              this.mockedFunction = dataClient[functionName];
             }
             if (dataClient && dataClient[functionName]) {
               dataClient[functionName] = (
@@ -787,13 +282,19 @@ async.each(
           // Resetting mocked out Gapic functions ensures other tests don't use these mocks.
           resetGapicFunctions() {
             this.functionsMocked.forEach(functionMocked => {
-              this.dataClient[functionMocked.name] =
-                functionMocked.mockedFunction;
+              if (this.dataClient) {
+                this.dataClient[functionMocked.name] =
+                  functionMocked.mockedFunction;
+              }
             });
           }
         }
 
+        let transactionWrapper: MockedTransactionWrapper;
+        let transaction: Transaction;
+
         describe('commit', () => {
+          // These tests were created to catch regressions for transaction.commit changes.
           const testCommitResp = {
             mutationResults: [
               {
@@ -808,7 +309,6 @@ async.each(
             ],
           };
           const testErrorMessage = 'test-commit-error';
-          let transactionWrapper: MockedTransactionWrapper;
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
@@ -834,7 +334,6 @@ async.each(
                 await transactionWrapper.transaction.commit();
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
@@ -891,8 +390,7 @@ async.each(
           });
         });
         describe('runAggregationQuery', () => {
-          // These tests were created so that when transaction.runAggregationQuery is restructured we
-          // can be confident that it works the same way as before.
+          // These tests were created to catch regressions for transaction.runAggregationQuery changes.
           const runAggregationQueryUserResp = [{'average rating': 100}];
           const runAggregationQueryResp = {
             batch: {
@@ -917,8 +415,6 @@ async.each(
             transaction: testRunResp.transaction,
           };
           const testErrorMessage = 'test-run-Aggregate-Query-error';
-          let transactionWrapper: MockedTransactionWrapper;
-          let transaction: Transaction;
           let aggregate: AggregateQuery;
 
           beforeEach(async () => {
@@ -950,7 +446,6 @@ async.each(
                 await transaction.runAggregationQuery(aggregate);
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
@@ -1017,8 +512,7 @@ async.each(
           });
         });
         describe('runQuery', () => {
-          // These tests were created so that when transaction.runQuery is restructured we
-          // can be confident that it works the same way as before.
+          // These tests were created to catch regressions for transaction.runQuery changes.
           const runQueryResp = {
             batch: {
               entityResults: [],
@@ -1030,8 +524,6 @@ async.each(
           };
           const runQueryUserResp: Entity[] = [];
           const testErrorMessage = 'test-run-Query-error';
-          let transactionWrapper: MockedTransactionWrapper;
-          let transaction: Transaction;
           let q: Query;
 
           beforeEach(async () => {
@@ -1060,7 +552,6 @@ async.each(
                 await transaction.runQuery(q);
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
@@ -1120,8 +611,7 @@ async.each(
           });
         });
         describe('get', () => {
-          // These tests were created so that when transaction.get is restructured we
-          // can be confident that it works the same way as before.
+          // These tests were created to catch regressions for transaction.get changes.
           const getResp = {
             found: [
               {
@@ -1155,10 +645,8 @@ async.each(
           };
           const getUserResp = 'post1';
           const testErrorMessage = 'test-run-Query-error';
-          let transactionWrapper: MockedTransactionWrapper;
-          let transaction: Transaction;
           let q: Query;
-          let key: any; // TODO: Replace with key type
+          let key: entity.Key;
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
@@ -1187,7 +675,6 @@ async.each(
                 await transaction.get(key);
                 assert.fail('The run call should have failed.');
               } catch (error: any) {
-                // TODO: Substitute type any
                 assert.strictEqual(error['message'], testErrorMessage);
               }
             });
@@ -1277,8 +764,8 @@ async.each(
                 try {
                   // TODO: assertion check here
                   assert.deepStrictEqual(
-                    this.callbackOrder,
-                    this.expectedOrder
+                      this.callbackOrder,
+                      this.expectedOrder
                   );
                   this.done();
                 } catch (e) {
@@ -1288,8 +775,8 @@ async.each(
             }
 
             runCallback: RunCallback = (
-              error: Error | null | undefined,
-              response?: any
+                error: Error | null | undefined,
+                response?: any
             ) => {
               try {
                 this.callbackOrder.push('run callback');
@@ -1299,8 +786,8 @@ async.each(
               }
             };
             commitCallback: CommitCallback = (
-              error: Error | null | undefined,
-              response?: google.datastore.v1.ICommitResponse
+                error: Error | null | undefined,
+                response?: google.datastore.v1.ICommitResponse
             ) => {
               try {
                 this.callbackOrder.push('commit callback');
@@ -1311,9 +798,9 @@ async.each(
             };
 
             constructor(
-              transactionWrapper: MockedTransactionWrapper,
-              done: (err?: any) => void,
-              expectedOrder: string[]
+                transactionWrapper: MockedTransactionWrapper,
+                done: (err?: any) => void,
+                expectedOrder: string[]
             ) {
               this.expectedOrder = expectedOrder;
               const gapicCallHandler = (call: string) => {
@@ -1346,23 +833,23 @@ async.each(
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                'commit',
-                testCommitResp,
-                null
+                  'commit',
+                  testCommitResp,
+                  null
               );
             });
 
             it('should call the callbacks in the proper order with run and commit', done => {
               const transactionOrderTester = new TransactionOrderTester(
-                transactionWrapper,
-                done,
-                [
-                  'functions called',
-                  'beginTransaction called',
-                  'run callback',
-                  'commit called',
-                  'commit callback',
-                ]
+                  transactionWrapper,
+                  done,
+                  [
+                    'functions called',
+                    'beginTransaction called',
+                    'run callback',
+                    'commit called',
+                    'commit callback',
+                  ]
               );
               transactionOrderTester.callRun();
               transactionOrderTester.callCommit();
@@ -1370,33 +857,161 @@ async.each(
             });
             it('should call the callbacks in the proper order with commit', done => {
               const transactionOrderTester = new TransactionOrderTester(
-                transactionWrapper,
-                done,
-                [
-                  'functions called',
-                  'beginTransaction called',
-                  'commit called',
-                  'commit callback',
-                ]
+                  transactionWrapper,
+                  done,
+                  [
+                    'functions called',
+                    'beginTransaction called',
+                    'commit called',
+                    'commit callback',
+                  ]
               );
               transactionOrderTester.callCommit();
               transactionOrderTester.pushString('functions called');
             });
             it('should call the callbacks in the proper order with two run calls', done => {
               const transactionOrderTester = new TransactionOrderTester(
-                transactionWrapper,
-                done,
-                [
-                  'functions called',
-                  'beginTransaction called',
-                  'run callback',
-                  'run callback',
-                ]
+                  transactionWrapper,
+                  done,
+                  [
+                    'functions called',
+                    'beginTransaction called',
+                    'run callback',
+                    'run callback',
+                  ]
               );
               transactionOrderTester.callRun();
               transactionOrderTester.callRun();
               transactionOrderTester.pushString('functions called');
             });
+          });
+        });
+      });
+
+      describe('run without setting up transaction id', () => {
+        // These tests were created so that when transaction.run is restructured we
+        // can be confident that it works the same way as before.
+        const testRunResp = {
+          transaction: Buffer.from(Array.from(Array(100).keys())),
+        };
+        const namespace = 'run-without-mock';
+        const projectId = 'project-id';
+        const testErrorMessage = 'test-error';
+        const options = {
+          projectId,
+          namespace,
+        };
+        const datastore = new Datastore(options);
+        const transactionWithoutMock = datastore.transaction();
+        const dataClientName = 'DatastoreClient';
+        let dataClient: ClientStub | undefined;
+        let originalBeginTransactionMethod: Function;
+
+        beforeEach(async () => {
+          // In this before hook, save the original beginTransaction method in a variable.
+          // After tests are finished, reassign beginTransaction to the variable.
+          // This way, mocking beginTransaction in this block doesn't affect other tests.
+          const gapic = Object.freeze({
+            v1: require('../src/v1'),
+          });
+          // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+          datastore.clients_.set(
+            dataClientName,
+            new gapic.v1[dataClientName](options)
+          );
+          dataClient = datastore.clients_.get(dataClientName);
+          if (dataClient && dataClient.beginTransaction) {
+            originalBeginTransactionMethod = dataClient.beginTransaction;
+          }
+        });
+
+        afterEach(() => {
+          // beginTransaction has likely been mocked out in these tests.
+          // We should reassign beginTransaction back to its original value for tests outside this block.
+          if (dataClient && originalBeginTransactionMethod) {
+            dataClient.beginTransaction = originalBeginTransactionMethod;
+          }
+        });
+
+        function setupBeginTransaction(err: Error | null | undefined) {
+          if (dataClient) {
+            dataClient.beginTransaction = (
+              request: protos.google.datastore.v1.IBeginTransactionRequest,
+              options: CallOptions,
+              callback: Callback<
+                protos.google.datastore.v1.IBeginTransactionResponse,
+                | protos.google.datastore.v1.IBeginTransactionRequest
+                | null
+                | undefined,
+                {} | null | undefined
+              >
+            ) => {
+              callback(err, testRunResp);
+            };
+          }
+        }
+
+        describe('should pass error back to the user', async () => {
+          beforeEach(() => {
+            // Mock out begin transaction and send error back to the user
+            // from the Gapic layer.
+            setupBeginTransaction(new Error(testErrorMessage));
+          });
+
+          it('should send back the error when awaiting a promise', async () => {
+            try {
+              await transactionWithoutMock.run();
+              assert.fail('The run call should have failed.');
+            } catch (error: any) {
+              assert.strictEqual(error['message'], testErrorMessage);
+            }
+          });
+          it('should send back the error when using a callback', done => {
+            const runCallback: RunCallback = (
+              error: Error | null,
+              transaction: Transaction | null,
+              response?: google.datastore.v1.IBeginTransactionResponse
+            ) => {
+              try {
+                assert(error);
+                assert.strictEqual(error.message, testErrorMessage);
+                assert.strictEqual(transaction, null);
+                assert.strictEqual(response, testRunResp);
+                done();
+              } catch (e) {
+                done(e);
+              }
+            };
+            transactionWithoutMock.run({}, runCallback);
+          });
+        });
+        describe('should pass response back to the user', async () => {
+          beforeEach(() => {
+            // Mock out begin transaction and send a response
+            // back to the user from the Gapic layer.
+            setupBeginTransaction(null);
+          });
+          it('should send back the response when awaiting a promise', async () => {
+            const [transaction, resp] = await transactionWithoutMock.run();
+            assert.strictEqual(transaction, transactionWithoutMock);
+            assert.strictEqual(resp, testRunResp);
+          });
+          it('should send back the response when using a callback', done => {
+            const runCallback: RunCallback = (
+              error: Error | null,
+              transaction: Transaction | null,
+              response?: google.datastore.v1.IBeginTransactionResponse
+            ) => {
+              try {
+                assert.strictEqual(error, null);
+                assert.deepStrictEqual(response, testRunResp);
+                assert.strictEqual(transaction, transactionWithoutMock);
+                done();
+              } catch (e) {
+                done(e);
+              }
+            };
+            transactionWithoutMock.run({}, runCallback);
           });
         });
       });
