@@ -287,8 +287,8 @@ async.each(
       });
 
       describe('testing various transaction functions when transaction.run returns a response', () => {
-        // These tests were created to ensure that various transaction functions maintain the same behavior
-        // after being restructured to start with a run call.
+        // These tests were created to ensure that various transaction functions work correctly after run is called.
+        // This allows us to catch any breaking changes to processes that are meant to remain the same.
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
