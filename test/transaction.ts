@@ -764,8 +764,8 @@ async.each(
                 try {
                   // TODO: assertion check here
                   assert.deepStrictEqual(
-                      this.callbackOrder,
-                      this.expectedOrder
+                    this.callbackOrder,
+                    this.expectedOrder
                   );
                   this.done();
                 } catch (e) {
@@ -775,8 +775,8 @@ async.each(
             }
 
             runCallback: RunCallback = (
-                error: Error | null | undefined,
-                response?: any
+              error: Error | null | undefined,
+              response?: any
             ) => {
               try {
                 this.callbackOrder.push('run callback');
@@ -786,8 +786,8 @@ async.each(
               }
             };
             commitCallback: CommitCallback = (
-                error: Error | null | undefined,
-                response?: google.datastore.v1.ICommitResponse
+              error: Error | null | undefined,
+              response?: google.datastore.v1.ICommitResponse
             ) => {
               try {
                 this.callbackOrder.push('commit callback');
@@ -798,9 +798,9 @@ async.each(
             };
 
             constructor(
-                transactionWrapper: MockedTransactionWrapper,
-                done: (err?: any) => void,
-                expectedOrder: string[]
+              transactionWrapper: MockedTransactionWrapper,
+              done: (err?: any) => void,
+              expectedOrder: string[]
             ) {
               this.expectedOrder = expectedOrder;
               const gapicCallHandler = (call: string) => {
@@ -833,23 +833,23 @@ async.each(
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                  'commit',
-                  testCommitResp,
-                  null
+                'commit',
+                testCommitResp,
+                null
               );
             });
 
             it('should call the callbacks in the proper order with run and commit', done => {
               const transactionOrderTester = new TransactionOrderTester(
-                  transactionWrapper,
-                  done,
-                  [
-                    'functions called',
-                    'beginTransaction called',
-                    'run callback',
-                    'commit called',
-                    'commit callback',
-                  ]
+                transactionWrapper,
+                done,
+                [
+                  'functions called',
+                  'beginTransaction called',
+                  'run callback',
+                  'commit called',
+                  'commit callback',
+                ]
               );
               transactionOrderTester.callRun();
               transactionOrderTester.callCommit();
@@ -857,28 +857,28 @@ async.each(
             });
             it('should call the callbacks in the proper order with commit', done => {
               const transactionOrderTester = new TransactionOrderTester(
-                  transactionWrapper,
-                  done,
-                  [
-                    'functions called',
-                    'beginTransaction called',
-                    'commit called',
-                    'commit callback',
-                  ]
+                transactionWrapper,
+                done,
+                [
+                  'functions called',
+                  'beginTransaction called',
+                  'commit called',
+                  'commit callback',
+                ]
               );
               transactionOrderTester.callCommit();
               transactionOrderTester.pushString('functions called');
             });
             it('should call the callbacks in the proper order with two run calls', done => {
               const transactionOrderTester = new TransactionOrderTester(
-                  transactionWrapper,
-                  done,
-                  [
-                    'functions called',
-                    'beginTransaction called',
-                    'run callback',
-                    'run callback',
-                  ]
+                transactionWrapper,
+                done,
+                [
+                  'functions called',
+                  'beginTransaction called',
+                  'run callback',
+                  'run callback',
+                ]
               );
               transactionOrderTester.callRun();
               transactionOrderTester.callRun();
