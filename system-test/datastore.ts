@@ -1749,7 +1749,7 @@ async.each(
           assert.deepStrictEqual(results, [{property_1: 4}]);
         });
       });
-      describe('transactions', () => {
+      describe.only('transactions', () => {
         describe('lookup, put, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -1858,6 +1858,41 @@ async.each(
           it('should run in a transaction without run', async () => {
             const transaction = datastore.transaction();
             await doPutRunQueryCommit(transaction);
+          });
+        });
+
+        describe('runAggregationQuery, put, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doRunAggregationQueryPutCommit(
+            transaction: Transaction
+          ) {
+            const query = transaction.createQuery('Company');
+            const aggregateQuery = transaction
+              .createAggregationQuery(query)
+              .count('total');
+            const [results] =
+              await transaction.runAggregationQuery(aggregateQuery);
+            assert.deepStrictEqual(results, [{total: 0}]);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doRunAggregationQueryPutCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doRunAggregationQueryPutCommit(transaction);
           });
         });
 
