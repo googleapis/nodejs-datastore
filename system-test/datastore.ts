@@ -1895,6 +1895,40 @@ async.each(
             await doRunAggregationQueryPutCommit(transaction);
           });
         });
+        describe('put, runAggregationQuery, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doPutRunAggregationQueryCommit(
+            transaction: Transaction
+          ) {
+            transaction.save({key, data: obj});
+            const query = transaction.createQuery('Company');
+            const aggregateQuery = transaction
+              .createAggregationQuery(query)
+              .count('total');
+            const [results] =
+              await transaction.runAggregationQuery(aggregateQuery);
+            assert.deepStrictEqual(results, [{total: 0}]);
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doPutRunAggregationQueryCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doPutRunAggregationQueryCommit(transaction);
+          });
+        });
 
         describe('transaction operations on two data points', async () => {
           it('should commit all saves and deletes at the end', async () => {
