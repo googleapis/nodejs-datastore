@@ -1804,6 +1804,62 @@ async.each(
             await doPutLookupCommit(transaction);
           });
         });
+        describe.only('runQuery, put, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doRunQueryPutCommit(transaction: Transaction) {
+            const query = transaction.createQuery('Company');
+            const [results] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results, []);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doRunQueryPutCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doRunQueryPutCommit(transaction);
+          });
+        });
+        describe.only('runQuery, put, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doPutRunQueryCommit(transaction: Transaction) {
+            transaction.save({key, data: obj});
+            const query = transaction.createQuery('Company');
+            const [results] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results, []);
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doPutRunQueryCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doPutRunQueryCommit(transaction);
+          });
+        });
 
         it('should commit all saves and deletes at the end', async () => {
           const deleteKey = datastore.key(['Company', 'Subway']);
