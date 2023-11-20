@@ -1931,10 +1931,8 @@ async.each(
         });
         describe('latency tests', () => {
           const key = datastore.key(['Company', 'Google']);
-          const obj = {
-            url: 'www.google.com',
-          };
           afterEach(async () => {
+            console.log('after running latency tests');
             await datastore.delete(key);
           });
           async function runLatencyTests(transaction: Transaction) {
@@ -1943,6 +1941,7 @@ async.each(
               transaction.get(key),
               transaction.get(key),
             ]);
+            await transaction.commit();
             console.timeEnd('before run');
             console.timeEnd('after run');
           }
