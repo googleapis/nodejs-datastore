@@ -178,7 +178,8 @@ async.each(
           functionsMocked: {name: string; mockedFunction: Function}[];
           // The callBackSignaler lets the user of this object get a signal when the mocked function is called.
           // This is useful for tests that need to know when the mocked function is called.
-          callBackSignaler: (callbackReached: string) => void = () => {};
+          callBackSignaler: (callbackReached: string, request?: any) => void =
+            () => {};
 
           constructor() {
             const namespace = 'run-without-mock';
@@ -222,7 +223,7 @@ async.each(
               ) => {
                 // Calls a user provided function that will receive this string
                 // Usually used to track when this code was reached relative to other code
-                this.callBackSignaler('beginTransaction called');
+                this.callBackSignaler('beginTransaction called', request);
                 callback(null, testRunResp);
               };
             }
@@ -264,7 +265,7 @@ async.each(
                   {} | null | undefined
                 >
               ) => {
-                this.callBackSignaler(`${functionName} called`);
+                this.callBackSignaler(`${functionName} called`, request);
                 callback(error, response);
               };
             }
@@ -752,9 +753,11 @@ async.each(
             transactionWrapper.resetGapicFunctions();
           });
 
-          // This object is used for testing the order that different events occur
-          // The events can include
+          // This object is used for testing the order that different events occur.
+          // The events can include user code reached, gapic code reached and callbacks called.
           class TransactionOrderTester {
+            expectedRequests?: {call: string; request?: any}[];
+            requests: {call: string; request?: any}[] = [];
             expectedOrder: string[] = [];
             callbackOrder: string[] = [];
             transactionWrapper: MockedTransactionWrapper;
@@ -767,6 +770,12 @@ async.each(
                     this.callbackOrder,
                     this.expectedOrder
                   );
+                  if (this.expectedRequests) {
+                    assert.deepStrictEqual(
+                      this.requests,
+                      this.expectedRequests
+                    );
+                  }
                   this.done();
                 } catch (e) {
                   this.done(e);
@@ -800,11 +809,14 @@ async.each(
             constructor(
               transactionWrapper: MockedTransactionWrapper,
               done: (err?: any) => void,
-              expectedOrder: string[]
+              expectedOrder: string[],
+              expectedRequests?: {call: string; request?: any}[]
             ) {
               this.expectedOrder = expectedOrder;
-              const gapicCallHandler = (call: string) => {
+              this.expectedRequests = expectedRequests;
+              const gapicCallHandler = (call: string, request?: any) => {
                 try {
+                  this.requests.push({call, request});
                   this.callbackOrder.push(call);
                   this.checkForCompletion();
                 } catch (e) {
@@ -840,6 +852,7 @@ async.each(
             });
 
             it('should call the callbacks in the proper order with run and commit', done => {
+              // zz
               const transactionOrderTester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
@@ -883,6 +896,15 @@ async.each(
               transactionOrderTester.callRun();
               transactionOrderTester.callRun();
               transactionOrderTester.pushString('functions called');
+            });
+          });
+          describe('should pass response back to the user and check the request', async () => {
+            beforeEach(() => {
+              transactionWrapper.mockGapicFunction(
+                'commit',
+                testCommitResp,
+                null
+              );
             });
             describe('put, commit', () => {
               const key = transactionWrapper.datastore.key([
