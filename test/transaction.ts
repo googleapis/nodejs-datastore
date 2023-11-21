@@ -28,12 +28,13 @@ import {
   Transaction,
   AggregateField,
 } from '../src';
-import {Entity, entity} from '../src/entity';
+import {Entities, Entity, entity} from '../src/entity';
 import * as tsTypes from '../src/transaction';
 import * as sinon from 'sinon';
 import {Callback, CallOptions, ClientStub} from 'google-gax';
 import {
   CommitCallback,
+  CreateReadStreamOptions,
   GetCallback,
   RequestCallback,
   RequestConfig,
@@ -43,7 +44,7 @@ import {google} from '../protos/protos';
 import {RunCallback} from '../src/transaction';
 import * as protos from '../protos/protos';
 import {AggregateQuery} from '../src/aggregate';
-import {RunQueryCallback} from '../src/query';
+import {RunQueryCallback, RunQueryInfo, RunQueryOptions} from '../src/query';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -806,6 +807,43 @@ async.each(
               }
             };
 
+            getCallback: GetCallback = (
+              error: Error | null | undefined,
+              response?: Entities
+            ) => {
+              try {
+                this.callbackOrder.push('get callback');
+                this.checkForCompletion();
+              } catch (e) {
+                this.done(e);
+              }
+            };
+
+            runQueryCallback: RunQueryCallback = (
+              err: Error | null | undefined,
+              entities?: Entity[],
+              info?: RunQueryInfo
+            ) => {
+              try {
+                this.callbackOrder.push('runQuery callback');
+                this.checkForCompletion();
+              } catch (e) {
+                this.done(e);
+              }
+            };
+
+            runAggregationQueryCallback: RequestCallback = (
+              a?: Error | null,
+              b?: any
+            ) => {
+              try {
+                this.callbackOrder.push('runAggregationQuery callback');
+                this.checkForCompletion();
+              } catch (e) {
+                this.done(e);
+              }
+            };
+
             constructor(
               transactionWrapper: MockedTransactionWrapper,
               done: (err?: any) => void,
@@ -834,6 +872,33 @@ async.each(
 
             callCommit() {
               this.transactionWrapper.transaction.commit(this.commitCallback);
+            }
+
+            callGet(keys: entity.Key, options: CreateReadStreamOptions) {
+              this.transactionWrapper.transaction.get(
+                keys,
+                options,
+                this.getCallback
+              );
+            }
+
+            callRunQuery(query: Query, options: RunQueryOptions) {
+              this.transactionWrapper.transaction.runQuery(
+                query,
+                options,
+                this.runQueryCallback
+              );
+            }
+
+            callRunAggregationQuery(
+              query: AggregateQuery,
+              options: RunQueryOptions
+            ) {
+              this.transactionWrapper.transaction.runAggregationQuery(
+                query,
+                options,
+                this.runAggregationQueryCallback
+              );
             }
 
             pushString(callbackPushed: string) {
@@ -898,19 +963,54 @@ async.each(
               transactionOrderTester.pushString('functions called');
             });
           });
-          describe('should pass response back to the user and check the request', async () => {
+          describe.only('should pass response back to the user and check the request', async () => {
+            let key: entity.Key;
             beforeEach(() => {
+              key = transactionWrapper.datastore.key(['Company', 'Google']);
               transactionWrapper.mockGapicFunction(
                 'commit',
                 testCommitResp,
                 null
               );
             });
+            const beginTransactionRequest = {
+              transactionOptions: {},
+              projectId: 'project-id',
+            };
+            const commitRequest = {
+              mode: 'TRANSACTIONAL',
+              transaction: testRunResp.transaction,
+              projectId: 'project-id',
+              mutations: [
+                {
+                  upsert: {
+                    properties: {},
+                    key: {
+                      partitionId: {
+                        namespaceId: 'run-without-mock',
+                      },
+                      path: [
+                        {
+                          kind: 'Company',
+                          name: 'Google',
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            };
             describe('put, commit', () => {
-              const key = transactionWrapper.datastore.key([
-                'Company',
-                'Google',
-              ]);
+              const expectedRequests = [
+                {
+                  call: 'beginTransaction called',
+                  request: beginTransactionRequest,
+                },
+                {
+                  call: 'commit called',
+                  request: commitRequest,
+                },
+              ];
               it('should verify that there is a BeginTransaction call while beginning later', done => {
                 const transactionOrderTester = new TransactionOrderTester(
                   transactionWrapper,
@@ -919,7 +1019,8 @@ async.each(
                     'beginTransaction called',
                     'commit called',
                     'commit callback',
-                  ]
+                  ],
+                  expectedRequests
                 );
                 transactionOrderTester.transactionWrapper.transaction.save({
                   key,
@@ -936,7 +1037,8 @@ async.each(
                     'run callback',
                     'commit called',
                     'commit callback',
-                  ]
+                  ],
+                  expectedRequests
                 );
                 transactionOrderTester.transactionWrapper.transaction.save({
                   key,
