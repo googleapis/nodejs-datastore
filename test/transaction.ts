@@ -884,6 +884,46 @@ async.each(
               transactionOrderTester.callRun();
               transactionOrderTester.pushString('functions called');
             });
+            describe('put, commit', () => {
+              const key = transactionWrapper.datastore.key([
+                'Company',
+                'Google',
+              ]);
+              it('should verify that there is a BeginTransaction call while beginning later', done => {
+                const transactionOrderTester = new TransactionOrderTester(
+                  transactionWrapper,
+                  done,
+                  [
+                    'beginTransaction called',
+                    'commit called',
+                    'commit callback',
+                  ]
+                );
+                transactionOrderTester.transactionWrapper.transaction.save({
+                  key,
+                  data: '',
+                });
+                transactionOrderTester.callCommit();
+              });
+              it('should verify that there is a BeginTransaction call while beginning early', done => {
+                const transactionOrderTester = new TransactionOrderTester(
+                  transactionWrapper,
+                  done,
+                  [
+                    'beginTransaction called',
+                    'run callback',
+                    'commit called',
+                    'commit callback',
+                  ]
+                );
+                transactionOrderTester.transactionWrapper.transaction.save({
+                  key,
+                  data: '',
+                });
+                transactionOrderTester.callRun();
+                transactionOrderTester.callCommit();
+              });
+            });
           });
         });
       });
