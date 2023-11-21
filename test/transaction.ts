@@ -743,6 +743,68 @@ async.each(
               },
             ],
           };
+          const testGetResp = {
+            found: [
+              {
+                entity: {
+                  key: {
+                    path: [
+                      {
+                        kind: 'Post',
+                        name: 'post1',
+                        idType: 'name',
+                      },
+                    ],
+                    partitionId: {
+                      projectId: 'projectId',
+                      databaseId: 'databaseId',
+                      namespaceId: 'namespaceId',
+                    },
+                  },
+                  excludeFromIndexes: false,
+                  properties: {},
+                },
+              },
+            ],
+            missing: [],
+            deferred: [],
+            transaction: testRunResp.transaction,
+            readTime: {
+              seconds: '1699470605',
+              nanos: 201398000,
+            },
+          };
+          const testRunQueryResp = {
+            batch: {
+              entityResults: [],
+              endCursor: {
+                type: 'Buffer',
+                data: Buffer.from(Array.from(Array(100).keys())),
+              },
+            },
+          };
+          const testRunAggregationQueryResp = {
+            batch: {
+              aggregationResults: [
+                {
+                  aggregateProperties: {
+                    'average rating': {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      doubleValue: 100,
+                      valueType: 'doubleValue',
+                    },
+                  },
+                },
+              ],
+              moreResults:
+                google.datastore.v1.QueryResultBatch.MoreResultsType
+                  .NO_MORE_RESULTS,
+              readTime: {seconds: '1699390681', nanos: 961667000},
+            },
+            query: null,
+            transaction: testRunResp.transaction,
+          };
           let transactionWrapper: MockedTransactionWrapper;
 
           beforeEach(async () => {
@@ -854,6 +916,7 @@ async.each(
               this.expectedRequests = expectedRequests;
               const gapicCallHandler = (call: string, request?: any) => {
                 try {
+                  console.log(`Getting call ${call}`);
                   this.requests.push({call, request});
                   this.callbackOrder.push(call);
                   this.checkForCompletion();
@@ -963,13 +1026,24 @@ async.each(
               transactionOrderTester.pushString('functions called');
             });
           });
-          describe.only('should pass response back to the user and check the request', async () => {
+          describe('should pass response back to the user and check the request', async () => {
             let key: entity.Key;
             beforeEach(() => {
               key = transactionWrapper.datastore.key(['Company', 'Google']);
               transactionWrapper.mockGapicFunction(
                 'commit',
                 testCommitResp,
+                null
+              );
+              transactionWrapper.mockGapicFunction('lookup', testGetResp, null);
+              transactionWrapper.mockGapicFunction(
+                'runQuery',
+                testRunQueryResp,
+                null
+              );
+              transactionWrapper.mockGapicFunction(
+                'runAggregationQuery',
+                testRunAggregationQueryResp,
                 null
               );
             });
@@ -1045,6 +1119,61 @@ async.each(
                   data: '',
                 });
                 transactionOrderTester.callRun();
+                transactionOrderTester.callCommit();
+              });
+            });
+            describe.only('lookup, lookup, put, commit', () => {
+              const expectedRequests = [
+                {
+                  call: 'beginTransaction called',
+                  request: beginTransactionRequest,
+                },
+                {
+                  call: 'commit called',
+                  request: commitRequest,
+                },
+              ];
+              it('should verify that there is a BeginTransaction call while beginning later', done => {
+                const transactionOrderTester = new TransactionOrderTester(
+                  transactionWrapper,
+                  done,
+                  [
+                    'beginTransaction called',
+                    'commit called',
+                    'commit callback',
+                    'get callback',
+                    'get callback',
+                  ],
+                  expectedRequests
+                );
+                transactionOrderTester.callGet(key, {consistency: 'eventual'});
+                transactionOrderTester.callGet(key, {consistency: 'eventual'});
+                transactionOrderTester.transactionWrapper.transaction.save({
+                  key,
+                  data: '',
+                });
+                transactionOrderTester.callCommit();
+              });
+              it('should verify that there is a BeginTransaction call while beginning early', done => {
+                const transactionOrderTester = new TransactionOrderTester(
+                  transactionWrapper,
+                  done,
+                  [
+                    'beginTransaction called',
+                    'commit called',
+                    'commit callback',
+                    'get callback',
+                    'get callback',
+                  ],
+                  expectedRequests
+                );
+                transactionOrderTester.callRun();
+                transactionOrderTester.callGet(key, {consistency: 'eventual'});
+                transactionOrderTester.callGet(key, {consistency: 'eventual'});
+                transactionOrderTester.transactionWrapper.transaction.save({
+                  key,
+                  data: '',
+                });
                 transactionOrderTester.callCommit();
               });
             });
