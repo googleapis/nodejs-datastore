@@ -1160,6 +1160,7 @@ async.each(
                   done,
                   [
                     'beginTransaction called',
+                    'run callback',
                     'commit called',
                     'commit callback',
                     'get callback',
