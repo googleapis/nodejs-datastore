@@ -379,12 +379,9 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * Retrieve the entities identified with the specified key(s) in the current
-   * transaction. Get operations require a valid key to retrieve the
-   * key-identified entity from Datastore.
-   *
-   * If the transaction has not been started yet then the
-   * transaction is started before the get call is made.
+   * This function calls get on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * get call is made.
    *
    * @param {Key|Key[]} keys Datastore key object(s).
    * @param {object} [options] Optional configuration.
@@ -809,12 +806,10 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * Datastore allows you to run aggregate queries by supplying aggregate fields
-   * which will determine the type of aggregation that is performed.
    *
-   * The query is run, and the results are returned in the second argument of
-   * the callback provided. If the transaction has not been started yet then the
-   * transaction is started before the runAggregationQuery call is made.
+   * This function calls runAggregationQuery on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * runAggregationQuery call is made.
    *
    * @param {AggregateQuery} query AggregateQuery object.
    * @param {RunQueryOptions} options Optional configuration
@@ -861,6 +856,17 @@ class Transaction extends DatastoreRequest {
     );
   }
 
+  /**
+   * This function calls runQuery on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * runQuery call is made.
+   *
+   * @param {Query} query Query object.
+   * @param {object} [options] Optional configuration.
+   * @param {function} [callback] The callback function. If omitted, a readable
+   *     stream instance is returned.
+   *
+   */
   runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
   runQuery(
     query: Query,
