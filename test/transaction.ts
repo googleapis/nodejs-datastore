@@ -1140,7 +1140,7 @@ async.each(
                 transactionOrderTester.callCommit();
               });
             });
-            describe.only('lookup, lookup, put, commit', () => {
+            describe('lookup, lookup, put, commit', () => {
               const expectedRequests = [
                 {
                   call: 'beginTransaction called',
