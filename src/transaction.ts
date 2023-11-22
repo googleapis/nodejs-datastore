@@ -211,7 +211,7 @@ class Transaction extends DatastoreRequest {
   /**
    * If the transaction has not begun yet then this function ensures the transaction
    * has started before running the resolver provided. The resolver is a function with one
-   * resolve argument. That argument is a function that is used to pass errors and
+   * argument. This argument is a function that is used to pass errors and
    * response data back to the caller of the withBeginTransaction function.
    *
    * @param {CallOptions | undefined} [gaxOptions]
