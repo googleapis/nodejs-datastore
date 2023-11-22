@@ -1945,7 +1945,7 @@ async.each(
           delete entity[datastore.KEY];
           assert.deepStrictEqual(entity, obj);
         });
-        
+
         it('should commit all saves and deletes at the end', async () => {
           const deleteKey = datastore.key(['Company', 'Subway']);
           const key = datastore.key(['Company', 'Google']);
