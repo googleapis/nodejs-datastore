@@ -884,7 +884,6 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    type promiseType = PassThroughReturnType<RunQueryResponseOptional>;
     const resolver: ResolverType<RunQueryResponseOptional> = resolve => {
       super.runQuery(
         query,
@@ -895,7 +894,7 @@ class Transaction extends DatastoreRequest {
       );
     };
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: promiseType) => {
+      (response: PassThroughReturnType<RunQueryResponseOptional>) => {
         const error = response.err ? response.err : null;
         const entities = response.resp ? response.resp[0] : undefined;
         const info = response.resp ? response.resp[1] : undefined;
