@@ -51,7 +51,7 @@ interface PassThroughReturnType<T> {
   err?: Error | null;
   resp?: T;
 }
-interface RequestResolveFunction<T> {
+interface PromiseResolveFunction<T> {
   (
     value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
   ): void;
@@ -60,7 +60,7 @@ interface RequestResolveFunction<T> {
 // This is a type that matches the argument passed in when building a promise.
 // It is also assures that the promise will resolve with data of PassThroughReturnType<T> type.
 interface Executor<T> {
-  (resolve: RequestResolveFunction<T>): void;
+  (resolve: PromiseResolveFunction<T>): void;
 }
 
 enum TransactionState {
@@ -779,7 +779,7 @@ class Transaction extends DatastoreRequest {
       reqOpts.transactionOptions = options.transactionOptions;
     }
     const promiseFunction: Executor<any> = (
-      resolve: RequestResolveFunction<any>
+      resolve: PromiseResolveFunction<any>
     ) => {
       this.request_(
         {
