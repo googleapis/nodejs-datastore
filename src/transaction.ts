@@ -805,8 +805,8 @@ class Transaction extends DatastoreRequest {
    * has not been started yet then the transaction is started before the
    * runAggregationQuery call is made.
    *
-   * @param {AggregateQuery} query AggregateQuery object.
-   * @param {RunQueryOptions} options Optional configuration
+   * @param {AggregateQuery} [query] AggregateQuery object.
+   * @param {RunQueryOptions} [options] Optional configuration
    * @param {function} [callback] The callback function. If omitted, a promise is
    * returned.
    *
