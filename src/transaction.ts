@@ -52,17 +52,15 @@ interface PassThroughReturnType<T> {
   resp?: T;
 }
 interface RequestResolveFunction<T> {
-  (callbackData: PassThroughReturnType<T>): void;
+  (
+    value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
+  ): void;
 }
 
 // This is a type that matches the argument passed in when building a promise.
 // It is also assures that the promise will resolve with data of PassThroughReturnType<T> type.
 interface Executor<T> {
-  (
-    resolve: (
-      value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
-    ) => void
-  ): void;
+  (resolve: RequestResolveFunction<T>): void;
 }
 
 enum TransactionState {
