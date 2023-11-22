@@ -547,10 +547,11 @@ class DatastoreRequest {
   }
 
   /**
-   * Datastore allows you to run aggregate queries by aggregate field.
+   * Datastore allows you to run aggregate queries by supplying aggregate fields
+   * which will determine the type of aggregation that is performed.
    *
-   * The query is run, and the results are returned as the second argument to
-   * your callback.
+   * The query is run, and the results are returned in the second argument of
+   * the callback provided.
    *
    * @param {AggregateQuery} query AggregateQuery object.
    * @param {RunQueryOptions} options Optional configuration
