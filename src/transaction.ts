@@ -210,11 +210,7 @@ class Transaction extends DatastoreRequest {
 
   async #withBeginTransaction<T>(
     gaxOptions: CallOptions | undefined,
-    resolver: (
-      resolve: (
-        value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
-      ) => void
-    ) => void
+    resolver: ResolverType<T>
   ): Promise<PassThroughReturnType<T>> {
     if (this.#state === TransactionState.NOT_STARTED) {
       const release = await this.#mutex.acquire();
