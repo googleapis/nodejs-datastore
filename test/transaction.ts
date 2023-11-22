@@ -1339,6 +1339,7 @@ async.each(
           });
         });
       });
+
       describe('commit', () => {
         beforeEach(done => {
           transaction.id = TRANSACTION_ID;
