@@ -719,8 +719,8 @@ class Transaction extends DatastoreRequest {
   /**
    * This function parses results from a beginTransaction call
    *
-   * @param {RequestPromiseReturnType} [response] The response from a call to
-   * begin a transaction.
+   * @param {UserCallbackData<google.datastore.v1.IBeginTransactionResponse>} [response]
+   * The response data from a call to begin a transaction.
    * @param {RunCallback} [callback] A callback that accepts an error and a
    * response as arguments.
    *
