@@ -54,10 +54,10 @@ interface PassThroughReturnType<T> {
 interface RequestResolveFunction<T> {
   (callbackData: PassThroughReturnType<T>): void;
 }
-interface RequestAsPromiseCallback<T> {
-  (resolve: RequestResolveFunction<T>): void;
-}
-interface ResolverType<T> {
+
+// This is a type that matches the argument passed in when building a promise.
+// It is also assures that the promise will resolve with data of PassThroughReturnType<T> type.
+interface Executor<T> {
   (
     resolve: (
       value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
@@ -189,7 +189,7 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    const resolver: ResolverType<
+    const resolver: Executor<
       google.datastore.v1.ICommitResponse
     > = resolve => {
       this.#runCommit(
@@ -215,14 +215,14 @@ class Transaction extends DatastoreRequest {
    * response data back to the caller of the withBeginTransaction function.
    *
    * @param {CallOptions | undefined} [gaxOptions]
-   * @param {ResolverType<T>} [resolver]
+   * @param {Executor<T>} [resolver]
    * @returns {Promise<PassThroughReturnType<T>>} Returns a promise that will run
    * this code and resolve to an error or resolve with the data from the resolver.
    * @private
    */
   async #withBeginTransaction<T>(
     gaxOptions: CallOptions | undefined,
-    resolver: ResolverType<T>
+    resolver: Executor<T>
   ): Promise<PassThroughReturnType<T>> {
     if (this.#state === TransactionState.NOT_STARTED) {
       const release = await this.#mutex.acquire();
@@ -409,7 +409,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: ResolverType<GetResponse> = resolve => {
+    const resolver: Executor<GetResponse> = resolve => {
       super.get(keys, options, (err?: Error | null, resp?: GetResponse) => {
         resolve({err, resp});
       });
@@ -782,7 +782,7 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const promiseFunction: RequestAsPromiseCallback<any> = (
+    const promiseFunction: Executor<any> = (
       resolve: RequestResolveFunction<any>
     ) => {
       this.request_(
@@ -838,7 +838,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     type promiseType = PassThroughReturnType<PassThroughReturnType<any>>;
-    const resolver: ResolverType<any> = resolve => {
+    const resolver: Executor<any> = resolve => {
       super.runAggregationQuery(
         query,
         options,
@@ -884,7 +884,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: ResolverType<RunQueryResponseOptional> = resolve => {
+    const resolver: Executor<RunQueryResponseOptional> = resolve => {
       super.runQuery(
         query,
         options,
