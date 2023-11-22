@@ -2050,7 +2050,6 @@ async.each(
               .count('total');
             let result;
             try {
-              const allResults = await aggregateQuery.run();
               [result] = await aggregateQuery.run();
             } catch (e) {
               await transaction.rollback();
