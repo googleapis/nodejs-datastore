@@ -1931,6 +1931,20 @@ async.each(
         });
       });
       describe('transactions', () => {
+        it('should run in a transaction', async () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          const transaction = datastore.transaction();
+          await transaction.run();
+          await transaction.get(key);
+          transaction.save({key, data: obj});
+          await transaction.commit();
+          const [entity] = await datastore.get(key);
+          delete entity[datastore.KEY];
+          assert.deepStrictEqual(entity, obj);
+        });
         it('should commit all saves and deletes at the end', async () => {
           const deleteKey = datastore.key(['Company', 'Subway']);
           const key = datastore.key(['Company', 'Google']);
