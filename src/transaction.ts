@@ -409,14 +409,13 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    type promiseType = PassThroughReturnType<GetResponse>;
     const resolver: ResolverType<GetResponse> = resolve => {
       super.get(keys, options, (err?: Error | null, resp?: GetResponse) => {
         resolve({err, resp});
       });
     };
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: promiseType) => {
+      (response: PassThroughReturnType<GetResponse>) => {
         callback(response.err, response.resp);
       }
     );
