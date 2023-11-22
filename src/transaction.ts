@@ -227,8 +227,7 @@ class Transaction extends DatastoreRequest {
         return {err};
       }
     }
-    const promiseResults = await new Promise(resolver);
-    return promiseResults;
+    return await new Promise(resolver);
   }
 
   /**
