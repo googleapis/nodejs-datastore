@@ -1749,7 +1749,7 @@ async.each(
           assert.deepStrictEqual(results, [{property_1: 4}]);
         });
       });
-      describe.only('transactions', () => {
+      describe('transactions with and without run', () => {
         describe('lookup, put, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -1929,6 +1929,8 @@ async.each(
             await doPutRunAggregationQueryCommit(transaction);
           });
         });
+      });
+      describe('transactions', () => {
         describe('transaction operations on two data points', async () => {
           it('should commit all saves and deletes at the end', async () => {
             const deleteKey = datastore.key(['Company', 'Subway']);
