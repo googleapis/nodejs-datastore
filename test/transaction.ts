@@ -916,7 +916,6 @@ async.each(
               this.expectedRequests = expectedRequests;
               const gapicCallHandler = (call: string, request?: any) => {
                 try {
-                  console.log(`Getting call ${call}`);
                   this.requests.push({call, request});
                   this.callbackOrder.push(call);
                   this.checkForCompletion();
@@ -1176,15 +1175,12 @@ async.each(
                   expectedRequests
                 );
                 transactionOrderTester.callGet(key, {});
-                console.log('after get 1');
                 transactionOrderTester.callGet(key, {});
-                console.log('after get 2');
                 transactionOrderTester.transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
                 transactionOrderTester.callCommit();
-                console.log('after commit');
               });
               it('should verify that there is a BeginTransaction call while beginning early', done => {
                 const transactionOrderTester = new TransactionOrderTester(
