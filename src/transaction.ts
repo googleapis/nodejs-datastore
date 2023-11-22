@@ -47,16 +47,17 @@ type RunQueryResponseOptional = [
   Entity[] | undefined,
   RunQueryInfo | undefined,
 ];
-interface PassThroughReturnType<T> {
+// This type matches data typically passed into a callback the user supplies.
+// The data matches promises created from an argument of Executor<T> type.
+interface UserCallbackData<T> {
   err?: Error | null;
   resp?: T;
 }
+// This is a type that matches the argument for a promise's resolve function.
+// It is also constrained to match data returned that may contain an error.
 interface PromiseResolveFunction<T> {
-  (
-    value: PassThroughReturnType<T> | PromiseLike<PassThroughReturnType<T>>
-  ): void;
+  (value: UserCallbackData<T> | PromiseLike<UserCallbackData<T>>): void;
 }
-
 // This is a type that matches the argument passed in when building a promise.
 // It is also assures that the promise will resolve with data of PassThroughReturnType<T> type.
 interface Executor<T> {
@@ -197,7 +198,7 @@ class Transaction extends DatastoreRequest {
     };
     this.#withBeginTransaction(gaxOptions, resolver).then(
       (
-        response: PassThroughReturnType<google.datastore.v1.ICommitResponse>
+        response: UserCallbackData<google.datastore.v1.ICommitResponse>
       ) => {
         callback(response.err, response.resp);
       }
@@ -212,14 +213,14 @@ class Transaction extends DatastoreRequest {
    *
    * @param {CallOptions | undefined} [gaxOptions]
    * @param {Executor<T>} [resolver]
-   * @returns {Promise<PassThroughReturnType<T>>} Returns a promise that will run
+   * @returns {Promise<UserCallbackData<T>>} Returns a promise that will run
    * this code and resolve to an error or resolve with the data from the resolver.
    * @private
    */
   async #withBeginTransaction<T>(
     gaxOptions: CallOptions | undefined,
     resolver: Executor<T>
-  ): Promise<PassThroughReturnType<T>> {
+  ): Promise<UserCallbackData<T>> {
     if (this.#state === TransactionState.NOT_STARTED) {
       const release = await this.#mutex.acquire();
       try {
@@ -411,7 +412,7 @@ class Transaction extends DatastoreRequest {
       });
     };
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: PassThroughReturnType<GetResponse>) => {
+      (response: UserCallbackData<GetResponse>) => {
         callback(response.err, response.resp);
       }
     );
@@ -576,7 +577,7 @@ class Transaction extends DatastoreRequest {
         if (this.#state === TransactionState.NOT_STARTED) {
           this.#runAsync(options).then(
             (
-              response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>
+              response: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
             ) => {
               release();
               this.#processBeginResults(response, callback);
@@ -725,7 +726,7 @@ class Transaction extends DatastoreRequest {
    *
    **/
   #processBeginResults(
-    response: PassThroughReturnType<google.datastore.v1.IBeginTransactionResponse>,
+    response: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>,
     callback: RunCallback
   ): void {
     const err = response.err;
@@ -741,11 +742,11 @@ class Transaction extends DatastoreRequest {
   /**
    * This function saves results from a successful beginTransaction call.
    *
-   * @param {PassThroughReturnType<any>} [response] The response from a call to
+   * @param {UserCallbackData<any>} [response] The response from a call to
    * begin a transaction that completed successfully.
    *
    **/
-  #parseRunSuccess(response: PassThroughReturnType<any>) {
+  #parseRunSuccess(response: UserCallbackData<any>) {
     const resp = response.resp;
     this.id = resp!.transaction;
     this.#state = TransactionState.IN_PROGRESS;
@@ -760,7 +761,7 @@ class Transaction extends DatastoreRequest {
    *
    *
    **/
-  async #runAsync(options: RunOptions): Promise<PassThroughReturnType<any>> {
+  async #runAsync(options: RunOptions): Promise<UserCallbackData<any>> {
     const reqOpts: RequestOptions = {
       transactionOptions: {},
     };
@@ -833,7 +834,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    type promiseType = PassThroughReturnType<PassThroughReturnType<any>>;
+    type promiseType = UserCallbackData<UserCallbackData<any>>;
     const resolver: Executor<any> = resolve => {
       super.runAggregationQuery(
         query,
@@ -890,7 +891,7 @@ class Transaction extends DatastoreRequest {
       );
     };
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: PassThroughReturnType<RunQueryResponseOptional>) => {
+      (response: UserCallbackData<RunQueryResponseOptional>) => {
         const error = response.err ? response.err : null;
         const entities = response.resp ? response.resp[0] : undefined;
         const info = response.resp ? response.resp[1] : undefined;
