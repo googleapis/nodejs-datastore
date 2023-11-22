@@ -570,9 +570,7 @@ class Transaction extends DatastoreRequest {
       );
       callback(null, this, {transaction: this.id});
     };
-    if (this.#state !== TransactionState.NOT_STARTED) {
-      runIfStarted();
-    } else {
+    if (this.#state === TransactionState.NOT_STARTED) {
       this.#mutex.acquire().then(release => {
         if (this.#state === TransactionState.NOT_STARTED) {
           this.#runAsync(options).then(
@@ -588,6 +586,8 @@ class Transaction extends DatastoreRequest {
           runIfStarted();
         }
       });
+    } else {
+      runIfStarted();
     }
   }
 
