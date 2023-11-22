@@ -212,7 +212,7 @@ class Transaction extends DatastoreRequest {
    * If the transaction has not begun yet then this function ensures the transaction
    * has started before running the resolver provided. The resolver is a function with one
    * resolve argument. That argument is a function that is used to pass errors and
-   * response data back to the caller of this function.
+   * response data back to the caller of the withBeginTransaction function.
    *
    * @param {CallOptions | undefined} [gaxOptions]
    * @param {ResolverType<T>} [resolver]
@@ -378,6 +378,16 @@ class Transaction extends DatastoreRequest {
     });
   }
 
+  /**
+   * Retrieve the entities identified with the specified key(s) in the current
+   * transaction. Get operations require a valid key to retrieve the
+   * key-identified entity from Datastore.
+   *
+   * @param {Key|Key[]} keys Datastore key object(s).
+   * @param {object} [options] Optional configuration.
+   * @param {function} callback The callback function.
+   *
+   */
   get(
     keys: entity.Key | entity.Key[],
     options?: CreateReadStreamOptions
