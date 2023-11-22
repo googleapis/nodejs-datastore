@@ -197,9 +197,7 @@ class Transaction extends DatastoreRequest {
       );
     };
     this.#withBeginTransaction(gaxOptions, resolver).then(
-      (
-        response: UserCallbackData<google.datastore.v1.ICommitResponse>
-      ) => {
+      (response: UserCallbackData<google.datastore.v1.ICommitResponse>) => {
         callback(response.err, response.resp);
       }
     );
