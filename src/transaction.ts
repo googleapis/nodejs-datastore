@@ -383,6 +383,9 @@ class Transaction extends DatastoreRequest {
    * transaction. Get operations require a valid key to retrieve the
    * key-identified entity from Datastore.
    *
+   * If the transaction has not been started yet then the
+   * transaction is started before the get call is made.
+   *
    * @param {Key|Key[]} keys Datastore key object(s).
    * @param {object} [options] Optional configuration.
    * @param {function} callback The callback function.
