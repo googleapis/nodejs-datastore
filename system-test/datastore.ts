@@ -1929,36 +1929,6 @@ async.each(
             await doPutRunAggregationQueryCommit(transaction);
           });
         });
-        describe('latency tests', () => {
-          const key = datastore.key(['Company', 'Google']);
-          afterEach(async () => {
-            console.log('after running latency tests');
-            await datastore.delete(key);
-          });
-          async function runLatencyTests(transaction: Transaction) {
-            await Promise.all([
-              transaction.get(key),
-              transaction.get(key),
-              transaction.get(key),
-            ]);
-            await transaction.commit();
-            console.timeEnd('before run');
-            console.timeEnd('after run');
-          }
-          it('should run in a transaction', async () => {
-            const transaction = datastore.transaction();
-            console.time('before run');
-            await transaction.run();
-            console.time('after run');
-            await runLatencyTests(transaction);
-          });
-          it('should run in a transaction without run', async () => {
-            console.time('before run');
-            const transaction = datastore.transaction();
-            await runLatencyTests(transaction);
-          });
-        });
-
         describe('transaction operations on two data points', async () => {
           it('should commit all saves and deletes at the end', async () => {
             const deleteKey = datastore.key(['Company', 'Subway']);
