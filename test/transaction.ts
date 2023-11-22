@@ -1074,6 +1074,25 @@ async.each(
                 },
               ],
             };
+            const lookupTransactionRequest = {
+              keys: [
+                {
+                  partitionId: {
+                    namespaceId: 'run-without-mock',
+                  },
+                  path: [
+                    {
+                      kind: 'Company',
+                      name: 'Google',
+                    },
+                  ],
+                },
+              ],
+              projectId: 'project-id',
+              readOptions: {
+                transaction: testRunResp.transaction,
+              },
+            };
             describe('put, commit', () => {
               const expectedRequests = [
                 {
@@ -1132,6 +1151,14 @@ async.each(
                   call: 'commit called',
                   request: commitRequest,
                 },
+                {
+                  call: 'lookup called',
+                  request: lookupTransactionRequest,
+                },
+                {
+                  call: 'lookup called',
+                  request: lookupTransactionRequest,
+                },
               ];
               it('should verify that there is a BeginTransaction call while beginning later', done => {
                 const transactionOrderTester = new TransactionOrderTester(
@@ -1141,18 +1168,23 @@ async.each(
                     'beginTransaction called',
                     'commit called',
                     'commit callback',
+                    'lookup called',
+                    'lookup called',
                     'get callback',
                     'get callback',
                   ],
                   expectedRequests
                 );
-                transactionOrderTester.callGet(key, {consistency: 'eventual'});
-                transactionOrderTester.callGet(key, {consistency: 'eventual'});
+                transactionOrderTester.callGet(key, {});
+                console.log('after get 1');
+                transactionOrderTester.callGet(key, {});
+                console.log('after get 2');
                 transactionOrderTester.transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
                 transactionOrderTester.callCommit();
+                console.log('after commit');
               });
               it('should verify that there is a BeginTransaction call while beginning early', done => {
                 const transactionOrderTester = new TransactionOrderTester(
@@ -1163,14 +1195,16 @@ async.each(
                     'run callback',
                     'commit called',
                     'commit callback',
+                    'lookup called',
+                    'lookup called',
                     'get callback',
                     'get callback',
                   ],
                   expectedRequests
                 );
                 transactionOrderTester.callRun();
-                transactionOrderTester.callGet(key, {consistency: 'eventual'});
-                transactionOrderTester.callGet(key, {consistency: 'eventual'});
+                transactionOrderTester.callGet(key, {});
+                transactionOrderTester.callGet(key, {});
                 transactionOrderTester.transactionWrapper.transaction.save({
                   key,
                   data: '',
