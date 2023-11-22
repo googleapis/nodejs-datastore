@@ -788,6 +788,20 @@ class Transaction extends DatastoreRequest {
     return new Promise(promiseFunction);
   }
 
+  /**
+   * Datastore allows you to run aggregate queries by supplying aggregate fields
+   * which will determine the type of aggregation that is performed.
+   *
+   * The query is run, and the results are returned in the second argument of
+   * the callback provided. If the transaction has not been started yet then the
+   * transaction is started before the runAggregationQuery call is made.
+   *
+   * @param {AggregateQuery} query AggregateQuery object.
+   * @param {RunQueryOptions} options Optional configuration
+   * @param {function} [callback] The callback function. If omitted, a promise is
+   * returned.
+   *
+   **/
   runAggregationQuery(
     query: AggregateQuery,
     options?: RunQueryOptions
