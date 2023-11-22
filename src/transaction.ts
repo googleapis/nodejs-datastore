@@ -208,6 +208,18 @@ class Transaction extends DatastoreRequest {
     );
   }
 
+  /**
+   * If the transaction has not begun yet then this function ensures the transaction
+   * has started before running the resolver provided. The resolver is a function with one
+   * resolve argument. That argument is a function that is used to pass errors and
+   * response data back to the caller of this function.
+   *
+   * @param {CallOptions | undefined} [gaxOptions]
+   * @param {ResolverType<T>} [resolver]
+   * @returns {Promise<PassThroughReturnType<T>>} Returns a promise that will run
+   * this code and resolve to an error or resolve with the data from the resolver.
+   * @private
+   */
   async #withBeginTransaction<T>(
     gaxOptions: CallOptions | undefined,
     resolver: ResolverType<T>
