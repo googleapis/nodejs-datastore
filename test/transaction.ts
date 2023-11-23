@@ -904,7 +904,7 @@ async.each(
 
             constructor(
               transactionWrapper: MockedTransactionWrapper,
-              done: (err?: any) => void,
+              done: mocha.Done,
               expectedOrder: TransactionEvent[],
               expectedRequests?: {call: GapicLayerFunction; request?: any}[]
             ) {
