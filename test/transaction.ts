@@ -574,12 +574,13 @@ async.each(
             it('should send back the error when using a callback', done => {
               const callback: RunQueryCallback = (
                 error: Error | null | undefined,
-                response?: any
+                entities?: Entity[],
+                info?: RunQueryInfo // TODO: send info back and verify it comes through.
               ) => {
                 try {
                   assert(error);
                   assert.strictEqual(error.message, testErrorMessage);
-                  assert.deepStrictEqual(response, undefined);
+                  assert.deepStrictEqual(entities, undefined);
                   done();
                 } catch (e) {
                   done(e);
@@ -610,11 +611,12 @@ async.each(
             it('should send back the response when using a callback', done => {
               const callback: RunQueryCallback = (
                 error: Error | null | undefined,
-                response?: any
+                entities?: Entity[],
+                info?: RunQueryInfo // TODO: send info back and verify it comes through.
               ) => {
                 try {
                   assert.strictEqual(error, null);
-                  assert.deepStrictEqual(response, runQueryUserResp);
+                  assert.deepStrictEqual(entities, runQueryUserResp);
                   done();
                 } catch (e) {
                   done(e);
