@@ -183,7 +183,10 @@ async.each(
           transaction: Transaction;
           dataClient?: ClientStub;
           mockedBeginTransaction: Function;
-          functionsMocked: {name: string; mockedFunction: Function}[];
+          functionsMocked: {
+            name: GapicLayerFunction;
+            mockedFunction: Function;
+          }[];
           // The callBackSignaler lets the user of this object get a signal when the mocked function is called.
           // This is useful for tests that need to know when the mocked function is called.
           callBackSignaler: (
