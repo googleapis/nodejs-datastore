@@ -834,6 +834,7 @@ async.each(
             eventOrder: string[] = [];
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             transactionWrapper: MockedTransactionWrapper;
+            // Stores the mocha done function so that it can be called from this object.
             done: (err?: any) => void;
             checkForCompletion() {
               if (this.eventOrder.length >= this.expectedEventOrder.length) {
