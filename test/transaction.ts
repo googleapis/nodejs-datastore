@@ -819,19 +819,29 @@ async.each(
           // This object is used for testing the order that different events occur.
           // The events can include user code reached, gapic code reached and callbacks called.
           class TransactionOrderTester {
+            // expectedRequests equal the request data in the order they are expected to
+            // be passed into the Gapic layer.
             expectedRequests?: {call: string; request?: any}[];
+            // requests are the actual order of the requests that are passed into the gapic
+            // layer.
             requests: {call: string; request?: any}[] = [];
-            expectedOrder: string[] = [];
-            callbackOrder: string[] = [];
+            // expectedEventOrder is the order the test expects different events to occur
+            // such as a callback being called, Gapic functions being called or user
+            // code being run.
+            expectedEventOrder: string[] = [];
+            // eventOrder is the order events actually occur in the test and will be compared with
+            // expectedEventOrder.
+            eventOrder: string[] = [];
+            // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             transactionWrapper: MockedTransactionWrapper;
             done: (err?: any) => void;
             checkForCompletion() {
-              if (this.callbackOrder.length >= this.expectedOrder.length) {
+              if (this.eventOrder.length >= this.expectedEventOrder.length) {
                 try {
                   // TODO: assertion check here
                   assert.deepStrictEqual(
-                    this.callbackOrder,
-                    this.expectedOrder
+                    this.eventOrder,
+                    this.expectedEventOrder
                   );
                   if (this.expectedRequests) {
                     assert.deepStrictEqual(
@@ -851,7 +861,7 @@ async.each(
               response?: any
             ) => {
               try {
-                this.callbackOrder.push('run callback');
+                this.eventOrder.push('run callback');
                 this.checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -862,7 +872,7 @@ async.each(
               response?: google.datastore.v1.ICommitResponse
             ) => {
               try {
-                this.callbackOrder.push('commit callback');
+                this.eventOrder.push('commit callback');
                 this.checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -874,7 +884,7 @@ async.each(
               response?: Entities
             ) => {
               try {
-                this.callbackOrder.push('get callback');
+                this.eventOrder.push('get callback');
                 this.checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -887,7 +897,7 @@ async.each(
               info?: RunQueryInfo
             ) => {
               try {
-                this.callbackOrder.push('runQuery callback');
+                this.eventOrder.push('runQuery callback');
                 this.checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -899,7 +909,7 @@ async.each(
               b?: any
             ) => {
               try {
-                this.callbackOrder.push('runAggregationQuery callback');
+                this.eventOrder.push('runAggregationQuery callback');
                 this.checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -912,12 +922,12 @@ async.each(
               expectedOrder: string[],
               expectedRequests?: {call: string; request?: any}[]
             ) {
-              this.expectedOrder = expectedOrder;
+              this.expectedEventOrder = expectedOrder;
               this.expectedRequests = expectedRequests;
               const gapicCallHandler = (call: string, request?: any) => {
                 try {
                   this.requests.push({call, request});
-                  this.callbackOrder.push(call);
+                  this.eventOrder.push(call);
                   this.checkForCompletion();
                 } catch (e) {
                   done(e);
@@ -964,7 +974,7 @@ async.each(
             }
 
             pushString(callbackPushed: string) {
-              this.callbackOrder.push(callbackPushed);
+              this.eventOrder.push(callbackPushed);
               this.checkForCompletion();
             }
           }
