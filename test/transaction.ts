@@ -879,7 +879,7 @@ async.each(
             // expectedEventOrder.
             #eventOrder: TransactionEvent[] = [];
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
-            transactionWrapper: MockedTransactionWrapper;
+            #transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
             readonly #done: mocha.Done;
             #checkForCompletion() {
@@ -923,7 +923,7 @@ async.each(
                   done(e);
                 }
               };
-              this.transactionWrapper = transactionWrapper;
+              this.#transactionWrapper = transactionWrapper;
             }
 
             callRun() {
@@ -935,7 +935,7 @@ async.each(
                   this.#done(e);
                 }
               };
-              this.transactionWrapper.transaction.run(callback);
+              this.#transactionWrapper.transaction.run(callback);
             }
 
             callCommit() {
@@ -947,7 +947,7 @@ async.each(
                   this.#done(e);
                 }
               };
-              this.transactionWrapper.transaction.commit(callback);
+              this.#transactionWrapper.transaction.commit(callback);
             }
 
             callGet(keys: entity.Key, options: CreateReadStreamOptions) {
@@ -959,7 +959,7 @@ async.each(
                   this.#done(e);
                 }
               };
-              this.transactionWrapper.transaction.get(keys, options, callback);
+              this.#transactionWrapper.transaction.get(keys, options, callback);
             }
 
             callRunQuery(query: Query, options: RunQueryOptions) {
@@ -971,7 +971,7 @@ async.each(
                   this.#done(e);
                 }
               };
-              this.transactionWrapper.transaction.runQuery(
+              this.#transactionWrapper.transaction.runQuery(
                 query,
                 options,
                 callback
@@ -992,7 +992,7 @@ async.each(
                   this.#done(e);
                 }
               };
-              this.transactionWrapper.transaction.runAggregationQuery(
+              this.#transactionWrapper.transaction.runAggregationQuery(
                 query,
                 options,
                 callback
