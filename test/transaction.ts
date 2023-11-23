@@ -735,12 +735,12 @@ async.each(
             });
             it('should send back the response when using a callback', done => {
               const callback: GetCallback = (
-                error: Error | null | undefined,
-                response?: any
+                err?: Error | null,
+                entity?: Entities
               ) => {
                 try {
-                  const result = response[transactionWrapper.datastore.KEY];
-                  assert.strictEqual(error, null);
+                  const result = entity[transactionWrapper.datastore.KEY];
+                  assert.strictEqual(err, null);
                   assert.deepStrictEqual(result.name, getUserResp);
                   done();
                 } catch (e) {
