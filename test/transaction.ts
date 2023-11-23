@@ -749,6 +749,7 @@ async.each(
           });
         });
         describe('concurrency', async () => {
+          // Items in this enum represent different points in time in the user code.
           enum UserCodeEvent {
             RUN_CALLBACK,
             COMMIT_CALLBACK,
@@ -757,6 +758,8 @@ async.each(
             RUN_AGGREGATION_QUERY_CALLBACK,
             FUNCTIONS_CALLED,
           }
+          // A transaction event represents a point in time particular code is reached
+          // when running code that uses a transaction.
           type TransactionEvent = GapicLayerFunction | UserCodeEvent;
 
           // This object is a sample response from 'commit' in the Gapic layer.
@@ -889,68 +892,6 @@ async.each(
               }
             }
 
-            runCallback: RunCallback = (
-              error: Error | null | undefined,
-              response?: any
-            ) => {
-              try {
-                this.eventOrder.push(UserCodeEvent.RUN_CALLBACK);
-                this.#checkForCompletion();
-              } catch (e) {
-                this.done(e);
-              }
-            };
-            commitCallback: CommitCallback = (
-              error: Error | null | undefined,
-              response?: google.datastore.v1.ICommitResponse
-            ) => {
-              try {
-                this.eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
-                this.#checkForCompletion();
-              } catch (e) {
-                this.done(e);
-              }
-            };
-
-            getCallback: GetCallback = (
-              error: Error | null | undefined,
-              response?: Entities
-            ) => {
-              try {
-                this.eventOrder.push(UserCodeEvent.GET_CALLBACK);
-                this.#checkForCompletion();
-              } catch (e) {
-                this.done(e);
-              }
-            };
-
-            runQueryCallback: RunQueryCallback = (
-              err: Error | null | undefined,
-              entities?: Entity[],
-              info?: RunQueryInfo
-            ) => {
-              try {
-                this.eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
-                this.#checkForCompletion();
-              } catch (e) {
-                this.done(e);
-              }
-            };
-
-            runAggregationQueryCallback: RequestCallback = (
-              a?: Error | null,
-              b?: any
-            ) => {
-              try {
-                this.eventOrder.push(
-                  UserCodeEvent.RUN_AGGREGATION_QUERY_CALLBACK
-                );
-                this.#checkForCompletion();
-              } catch (e) {
-                this.done(e);
-              }
-            };
-
             constructor(
               transactionWrapper: MockedTransactionWrapper,
               done: (err?: any) => void,
@@ -976,26 +917,71 @@ async.each(
             }
 
             callRun() {
-              this.transactionWrapper.transaction.run(this.runCallback);
+              const runCallback = (
+                error: Error | null | undefined,
+                response?: any
+              ) => {
+                try {
+                  this.eventOrder.push(UserCodeEvent.RUN_CALLBACK);
+                  this.#checkForCompletion();
+                } catch (e) {
+                  this.done(e);
+                }
+              };
+              this.transactionWrapper.transaction.run(runCallback);
             }
 
             callCommit() {
-              this.transactionWrapper.transaction.commit(this.commitCallback);
+              const commitCallback = (
+                error: Error | null | undefined,
+                response?: google.datastore.v1.ICommitResponse
+              ) => {
+                try {
+                  this.eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
+                  this.#checkForCompletion();
+                } catch (e) {
+                  this.done(e);
+                }
+              };
+              this.transactionWrapper.transaction.commit(commitCallback);
             }
 
             callGet(keys: entity.Key, options: CreateReadStreamOptions) {
+              const getCallback = (
+                error: Error | null | undefined,
+                response?: Entities
+              ) => {
+                try {
+                  this.eventOrder.push(UserCodeEvent.GET_CALLBACK);
+                  this.#checkForCompletion();
+                } catch (e) {
+                  this.done(e);
+                }
+              };
               this.transactionWrapper.transaction.get(
                 keys,
                 options,
-                this.getCallback
+                getCallback
               );
             }
 
             callRunQuery(query: Query, options: RunQueryOptions) {
+              const runQueryCallback = (
+                err: Error | null | undefined,
+                entities?: Entity[],
+                info?: RunQueryInfo
+              ) => {
+                try {
+                  this.eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
+                  this.#checkForCompletion();
+                } catch (e) {
+                  this.done(e);
+                }
+              };
               this.transactionWrapper.transaction.runQuery(
                 query,
                 options,
-                this.runQueryCallback
+                runQueryCallback
               );
             }
 
@@ -1003,10 +989,23 @@ async.each(
               query: AggregateQuery,
               options: RunQueryOptions
             ) {
+              const runAggregationQueryCallback = (
+                a?: Error | null,
+                b?: any
+              ) => {
+                try {
+                  this.eventOrder.push(
+                    UserCodeEvent.RUN_AGGREGATION_QUERY_CALLBACK
+                  );
+                  this.#checkForCompletion();
+                } catch (e) {
+                  this.done(e);
+                }
+              };
               this.transactionWrapper.transaction.runAggregationQuery(
                 query,
                 options,
-                this.runAggregationQueryCallback
+                runAggregationQueryCallback
               );
             }
 
