@@ -860,7 +860,7 @@ async.each(
             expectedRequests?: {call: GapicLayerFunction; request?: any}[];
             // requests are the actual order of the requests that are passed into the gapic
             // layer.
-            requests: {call: GapicLayerFunction; request?: any}[] = [];
+            #requests: {call: GapicLayerFunction; request?: any}[] = [];
             // expectedEventOrder is the order the test expects different events to occur
             // such as a callback being called, Gapic functions being called or user
             // code being run.
@@ -881,7 +881,7 @@ async.each(
                   );
                   if (this.expectedRequests) {
                     assert.deepStrictEqual(
-                      this.requests,
+                      this.#requests,
                       this.expectedRequests
                     );
                   }
@@ -906,7 +906,7 @@ async.each(
                 request?: any
               ) => {
                 try {
-                  this.requests.push({call, request});
+                  this.#requests.push({call, request});
                   this.eventOrder.push(call);
                   this.#checkForCompletion();
                 } catch (e) {
