@@ -857,7 +857,7 @@ async.each(
           class TransactionOrderTester {
             // expectedRequests equal the request data in the order they are expected to
             // be passed into the Gapic layer.
-            expectedRequests?: {call: GapicLayerFunction; request?: any}[];
+            #expectedRequests?: {call: GapicLayerFunction; request?: any}[];
             // requests are the actual order of the requests that are passed into the gapic
             // layer.
             #requests: {call: GapicLayerFunction; request?: any}[] = [];
@@ -879,10 +879,10 @@ async.each(
                     this.eventOrder,
                     this.expectedEventOrder
                   );
-                  if (this.expectedRequests) {
+                  if (this.#expectedRequests) {
                     assert.deepStrictEqual(
                       this.#requests,
-                      this.expectedRequests
+                      this.#expectedRequests
                     );
                   }
                   this.done();
@@ -899,7 +899,7 @@ async.each(
               expectedRequests?: {call: GapicLayerFunction; request?: any}[]
             ) {
               this.expectedEventOrder = expectedOrder;
-              this.expectedRequests = expectedRequests;
+              this.#expectedRequests = expectedRequests;
               this.done = done;
               transactionWrapper.callBackSignaler = (
                 call: GapicLayerFunction,
