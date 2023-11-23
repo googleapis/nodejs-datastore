@@ -885,6 +885,11 @@ async.each(
             #transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
             readonly #done: mocha.Done;
+
+            // Each time an event occurs this function is called to check to see if all
+            // events happened that were supposed to happen. If all events in the test
+            // happened then this function passes tests if the events happened in the
+            // right order
             #checkForCompletion() {
               if (this.#eventOrder.length >= this.#expectedEventOrder.length) {
                 try {
@@ -932,6 +937,8 @@ async.each(
               this.#transactionWrapper = transactionWrapper;
             }
 
+            // Calls the run function on the transaction object and records
+            // that the run callback is called when it is called.
             callRun() {
               const callback = () => {
                 try {
@@ -944,6 +951,8 @@ async.each(
               this.#transactionWrapper.transaction.run(callback);
             }
 
+            // Calls the commit function on the transaction object and records
+            // that the commit callback is called when it is called.
             callCommit() {
               const callback = () => {
                 try {
@@ -956,6 +965,8 @@ async.each(
               this.#transactionWrapper.transaction.commit(callback);
             }
 
+            // Calls the get function on the transaction object and records
+            // that the get callback is called when it is called.
             callGet(keys: entity.Key, options: CreateReadStreamOptions) {
               const callback = () => {
                 try {
@@ -968,6 +979,8 @@ async.each(
               this.#transactionWrapper.transaction.get(keys, options, callback);
             }
 
+            // Calls the runQuery function on the transaction object and records
+            // that the runQuery callback is called when it is called.
             callRunQuery(query: Query, options: RunQueryOptions) {
               const callback = () => {
                 try {
@@ -984,6 +997,8 @@ async.each(
               );
             }
 
+            // Calls the runAggregationQuery function on the transaction object and records
+            // that the runQuery callback is called when it is called.
             callRunAggregationQuery(
               query: AggregateQuery,
               options: RunQueryOptions
@@ -1005,6 +1020,9 @@ async.each(
               );
             }
 
+            // Records that a particular line of user code is reached so that
+            // the time that code is reached can be compared to the time
+            // other events happen.
             pushFunctionsCalled() {
               this.#eventOrder.push(UserCodeEvent.FUNCTIONS_CALLED);
               this.#checkForCompletion();
