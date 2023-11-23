@@ -784,7 +784,7 @@ async.each(
             ],
           };
           // This object is a sample response from 'lookup' in the Gapic layer.
-          const testGetResp = {
+          const testLookupResp = {
             found: [
               {
                 entity: {
@@ -1078,7 +1078,7 @@ async.each(
               );
               transactionWrapper.mockGapicFunction(
                 GapicFunctionName.LOOKUP,
-                testGetResp,
+                testLookupResp,
                 null
               );
               transactionWrapper.mockGapicFunction(
