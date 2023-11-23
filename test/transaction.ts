@@ -932,7 +932,7 @@ async.each(
             }
 
             callCommit() {
-              const commitCallback = (
+              const callback = (
                 error: Error | null | undefined,
                 response?: google.datastore.v1.ICommitResponse
               ) => {
@@ -943,11 +943,11 @@ async.each(
                   this.done(e);
                 }
               };
-              this.transactionWrapper.transaction.commit(commitCallback);
+              this.transactionWrapper.transaction.commit(callback);
             }
 
             callGet(keys: entity.Key, options: CreateReadStreamOptions) {
-              const getCallback = (
+              const callback = (
                 error: Error | null | undefined,
                 response?: Entities
               ) => {
@@ -958,15 +958,11 @@ async.each(
                   this.done(e);
                 }
               };
-              this.transactionWrapper.transaction.get(
-                keys,
-                options,
-                getCallback
-              );
+              this.transactionWrapper.transaction.get(keys, options, callback);
             }
 
             callRunQuery(query: Query, options: RunQueryOptions) {
-              const runQueryCallback = (
+              const callback = (
                 err: Error | null | undefined,
                 entities?: Entity[],
                 info?: RunQueryInfo
@@ -981,7 +977,7 @@ async.each(
               this.transactionWrapper.transaction.runQuery(
                 query,
                 options,
-                runQueryCallback
+                callback
               );
             }
 
@@ -989,10 +985,7 @@ async.each(
               query: AggregateQuery,
               options: RunQueryOptions
             ) {
-              const runAggregationQueryCallback = (
-                a?: Error | null,
-                b?: any
-              ) => {
+              const callback = (a?: Error | null, b?: any) => {
                 try {
                   this.eventOrder.push(
                     UserCodeEvent.RUN_AGGREGATION_QUERY_CALLBACK
@@ -1005,7 +998,7 @@ async.each(
               this.transactionWrapper.transaction.runAggregationQuery(
                 query,
                 options,
-                runAggregationQueryCallback
+                callback
               );
             }
 
