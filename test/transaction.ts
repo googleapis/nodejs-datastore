@@ -860,10 +860,13 @@ async.each(
           class TransactionOrderTester {
             // expectedRequests equal the request data in the order they are expected to
             // be passed into the Gapic layer.
-            #expectedRequests?: {call: GapicLayerFunction; request?: any}[];
+            #expectedRequests?: {
+              call: GapicLayerFunction;
+              request?: requestType;
+            }[];
             // requests are the actual order of the requests that are passed into the gapic
             // layer.
-            #requests: {call: GapicLayerFunction; request?: any}[] = [];
+            #requests: {call: GapicLayerFunction; request?: requestType}[] = [];
             // expectedEventOrder is the order the test expects different events to occur
             // such as a callback being called, Gapic functions being called or user
             // code being run.
@@ -874,7 +877,7 @@ async.each(
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
-            done: (err?: any) => void;
+            #done: (err?: any) => void;
             #checkForCompletion() {
               if (this.#eventOrder.length >= this.#expectedEventOrder.length) {
                 try {
@@ -888,9 +891,9 @@ async.each(
                       this.#expectedRequests
                     );
                   }
-                  this.done();
+                  this.#done();
                 } catch (e) {
-                  this.done(e);
+                  this.#done(e);
                 }
               }
             }
@@ -903,7 +906,7 @@ async.each(
             ) {
               this.#expectedEventOrder = expectedOrder;
               this.#expectedRequests = expectedRequests;
-              this.done = done;
+              this.#done = done;
               transactionWrapper.callBackSignaler = (
                 call: GapicLayerFunction,
                 request?: any
@@ -928,7 +931,7 @@ async.each(
                   this.#eventOrder.push(UserCodeEvent.RUN_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
-                  this.done(e);
+                  this.#done(e);
                 }
               };
               this.transactionWrapper.transaction.run(runCallback);
@@ -943,7 +946,7 @@ async.each(
                   this.#eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
-                  this.done(e);
+                  this.#done(e);
                 }
               };
               this.transactionWrapper.transaction.commit(callback);
@@ -958,7 +961,7 @@ async.each(
                   this.#eventOrder.push(UserCodeEvent.GET_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
-                  this.done(e);
+                  this.#done(e);
                 }
               };
               this.transactionWrapper.transaction.get(keys, options, callback);
@@ -974,7 +977,7 @@ async.each(
                   this.#eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
-                  this.done(e);
+                  this.#done(e);
                 }
               };
               this.transactionWrapper.transaction.runQuery(
@@ -995,7 +998,7 @@ async.each(
                   );
                   this.#checkForCompletion();
                 } catch (e) {
-                  this.done(e);
+                  this.#done(e);
                 }
               };
               this.transactionWrapper.transaction.runAggregationQuery(
