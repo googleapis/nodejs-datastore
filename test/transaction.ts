@@ -836,7 +836,7 @@ async.each(
             transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
             done: (err?: any) => void;
-            checkForCompletion() {
+            #checkForCompletion() {
               if (this.eventOrder.length >= this.expectedEventOrder.length) {
                 try {
                   // TODO: assertion check here
@@ -863,7 +863,7 @@ async.each(
             ) => {
               try {
                 this.eventOrder.push('run callback');
-                this.checkForCompletion();
+                this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
               }
@@ -874,7 +874,7 @@ async.each(
             ) => {
               try {
                 this.eventOrder.push('commit callback');
-                this.checkForCompletion();
+                this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
               }
@@ -886,7 +886,7 @@ async.each(
             ) => {
               try {
                 this.eventOrder.push('get callback');
-                this.checkForCompletion();
+                this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
               }
@@ -899,7 +899,7 @@ async.each(
             ) => {
               try {
                 this.eventOrder.push('runQuery callback');
-                this.checkForCompletion();
+                this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
               }
@@ -911,7 +911,7 @@ async.each(
             ) => {
               try {
                 this.eventOrder.push('runAggregationQuery callback');
-                this.checkForCompletion();
+                this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
               }
@@ -929,7 +929,7 @@ async.each(
                 try {
                   this.requests.push({call, request});
                   this.eventOrder.push(call);
-                  this.checkForCompletion();
+                  this.#checkForCompletion();
                 } catch (e) {
                   done(e);
                 }
@@ -976,7 +976,7 @@ async.each(
 
             pushString(callbackPushed: string) {
               this.eventOrder.push(callbackPushed);
-              this.checkForCompletion();
+              this.#checkForCompletion();
             }
           }
 
