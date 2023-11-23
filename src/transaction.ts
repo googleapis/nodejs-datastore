@@ -759,7 +759,9 @@ class Transaction extends DatastoreRequest {
    *
    *
    **/
-  async #runAsync(options: RunOptions): Promise<UserCallbackData<any>> {
+  async #runAsync(
+    options: RunOptions
+  ): Promise<UserCallbackData<google.datastore.v1.IBeginTransactionResponse>> {
     const reqOpts: RequestOptions = {
       transactionOptions: {},
     };
@@ -777,8 +779,10 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const promiseFunction: Resolver<any> = (
-      resolve: PromiseResolveFunction<any>
+    const promiseFunction: Resolver<
+      google.datastore.v1.IBeginTransactionResponse
+    > = (
+      resolve: PromiseResolveFunction<google.datastore.v1.IBeginTransactionResponse>
     ) => {
       this.request_(
         {
