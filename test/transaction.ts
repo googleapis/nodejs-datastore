@@ -174,12 +174,6 @@ async.each(
           RUN_AGGREGATION_QUERY = 'runAggregationQuery',
           COMMIT = 'commit',
         }
-        const functionNameToEvent: Map<string, GapicLayerFunction> = new Map([
-          ['lookup', GapicLayerFunction.LOOKUP],
-          ['runQuery', GapicLayerFunction.RUN_QUERY],
-          ['runAggregationQuery', GapicLayerFunction.RUN_AGGREGATION_QUERY],
-          ['commit', GapicLayerFunction.COMMIT],
-        ]);
 
         // MockedTransactionWrapper is a helper class for mocking out various
         // Gapic functions and ensuring that responses and errors actually make it
@@ -284,14 +278,7 @@ async.each(
                   {} | null | undefined
                 >
               ) => {
-                const event = functionNameToEvent.get(functionName);
-                if (event) {
-                  this.callBackSignaler(event, request);
-                } else {
-                  throw new Error(
-                    'The gapic function name should be defined in the map'
-                  );
-                }
+                this.callBackSignaler(functionName, request);
                 callback(error, response);
               };
             }
