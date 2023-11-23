@@ -759,7 +759,7 @@ async.each(
           });
         });
         describe('concurrency', async () => {
-          enum FixedTransactionEvent {
+          enum UserCodeEvent {
             RUN_CALLBACK,
             COMMIT_CALLBACK,
             GET_CALLBACK,
@@ -767,7 +767,7 @@ async.each(
             RUN_AGGREGATION_QUERY_CALLBACK,
             FUNCTIONS_CALLED,
           }
-          type TransactionEvent = GapicLayerFunction | FixedTransactionEvent;
+          type TransactionEvent = GapicLayerFunction | UserCodeEvent;
 
           const testCommitResp = {
             mutationResults: [
@@ -901,7 +901,7 @@ async.each(
               response?: any
             ) => {
               try {
-                this.eventOrder.push(FixedTransactionEvent.RUN_CALLBACK);
+                this.eventOrder.push(UserCodeEvent.RUN_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -912,7 +912,7 @@ async.each(
               response?: google.datastore.v1.ICommitResponse
             ) => {
               try {
-                this.eventOrder.push(FixedTransactionEvent.COMMIT_CALLBACK);
+                this.eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -924,7 +924,7 @@ async.each(
               response?: Entities
             ) => {
               try {
-                this.eventOrder.push(FixedTransactionEvent.GET_CALLBACK);
+                this.eventOrder.push(UserCodeEvent.GET_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -937,7 +937,7 @@ async.each(
               info?: RunQueryInfo
             ) => {
               try {
-                this.eventOrder.push(FixedTransactionEvent.RUN_QUERY_CALLBACK);
+                this.eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -950,7 +950,7 @@ async.each(
             ) => {
               try {
                 this.eventOrder.push(
-                  FixedTransactionEvent.RUN_AGGREGATION_QUERY_CALLBACK
+                  UserCodeEvent.RUN_AGGREGATION_QUERY_CALLBACK
                 );
                 this.#checkForCompletion();
               } catch (e) {
@@ -1020,7 +1020,7 @@ async.each(
             }
 
             pushFunctionsCalled() {
-              this.eventOrder.push(FixedTransactionEvent.FUNCTIONS_CALLED);
+              this.eventOrder.push(UserCodeEvent.FUNCTIONS_CALLED);
               this.#checkForCompletion();
             }
           }
@@ -1040,11 +1040,11 @@ async.each(
                 transactionWrapper,
                 done,
                 [
-                  FixedTransactionEvent.FUNCTIONS_CALLED,
+                  UserCodeEvent.FUNCTIONS_CALLED,
                   GapicLayerFunction.BEGIN_TRANSACTION,
-                  FixedTransactionEvent.RUN_CALLBACK,
+                  UserCodeEvent.RUN_CALLBACK,
                   GapicLayerFunction.COMMIT,
-                  FixedTransactionEvent.COMMIT_CALLBACK,
+                  UserCodeEvent.COMMIT_CALLBACK,
                 ]
               );
               transactionOrderTester.callRun();
@@ -1056,10 +1056,10 @@ async.each(
                 transactionWrapper,
                 done,
                 [
-                  FixedTransactionEvent.FUNCTIONS_CALLED,
+                  UserCodeEvent.FUNCTIONS_CALLED,
                   GapicLayerFunction.BEGIN_TRANSACTION,
                   GapicLayerFunction.COMMIT,
-                  FixedTransactionEvent.COMMIT_CALLBACK,
+                  UserCodeEvent.COMMIT_CALLBACK,
                 ]
               );
               transactionOrderTester.callCommit();
@@ -1070,10 +1070,10 @@ async.each(
                 transactionWrapper,
                 done,
                 [
-                  FixedTransactionEvent.FUNCTIONS_CALLED,
+                  UserCodeEvent.FUNCTIONS_CALLED,
                   GapicLayerFunction.BEGIN_TRANSACTION,
-                  FixedTransactionEvent.RUN_CALLBACK,
-                  FixedTransactionEvent.RUN_CALLBACK,
+                  UserCodeEvent.RUN_CALLBACK,
+                  UserCodeEvent.RUN_CALLBACK,
                 ]
               );
               transactionOrderTester.callRun();
@@ -1170,7 +1170,7 @@ async.each(
                   [
                     GapicLayerFunction.BEGIN_TRANSACTION,
                     GapicLayerFunction.COMMIT,
-                    FixedTransactionEvent.COMMIT_CALLBACK,
+                    UserCodeEvent.COMMIT_CALLBACK,
                   ],
                   expectedRequests
                 );
@@ -1186,9 +1186,9 @@ async.each(
                   done,
                   [
                     GapicLayerFunction.BEGIN_TRANSACTION,
-                    FixedTransactionEvent.RUN_CALLBACK,
+                    UserCodeEvent.RUN_CALLBACK,
                     GapicLayerFunction.COMMIT,
-                    FixedTransactionEvent.COMMIT_CALLBACK,
+                    UserCodeEvent.COMMIT_CALLBACK,
                   ],
                   expectedRequests
                 );
@@ -1226,11 +1226,11 @@ async.each(
                   [
                     GapicLayerFunction.BEGIN_TRANSACTION,
                     GapicLayerFunction.COMMIT,
-                    FixedTransactionEvent.COMMIT_CALLBACK,
+                    UserCodeEvent.COMMIT_CALLBACK,
                     GapicLayerFunction.LOOKUP,
                     GapicLayerFunction.LOOKUP,
-                    FixedTransactionEvent.GET_CALLBACK,
-                    FixedTransactionEvent.GET_CALLBACK,
+                    UserCodeEvent.GET_CALLBACK,
+                    UserCodeEvent.GET_CALLBACK,
                   ],
                   expectedRequests
                 );
@@ -1248,13 +1248,13 @@ async.each(
                   done,
                   [
                     GapicLayerFunction.BEGIN_TRANSACTION,
-                    FixedTransactionEvent.RUN_CALLBACK,
+                    UserCodeEvent.RUN_CALLBACK,
                     GapicLayerFunction.COMMIT,
-                    FixedTransactionEvent.COMMIT_CALLBACK,
+                    UserCodeEvent.COMMIT_CALLBACK,
                     GapicLayerFunction.LOOKUP,
                     GapicLayerFunction.LOOKUP,
-                    FixedTransactionEvent.GET_CALLBACK,
-                    FixedTransactionEvent.GET_CALLBACK,
+                    UserCodeEvent.GET_CALLBACK,
+                    UserCodeEvent.GET_CALLBACK,
                   ],
                   expectedRequests
                 );
