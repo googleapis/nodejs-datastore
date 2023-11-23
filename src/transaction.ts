@@ -779,9 +779,7 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const promiseFunction: Resolver<
-      google.datastore.v1.IBeginTransactionResponse
-    > = (
+    const resolver: Resolver<google.datastore.v1.IBeginTransactionResponse> = (
       resolve: PromiseResolveFunction<google.datastore.v1.IBeginTransactionResponse>
     ) => {
       this.request_(
@@ -800,7 +798,7 @@ class Transaction extends DatastoreRequest {
         }
       );
     };
-    return new Promise(promiseFunction);
+    return new Promise(resolver);
   }
 
   /**
