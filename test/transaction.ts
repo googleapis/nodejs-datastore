@@ -955,8 +955,8 @@ async.each(
             ) {
               this.expectedEventOrder = expectedOrder;
               this.expectedRequests = expectedRequests;
-              const gapicCallHandler = (
-                // TODO: inline this in callBackSignaller
+              this.done = done;
+              transactionWrapper.callBackSignaler = (
                 call: GapicLayerFunction,
                 request?: any
               ) => {
@@ -968,8 +968,6 @@ async.each(
                   done(e);
                 }
               };
-              this.done = done;
-              transactionWrapper.callBackSignaler = gapicCallHandler;
               this.transactionWrapper = transactionWrapper;
             }
 
