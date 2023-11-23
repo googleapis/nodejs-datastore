@@ -868,7 +868,6 @@ async.each(
             #checkForCompletion() {
               if (this.eventOrder.length >= this.expectedEventOrder.length) {
                 try {
-                  // TODO: assertion check here
                   assert.deepStrictEqual(
                     this.eventOrder,
                     this.expectedEventOrder
