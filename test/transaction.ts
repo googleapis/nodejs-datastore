@@ -544,6 +544,10 @@ async.each(
             },
           };
           const runQueryUserResp: Entity[] = [];
+          const runQueryUserInfo: RunQueryInfo = {
+            moreResults: undefined,
+            endCursor: '[object Object]',
+          };
           const testErrorMessage = 'test-run-Query-error';
           let q: Query;
 
@@ -580,12 +584,13 @@ async.each(
               const callback: RunQueryCallback = (
                 error: Error | null | undefined,
                 entities?: Entity[],
-                info?: RunQueryInfo // TODO: send info back and verify it comes through.
+                info?: RunQueryInfo
               ) => {
                 try {
                   assert(error);
                   assert.strictEqual(error.message, testErrorMessage);
                   assert.deepStrictEqual(entities, undefined);
+                  assert.deepStrictEqual(info, undefined);
                   done();
                 } catch (e) {
                   done(e);
@@ -617,11 +622,12 @@ async.each(
               const callback: RunQueryCallback = (
                 error: Error | null | undefined,
                 entities?: Entity[],
-                info?: RunQueryInfo // TODO: send info back and verify it comes through.
+                info?: RunQueryInfo
               ) => {
                 try {
                   assert.strictEqual(error, null);
                   assert.deepStrictEqual(entities, runQueryUserResp);
+                  assert.deepStrictEqual(info, runQueryUserInfo);
                   done();
                 } catch (e) {
                   done(e);
