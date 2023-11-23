@@ -612,9 +612,9 @@ async.each(
             it('should send back the response when awaiting a promise', async () => {
               await transaction.run();
               const allResults = await transaction.runQuery(q);
-              const [runAggregateQueryResults] = allResults;
+              const [runQueryResults] = allResults;
               assert.deepStrictEqual(
-                runAggregateQueryResults,
+                runQueryResults,
                 runQueryUserResp
               );
             });
