@@ -867,16 +867,16 @@ async.each(
             #expectedEventOrder: TransactionEvent[] = [];
             // eventOrder is the order events actually occur in the test and will be compared with
             // expectedEventOrder.
-            eventOrder: TransactionEvent[] = [];
+            #eventOrder: TransactionEvent[] = [];
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
             done: (err?: any) => void;
             #checkForCompletion() {
-              if (this.eventOrder.length >= this.#expectedEventOrder.length) {
+              if (this.#eventOrder.length >= this.#expectedEventOrder.length) {
                 try {
                   assert.deepStrictEqual(
-                    this.eventOrder,
+                    this.#eventOrder,
                     this.#expectedEventOrder
                   );
                   if (this.#expectedRequests) {
@@ -907,7 +907,7 @@ async.each(
               ) => {
                 try {
                   this.#requests.push({call, request});
-                  this.eventOrder.push(call);
+                  this.#eventOrder.push(call);
                   this.#checkForCompletion();
                 } catch (e) {
                   done(e);
@@ -922,7 +922,7 @@ async.each(
                 response?: any
               ) => {
                 try {
-                  this.eventOrder.push(UserCodeEvent.RUN_CALLBACK);
+                  this.#eventOrder.push(UserCodeEvent.RUN_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
                   this.done(e);
@@ -937,7 +937,7 @@ async.each(
                 response?: google.datastore.v1.ICommitResponse
               ) => {
                 try {
-                  this.eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
+                  this.#eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
                   this.done(e);
@@ -952,7 +952,7 @@ async.each(
                 response?: Entities
               ) => {
                 try {
-                  this.eventOrder.push(UserCodeEvent.GET_CALLBACK);
+                  this.#eventOrder.push(UserCodeEvent.GET_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
                   this.done(e);
@@ -968,7 +968,7 @@ async.each(
                 info?: RunQueryInfo
               ) => {
                 try {
-                  this.eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
+                  this.#eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
                   this.#checkForCompletion();
                 } catch (e) {
                   this.done(e);
@@ -987,7 +987,7 @@ async.each(
             ) {
               const callback = (a?: Error | null, b?: any) => {
                 try {
-                  this.eventOrder.push(
+                  this.#eventOrder.push(
                     UserCodeEvent.RUN_AGGREGATION_QUERY_CALLBACK
                   );
                   this.#checkForCompletion();
@@ -1003,7 +1003,7 @@ async.each(
             }
 
             pushFunctionsCalled() {
-              this.eventOrder.push(UserCodeEvent.FUNCTIONS_CALLED);
+              this.#eventOrder.push(UserCodeEvent.FUNCTIONS_CALLED);
               this.#checkForCompletion();
             }
           }
