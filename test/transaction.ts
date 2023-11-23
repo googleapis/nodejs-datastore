@@ -611,12 +611,9 @@ async.each(
             });
             it('should send back the response when awaiting a promise', async () => {
               await transaction.run();
-              const allResults = await transaction.runQuery(q);
-              const [runQueryResults] = allResults;
-              assert.deepStrictEqual(
-                runQueryResults,
-                runQueryUserResp
-              );
+              const [runQueryResults, info] = await transaction.runQuery(q);
+              assert.deepStrictEqual(runQueryResults, runQueryUserResp);
+              assert.deepStrictEqual(info, runQueryUserInfo);
             });
             it('should send back the response when using a callback', done => {
               const callback: RunQueryCallback = (
