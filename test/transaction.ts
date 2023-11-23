@@ -759,6 +759,7 @@ async.each(
           }
           type TransactionEvent = GapicLayerFunction | UserCodeEvent;
 
+          // This object is a sample response from 'commit' in the Gapic layer.
           const testCommitResp = {
             mutationResults: [
               {
@@ -772,6 +773,7 @@ async.each(
               },
             ],
           };
+          // This object is a sample response from 'lookup' in the Gapic layer.
           const testGetResp = {
             found: [
               {
@@ -803,6 +805,7 @@ async.each(
               nanos: 201398000,
             },
           };
+          // This object is a sample response from 'runQuery' in the Gapic layer.
           const testRunQueryResp = {
             batch: {
               entityResults: [],
@@ -812,6 +815,7 @@ async.each(
               },
             },
           };
+          // This object is a sample response from 'runAggregationQuery' in the Gapic layer.
           const testRunAggregationQueryResp = {
             batch: {
               aggregationResults: [
