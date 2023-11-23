@@ -468,7 +468,7 @@ async.each(
             it('should send back the error when using a callback', done => {
               const runAggregateQueryCallback: RequestCallback = (
                 error: Error | null | undefined,
-                response?: any
+                response?: unknown
               ) => {
                 try {
                   assert(error);
@@ -508,7 +508,7 @@ async.each(
             it('should send back the response when using a callback', done => {
               const runAggregateQueryCallback: CommitCallback = (
                 error: Error | null | undefined,
-                response?: any
+                response?: unknown
               ) => {
                 try {
                   assert.strictEqual(error, null);
