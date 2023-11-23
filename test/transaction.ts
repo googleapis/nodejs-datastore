@@ -916,7 +916,7 @@ async.each(
               this.#done = done;
               transactionWrapper.callBackSignaler = (
                 call: GapicLayerFunction,
-                request?: any
+                request?: RequestType
               ) => {
                 try {
                   this.#requests.push({call, request});
