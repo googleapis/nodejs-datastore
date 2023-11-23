@@ -173,7 +173,7 @@ async.each(
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
-        enum GapicLayerFunction {
+        enum GapicFunctionName {
           BEGIN_TRANSACTION = 'beginTransaction',
           LOOKUP = 'lookup',
           RUN_QUERY = 'runQuery',
@@ -190,13 +190,13 @@ async.each(
           dataClient?: ClientStub;
           mockedBeginTransaction: Function;
           functionsMocked: {
-            name: GapicLayerFunction;
+            name: GapicFunctionName;
             mockedFunction: Function;
           }[];
           // The callBackSignaler lets the user of this object get a signal when the mocked function is called.
           // This is useful for tests that need to know when the mocked function is called.
           callBackSignaler: (
-            callbackReached: GapicLayerFunction,
+            callbackReached: GapicFunctionName,
             request?: RequestType
           ) => void = () => {};
 
@@ -243,7 +243,7 @@ async.each(
                 // Calls a user provided function that will receive this string
                 // Usually used to track when this code was reached relative to other code
                 this.callBackSignaler(
-                  GapicLayerFunction.BEGIN_TRANSACTION,
+                  GapicFunctionName.BEGIN_TRANSACTION,
                   request
                 );
                 callback(null, testRunResp);
@@ -257,7 +257,7 @@ async.each(
           // This mocks out a gapic function to just call the callback received in the Gapic function.
           // The callback will send back the error and response arguments provided as parameters.
           mockGapicFunction<ResponseType>(
-            functionName: GapicLayerFunction,
+            functionName: GapicFunctionName,
             response: ResponseType,
             error: Error | null
           ) {
@@ -343,7 +343,7 @@ async.each(
           describe('should pass error back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.COMMIT,
+                GapicFunctionName.COMMIT,
                 testCommitResp,
                 new Error(testErrorMessage)
               );
@@ -380,7 +380,7 @@ async.each(
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.COMMIT,
+                GapicFunctionName.COMMIT,
                 testCommitResp,
                 null
               );
@@ -455,7 +455,7 @@ async.each(
           describe('should pass error back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.RUN_AGGREGATION_QUERY,
+                GapicFunctionName.RUN_AGGREGATION_QUERY,
                 runAggregationQueryResp,
                 new Error(testErrorMessage)
               );
@@ -495,7 +495,7 @@ async.each(
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.RUN_AGGREGATION_QUERY,
+                GapicFunctionName.RUN_AGGREGATION_QUERY,
                 runAggregationQueryResp,
                 null
               );
@@ -565,7 +565,7 @@ async.each(
           describe('should pass error back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.RUN_QUERY,
+                GapicFunctionName.RUN_QUERY,
                 runQueryResp,
                 new Error(testErrorMessage)
               );
@@ -604,7 +604,7 @@ async.each(
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.RUN_QUERY,
+                GapicFunctionName.RUN_QUERY,
                 runQueryResp,
                 null
               );
@@ -687,7 +687,7 @@ async.each(
           describe('should pass error back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.LOOKUP,
+                GapicFunctionName.LOOKUP,
                 getResp,
                 new Error(testErrorMessage)
               );
@@ -724,7 +724,7 @@ async.each(
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.LOOKUP,
+                GapicFunctionName.LOOKUP,
                 getResp,
                 null
               );
@@ -767,7 +767,7 @@ async.each(
           }
           // A transaction event represents a point in time particular code is reached
           // when running code that uses a transaction.
-          type TransactionEvent = GapicLayerFunction | UserCodeEvent;
+          type TransactionEvent = GapicFunctionName | UserCodeEvent;
 
           // This object is a sample response from 'commit' in the Gapic layer.
           const testCommitResp = {
@@ -865,13 +865,13 @@ async.each(
             // expectedRequests equal the request data in the order they are expected to
             // be passed into the Gapic layer.
             readonly #expectedRequests?: {
-              call: GapicLayerFunction;
+              call: GapicFunctionName;
               request?: RequestType;
             }[];
             // requests are the actual order of the requests that are passed into the gapic
             // layer.
             readonly #requests: {
-              call: GapicLayerFunction;
+              call: GapicFunctionName;
               request?: RequestType;
             }[] = [];
             // expectedEventOrder is the order the test expects different events to occur
@@ -910,7 +910,7 @@ async.each(
               done: mocha.Done,
               expectedOrder: TransactionEvent[],
               expectedRequests?: {
-                call: GapicLayerFunction;
+                call: GapicFunctionName;
                 request?: RequestType;
               }[]
             ) {
@@ -918,7 +918,7 @@ async.each(
               this.#expectedRequests = expectedRequests;
               this.#done = done;
               transactionWrapper.callBackSignaler = (
-                call: GapicLayerFunction,
+                call: GapicFunctionName,
                 request?: RequestType
               ) => {
                 try {
@@ -1014,7 +1014,7 @@ async.each(
           describe('should pass response back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.COMMIT,
+                GapicFunctionName.COMMIT,
                 testCommitResp,
                 null
               );
@@ -1027,9 +1027,9 @@ async.each(
                 done,
                 [
                   UserCodeEvent.FUNCTIONS_CALLED,
-                  GapicLayerFunction.BEGIN_TRANSACTION,
+                  GapicFunctionName.BEGIN_TRANSACTION,
                   UserCodeEvent.RUN_CALLBACK,
-                  GapicLayerFunction.COMMIT,
+                  GapicFunctionName.COMMIT,
                   UserCodeEvent.COMMIT_CALLBACK,
                 ]
               );
@@ -1043,8 +1043,8 @@ async.each(
                 done,
                 [
                   UserCodeEvent.FUNCTIONS_CALLED,
-                  GapicLayerFunction.BEGIN_TRANSACTION,
-                  GapicLayerFunction.COMMIT,
+                  GapicFunctionName.BEGIN_TRANSACTION,
+                  GapicFunctionName.COMMIT,
                   UserCodeEvent.COMMIT_CALLBACK,
                 ]
               );
@@ -1057,7 +1057,7 @@ async.each(
                 done,
                 [
                   UserCodeEvent.FUNCTIONS_CALLED,
-                  GapicLayerFunction.BEGIN_TRANSACTION,
+                  GapicFunctionName.BEGIN_TRANSACTION,
                   UserCodeEvent.RUN_CALLBACK,
                   UserCodeEvent.RUN_CALLBACK,
                 ]
@@ -1072,22 +1072,22 @@ async.each(
             beforeEach(() => {
               key = transactionWrapper.datastore.key(['Company', 'Google']);
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.COMMIT,
+                GapicFunctionName.COMMIT,
                 testCommitResp,
                 null
               );
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.LOOKUP,
+                GapicFunctionName.LOOKUP,
                 testGetResp,
                 null
               );
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.RUN_QUERY,
+                GapicFunctionName.RUN_QUERY,
                 testRunQueryResp,
                 null
               );
               transactionWrapper.mockGapicFunction(
-                GapicLayerFunction.RUN_AGGREGATION_QUERY,
+                GapicFunctionName.RUN_AGGREGATION_QUERY,
                 testRunAggregationQueryResp,
                 null
               );
@@ -1141,11 +1141,11 @@ async.each(
             describe('put, commit', () => {
               const expectedRequests = [
                 {
-                  call: GapicLayerFunction.BEGIN_TRANSACTION,
+                  call: GapicFunctionName.BEGIN_TRANSACTION,
                   request: beginTransactionRequest,
                 },
                 {
-                  call: GapicLayerFunction.COMMIT,
+                  call: GapicFunctionName.COMMIT,
                   request: commitRequest,
                 },
               ];
@@ -1154,8 +1154,8 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    GapicLayerFunction.BEGIN_TRANSACTION,
-                    GapicLayerFunction.COMMIT,
+                    GapicFunctionName.BEGIN_TRANSACTION,
+                    GapicFunctionName.COMMIT,
                     UserCodeEvent.COMMIT_CALLBACK,
                   ],
                   expectedRequests
@@ -1171,9 +1171,9 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    GapicLayerFunction.BEGIN_TRANSACTION,
+                    GapicFunctionName.BEGIN_TRANSACTION,
                     UserCodeEvent.RUN_CALLBACK,
-                    GapicLayerFunction.COMMIT,
+                    GapicFunctionName.COMMIT,
                     UserCodeEvent.COMMIT_CALLBACK,
                   ],
                   expectedRequests
@@ -1189,19 +1189,19 @@ async.each(
             describe('lookup, lookup, put, commit', () => {
               const expectedRequests = [
                 {
-                  call: GapicLayerFunction.BEGIN_TRANSACTION,
+                  call: GapicFunctionName.BEGIN_TRANSACTION,
                   request: beginTransactionRequest,
                 },
                 {
-                  call: GapicLayerFunction.COMMIT,
+                  call: GapicFunctionName.COMMIT,
                   request: commitRequest,
                 },
                 {
-                  call: GapicLayerFunction.LOOKUP,
+                  call: GapicFunctionName.LOOKUP,
                   request: lookupTransactionRequest,
                 },
                 {
-                  call: GapicLayerFunction.LOOKUP,
+                  call: GapicFunctionName.LOOKUP,
                   request: lookupTransactionRequest,
                 },
               ];
@@ -1210,11 +1210,11 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    GapicLayerFunction.BEGIN_TRANSACTION,
-                    GapicLayerFunction.COMMIT,
+                    GapicFunctionName.BEGIN_TRANSACTION,
+                    GapicFunctionName.COMMIT,
                     UserCodeEvent.COMMIT_CALLBACK,
-                    GapicLayerFunction.LOOKUP,
-                    GapicLayerFunction.LOOKUP,
+                    GapicFunctionName.LOOKUP,
+                    GapicFunctionName.LOOKUP,
                     UserCodeEvent.GET_CALLBACK,
                     UserCodeEvent.GET_CALLBACK,
                   ],
@@ -1233,12 +1233,12 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    GapicLayerFunction.BEGIN_TRANSACTION,
+                    GapicFunctionName.BEGIN_TRANSACTION,
                     UserCodeEvent.RUN_CALLBACK,
-                    GapicLayerFunction.COMMIT,
+                    GapicFunctionName.COMMIT,
                     UserCodeEvent.COMMIT_CALLBACK,
-                    GapicLayerFunction.LOOKUP,
-                    GapicLayerFunction.LOOKUP,
+                    GapicFunctionName.LOOKUP,
+                    GapicFunctionName.LOOKUP,
                     UserCodeEvent.GET_CALLBACK,
                     UserCodeEvent.GET_CALLBACK,
                   ],
