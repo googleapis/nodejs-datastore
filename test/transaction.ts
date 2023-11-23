@@ -864,7 +864,7 @@ async.each(
             // expectedEventOrder is the order the test expects different events to occur
             // such as a callback being called, Gapic functions being called or user
             // code being run.
-            expectedEventOrder: TransactionEvent[] = [];
+            #expectedEventOrder: TransactionEvent[] = [];
             // eventOrder is the order events actually occur in the test and will be compared with
             // expectedEventOrder.
             eventOrder: TransactionEvent[] = [];
@@ -873,11 +873,11 @@ async.each(
             // Stores the mocha done function so that it can be called from this object.
             done: (err?: any) => void;
             #checkForCompletion() {
-              if (this.eventOrder.length >= this.expectedEventOrder.length) {
+              if (this.eventOrder.length >= this.#expectedEventOrder.length) {
                 try {
                   assert.deepStrictEqual(
                     this.eventOrder,
-                    this.expectedEventOrder
+                    this.#expectedEventOrder
                   );
                   if (this.#expectedRequests) {
                     assert.deepStrictEqual(
@@ -898,7 +898,7 @@ async.each(
               expectedOrder: TransactionEvent[],
               expectedRequests?: {call: GapicLayerFunction; request?: any}[]
             ) {
-              this.expectedEventOrder = expectedOrder;
+              this.#expectedEventOrder = expectedOrder;
               this.#expectedRequests = expectedRequests;
               this.done = done;
               transactionWrapper.callBackSignaler = (
