@@ -702,13 +702,13 @@ async.each(
             });
             it('should send back the error when using a callback', done => {
               const callback: GetCallback = (
-                error: Error | null | undefined,
-                response?: any
+                err?: Error | null,
+                entity?: Entities
               ) => {
                 try {
-                  assert(error);
-                  assert.strictEqual(error.message, testErrorMessage);
-                  assert.deepStrictEqual(response, undefined);
+                  assert(err);
+                  assert.strictEqual(err.message, testErrorMessage);
+                  assert.deepStrictEqual(entity, undefined);
                   done();
                 } catch (e) {
                   done(e);
