@@ -167,6 +167,19 @@ async.each(
         const testRunResp = {
           transaction: Buffer.from(Array.from(Array(100).keys())),
         };
+        enum GapicLayerEvent {
+          BEGIN_TRANSACTION_CALLED,
+          LOOKUP_CALLED,
+          RUN_QUERY_CALLED,
+          RUN_AGGREGATION_QUERY_CALLED,
+          COMMIT_CALLED,
+        }
+        const functionNameToEvent: Map<string, GapicLayerEvent> = new Map([
+          ['lookup', GapicLayerEvent.LOOKUP_CALLED],
+          ['runQuery', GapicLayerEvent.RUN_QUERY_CALLED],
+          ['runAggregationQuery', GapicLayerEvent.RUN_AGGREGATION_QUERY_CALLED],
+          ['commit', GapicLayerEvent.COMMIT_CALLED],
+        ]);
 
         // MockedTransactionWrapper is a helper class for mocking out various
         // Gapic functions and ensuring that responses and errors actually make it
@@ -179,8 +192,10 @@ async.each(
           functionsMocked: {name: string; mockedFunction: Function}[];
           // The callBackSignaler lets the user of this object get a signal when the mocked function is called.
           // This is useful for tests that need to know when the mocked function is called.
-          callBackSignaler: (callbackReached: string, request?: any) => void =
-            () => {};
+          callBackSignaler: (
+            callbackReached: GapicLayerEvent,
+            request?: any
+          ) => void = () => {};
 
           constructor() {
             const namespace = 'run-without-mock';
@@ -224,7 +239,10 @@ async.each(
               ) => {
                 // Calls a user provided function that will receive this string
                 // Usually used to track when this code was reached relative to other code
-                this.callBackSignaler('beginTransaction called', request);
+                this.callBackSignaler(
+                  GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                  request
+                );
                 callback(null, testRunResp);
               };
             }
@@ -266,7 +284,14 @@ async.each(
                   {} | null | undefined
                 >
               ) => {
-                this.callBackSignaler(`${functionName} called`, request);
+                const event = functionNameToEvent.get(functionName);
+                if (event) {
+                  this.callBackSignaler(event, request);
+                } else {
+                  throw new Error(
+                    'The gapic function name should be defined in the map'
+                  );
+                }
                 callback(error, response);
               };
             }
@@ -730,6 +755,16 @@ async.each(
           });
         });
         describe('concurrency', async () => {
+          enum FixedTransactionEvent {
+            RUN_CALLBACK,
+            COMMIT_CALLBACK,
+            GET_CALLBACK,
+            RUN_QUERY_CALLBACK,
+            RUN_AGGREGATION_QUERY_CALLBACK,
+            FUNCTIONS_CALLED,
+          }
+          type TransactionEvent = GapicLayerEvent | FixedTransactionEvent;
+
           const testCommitResp = {
             mutationResults: [
               {
@@ -821,17 +856,17 @@ async.each(
           class TransactionOrderTester {
             // expectedRequests equal the request data in the order they are expected to
             // be passed into the Gapic layer.
-            expectedRequests?: {call: string; request?: any}[];
+            expectedRequests?: {call: GapicLayerEvent; request?: any}[];
             // requests are the actual order of the requests that are passed into the gapic
             // layer.
-            requests: {call: string; request?: any}[] = [];
+            requests: {call: GapicLayerEvent; request?: any}[] = [];
             // expectedEventOrder is the order the test expects different events to occur
             // such as a callback being called, Gapic functions being called or user
             // code being run.
-            expectedEventOrder: string[] = [];
+            expectedEventOrder: TransactionEvent[] = [];
             // eventOrder is the order events actually occur in the test and will be compared with
             // expectedEventOrder.
-            eventOrder: string[] = [];
+            eventOrder: TransactionEvent[] = [];
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
@@ -862,7 +897,7 @@ async.each(
               response?: any
             ) => {
               try {
-                this.eventOrder.push('run callback');
+                this.eventOrder.push(FixedTransactionEvent.RUN_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -873,7 +908,7 @@ async.each(
               response?: google.datastore.v1.ICommitResponse
             ) => {
               try {
-                this.eventOrder.push('commit callback');
+                this.eventOrder.push(FixedTransactionEvent.COMMIT_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -885,7 +920,7 @@ async.each(
               response?: Entities
             ) => {
               try {
-                this.eventOrder.push('get callback');
+                this.eventOrder.push(FixedTransactionEvent.GET_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -898,7 +933,7 @@ async.each(
               info?: RunQueryInfo
             ) => {
               try {
-                this.eventOrder.push('runQuery callback');
+                this.eventOrder.push(FixedTransactionEvent.RUN_QUERY_CALLBACK);
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -910,7 +945,9 @@ async.each(
               b?: any
             ) => {
               try {
-                this.eventOrder.push('runAggregationQuery callback');
+                this.eventOrder.push(
+                  FixedTransactionEvent.RUN_AGGREGATION_QUERY_CALLBACK
+                );
                 this.#checkForCompletion();
               } catch (e) {
                 this.done(e);
@@ -920,12 +957,15 @@ async.each(
             constructor(
               transactionWrapper: MockedTransactionWrapper,
               done: (err?: any) => void,
-              expectedOrder: string[],
-              expectedRequests?: {call: string; request?: any}[]
+              expectedOrder: TransactionEvent[],
+              expectedRequests?: {call: GapicLayerEvent; request?: any}[]
             ) {
               this.expectedEventOrder = expectedOrder;
               this.expectedRequests = expectedRequests;
-              const gapicCallHandler = (call: string, request?: any) => {
+              const gapicCallHandler = ( // TODO: inline this in callBackSignaller
+                call: GapicLayerEvent,
+                request?: any
+              ) => {
                 try {
                   this.requests.push({call, request});
                   this.eventOrder.push(call);
@@ -974,8 +1014,8 @@ async.each(
               );
             }
 
-            pushString(callbackPushed: string) {
-              this.eventOrder.push(callbackPushed);
+            pushFunctionsCalled() {
+              this.eventOrder.push(FixedTransactionEvent.FUNCTIONS_CALLED);
               this.#checkForCompletion();
             }
           }
@@ -995,45 +1035,45 @@ async.each(
                 transactionWrapper,
                 done,
                 [
-                  'functions called',
-                  'beginTransaction called',
-                  'run callback',
-                  'commit called',
-                  'commit callback',
+                  FixedTransactionEvent.FUNCTIONS_CALLED,
+                  GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                  FixedTransactionEvent.RUN_CALLBACK,
+                  GapicLayerEvent.COMMIT_CALLED,
+                  FixedTransactionEvent.COMMIT_CALLBACK,
                 ]
               );
               transactionOrderTester.callRun();
               transactionOrderTester.callCommit();
-              transactionOrderTester.pushString('functions called');
+              transactionOrderTester.pushFunctionsCalled();
             });
             it('should call the callbacks in the proper order with commit', done => {
               const transactionOrderTester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
                 [
-                  'functions called',
-                  'beginTransaction called',
-                  'commit called',
-                  'commit callback',
+                  FixedTransactionEvent.FUNCTIONS_CALLED,
+                  GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                  GapicLayerEvent.COMMIT_CALLED,
+                  FixedTransactionEvent.COMMIT_CALLBACK,
                 ]
               );
               transactionOrderTester.callCommit();
-              transactionOrderTester.pushString('functions called');
+              transactionOrderTester.pushFunctionsCalled();
             });
             it('should call the callbacks in the proper order with two run calls', done => {
               const transactionOrderTester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
                 [
-                  'functions called',
-                  'beginTransaction called',
-                  'run callback',
-                  'run callback',
+                  FixedTransactionEvent.FUNCTIONS_CALLED,
+                  GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                  FixedTransactionEvent.RUN_CALLBACK,
+                  FixedTransactionEvent.RUN_CALLBACK,
                 ]
               );
               transactionOrderTester.callRun();
               transactionOrderTester.callRun();
-              transactionOrderTester.pushString('functions called');
+              transactionOrderTester.pushFunctionsCalled();
             });
           });
           describe('should pass response back to the user and check the request', async () => {
@@ -1106,11 +1146,11 @@ async.each(
             describe('put, commit', () => {
               const expectedRequests = [
                 {
-                  call: 'beginTransaction called',
+                  call: GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
                   request: beginTransactionRequest,
                 },
                 {
-                  call: 'commit called',
+                  call: GapicLayerEvent.COMMIT_CALLED,
                   request: commitRequest,
                 },
               ];
@@ -1119,9 +1159,9 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    'beginTransaction called',
-                    'commit called',
-                    'commit callback',
+                    GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                    GapicLayerEvent.COMMIT_CALLED,
+                    FixedTransactionEvent.COMMIT_CALLBACK,
                   ],
                   expectedRequests
                 );
@@ -1136,10 +1176,10 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    'beginTransaction called',
-                    'run callback',
-                    'commit called',
-                    'commit callback',
+                    GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                    FixedTransactionEvent.RUN_CALLBACK,
+                    GapicLayerEvent.COMMIT_CALLED,
+                    FixedTransactionEvent.COMMIT_CALLBACK,
                   ],
                   expectedRequests
                 );
@@ -1154,19 +1194,19 @@ async.each(
             describe('lookup, lookup, put, commit', () => {
               const expectedRequests = [
                 {
-                  call: 'beginTransaction called',
+                  call: GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
                   request: beginTransactionRequest,
                 },
                 {
-                  call: 'commit called',
+                  call: GapicLayerEvent.COMMIT_CALLED,
                   request: commitRequest,
                 },
                 {
-                  call: 'lookup called',
+                  call: GapicLayerEvent.LOOKUP_CALLED,
                   request: lookupTransactionRequest,
                 },
                 {
-                  call: 'lookup called',
+                  call: GapicLayerEvent.LOOKUP_CALLED,
                   request: lookupTransactionRequest,
                 },
               ];
@@ -1175,13 +1215,13 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    'beginTransaction called',
-                    'commit called',
-                    'commit callback',
-                    'lookup called',
-                    'lookup called',
-                    'get callback',
-                    'get callback',
+                    GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                    GapicLayerEvent.COMMIT_CALLED,
+                    FixedTransactionEvent.COMMIT_CALLBACK,
+                    GapicLayerEvent.LOOKUP_CALLED,
+                    GapicLayerEvent.LOOKUP_CALLED,
+                    FixedTransactionEvent.GET_CALLBACK,
+                    FixedTransactionEvent.GET_CALLBACK,
                   ],
                   expectedRequests
                 );
@@ -1198,14 +1238,14 @@ async.each(
                   transactionWrapper,
                   done,
                   [
-                    'beginTransaction called',
-                    'run callback',
-                    'commit called',
-                    'commit callback',
-                    'lookup called',
-                    'lookup called',
-                    'get callback',
-                    'get callback',
+                    GapicLayerEvent.BEGIN_TRANSACTION_CALLED,
+                    FixedTransactionEvent.RUN_CALLBACK,
+                    GapicLayerEvent.COMMIT_CALLED,
+                    FixedTransactionEvent.COMMIT_CALLBACK,
+                    GapicLayerEvent.LOOKUP_CALLED,
+                    GapicLayerEvent.LOOKUP_CALLED,
+                    FixedTransactionEvent.GET_CALLBACK,
+                    FixedTransactionEvent.GET_CALLBACK,
                   ],
                   expectedRequests
                 );
