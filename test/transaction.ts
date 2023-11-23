@@ -923,10 +923,7 @@ async.each(
             }
 
             callRun() {
-              const runCallback = (
-                error: Error | null | undefined,
-                response?: any
-              ) => {
+              const callback = () => {
                 try {
                   this.#eventOrder.push(UserCodeEvent.RUN_CALLBACK);
                   this.#checkForCompletion();
@@ -934,14 +931,11 @@ async.each(
                   this.#done(e);
                 }
               };
-              this.transactionWrapper.transaction.run(runCallback);
+              this.transactionWrapper.transaction.run(callback);
             }
 
             callCommit() {
-              const callback = (
-                error: Error | null | undefined,
-                response?: google.datastore.v1.ICommitResponse
-              ) => {
+              const callback = () => {
                 try {
                   this.#eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
                   this.#checkForCompletion();
@@ -953,10 +947,7 @@ async.each(
             }
 
             callGet(keys: entity.Key, options: CreateReadStreamOptions) {
-              const callback = (
-                error: Error | null | undefined,
-                response?: Entities
-              ) => {
+              const callback = () => {
                 try {
                   this.#eventOrder.push(UserCodeEvent.GET_CALLBACK);
                   this.#checkForCompletion();
@@ -968,11 +959,7 @@ async.each(
             }
 
             callRunQuery(query: Query, options: RunQueryOptions) {
-              const callback = (
-                err: Error | null | undefined,
-                entities?: Entity[],
-                info?: RunQueryInfo
-              ) => {
+              const callback = () => {
                 try {
                   this.#eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
                   this.#checkForCompletion();
@@ -991,7 +978,7 @@ async.each(
               query: AggregateQuery,
               options: RunQueryOptions
             ) {
-              const callback = (a?: Error | null, b?: any) => {
+              const callback = () => {
                 try {
                   this.#eventOrder.push(
                     UserCodeEvent.RUN_AGGREGATION_QUERY_CALLBACK
