@@ -667,13 +667,11 @@ async.each(
           };
           const getUserResp = 'post1';
           const testErrorMessage = 'test-run-Query-error';
-          let query: Query;
           let key: entity.Key;
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
             transaction = transactionWrapper.transaction;
-            query = transactionWrapper.datastore.createQuery('Character');
             key = transactionWrapper.datastore.key(['Company', 'Google']);
           });
 
