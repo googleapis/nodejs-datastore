@@ -44,6 +44,7 @@ import {RunCallback} from '../src/transaction';
 import * as protos from '../protos/protos';
 import {AggregateQuery} from '../src/aggregate';
 import {RunQueryCallback, RunQueryInfo, RunQueryOptions} from '../src/query';
+import * as mocha from 'mocha';
 const async = require('async');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -880,7 +881,7 @@ async.each(
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
-            readonly #done: (err?: any) => void;
+            readonly #done: mocha.Done;
             #checkForCompletion() {
               if (this.#eventOrder.length >= this.#expectedEventOrder.length) {
                 try {
