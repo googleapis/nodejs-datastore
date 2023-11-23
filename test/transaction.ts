@@ -1154,7 +1154,7 @@ async.each(
                   ],
                   expectedRequests
                 );
-                transactionOrderTester.transactionWrapper.transaction.save({
+                transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
@@ -1172,7 +1172,7 @@ async.each(
                   ],
                   expectedRequests
                 );
-                transactionOrderTester.transactionWrapper.transaction.save({
+                transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
@@ -1216,7 +1216,7 @@ async.each(
                 );
                 transactionOrderTester.callGet(key, {});
                 transactionOrderTester.callGet(key, {});
-                transactionOrderTester.transactionWrapper.transaction.save({
+                transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
@@ -1241,7 +1241,7 @@ async.each(
                 transactionOrderTester.callRun();
                 transactionOrderTester.callGet(key, {});
                 transactionOrderTester.callGet(key, {});
-                transactionOrderTester.transactionWrapper.transaction.save({
+                transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
