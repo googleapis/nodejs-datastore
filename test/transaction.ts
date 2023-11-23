@@ -21,7 +21,6 @@ import * as proxyquire from 'proxyquire';
 import {
   Datastore,
   DatastoreOptions,
-  DatastoreClient,
   DatastoreRequest,
   Query,
   TransactionOptions,
@@ -211,7 +210,7 @@ async.each(
             const gapic = Object.freeze({
               v1: require('../src/v1'),
             });
-            // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+            // Datastore Gapic clients haven't been initialized yet, so we initialize them here.
             datastore.clients_.set(
               dataClientName,
               new gapic.v1[dataClientName](options)
@@ -296,7 +295,7 @@ async.each(
           }
 
           // This resets Gapic functions mocked out by the tests to what they originally were.
-          // Resetting mocked out Gapic functions ensures other tests don't use these mocks.
+          // Resetting mocked out Gapic functions ensures other tests don't use these mocked out functions.
           resetGapicFunctions() {
             this.functionsMocked.forEach(functionMocked => {
               if (this.dataClient) {
@@ -1281,7 +1280,7 @@ async.each(
           const gapic = Object.freeze({
             v1: require('../src/v1'),
           });
-          // Datastore Gapic clients haven't been initialized yet so we initialize them here.
+          // Datastore Gapic clients haven't been initialized yet, so we initialize them here.
           datastore.clients_.set(
             dataClientName,
             new gapic.v1[dataClientName](options)
