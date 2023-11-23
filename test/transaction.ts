@@ -860,24 +860,27 @@ async.each(
           class TransactionOrderTester {
             // expectedRequests equal the request data in the order they are expected to
             // be passed into the Gapic layer.
-            #expectedRequests?: {
+            readonly #expectedRequests?: {
               call: GapicLayerFunction;
               request?: requestType;
             }[];
             // requests are the actual order of the requests that are passed into the gapic
             // layer.
-            #requests: {call: GapicLayerFunction; request?: requestType}[] = [];
+            readonly #requests: {
+              call: GapicLayerFunction;
+              request?: requestType;
+            }[] = [];
             // expectedEventOrder is the order the test expects different events to occur
             // such as a callback being called, Gapic functions being called or user
             // code being run.
-            #expectedEventOrder: TransactionEvent[] = [];
+            readonly #expectedEventOrder: TransactionEvent[] = [];
             // eventOrder is the order events actually occur in the test and will be compared with
             // expectedEventOrder.
             #eventOrder: TransactionEvent[] = [];
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
-            #done: (err?: any) => void;
+            readonly #done: (err?: any) => void;
             #checkForCompletion() {
               if (this.#eventOrder.length >= this.#expectedEventOrder.length) {
                 try {
