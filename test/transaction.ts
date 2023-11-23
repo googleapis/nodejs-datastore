@@ -162,7 +162,7 @@ async.each(
       });
 
       describe('testing various transaction functions when transaction.run returns a response', () => {
-        type requestType =
+        type RequestType =
           | protos.google.datastore.v1.ICommitRequest
           | protos.google.datastore.v1.IBeginTransactionRequest
           | protos.google.datastore.v1.ILookupRequest
@@ -197,7 +197,7 @@ async.each(
           // This is useful for tests that need to know when the mocked function is called.
           callBackSignaler: (
             callbackReached: GapicLayerFunction,
-            request?: requestType
+            request?: RequestType
           ) => void = () => {};
 
           constructor() {
@@ -277,11 +277,11 @@ async.each(
             }
             if (dataClient && dataClient[functionName]) {
               dataClient[functionName] = (
-                request: requestType,
+                request: RequestType,
                 options: CallOptions,
                 callback: Callback<
                   ResponseType,
-                  requestType | null | undefined,
+                  RequestType | null | undefined,
                   {} | null | undefined
                 >
               ) => {
@@ -863,13 +863,13 @@ async.each(
             // be passed into the Gapic layer.
             readonly #expectedRequests?: {
               call: GapicLayerFunction;
-              request?: requestType;
+              request?: RequestType;
             }[];
             // requests are the actual order of the requests that are passed into the gapic
             // layer.
             readonly #requests: {
               call: GapicLayerFunction;
-              request?: requestType;
+              request?: RequestType;
             }[] = [];
             // expectedEventOrder is the order the test expects different events to occur
             // such as a callback being called, Gapic functions being called or user
@@ -906,7 +906,10 @@ async.each(
               transactionWrapper: MockedTransactionWrapper,
               done: mocha.Done,
               expectedOrder: TransactionEvent[],
-              expectedRequests?: {call: GapicLayerFunction; request?: any}[]
+              expectedRequests?: {
+                call: GapicLayerFunction;
+                request?: RequestType;
+              }[]
             ) {
               this.#expectedEventOrder = expectedOrder;
               this.#expectedRequests = expectedRequests;
