@@ -843,7 +843,6 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    type promiseType = UserCallbackData<UserCallbackData<any>>;
     const resolver: Resolver<any> = resolve => {
       super.runAggregationQuery(
         query,
@@ -854,7 +853,7 @@ class Transaction extends DatastoreRequest {
       );
     };
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: promiseType) => {
+      (response: UserCallbackData<UserCallbackData<any>>) => {
         const error = response.err ? response.err : null;
         callback(error, response.resp);
       }
