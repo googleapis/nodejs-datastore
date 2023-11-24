@@ -763,7 +763,7 @@ async.each(
             GET_CALLBACK,
             RUN_QUERY_CALLBACK,
             RUN_AGGREGATION_QUERY_CALLBACK,
-            FUNCTIONS_CALLED,
+            CUSTOM_EVENT,
           }
           // A transaction event represents a point in time particular code is reached
           // when running code that uses a transaction.
@@ -991,7 +991,7 @@ async.each(
                 transactionWrapper,
                 done,
                 [
-                  UserCodeEvent.FUNCTIONS_CALLED,
+                  UserCodeEvent.CUSTOM_EVENT,
                   GapicFunctionName.BEGIN_TRANSACTION,
                   UserCodeEvent.RUN_CALLBACK,
                   GapicFunctionName.COMMIT,
@@ -1000,28 +1000,28 @@ async.each(
               );
               transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
               transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
-              tester.push(UserCodeEvent.FUNCTIONS_CALLED)();
+              tester.push(UserCodeEvent.CUSTOM_EVENT)();
             });
             it('should call the callbacks in the proper order with commit', done => {
               const tester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
                 [
-                  UserCodeEvent.FUNCTIONS_CALLED,
+                  UserCodeEvent.CUSTOM_EVENT,
                   GapicFunctionName.BEGIN_TRANSACTION,
                   GapicFunctionName.COMMIT,
                   UserCodeEvent.COMMIT_CALLBACK,
                 ]
               );
               transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
-              tester.push(UserCodeEvent.FUNCTIONS_CALLED)();
+              tester.push(UserCodeEvent.CUSTOM_EVENT)();
             });
             it('should call the callbacks in the proper order with two run calls', done => {
               const tester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
                 [
-                  UserCodeEvent.FUNCTIONS_CALLED,
+                  UserCodeEvent.CUSTOM_EVENT,
                   GapicFunctionName.BEGIN_TRANSACTION,
                   UserCodeEvent.RUN_CALLBACK,
                   UserCodeEvent.RUN_CALLBACK,
@@ -1029,7 +1029,7 @@ async.each(
               );
               transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
               transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
-              tester.push(UserCodeEvent.FUNCTIONS_CALLED)();
+              tester.push(UserCodeEvent.CUSTOM_EVENT)();
             });
           });
           describe('should pass response back to the user and check the request', async () => {
