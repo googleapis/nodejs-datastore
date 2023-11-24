@@ -870,10 +870,10 @@ async.each(
            * This object is used for testing the order that different events occur.
            * The events can include user code reached, gapic code reached and callbacks called.
            *
-           * @param {MockedTransactionWrapper} transactionWrapper A TransactionWrapper instance.
-           * @param {mocha.Done} done A function for signalling the test is complete.
-           * @param {TransactionEvent[]} expectedOrder The order events are expected to occur.
-           * @param {MockedTransactionWrapper} transactionWrapper A TransactionWrapper instance.
+           * @param {MockedTransactionWrapper} [transactionWrapper] A TransactionWrapper instance.
+           * @param {mocha.Done} [done] A function for signalling the test is complete.
+           * @param {TransactionEvent[]} [expectedOrder] The order events are expected to occur.
+           * @param {MockedTransactionWrapper} [transactionWrapper] A TransactionWrapper instance.
            */
           class TransactionOrderTester {
             /**
