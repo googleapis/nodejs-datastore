@@ -849,9 +849,11 @@ async.each(
             transaction: testRunResp.transaction,
           };
           let transactionWrapper: MockedTransactionWrapper;
+          let transaction: Transaction;
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
+            transaction = transactionWrapper.transaction;
           });
 
           afterEach(() => {
@@ -937,6 +939,20 @@ async.each(
               this.#transactionWrapper = transactionWrapper;
             }
 
+            pushEvent(event: UserCodeEvent) {
+              try {
+                this.#eventOrder.push(event);
+                this.#checkForCompletion();
+              } catch (e) {
+                this.#done(e);
+              }
+            }
+
+            push(event: UserCodeEvent) {
+              return () => {
+                this.pushEvent(event);
+              };
+            }
             // Calls the run function on the transaction object and records
             // that the run callback is called when it is called.
             callRun() {
@@ -1040,7 +1056,7 @@ async.each(
 
             it('should call the callbacks in the proper order with run and commit', done => {
               // zz
-              const transactionOrderTester = new TransactionOrderTester(
+              const tester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
                 [
@@ -1051,12 +1067,12 @@ async.each(
                   UserCodeEvent.COMMIT_CALLBACK,
                 ]
               );
-              transactionOrderTester.callRun();
-              transactionOrderTester.callCommit();
-              transactionOrderTester.pushFunctionsCalled();
+              transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
+              transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
+              tester.pushFunctionsCalled();
             });
             it('should call the callbacks in the proper order with commit', done => {
-              const transactionOrderTester = new TransactionOrderTester(
+              const tester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
                 [
@@ -1066,11 +1082,11 @@ async.each(
                   UserCodeEvent.COMMIT_CALLBACK,
                 ]
               );
-              transactionOrderTester.callCommit();
-              transactionOrderTester.pushFunctionsCalled();
+              transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
+              tester.pushFunctionsCalled();
             });
             it('should call the callbacks in the proper order with two run calls', done => {
-              const transactionOrderTester = new TransactionOrderTester(
+              const tester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
                 [
@@ -1080,9 +1096,9 @@ async.each(
                   UserCodeEvent.RUN_CALLBACK,
                 ]
               );
-              transactionOrderTester.callRun();
-              transactionOrderTester.callRun();
-              transactionOrderTester.pushFunctionsCalled();
+              transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
+              transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
+              tester.pushFunctionsCalled();
             });
           });
           describe('should pass response back to the user and check the request', async () => {
@@ -1178,14 +1194,14 @@ async.each(
                   ],
                   expectedRequests
                 );
-                transactionWrapper.transaction.save({
+                transaction.save({
                   key,
                   data: '',
                 });
                 transactionOrderTester.callCommit();
               });
               it('should verify that there is a BeginTransaction call while beginning early', done => {
-                const transactionOrderTester = new TransactionOrderTester(
+                const tester = new TransactionOrderTester(
                   transactionWrapper,
                   done,
                   [
@@ -1196,12 +1212,13 @@ async.each(
                   ],
                   expectedRequests
                 );
-                transactionWrapper.transaction.save({
+                transaction.save({
                   key,
                   data: '',
                 });
-                transactionOrderTester.callRun();
-                transactionOrderTester.callCommit();
+                // const pushEvent = tester.pushEvent;
+                transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
+                transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
               });
             });
             describe('lookup, lookup, put, commit', () => {
