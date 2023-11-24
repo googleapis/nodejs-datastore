@@ -986,7 +986,6 @@ async.each(
             });
 
             it('should call the callbacks in the proper order with run and commit', done => {
-              // zz
               const tester = new TransactionOrderTester(
                 transactionWrapper,
                 done,
