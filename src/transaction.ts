@@ -47,19 +47,28 @@ type RunQueryResponseOptional = [
   Entity[] | undefined,
   RunQueryInfo | undefined,
 ];
-// This type matches data typically passed into a callback the user supplies.
-// The data matches promises created from an argument of Resolver<T> type.
+
+/**
+ * This type matches data typically passed into a callback the user supplies.
+ * The data matches promises created from an argument of Resolver<T> type.
+ */
 interface UserCallbackData<T> {
   err?: Error | null;
   resp?: T;
 }
-// This is a type that matches the argument for a promise's resolve function.
-// It is also constrained to match data returned that may contain an error.
+
+/**
+ * This is a type that matches the argument for a promise's resolve function.
+ * It is also constrained to match data returned that may contain an error.
+ */
 interface PromiseResolveFunction<T> {
   (value: UserCallbackData<T> | PromiseLike<UserCallbackData<T>>): void;
 }
-// This is a type that matches the argument passed in when building a promise.
-// It is also assures that the promise will resolve with data of PassThroughReturnType<T> type.
+
+/**
+ * This is a type that matches the argument passed in when building a promise.
+ * It is also assures that the promise will resolve with data of PassThroughReturnType<T> type.
+ */
 interface Resolver<T> {
   (resolve: PromiseResolveFunction<T>): void;
 }
