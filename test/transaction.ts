@@ -861,37 +861,56 @@ async.each(
             transactionWrapper.resetGapicFunctions();
           });
 
-          // This object is used for testing the order that different events occur.
-          // The events can include user code reached, gapic code reached and callbacks called.
+          type GapicRequestData = {
+            call: GapicFunctionName;
+            request?: RequestType;
+          };
+
+          /**
+           * This object is used for testing the order that different events occur.
+           * The events can include user code reached, gapic code reached and callbacks called.
+           *
+           * @param {MockedTransactionWrapper} transactionWrapper A TransactionWrapper instance.
+           * @param {mocha.Done} done A function for signalling the test is complete.
+           * @param {TransactionEvent[]} expectedOrder The order events are expected to occur.
+           * @param {MockedTransactionWrapper} transactionWrapper A TransactionWrapper instance.
+           */
           class TransactionOrderTester {
-            // expectedRequests equal the request data in the order they are expected to
-            // be passed into the Gapic layer.
-            readonly #expectedRequests?: {
-              call: GapicFunctionName;
-              request?: RequestType;
-            }[];
-            // requests are the actual order of the requests that are passed into the gapic
-            // layer.
-            readonly #requests: {
-              call: GapicFunctionName;
-              request?: RequestType;
-            }[] = [];
-            // expectedEventOrder is the order the test expects different events to occur
-            // such as a callback being called, Gapic functions being called or user
-            // code being run.
+            /**
+             * expectedRequests equal the request data in the order they are expected to
+             * be passed into the Gapic layer.
+             * @private
+             */
+            readonly #expectedRequests?: GapicRequestData[];
+            /**
+             * requests are the actual order of the requests that are passed into the
+             * gapic layer
+             * @private
+             */
+            readonly #requests: GapicRequestData[] = [];
+            /**
+             * expectedEventOrder is the order the test expects different events to occur
+             * such as a callback being called, Gapic functions being called or user
+             * code being run.
+             */
             readonly #expectedEventOrder: TransactionEvent[] = [];
-            // eventOrder is the order events actually occur in the test and will be compared with
-            // expectedEventOrder.
+            /**
+             * eventOrder is the order events actually occur in the test and will be compared with
+             * expectedEventOrder.
+             * @private
+             */
             #eventOrder: TransactionEvent[] = [];
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             #transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
             readonly #done: mocha.Done;
 
-            // Each time an event occurs this function is called to check to see if all
-            // events happened that were supposed to happen. If all events in the test
-            // happened then this function passes tests if the events happened in the
-            // right order
+            /**
+             * Each time an event occurs this function is called to check to see if all
+             * events happened that were supposed to happen. If all events in the test
+             * happened then this function passes tests if the events happened in the
+             * right order.
+             */
             #checkForCompletion() {
               if (this.#eventOrder.length >= this.#expectedEventOrder.length) {
                 try {
@@ -939,109 +958,21 @@ async.each(
               this.#transactionWrapper = transactionWrapper;
             }
 
-            pushEvent(event: UserCodeEvent) {
-              try {
-                this.#eventOrder.push(event);
-                this.#checkForCompletion();
-              } catch (e) {
-                this.#done(e);
-              }
-            }
-
+            /**
+             * Returns a callback that will record an event so that order of events
+             * can be compared later.
+             *
+             * @param {UserCodeEvent} [event] The event that should be recorded.
+             */
             push(event: UserCodeEvent) {
               return () => {
-                this.pushEvent(event);
-              };
-            }
-            // Calls the run function on the transaction object and records
-            // that the run callback is called when it is called.
-            callRun() {
-              const callback = () => {
                 try {
-                  this.#eventOrder.push(UserCodeEvent.RUN_CALLBACK);
+                  this.#eventOrder.push(event);
                   this.#checkForCompletion();
                 } catch (e) {
                   this.#done(e);
                 }
               };
-              this.#transactionWrapper.transaction.run(callback);
-            }
-
-            // Calls the commit function on the transaction object and records
-            // that the commit callback is called when it is called.
-            callCommit() {
-              const callback = () => {
-                try {
-                  this.#eventOrder.push(UserCodeEvent.COMMIT_CALLBACK);
-                  this.#checkForCompletion();
-                } catch (e) {
-                  this.#done(e);
-                }
-              };
-              this.#transactionWrapper.transaction.commit(callback);
-            }
-
-            // Calls the get function on the transaction object and records
-            // that the get callback is called when it is called.
-            callGet(keys: entity.Key, options: CreateReadStreamOptions) {
-              const callback = () => {
-                try {
-                  this.#eventOrder.push(UserCodeEvent.GET_CALLBACK);
-                  this.#checkForCompletion();
-                } catch (e) {
-                  this.#done(e);
-                }
-              };
-              this.#transactionWrapper.transaction.get(keys, options, callback);
-            }
-
-            // Calls the runQuery function on the transaction object and records
-            // that the runQuery callback is called when it is called.
-            callRunQuery(query: Query, options: RunQueryOptions) {
-              const callback = () => {
-                try {
-                  this.#eventOrder.push(UserCodeEvent.RUN_QUERY_CALLBACK);
-                  this.#checkForCompletion();
-                } catch (e) {
-                  this.#done(e);
-                }
-              };
-              this.#transactionWrapper.transaction.runQuery(
-                query,
-                options,
-                callback
-              );
-            }
-
-            // Calls the runAggregationQuery function on the transaction object and records
-            // that the runQuery callback is called when it is called.
-            callRunAggregationQuery(
-              query: AggregateQuery,
-              options: RunQueryOptions
-            ) {
-              const callback = () => {
-                try {
-                  this.#eventOrder.push(
-                    UserCodeEvent.RUN_AGGREGATION_QUERY_CALLBACK
-                  );
-                  this.#checkForCompletion();
-                } catch (e) {
-                  this.#done(e);
-                }
-              };
-              this.#transactionWrapper.transaction.runAggregationQuery(
-                query,
-                options,
-                callback
-              );
-            }
-
-            // Records that a particular line of user code is reached so that
-            // the time that code is reached can be compared to the time
-            // other events happen.
-            pushFunctionsCalled() {
-              this.#eventOrder.push(UserCodeEvent.FUNCTIONS_CALLED);
-              this.#checkForCompletion();
             }
           }
 
@@ -1069,7 +1000,7 @@ async.each(
               );
               transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
               transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
-              tester.pushFunctionsCalled();
+              tester.push(UserCodeEvent.FUNCTIONS_CALLED)();
             });
             it('should call the callbacks in the proper order with commit', done => {
               const tester = new TransactionOrderTester(
@@ -1083,7 +1014,7 @@ async.each(
                 ]
               );
               transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
-              tester.pushFunctionsCalled();
+              tester.push(UserCodeEvent.FUNCTIONS_CALLED)();
             });
             it('should call the callbacks in the proper order with two run calls', done => {
               const tester = new TransactionOrderTester(
@@ -1098,7 +1029,7 @@ async.each(
               );
               transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
               transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
-              tester.pushFunctionsCalled();
+              tester.push(UserCodeEvent.FUNCTIONS_CALLED)();
             });
           });
           describe('should pass response back to the user and check the request', async () => {
@@ -1184,7 +1115,7 @@ async.each(
                 },
               ];
               it('should verify that there is a BeginTransaction call while beginning later', done => {
-                const transactionOrderTester = new TransactionOrderTester(
+                const tester = new TransactionOrderTester(
                   transactionWrapper,
                   done,
                   [
@@ -1198,7 +1129,7 @@ async.each(
                   key,
                   data: '',
                 });
-                transactionOrderTester.callCommit();
+                transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
               });
               it('should verify that there is a BeginTransaction call while beginning early', done => {
                 const tester = new TransactionOrderTester(
@@ -1216,7 +1147,6 @@ async.each(
                   key,
                   data: '',
                 });
-                // const pushEvent = tester.pushEvent;
                 transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
                 transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
               });
@@ -1241,7 +1171,7 @@ async.each(
                 },
               ];
               it('should verify that there is a BeginTransaction call while beginning later', done => {
-                const transactionOrderTester = new TransactionOrderTester(
+                const tester = new TransactionOrderTester(
                   transactionWrapper,
                   done,
                   [
@@ -1255,16 +1185,16 @@ async.each(
                   ],
                   expectedRequests
                 );
-                transactionOrderTester.callGet(key, {});
-                transactionOrderTester.callGet(key, {});
+                transaction.get(key, tester.push(UserCodeEvent.GET_CALLBACK));
+                transaction.get(key, tester.push(UserCodeEvent.GET_CALLBACK));
                 transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
-                transactionOrderTester.callCommit();
+                transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
               });
               it('should verify that there is a BeginTransaction call while beginning early', done => {
-                const transactionOrderTester = new TransactionOrderTester(
+                const tester = new TransactionOrderTester(
                   transactionWrapper,
                   done,
                   [
@@ -1279,14 +1209,14 @@ async.each(
                   ],
                   expectedRequests
                 );
-                transactionOrderTester.callRun();
-                transactionOrderTester.callGet(key, {});
-                transactionOrderTester.callGet(key, {});
+                transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
+                transaction.get(key, tester.push(UserCodeEvent.GET_CALLBACK));
+                transaction.get(key, tester.push(UserCodeEvent.GET_CALLBACK));
                 transactionWrapper.transaction.save({
                   key,
                   data: '',
                 });
-                transactionOrderTester.callCommit();
+                transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
               });
             });
           });
