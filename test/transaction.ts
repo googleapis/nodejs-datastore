@@ -1030,6 +1030,22 @@ async.each(
               transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
               tester.push(UserCodeEvent.CUSTOM_EVENT)();
             });
+            it('should call the callbacks in the proper order with commit and then run', done => {
+              const tester = new TransactionOrderTester(
+                transactionWrapper,
+                done,
+                [
+                  UserCodeEvent.CUSTOM_EVENT,
+                  GapicFunctionName.BEGIN_TRANSACTION,
+                  UserCodeEvent.RUN_CALLBACK,
+                  GapicFunctionName.COMMIT,
+                  UserCodeEvent.COMMIT_CALLBACK,
+                ]
+              );
+              transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
+              transaction.run(tester.push(UserCodeEvent.RUN_CALLBACK));
+              tester.push(UserCodeEvent.CUSTOM_EVENT)();
+            });
           });
           describe('should pass response back to the user and check the request', async () => {
             let key: entity.Key;
