@@ -42,6 +42,7 @@ import {
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
+import MutexInterface from 'async-mutex/lib/MutexInterface';
 
 type RunQueryResponseOptional = [
   Entity[] | undefined,
@@ -231,16 +232,19 @@ class Transaction extends DatastoreRequest {
     resolver: Resolver<T>
   ): Promise<UserCallbackData<T>> {
     if (this.#state === TransactionState.NOT_STARTED) {
-      const release = await this.#mutex.acquire();
+      // TODO: Use callbackify
       try {
-        if (this.#state === TransactionState.NOT_STARTED) {
-          const runResults = await this.#runAsync({gaxOptions});
-          this.#parseRunSuccess(runResults);
-        }
+        const wrappedPromise: MutexInterface.Worker<
+          Promise<any>
+        > = async () => {
+          if (this.#state === TransactionState.NOT_STARTED) {
+            const runResults = await this.#runAsync({gaxOptions});
+            this.#parseRunSuccess(runResults);
+          }
+        };
+        await this.#mutex.runExclusive(wrappedPromise);
       } catch (err: any) {
         return {err};
-      } finally {
-        release();
       }
     }
     return await new Promise(resolver);
