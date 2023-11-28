@@ -234,15 +234,13 @@ class Transaction extends DatastoreRequest {
     if (this.#state === TransactionState.NOT_STARTED) {
       // TODO: Use callbackify
       try {
-        const wrappedPromise: MutexInterface.Worker<
-          Promise<any>
-        > = async () => {
+        const callback: MutexInterface.Worker<Promise<any>> = async () => {
           if (this.#state === TransactionState.NOT_STARTED) {
             const runResults = await this.#runAsync({gaxOptions});
             this.#parseRunSuccess(runResults);
           }
         };
-        await this.#mutex.runExclusive(wrappedPromise);
+        await this.#mutex.runExclusive(callback);
       } catch (err: any) {
         return {err};
       }
