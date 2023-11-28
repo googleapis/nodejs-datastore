@@ -54,6 +54,8 @@ type RunQueryResponseOptional = [
  */
 interface UserCallbackData<T> {
   err?: Error | null;
+  // T is the type of the data that the promise delivered to the user resolves to.
+  // T also matches the type of the response data provided in the user's callback.
   resp?: T;
 }
 
