@@ -232,15 +232,13 @@ class Transaction extends DatastoreRequest {
     resolver: Resolver<T>
   ): Promise<UserCallbackData<T>> {
     if (this.#state === TransactionState.NOT_STARTED) {
-      // TODO: Use callbackify
       try {
-        const callback: MutexInterface.Worker<Promise<any>> = async () => {
+        await this.#mutex.runExclusive(async () => {
           if (this.#state === TransactionState.NOT_STARTED) {
             const runResults = await this.#runAsync({gaxOptions});
             this.#parseRunSuccess(runResults);
           }
-        };
-        await this.#mutex.runExclusive(callback);
+        });
       } catch (err: any) {
         return {err};
       }
