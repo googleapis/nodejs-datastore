@@ -571,31 +571,24 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const runIfStarted = () => {
-      process.emitWarning(
-        'run has already been called and should not be called again.'
-      );
-      callback(null, this, {transaction: this.id});
-    };
-    if (this.#state === TransactionState.NOT_STARTED) {
-      this.#mutex.acquire().then(release => {
-        if (this.#state === TransactionState.NOT_STARTED) {
-          this.#runAsync(options).then(
-            (
-              response: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
-            ) => {
-              release();
-              this.#processBeginResults(response, callback);
-            }
-          );
-        } else {
-          release();
-          runIfStarted();
-        }
-      });
-    } else {
-      runIfStarted();
-    }
+    this.#mutex.acquire().then(release => {
+      if (this.#state === TransactionState.NOT_STARTED) {
+        this.#runAsync(options).then(
+          (
+            response: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
+          ) => {
+            release();
+            this.#processBeginResults(response, callback);
+          }
+        );
+      } else {
+        release();
+        process.emitWarning(
+          'run has already been called and should not be called again.'
+        );
+        callback(null, this, {transaction: this.id});
+      }
+    });
   }
 
   /**
