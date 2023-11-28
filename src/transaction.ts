@@ -571,18 +571,11 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.#mutex.acquire().then(release => {
+    this.#mutex.runExclusive(async () => {
       if (this.#state === TransactionState.NOT_STARTED) {
-        this.#runAsync(options).then(
-          (
-            response: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
-          ) => {
-            release();
-            this.#processBeginResults(response, callback);
-          }
-        );
+        const runResults = await this.#runAsync(options);
+        this.#processBeginResults(runResults, callback);
       } else {
-        release();
         process.emitWarning(
           'run has already been called and should not be called again.'
         );
@@ -726,15 +719,15 @@ class Transaction extends DatastoreRequest {
    *
    **/
   #processBeginResults(
-    response: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>,
+    runResults: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>,
     callback: RunCallback
   ): void {
-    const err = response.err;
-    const resp = response.resp;
+    const err = runResults.err;
+    const resp = runResults.resp;
     if (err) {
       callback(err, null, resp);
     } else {
-      this.#parseRunSuccess(response);
+      this.#parseRunSuccess(runResults);
       callback(null, this, resp);
     }
   }
@@ -746,8 +739,8 @@ class Transaction extends DatastoreRequest {
    * begin a transaction that completed successfully.
    *
    **/
-  #parseRunSuccess(response: UserCallbackData<any>) {
-    const resp = response.resp;
+  #parseRunSuccess(runResults: UserCallbackData<any>) {
+    const resp = runResults.resp;
     this.id = resp!.transaction;
     this.#state = TransactionState.IN_PROGRESS;
   }
