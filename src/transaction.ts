@@ -231,16 +231,14 @@ class Transaction extends DatastoreRequest {
     if (this.#state === TransactionState.NOT_STARTED) {
       const release = await this.#mutex.acquire();
       try {
-        try {
-          if (this.#state === TransactionState.NOT_STARTED) {
-            const runResults = await this.#runAsync({gaxOptions});
-            this.#parseRunSuccess(runResults);
-          }
-        } finally {
-          release();
+        if (this.#state === TransactionState.NOT_STARTED) {
+          const runResults = await this.#runAsync({gaxOptions});
+          this.#parseRunSuccess(runResults);
         }
       } catch (err: any) {
         return {err};
+      } finally {
+        release();
       }
     }
     return await new Promise(resolver);
