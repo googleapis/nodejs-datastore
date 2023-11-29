@@ -431,7 +431,6 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    // TODO: First pull out all the data inside super.get(
     const resolver: Resolver<GetResponse> = resolve => {
       super.get(keys, options, callbackWithError(resolve));
     };
