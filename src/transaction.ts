@@ -121,10 +121,9 @@ function otherStandardCallback(resolve: PromiseResolveFunction<any[]>) {
 }
 */
 
-// TODO: Add a return type here.
 function callbackWithError<T extends any[]>(
   resolve: PromiseResolveFunction<T>
-) {
+): (err: Error | null | undefined, ...args: T) => void {
   return (err: Error | null | undefined, ...args: T) => {
     resolve({err: err ? err : null, resp: args});
   };
