@@ -81,7 +81,6 @@ enum TransactionState {
 }
 
 type errorType = Error | null;
-type UserCallbackArguments<T extends any[]> = [errorType, ...T] | [errorType];
 
 function callbackWithError<T extends any[]>(
   resolve: PromiseResolveFunction<T>
@@ -220,7 +219,7 @@ class Transaction extends DatastoreRequest {
   #wrapWithBeginTransaction<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     resolver: Resolver<T>,
-    callback: (...args: UserCallbackArguments<T>) => void
+    callback: (...args: [errorType, ...T] | [errorType]) => void
   ) {
     this.#withBeginTransaction(gaxOptions, resolver).then(
       (response: UserCallbackData<T>) => {
