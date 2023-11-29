@@ -871,7 +871,6 @@ class Transaction extends DatastoreRequest {
     optionsOrCallback?: RunQueryOptions | RunQueryCallback,
     cb?: RunQueryCallback
   ): void | Promise<RunQueryResponse> {
-    // TODO: Set a breakpoint here and introspect arguments.
     const options =
       typeof optionsOrCallback === 'object' && optionsOrCallback
         ? optionsOrCallback
