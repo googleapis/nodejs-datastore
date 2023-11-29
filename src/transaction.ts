@@ -42,7 +42,6 @@ import {
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
-import MutexInterface from 'async-mutex/lib/MutexInterface';
 
 type RunQueryResponseOptional = [
   Entity[] | undefined,
@@ -200,17 +199,30 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    const resolver: Resolver<google.datastore.v1.ICommitResponse> = resolve => {
+    const resolver: Resolver<
+      (google.datastore.v1.ICommitResponse | undefined)[]
+    > = resolve => {
       this.#runCommit(
         gaxOptions,
         (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
-          resolve({err, resp});
+          const resolveValue: UserCallbackData<
+            (google.datastore.v1.ICommitResponse | undefined)[]
+          > = {
+            err,
+            resp: [resp],
+          };
+          resolve(resolveValue);
         }
       );
     };
     this.#withBeginTransaction(gaxOptions, resolver).then(
-      (response: UserCallbackData<google.datastore.v1.ICommitResponse>) => {
-        callback(response.err, response.resp);
+      (
+        response: UserCallbackData<
+          (google.datastore.v1.ICommitResponse | undefined)[]
+        >
+      ) => {
+        const resp = response.resp ? response.resp[0] : undefined;
+        callback(response.err, resp);
       }
     );
   }
@@ -413,14 +425,22 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // TODO: First pull out all the data inside super.get(
     const resolver: Resolver<GetResponse> = resolve => {
-      super.get(keys, options, (err?: Error | null, resp?: GetResponse) => {
-        resolve({err, resp});
+      super.get(keys, options, (err?: Error | null, entity?: Entities) => {
+        // TODO: arguments[0] in first position
+        // TODO: arguments[1:] in second position
+        const resolveValue: UserCallbackData<GetResponse> = {
+          err,
+          resp: [entity],
+        };
+        resolve(resolveValue);
       });
     };
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
       (response: UserCallbackData<GetResponse>) => {
-        callback(response.err, response.resp);
+        const resp = response.resp ? response.resp[0] : undefined;
+        callback(response.err, resp);
       }
     );
   }
@@ -834,14 +854,15 @@ class Transaction extends DatastoreRequest {
         query,
         options,
         (err?: Error | null, resp?: any) => {
-          resolve({err, resp});
+          resolve({err, resp: [resp]});
         }
       );
     };
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: UserCallbackData<UserCallbackData<any>>) => {
+      (response: UserCallbackData<any>) => {
+        const resp = response.resp ? response.resp[0] : undefined;
         const error = response.err ? response.err : null;
-        callback(error, response.resp);
+        callback(error, resp);
       }
     );
   }
@@ -869,6 +890,7 @@ class Transaction extends DatastoreRequest {
     optionsOrCallback?: RunQueryOptions | RunQueryCallback,
     cb?: RunQueryCallback
   ): void | Promise<RunQueryResponse> {
+    // TODO: Set a breakpoint here and intropect arguments.
     const options =
       typeof optionsOrCallback === 'object' && optionsOrCallback
         ? optionsOrCallback
@@ -884,6 +906,7 @@ class Transaction extends DatastoreRequest {
         }
       );
     };
+
     this.#withBeginTransaction(options.gaxOptions, resolver).then(
       (response: UserCallbackData<RunQueryResponseOptional>) => {
         const error = response.err ? response.err : null;
