@@ -240,15 +240,12 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    const resolver: Resolver<
-      (google.datastore.v1.ICommitResponse | undefined)[]
-    > = resolve => {
+    type commitResponseType = [google.datastore.v1.ICommitResponse | undefined];
+    const resolver: Resolver<commitResponseType> = resolve => {
       this.#runCommit(
         gaxOptions,
         (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
-          const resolveValue: UserCallbackData<
-            (google.datastore.v1.ICommitResponse | undefined)[]
-          > = {
+          const resolveValue: UserCallbackData<commitResponseType> = {
             err: err ? err : null,
             resp: [resp],
           };
@@ -256,16 +253,7 @@ class Transaction extends DatastoreRequest {
         }
       );
     };
-    this.#withBeginTransaction(gaxOptions, resolver).then(
-      (
-        response: UserCallbackData<
-          (google.datastore.v1.ICommitResponse | undefined)[]
-        >
-      ) => {
-        const resp = response.resp ? response.resp[0] : undefined;
-        callback(response.err, resp);
-      }
-    );
+    this.#wrapWithBeginTransaction(gaxOptions, resolver, callback);
   }
 
   #wrapWithBeginTransaction<T extends any[]>(
@@ -935,7 +923,7 @@ class Transaction extends DatastoreRequest {
     optionsOrCallback?: RunQueryOptions | RunQueryCallback,
     cb?: RunQueryCallback
   ): void | Promise<RunQueryResponse> {
-    // TODO: Set a breakpoint here and intropect arguments.
+    // TODO: Set a breakpoint here and introspect arguments.
     const options =
       typeof optionsOrCallback === 'object' && optionsOrCallback
         ? optionsOrCallback
@@ -951,29 +939,7 @@ class Transaction extends DatastoreRequest {
         }
       );
     };
-    /*
-    this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: UserCallbackData<RunQueryResponseOptional>) => {
-        const resp: RunQueryResponseOptional | undefined = response.resp;
-        if (resp) {
-          callback(response.err, ...resp);
-        } else {
-          callback(response.err);
-        }
-      }
-    );
-     */
     this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
-    /*
-    this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: UserCallbackData<RunQueryResponseOptional>) => {
-        const error = response.err ? response.err : null;
-        const entities = response.resp ? response.resp[0] : undefined;
-        const info = response.resp ? response.resp[1] : undefined;
-        callback(error, entities, info);
-      }
-    );
-     */
   }
 
   /**
