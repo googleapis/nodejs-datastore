@@ -121,6 +121,15 @@ function otherStandardCallback(resolve: PromiseResolveFunction<any[]>) {
 }
 */
 
+// TODO: Add a return type here.
+function callbackWithError<T extends any[]>(
+  resolve: PromiseResolveFunction<T>
+) {
+  return (err: Error | null | undefined, ...args: T) => {
+    resolve({err: err ? err : null, resp: args});
+  };
+}
+
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
  * transaction is guaranteed to be atomic, which means that transactions are
@@ -242,16 +251,7 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     type commitResponseType = [google.datastore.v1.ICommitResponse | undefined];
     const resolver: Resolver<commitResponseType> = resolve => {
-      this.#runCommit(
-        gaxOptions,
-        (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
-          const resolveValue: UserCallbackData<commitResponseType> = {
-            err: err ? err : null,
-            resp: [resp],
-          };
-          resolve(resolveValue);
-        }
-      );
+      this.#runCommit(gaxOptions, callbackWithError(resolve));
     };
     this.#wrapWithBeginTransaction(gaxOptions, resolver, callback);
   }
@@ -473,13 +473,7 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // TODO: First pull out all the data inside super.get(
     const resolver: Resolver<GetResponse> = resolve => {
-      super.get(keys, options, (err?: Error | null, entity?: Entities) => {
-        const resolveValue: UserCallbackData<GetResponse> = {
-          err: err ? err : null,
-          resp: [entity],
-        };
-        resolve(resolveValue);
-      });
+      super.get(keys, options, callbackWithError(resolve));
     };
     this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
   }
@@ -889,13 +883,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     const resolver: Resolver<any> = resolve => {
-      super.runAggregationQuery(
-        query,
-        options,
-        (err?: Error | null, resp?: any) => {
-          resolve({err: err ? err : null, resp: [resp]});
-        }
-      );
+      super.runAggregationQuery(query, options, callbackWithError(resolve));
     };
     this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
   }
@@ -931,13 +919,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     const resolver: Resolver<RunQueryResponseOptional> = resolve => {
-      super.runQuery(
-        query,
-        options,
-        (err: Error | null, entities?: Entity[], info?: RunQueryInfo) => {
-          resolve({err, resp: [entities, info]});
-        }
-      );
+      super.runQuery(query, options, callbackWithError(resolve));
     };
     this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
   }
