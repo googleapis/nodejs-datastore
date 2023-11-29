@@ -81,45 +81,7 @@ enum TransactionState {
 }
 
 type errorType = Error | null;
-type StandardCallbackArgumentsAny<T extends any[]> =
-  | [errorType, ...T]
-  | [errorType];
-/*
-type CallbacksArgumentsSupported =
-  | [errorType, ...RunQueryResponseOptional]
-  | [errorType, ...GetResponse];
-type CallbackResponsesSupported = RunQueryResponseOptional | GetResponse;
-
-// TODO: Solve problem where slice doesn't infer out error
-// TODO: List all four cases
-function standardCallback<T extends any[]>(
-  resolve: PromiseResolveFunction<CallbackResponsesSupported>
-) {
-  return (...args: CallbacksArgumentsSupported) => {
-    const someArgs = args.slice(1);
-    const err = args[0];
-    const resp: CallbackResponsesSupported = args.slice(1);
-    const resolveValue: UserCallbackData<CallbackResponsesSupported> = {
-      err,
-      resp,
-    };
-    resolve(resolveValue);
-  };
-}
-*/
-
-/*
-function otherStandardCallback(resolve: PromiseResolveFunction<any[]>) {
-  return (...args: StandardCallbackArgumentsAny<any[]>) => {
-    const resp = args.slice(1);
-    const resolveValue: UserCallbackData<any[]> = {
-      err: args[0],
-      resp,
-    };
-    resolve(resolveValue);
-  };
-}
-*/
+type UserCallbackArguments<T extends any[]> = [errorType, ...T] | [errorType];
 
 function callbackWithError<T extends any[]>(
   resolve: PromiseResolveFunction<T>
@@ -258,7 +220,7 @@ class Transaction extends DatastoreRequest {
   #wrapWithBeginTransaction<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     resolver: Resolver<T>,
-    callback: (...args: StandardCallbackArgumentsAny<T>) => void
+    callback: (...args: UserCallbackArguments<T>) => void
   ) {
     this.#withBeginTransaction(gaxOptions, resolver).then(
       (response: UserCallbackData<T>) => {
