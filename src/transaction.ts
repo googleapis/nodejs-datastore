@@ -90,6 +90,19 @@ function callbackWithError<T extends any[]>(
   };
 }
 
+interface WithBeginParameters<T extends any[]> {
+  gaxOptions: CallOptions | undefined;
+  resolver: Resolver<T>;
+  callback: (...args: [errorType, ...T] | [errorType]) => void;
+}
+interface WithBeginFunction<Args extends any[], T extends any[]> {
+  (args: Args): WithBeginParameters<T>;
+}
+
+function decoratorFactory<T extends any[]>(withBeginFunction: (parameters: WithBeginParameters<T>) => void) {
+
+}
+
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
  * transaction is guaranteed to be atomic, which means that transactions are
@@ -216,6 +229,7 @@ class Transaction extends DatastoreRequest {
     this.#wrapWithBeginTransaction(gaxOptions, resolver, callback);
   }
 
+  // TODO: Move this function to the bottom
   #wrapWithBeginTransaction<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     resolver: Resolver<T>,
@@ -245,6 +259,7 @@ class Transaction extends DatastoreRequest {
    * this code and resolve to an error or resolve with the data from the resolver.
    * @private
    */
+  // TODO: Move this function to the bottom
   async #withBeginTransaction<T>(
     gaxOptions: CallOptions | undefined,
     resolver: Resolver<T>
@@ -262,6 +277,26 @@ class Transaction extends DatastoreRequest {
       }
     }
     return await new Promise(resolver);
+  }
+
+  withRun<T extends any[], Args extends [any]>(
+    target: Transaction,
+    key: any,
+    descriptor: {value: WithBeginFunction<Args, T>}
+  ) {
+    const method = descriptor.value;
+    const withBeginFunction = (parameters: WithBeginParameters<T>) => {
+      this.#wrapWithBeginTransaction(
+        parameters.gaxOptions,
+        parameters.resolver,
+        parameters.callback
+      );
+    };
+    const value = function (...args: Args) {
+      const parameters: WithBeginParameters<T> = method.apply(target, args);
+      withBeginFunction(parameters);
+    };
+    return Object.assign(Object.assign({}, descriptor), {value});
   }
 
   /**
@@ -830,6 +865,7 @@ class Transaction extends DatastoreRequest {
     callback: RequestCallback
   ): void;
   runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
+  @(this.withRun)
   runAggregationQuery(
     query: AggregateQuery,
     optionsOrCallback?: RunQueryOptions | RequestCallback,
@@ -845,6 +881,11 @@ class Transaction extends DatastoreRequest {
       super.runAggregationQuery(query, options, callbackWithError(resolve));
     };
     this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
+    return {
+      gaxOptions: options.gaxOptions,
+      resolver,
+      callback,
+    };
   }
 
   /**
@@ -870,6 +911,7 @@ class Transaction extends DatastoreRequest {
     optionsOrCallback?: RunQueryOptions | RunQueryCallback,
     cb?: RunQueryCallback
   ): void | Promise<RunQueryResponse> {
+    // TODO: Return a resolver and use decorator
     const options =
       typeof optionsOrCallback === 'object' && optionsOrCallback
         ? optionsOrCallback
