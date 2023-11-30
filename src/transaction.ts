@@ -228,14 +228,29 @@ class Transaction extends DatastoreRequest {
     const resolver: Resolver<commitResponseType> = resolve => {
       this.#runCommit(gaxOptions, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(gaxOptions, resolver, callback);
+    this.#sendUserCallbackData(gaxOptions, resolver, callback);
   }
 
-  #wrapWithBeginTransaction<T extends any[]>(
+  /**
+   * This function runs custom code provided in the resolver after ensuring the
+   * transaction has been started. The custom code produces a UserCallbackData
+   * object. The UserCallbackData object is then translated into parameters and
+   * passed into the user's callback.
+   *
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {Resolver<T>} [resolver] A resolver object used to construct a
+   * custom promise which is run after ensuring a beginTransaction call is made.
+   * @param {(...args: [Error | null, ...T] | [Error | null]) => void} [callback]
+   * A callback provided by the user that expects an error in the first
+   * argument and a custom data type for the rest of the arguments
+   * @private
+   */
+  #sendUserCallbackData<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     resolver: Resolver<T>,
     callback: (...args: [Error | null, ...T] | [Error | null]) => void
-  ) {
+  ): void {
     this.#withBeginTransaction(gaxOptions, resolver).then(
       (response: UserCallbackData<T>) => {
         const resp: T | undefined = response.resp;
@@ -254,8 +269,10 @@ class Transaction extends DatastoreRequest {
    * argument. This argument is a function that is used to pass errors and
    * response data back to the caller of the withBeginTransaction function.
    *
-   * @param {CallOptions | undefined} [gaxOptions]
-   * @param {Resolver<T>} [resolver]
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {Resolver<T>} [resolver] A resolver object used to construct a
+   * custom promise which is run after ensuring a beginTransaction call is made.
    * @returns {Promise<UserCallbackData<T>>} Returns a promise that will run
    * this code and resolve to an error or resolve with the data from the resolver.
    * @private
@@ -449,7 +466,7 @@ class Transaction extends DatastoreRequest {
     const resolver: Resolver<GetResponse> = resolve => {
       super.get(keys, options, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
+    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
   }
 
   /**
@@ -859,7 +876,7 @@ class Transaction extends DatastoreRequest {
     const resolver: Resolver<any> = resolve => {
       super.runAggregationQuery(query, options, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
+    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
   }
 
   /**
@@ -894,7 +911,7 @@ class Transaction extends DatastoreRequest {
     const resolver: Resolver<RunQueryResponseOptional> = resolve => {
       super.runQuery(query, options, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
+    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
   }
 
   /**
