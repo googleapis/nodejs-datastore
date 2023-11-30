@@ -93,9 +93,9 @@ enum TransactionState {
  *
  * @param {PromiseResolveFunction<T>} [resolve] The resolve function passed into a promise
  * that produces a value of UserCallbackData<T> type.
- * @returns {(err: Error | null | undefined, ...args: T) => void} returns a callback that
- * accepts parameters with an error in the first argument and passes those parameters into
- * a promise's resolve function after those parameters are translated.
+ * @returns {function} returns a callback that accepts parameters with an error
+ * in the first argument and passes those parameters into a promise's resolve
+ * function after those parameters are translated.
  */
 function callbackWithError<T extends any[]>(
   resolve: PromiseResolveFunction<T>
@@ -1040,9 +1040,9 @@ class Transaction extends DatastoreRequest {
    * user that are used for the beginTransaction grpc call.
    * @param {Resolver<T>} [resolver] A resolver object used to construct a
    * custom promise which is run after ensuring a beginTransaction call is made.
-   * @param {Function} [callback]
-   * A callback provided by the user that expects an error in the first
-   * argument and a custom data type for the rest of the arguments
+   * @param {function} [callback] A callback provided by the user that expects
+   * an error in the first argument and a custom data type for the rest of the
+   * arguments.
    * @private
    */
   #sendUserCallbackData<T extends any[]>(
