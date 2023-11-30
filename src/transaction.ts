@@ -80,7 +80,23 @@ enum TransactionState {
   IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
 }
 
-
+/**
+ * This function helps build resolvers from common callback data. Callback data
+ * provided by many functions contains error information in the first argument
+ * and an arbitrary response across all other arguments. It is common to build a
+ * UserCallbackData object from the callback data by setting the resp property
+ * in the UserCallbackData object to the array of arguments provided in the
+ * callback after the error argument. Since resolvers expect a UserCallbackData
+ * object, this tool becomes useful when building a resolver from a function
+ * that accepts a callback because it translates the callback data into a
+ * UserCallbackData object and allows the resolver's resolve function to consume it.
+ *
+ * @param {PromiseResolveFunction<T>} [resolve] The resolve function passed into a promise
+ * that produces a value of UserCallbackData<T> type.
+ * @returns {(err: Error | null | undefined, ...args: T) => void} returns a callback that
+ * accepts parameters with an error in the first argument and passes those parameters into
+ * a promise's resolve function after those parameters are translated.
+ */
 function callbackWithError<T extends any[]>(
   resolve: PromiseResolveFunction<T>
 ): (err: Error | null | undefined, ...args: T) => void {
