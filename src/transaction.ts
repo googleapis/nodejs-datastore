@@ -1040,7 +1040,7 @@ class Transaction extends DatastoreRequest {
    * user that are used for the beginTransaction grpc call.
    * @param {Resolver<T>} [resolver] A resolver object used to construct a
    * custom promise which is run after ensuring a beginTransaction call is made.
-   * @param {(...args: [Error | null, ...T] | [Error | null]) => void} [callback]
+   * @param {Function} [callback]
    * A callback provided by the user that expects an error in the first
    * argument and a custom data type for the rest of the arguments
    * @private
