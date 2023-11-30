@@ -80,7 +80,6 @@ enum TransactionState {
   IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
 }
 
-type errorType = Error | null;
 
 function callbackWithError<T extends any[]>(
   resolve: PromiseResolveFunction<T>
@@ -219,7 +218,7 @@ class Transaction extends DatastoreRequest {
   #wrapWithBeginTransaction<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     resolver: Resolver<T>,
-    callback: (...args: [errorType, ...T] | [errorType]) => void
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
   ) {
     this.#withBeginTransaction(gaxOptions, resolver).then(
       (response: UserCallbackData<T>) => {
