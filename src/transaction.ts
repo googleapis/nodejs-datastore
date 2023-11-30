@@ -232,38 +232,6 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * This function runs custom code provided in the resolver after ensuring the
-   * transaction has been started. The custom code produces a UserCallbackData
-   * object. The UserCallbackData object is then translated into parameters and
-   * passed into the user's callback.
-   *
-   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
-   * user that are used for the beginTransaction grpc call.
-   * @param {Resolver<T>} [resolver] A resolver object used to construct a
-   * custom promise which is run after ensuring a beginTransaction call is made.
-   * @param {(...args: [Error | null, ...T] | [Error | null]) => void} [callback]
-   * A callback provided by the user that expects an error in the first
-   * argument and a custom data type for the rest of the arguments
-   * @private
-   */
-  #sendUserCallbackData<T extends any[]>(
-    gaxOptions: CallOptions | undefined,
-    resolver: Resolver<T>,
-    callback: (...args: [Error | null, ...T] | [Error | null]) => void
-  ): void {
-    this.#withBeginTransaction(gaxOptions, resolver).then(
-      (response: UserCallbackData<T>) => {
-        const resp: T | undefined = response.resp;
-        if (resp) {
-          callback(response.err, ...resp);
-        } else {
-          callback(response.err);
-        }
-      }
-    );
-  }
-
-  /**
    * If the transaction has not begun yet then this function ensures the transaction
    * has started before running the resolver provided. The resolver is a function with one
    * argument. This argument is a function that is used to pass errors and
@@ -1059,6 +1027,38 @@ class Transaction extends DatastoreRequest {
         args: [ent],
       });
     });
+  }
+
+  /**
+   * This function runs custom code provided in the resolver after ensuring the
+   * transaction has been started. The custom code produces a UserCallbackData
+   * object. The UserCallbackData object is then translated into parameters and
+   * passed into the user's callback.
+   *
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {Resolver<T>} [resolver] A resolver object used to construct a
+   * custom promise which is run after ensuring a beginTransaction call is made.
+   * @param {(...args: [Error | null, ...T] | [Error | null]) => void} [callback]
+   * A callback provided by the user that expects an error in the first
+   * argument and a custom data type for the rest of the arguments
+   * @private
+   */
+  #sendUserCallbackData<T extends any[]>(
+    gaxOptions: CallOptions | undefined,
+    resolver: Resolver<T>,
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+  ): void {
+    this.#withBeginTransaction(gaxOptions, resolver).then(
+      (response: UserCallbackData<T>) => {
+        const resp: T | undefined = response.resp;
+        if (resp) {
+          callback(response.err, ...resp);
+        } else {
+          callback(response.err);
+        }
+      }
+    );
   }
 
   /**
