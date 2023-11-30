@@ -224,8 +224,9 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    type commitResponseType = [google.datastore.v1.ICommitResponse | undefined];
-    const resolver: Resolver<commitResponseType> = resolve => {
+    const resolver: Resolver<
+      [google.datastore.v1.ICommitResponse | undefined]
+    > = resolve => {
       this.#runCommit(gaxOptions, callbackWithError(resolve));
     };
     this.#sendUserCallbackData(gaxOptions, resolver, callback);
