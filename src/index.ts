@@ -97,6 +97,7 @@ export interface LongRunningCallback {
   ): void;
 }
 export type LongRunningResponse = [Operation, google.longrunning.IOperation];
+export type Fallback = boolean | 'rest' | 'proto';
 
 export interface ExportEntitiesConfig
   extends Omit<google.datastore.admin.v1.IExportEntitiesRequest, 'projectId'> {
