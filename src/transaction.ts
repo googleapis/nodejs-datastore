@@ -80,8 +80,23 @@ enum TransactionState {
   IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
 }
 
-type errorType = Error | null;
-
+/**
+ * This function helps build resolvers from common callback data. Callback data
+ * provided by many functions contains error information in the first argument
+ * and an arbitrary response across all other arguments. It is common to build a
+ * UserCallbackData object from the callback data by setting the resp property
+ * in the UserCallbackData object to the array of arguments provided in the
+ * callback after the error argument. Since resolvers expect a UserCallbackData
+ * object, this tool becomes useful when building a resolver from a function
+ * that accepts a callback because it translates the callback data into a
+ * UserCallbackData object and allows the resolver's resolve function to consume it.
+ *
+ * @param {PromiseResolveFunction<T>} [resolve] The resolve function passed into a promise
+ * that produces a value of UserCallbackData<T> type.
+ * @returns {function} returns a callback that accepts parameters with an error
+ * in the first argument and passes those parameters into a promise's resolve
+ * function after those parameters are translated.
+ */
 function callbackWithError<T extends any[]>(
   resolve: PromiseResolveFunction<T>
 ): (err: Error | null | undefined, ...args: T) => void {
@@ -90,17 +105,75 @@ function callbackWithError<T extends any[]>(
   };
 }
 
+type ErrorType = Error | null;
 interface WithBeginParameters<T extends any[]> {
   gaxOptions: CallOptions | undefined;
   resolver: Resolver<T>;
-  callback: (...args: [errorType, ...T] | [errorType]) => void;
+  callback: (...args: [ErrorType, ...T] | [ErrorType]) => void;
 }
 interface WithBeginFunction<Args extends any[], T extends any[]> {
   (args: Args): WithBeginParameters<T>;
 }
 
+/*
 function decoratorFactory<T extends any[]>(withBeginFunction: (parameters: WithBeginParameters<T>) => void) {
 
+}
+*/
+
+function decoratorFactory(transaction: Transaction) {
+  // Target is the function itself
+  // descriptor has information about the method
+  return function decorator(
+    target: Transaction,
+    key: string,
+    descriptor: PropertyDescriptor
+  ) {
+    const method = descriptor.value;
+    /*
+    const withBeginFunction = (parameters: WithBeginParameters<T>) => {
+      this.#wrapWithBeginTransaction(
+        parameters.gaxOptions,
+        parameters.resolver,
+        parameters.callback
+      );
+    };
+     */
+    const value = function (...args: any) {
+      console.log('printing args');
+      console.log(args);
+      return method.apply(target, args);
+    };
+    descriptor.value = value;
+    return descriptor;
+    // return Object.assign(Object.assign({}, descriptor), {value});
+  };
+}
+// Target is the function itself
+// descriptor has information about the method
+function decorator(
+  target: Transaction,
+  key: string,
+  descriptor: PropertyDescriptor
+) {
+  const method = descriptor.value;
+  /*
+  const withBeginFunction = (parameters: WithBeginParameters<T>) => {
+    this.#wrapWithBeginTransaction(
+      parameters.gaxOptions,
+      parameters.resolver,
+      parameters.callback
+    );
+  };
+   */
+  const value = function (...args: any) {
+    console.log('printing args');
+    console.log(args);
+    return method.apply(target, args);
+  };
+  descriptor.value = value;
+  return descriptor;
+  // return Object.assign(Object.assign({}, descriptor), {value});
 }
 
 /**
@@ -222,29 +295,39 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    type commitResponseType = [google.datastore.v1.ICommitResponse | undefined];
-    const resolver: Resolver<commitResponseType> = resolve => {
+    const resolver: Resolver<
+      [google.datastore.v1.ICommitResponse | undefined]
+    > = resolve => {
       this.#runCommit(gaxOptions, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(gaxOptions, resolver, callback);
+    this.#sendUserCallbackData(gaxOptions, resolver, callback);
   }
 
-  // TODO: Move this function to the bottom
-  #wrapWithBeginTransaction<T extends any[]>(
-    gaxOptions: CallOptions | undefined,
-    resolver: Resolver<T>,
-    callback: (...args: [errorType, ...T] | [errorType]) => void
+  // Target is the function itself
+  // descriptor has information about the method
+  decoratorAsMethod(
+    target: Transaction,
+    key: string,
+    descriptor: PropertyDescriptor
   ) {
-    this.#withBeginTransaction(gaxOptions, resolver).then(
-      (response: UserCallbackData<T>) => {
-        const resp: T | undefined = response.resp;
-        if (resp) {
-          callback(response.err, ...resp);
-        } else {
-          callback(response.err);
-        }
-      }
-    );
+    const method = descriptor.value;
+    /*
+    const withBeginFunction = (parameters: WithBeginParameters<T>) => {
+      this.#wrapWithBeginTransaction(
+        parameters.gaxOptions,
+        parameters.resolver,
+        parameters.callback
+      );
+    };
+     */
+    const value = (...args: any) => {
+      console.log('printing args');
+      console.log(args);
+      return method.apply(this, args);
+    };
+    descriptor.value = value;
+    return descriptor;
+    // return Object.assign(Object.assign({}, descriptor), {value});
   }
 
   /**
@@ -253,8 +336,10 @@ class Transaction extends DatastoreRequest {
    * argument. This argument is a function that is used to pass errors and
    * response data back to the caller of the withBeginTransaction function.
    *
-   * @param {CallOptions | undefined} [gaxOptions]
-   * @param {Resolver<T>} [resolver]
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {Resolver<T>} [resolver] A resolver object used to construct a
+   * custom promise which is run after ensuring a beginTransaction call is made.
    * @returns {Promise<UserCallbackData<T>>} Returns a promise that will run
    * this code and resolve to an error or resolve with the data from the resolver.
    * @private
@@ -279,12 +364,13 @@ class Transaction extends DatastoreRequest {
     return await new Promise(resolver);
   }
 
-  withRun<T extends any[], Args extends [any]>(
+  #withRun<T extends any[], Args extends [any]>(
     target: Transaction,
     key: any,
     descriptor: {value: WithBeginFunction<Args, T>}
   ) {
     const method = descriptor.value;
+    /*
     const withBeginFunction = (parameters: WithBeginParameters<T>) => {
       this.#wrapWithBeginTransaction(
         parameters.gaxOptions,
@@ -292,9 +378,9 @@ class Transaction extends DatastoreRequest {
         parameters.callback
       );
     };
+     */
     const value = function (...args: Args) {
-      const parameters: WithBeginParameters<T> = method.apply(target, args);
-      withBeginFunction(parameters);
+      return method.apply(target, args);
     };
     return Object.assign(Object.assign({}, descriptor), {value});
   }
@@ -469,7 +555,7 @@ class Transaction extends DatastoreRequest {
     const resolver: Resolver<GetResponse> = resolve => {
       super.get(keys, options, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
+    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
   }
 
   /**
@@ -865,7 +951,6 @@ class Transaction extends DatastoreRequest {
     callback: RequestCallback
   ): void;
   runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
-  @(this.withRun)
   runAggregationQuery(
     query: AggregateQuery,
     optionsOrCallback?: RunQueryOptions | RequestCallback,
@@ -880,12 +965,7 @@ class Transaction extends DatastoreRequest {
     const resolver: Resolver<any> = resolve => {
       super.runAggregationQuery(query, options, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
-    return {
-      gaxOptions: options.gaxOptions,
-      resolver,
-      callback,
-    };
+    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
   }
 
   /**
@@ -906,12 +986,18 @@ class Transaction extends DatastoreRequest {
     callback: RunQueryCallback
   ): void;
   runQuery(query: Query, callback: RunQueryCallback): void;
+  @decorator
   runQuery(
     query: Query,
     optionsOrCallback?: RunQueryOptions | RunQueryCallback,
     cb?: RunQueryCallback
   ): void | Promise<RunQueryResponse> {
     // TODO: Return a resolver and use decorator
+    console.log('running runQuery');
+    console.log('start args');
+    console.log(query);
+    console.log(optionsOrCallback);
+    console.log(cb);
     const options =
       typeof optionsOrCallback === 'object' && optionsOrCallback
         ? optionsOrCallback
@@ -921,7 +1007,8 @@ class Transaction extends DatastoreRequest {
     const resolver: Resolver<RunQueryResponseOptional> = resolve => {
       super.runQuery(query, options, callbackWithError(resolve));
     };
-    this.#wrapWithBeginTransaction(options.gaxOptions, resolver, callback);
+    console.log('reading send');
+    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
   }
 
   /**
@@ -1069,6 +1156,39 @@ class Transaction extends DatastoreRequest {
         args: [ent],
       });
     });
+  }
+
+  /**
+   * This function runs custom code provided in the resolver after ensuring the
+   * transaction has been started. The custom code produces a UserCallbackData
+   * object. The UserCallbackData object is then translated into parameters and
+   * passed into the user's callback.
+   *
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {Resolver<T>} [resolver] A resolver object used to construct a
+   * custom promise which is run after ensuring a beginTransaction call is made.
+   * @param {function} [callback] A callback provided by the user that expects
+   * an error in the first argument and a custom data type for the rest of the
+   * arguments.
+   * @private
+   */
+  #sendUserCallbackData<T extends any[]>(
+    gaxOptions: CallOptions | undefined,
+    resolver: Resolver<T>,
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+  ): void {
+    console.log('in reading send');
+    this.#withBeginTransaction(gaxOptions, resolver).then(
+      (response: UserCallbackData<T>) => {
+        const resp: T | undefined = response.resp;
+        if (resp) {
+          callback(response.err, ...resp);
+        } else {
+          callback(response.err);
+        }
+      }
+    );
   }
 
   /**

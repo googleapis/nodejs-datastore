@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "build",
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "lib": [
       "es2018",
