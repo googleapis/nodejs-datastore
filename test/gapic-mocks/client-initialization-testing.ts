@@ -62,12 +62,6 @@ class FakeDatastoreClient extends DatastoreClient {
   }
 }
 
-type FallbackTestParameters = {
-  options: DatastoreOptions;
-  expectedFallback: string | undefined;
-  description: string;
-};
-
 describe('ClientTesting', () => {
   describe('Request', () => {
     let Request: typeof ds.DatastoreRequest;
@@ -113,7 +107,11 @@ describe('ClientTesting', () => {
           description: 'when specifying no fallback parameter',
         },
       ],
-      (testParameters: FallbackTestParameters) => {
+      (testParameters: {
+        options: DatastoreOptions;
+        expectedFallback: string | undefined;
+        description: string;
+      }) => {
         describe(testParameters.description, () => {
           beforeEach(() => {
             Request = proxyquire('../../src/request', {
