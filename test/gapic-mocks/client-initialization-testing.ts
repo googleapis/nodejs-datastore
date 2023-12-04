@@ -1,9 +1,10 @@
-import {before, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import {
   Datastore,
   DatastoreClient,
   Fallback,
   DatastoreRequest,
+  DatastoreOptions,
 } from '../../src';
 import * as assert from 'assert';
 import * as proxyquire from 'proxyquire';
@@ -16,6 +17,7 @@ import * as mocha from 'mocha';
 type Any = any;
 
 const clientName = 'DatastoreClient';
+const async = require('async');
 
 class FakeDatastoreClient extends DatastoreClient {
   restParameter: string | undefined;
@@ -51,19 +53,16 @@ class FakeDatastoreClient extends DatastoreClient {
   }
 }
 
+type FallbackTestParameters = {
+  options: DatastoreOptions;
+  expectedFallback: string | undefined;
+  description: string;
+};
+
 describe('ClientTesting', () => {
   describe('Request', () => {
     let Request: typeof ds.DatastoreRequest;
     let request: Any;
-
-    function mockRequest() {
-      Request = proxyquire('../../src/request', {
-        './v1': {
-          DatastoreClient: FakeDatastoreClient,
-        },
-      }).DatastoreRequest;
-      request = new Request();
-    }
 
     /**
      * This function is called by a test to ensure that the rest parameter
@@ -92,62 +91,47 @@ describe('ClientTesting', () => {
         done(err);
       }
     }
-
-    describe.only('rest parameter support', () => {
-      beforeEach(() => {
-        mockRequest();
-      });
-      // TODO: Use parameterized testing instead.
-      describe('when the datastore client is expecting a rest parameter', () => {
-        beforeEach(() => {
-          const options = {
-            fallback: 'rest' as Fallback,
-          };
-          request.datastore = new Datastore(options);
+    async.each(
+      [
+        {
+          options: {fallback: 'rest' as Fallback},
+          expectedFallback: 'rest',
+          description: 'when specifying rest as a fallback parameter',
+        },
+        {
+          options: {},
+          expectedFallback: undefined,
+          description: 'when specifying no fallback parameter',
+        },
+      ],
+      (testParameters: FallbackTestParameters) => {
+        describe(testParameters.description, () => {
+          beforeEach(() => {
+            Request = proxyquire('../../src/request', {
+              './v1': {
+                DatastoreClient: FakeDatastoreClient,
+              },
+            }).DatastoreRequest;
+            request = new Request();
+            request.datastore = new Datastore(testParameters.options);
+          });
+          it('should set the rest parameter in the data client when calling prepareGaxRequest_', done => {
+            // This request does lazy initialization of the gapic layer Datastore client.
+            request.prepareGaxRequest_(
+              {client: clientName, method: 'lookup'},
+              () => {
+                compareRequest(request, testParameters.expectedFallback, done);
+              }
+            );
+          });
+          it('should set the rest parameter in the data client when calling request_', done => {
+            // This request does lazy initialization of the gapic layer Datastore client.
+            request.request_({client: clientName, method: 'lookup'}, () => {
+              compareRequest(request, testParameters.expectedFallback, done);
+            });
+          });
         });
-        it('should set the rest parameter in the data client when calling prepareGaxRequest_', done => {
-          // This request does lazy initialization of the gapic layer Datastore client.
-          request.prepareGaxRequest_(
-            {client: clientName, method: 'lookup'},
-            (err: any, res: any) => {
-              compareRequest(request, 'rest', done);
-            }
-          );
-        });
-        it('should set the rest parameter in the data client when calling request_', done => {
-          // This request does lazy initialization of the gapic layer Datastore client.
-          request.request_(
-            {client: clientName, method: 'lookup'},
-            (err: any, res: any) => {
-              compareRequest(request, 'rest', done);
-            }
-          );
-        });
-      });
-      describe('when the datastore client is not expecting a rest parameter', () => {
-        beforeEach(() => {
-          const options = {};
-          request.datastore = new Datastore(options);
-        });
-        it('should not set the rest parameter in the data client when calling prepareGaxRequest_', done => {
-          // This request does lazy initialization of the gapic layer Datastore client.
-          request.prepareGaxRequest_(
-            {client: clientName, method: 'lookup'},
-            (err: any, res: any) => {
-              compareRequest(request, undefined, done);
-            }
-          );
-        });
-        it('should not set the rest parameter in the data client when calling request_', done => {
-          // This request does lazy initialization of the gapic layer Datastore client.
-          request.request_(
-            {client: clientName, method: 'lookup'},
-            (err: any, res: any) => {
-              compareRequest(request, undefined, done);
-            }
-          );
-        });
-      });
-    });
+      }
+    );
   });
 });
