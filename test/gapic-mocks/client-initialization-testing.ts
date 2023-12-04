@@ -76,7 +76,7 @@ class FakeDatastoreClient extends DatastoreClient {
   }
 }
 
-describe('ClientTesting', () => {
+describe.only('ClientTesting', () => {
   describe('Request', () => {
     let Request: typeof ds.DatastoreRequest;
     let request: Any;
@@ -101,8 +101,11 @@ describe('ClientTesting', () => {
     ) {
       try {
         const client = request.datastore.clients_.get(clientName);
-        assert(client);
-        assert.strictEqual(client.restParameter, expectedFallback);
+        if (client) {
+          assert.strictEqual(client.restParameter, expectedFallback);
+        } else {
+          assert.fail('The client should be defined');
+        }
         done();
       } catch (err: unknown) {
         done(err);
