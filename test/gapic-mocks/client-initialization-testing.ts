@@ -68,7 +68,7 @@ type FallbackTestParameters = {
   description: string;
 };
 
-describe.only('ClientTesting', () => {
+describe('ClientTesting', () => {
   describe('Request', () => {
     let Request: typeof ds.DatastoreRequest;
     let request: Any;
