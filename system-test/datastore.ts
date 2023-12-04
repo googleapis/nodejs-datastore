@@ -17,13 +17,7 @@ import {readFileSync} from 'fs';
 import * as path from 'path';
 import {after, before, describe, it} from 'mocha';
 import * as yaml from 'js-yaml';
-import {
-  Datastore,
-  DatastoreOptions,
-  Fallback,
-  Index,
-  Transaction,
-} from '../src';
+import {Datastore, DatastoreOptions, Index, Transaction} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
@@ -2084,22 +2078,6 @@ async.each(
           const query = customDatastore.createQuery('Kind').select('__key__');
           const [entities] = await customDatastore.runQuery(query);
           assert.strictEqual(entities.length, 0);
-        });
-      });
-      describe('rest parameter support', () => {
-        const keys = datastore.key(['Company', 'Google']);
-        const clientName = 'DatastoreClient';
-        // it.only('should not set the rest parameter in the data client when it is not provided', async () => {});
-        it.only('should set the rest parameter in the data client when it is provided', async () => {
-          const options = {
-            fallback: 'rest' as Fallback,
-          };
-          const otherDatastore = new Datastore(options);
-          await otherDatastore.get(keys);
-          const dataClient = otherDatastore.clients_.get(clientName);
-          assert(dataClient);
-          assert(dataClient._opts);
-          const projectId = await otherDatastore.getProjectId();
         });
       });
     });
