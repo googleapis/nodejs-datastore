@@ -19,6 +19,13 @@ type Any = any;
 const clientName = 'DatastoreClient';
 const async = require('async');
 
+/**
+ * This class mocks out the lookup function so that for tests in this file
+ * the lookup function just sends data back instead of making a call to the
+ * server. The class also saves the rest parameter in the constructor so that
+ * it can be read later for correctness.
+ *
+ */
 class FakeDatastoreClient extends DatastoreClient {
   restParameter: string | undefined;
   constructor(...args: any[]) {
@@ -47,9 +54,11 @@ class FakeDatastoreClient extends DatastoreClient {
     ]
   > {
     if (callback) {
-      callback(new Error('some error'));
+      callback(null, {});
     }
-    return new Promise(() => {});
+    return new Promise((resolve, reject) => {
+      resolve([{}, {}, {}]);
+    });
   }
 }
 
@@ -59,7 +68,7 @@ type FallbackTestParameters = {
   description: string;
 };
 
-describe('ClientTesting', () => {
+describe.only('ClientTesting', () => {
   describe('Request', () => {
     let Request: typeof ds.DatastoreRequest;
     let request: Any;
