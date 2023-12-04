@@ -1,5 +1,5 @@
 import {before, beforeEach, describe, it} from 'mocha';
-import {DatastoreClient, Fallback} from '../src';
+import {Datastore, DatastoreClient, Fallback} from '../src';
 import * as assert from 'assert';
 import * as proxyquire from 'proxyquire';
 import {Callback, CallOptions} from 'google-gax';
@@ -55,7 +55,6 @@ class FakeDatastoreClientExpectingGrpc extends FakeDatastoreClient {
 }
 
 describe('ClientTesting', () => {
-  let Datastore: typeof ds.Datastore;
   let Request: typeof ds.DatastoreRequest;
   let request: Any;
 
@@ -68,14 +67,6 @@ describe('ClientTesting', () => {
             DatastoreClient: FakeDatastoreClient,
           },
         }).DatastoreRequest;
-        Datastore = proxyquire('../src', {
-          './request': {
-            Request,
-          },
-          './v1': {
-            DatastoreClient: FakeDatastoreClient,
-          },
-        }).Datastore;
         request = new Request();
       });
       it.only('should set the rest parameter in the data client when calling prepareGaxRequest_', done => {
