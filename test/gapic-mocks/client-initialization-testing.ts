@@ -76,7 +76,7 @@ class FakeDatastoreClient extends DatastoreClient {
   }
 }
 
-describe.only('ClientTesting', () => {
+describe('ClientTesting', () => {
   describe('Request', () => {
     let Request: typeof ds.DatastoreRequest;
     let request: Any;
