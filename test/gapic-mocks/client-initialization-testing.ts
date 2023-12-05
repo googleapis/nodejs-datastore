@@ -100,12 +100,10 @@ describe.only('ClientTesting', () => {
       done: mocha.Done
     ) {
       try {
+        console.log(request.datastore.clients_);
         const client = request.datastore.clients_.get(clientName);
-        if (client) {
-          assert.strictEqual(client.restParameter, expectedFallback);
-        } else {
-          assert.fail('The client should be defined');
-        }
+        assert(client);
+        assert.strictEqual(client.restParameter, expectedFallback);
         done();
       } catch (err: unknown) {
         done(err);
