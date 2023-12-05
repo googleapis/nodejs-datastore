@@ -1023,7 +1023,9 @@ class DatastoreRequest {
         return;
       }
       const clientName = config.client;
+      console.log(clientName);
       if (!datastore.clients_.has(clientName)) {
+        console.log('in set');
         datastore.clients_.set(
           clientName,
           new gapic.v1[clientName](datastore.options)
