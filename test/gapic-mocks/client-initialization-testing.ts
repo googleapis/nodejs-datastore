@@ -136,6 +136,13 @@ describe.only('ClientTesting', () => {
             }).DatastoreRequest;
             request = new Request();
             request.datastore = new Datastore(testParameters.options);
+            // The CI environment can't fetch project id so the function that
+            // fetches the project id needs to be mocked out.
+            request.datastore.auth.getProjectId = (
+              callback: (err: any, projectId: string) => void
+            ) => {
+              callback(null, 'some-project-id');
+            };
           });
           it('should set the rest parameter in the data client when calling prepareGaxRequest_', done => {
             // This request does lazy initialization of the gapic layer Datastore client.
