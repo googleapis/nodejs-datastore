@@ -1017,18 +1017,13 @@ class DatastoreRequest {
       };
     }
 
-    console.log('before project');
     datastore.auth.getProjectId((err, projectId) => {
-      console.log('after project load');
-      console.log(err);
       if (err) {
         callback!(err);
         return;
       }
       const clientName = config.client;
-      console.log(clientName);
       if (!datastore.clients_.has(clientName)) {
-        console.log('in set');
         datastore.clients_.set(
           clientName,
           new gapic.v1[clientName](datastore.options)

@@ -76,7 +76,7 @@ class FakeDatastoreClient extends DatastoreClient {
   }
 }
 
-describe('ClientTesting', () => {
+describe('Client Initialization Testing', () => {
   describe('Request', () => {
     let Request: typeof ds.DatastoreRequest;
     let request: Any;
@@ -100,7 +100,6 @@ describe('ClientTesting', () => {
       done: mocha.Done
     ) {
       try {
-        console.log(request.datastore.clients_);
         const client = request.datastore.clients_.get(clientName);
         assert(client);
         assert.strictEqual(client.restParameter, expectedFallback);
