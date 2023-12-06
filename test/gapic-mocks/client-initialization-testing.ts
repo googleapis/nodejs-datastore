@@ -96,7 +96,7 @@ describe('Client Initialization Testing', () => {
      */
     function compareRequest(
       request: DatastoreRequest,
-      expectedFallback: string | undefined,
+      expectedFallback: Fallback,
       done: mocha.Done
     ) {
       try {
@@ -123,7 +123,7 @@ describe('Client Initialization Testing', () => {
       ],
       (testParameters: {
         options: DatastoreOptions;
-        expectedFallback: string | undefined;
+        expectedFallback: Fallback;
         description: string;
       }) => {
         describe(testParameters.description, () => {
