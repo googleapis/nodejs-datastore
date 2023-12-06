@@ -41,7 +41,7 @@ const async = require('async');
  *
  */
 class FakeDatastoreClient extends DatastoreClient {
-  restParameter: string | undefined;
+  restParameter: Fallback;
   constructor(...args: any[]) {
     super();
     this.restParameter = args[0].fallback;
