@@ -2087,7 +2087,7 @@ async.each(
           });
           const postKey = datastore.key(['Post', 'post1']);
           const [entity] = await customDatastore.get(postKey);
-          assert.deepStrictEqual(entity[datastore.KEY], postKey);
+          assert.strictEqual(entity, undefined);
         });
       });
     });
