@@ -233,39 +233,6 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * If the transaction has not begun yet then this function ensures the transaction
-   * has started before running the resolver provided. The resolver is a function with one
-   * argument. This argument is a function that is used to pass errors and
-   * response data back to the caller of the withBeginTransaction function.
-   *
-   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
-   * user that are used for the beginTransaction grpc call.
-   * @param {Resolver<T>} [resolver] A resolver object used to construct a
-   * custom promise which is run after ensuring a beginTransaction call is made.
-   * @returns {Promise<UserCallbackData<T>>} Returns a promise that will run
-   * this code and resolve to an error or resolve with the data from the resolver.
-   * @private
-   */
-  async #withBeginTransaction<T>(
-    gaxOptions: CallOptions | undefined,
-    resolver: Resolver<T>
-  ): Promise<UserCallbackData<T>> {
-    if (this.#state === TransactionState.NOT_STARTED) {
-      try {
-        await this.#mutex.runExclusive(async () => {
-          if (this.#state === TransactionState.NOT_STARTED) {
-            const runResults = await this.#runAsync({gaxOptions});
-            this.#parseRunSuccess(runResults);
-          }
-        });
-      } catch (err: any) {
-        return {err};
-      }
-    }
-    return await new Promise(resolver);
-  }
-
-  /**
    * Create a query for the specified kind. See {module:datastore/query} for all
    * of the available methods.
    *
@@ -1050,16 +1017,28 @@ class Transaction extends DatastoreRequest {
     resolver: Resolver<T>,
     callback: (...args: [Error | null, ...T] | [Error | null]) => void
   ): void {
-    this.#withBeginTransaction(gaxOptions, resolver).then(
-      (response: UserCallbackData<T>) => {
-        const resp: T | undefined = response.resp;
-        if (resp) {
-          callback(response.err, ...resp);
-        } else {
-          callback(response.err);
+    (async () => {
+      if (this.#state === TransactionState.NOT_STARTED) {
+        try {
+          await this.#mutex.runExclusive(async () => {
+            if (this.#state === TransactionState.NOT_STARTED) {
+              const runResults = await this.#runAsync({gaxOptions});
+              this.#parseRunSuccess(runResults);
+            }
+          });
+        } catch (err: any) {
+          return {err};
         }
       }
-    );
+      return await new Promise(resolver);
+    })().then((response: UserCallbackData<T>) => {
+      const resp: T | undefined = response.resp;
+      if (resp) {
+        callback(response.err, ...resp);
+      } else {
+        callback(response.err);
+      }
+    });
   }
 
   /**
