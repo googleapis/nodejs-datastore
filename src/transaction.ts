@@ -1025,7 +1025,7 @@ class Transaction extends DatastoreRequest {
   // TODO: Introduce more specific types for parameters.
   #sendUserCallbackData2<T extends any[], Args extends any[]>(
     gaxOptions: CallOptions | undefined,
-    fn: (...args: any[]) => void,
+    fn: () => void,
     callback: (...args: [Error | null, ...T] | [Error | null]) => void
   ): void {
     (async () => {
