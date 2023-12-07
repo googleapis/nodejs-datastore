@@ -1020,9 +1020,7 @@ class Transaction extends DatastoreRequest {
       }
     });
   }
-
-  // TODO: 4 parameters is too many, reduce number of parameters.
-  // TODO: Introduce more specific types for parameters.
+  
   #sendUserCallbackData2<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     fn: () => void,
