@@ -43,11 +43,6 @@ import {
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
 
-type RunQueryResponseOptional = [
-  Entity[] | undefined,
-  RunQueryInfo | undefined,
-];
-
 /**
  * This type matches data typically passed into a callback the user supplies.
  * The data matches promises created from an argument of Resolver<T> type.
@@ -78,31 +73,6 @@ interface Resolver<T> {
 enum TransactionState {
   NOT_STARTED,
   IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
-}
-
-/**
- * This function helps build resolvers from common callback data. Callback data
- * provided by many functions contains error information in the first argument
- * and an arbitrary response across all other arguments. It is common to build a
- * UserCallbackData object from the callback data by setting the resp property
- * in the UserCallbackData object to the array of arguments provided in the
- * callback after the error argument. Since resolvers expect a UserCallbackData
- * object, this tool becomes useful when building a resolver from a function
- * that accepts a callback because it translates the callback data into a
- * UserCallbackData object and allows the resolver's resolve function to consume it.
- *
- * @param {PromiseResolveFunction<T>} [resolve] The resolve function passed into a promise
- * that produces a value of UserCallbackData<T> type.
- * @returns {function} returns a callback that accepts parameters with an error
- * in the first argument and passes those parameters into a promise's resolve
- * function after those parameters are translated.
- */
-function callbackWithError<T extends any[]>(
-  resolve: PromiseResolveFunction<T>
-): (err: Error | null | undefined, ...args: T) => void {
-  return (err: Error | null | undefined, ...args: T) => {
-    resolve({err: err ? err : null, resp: args});
-  };
 }
 
 /**
@@ -224,12 +194,13 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    const resolver: Resolver<
-      [google.datastore.v1.ICommitResponse | undefined]
-    > = resolve => {
-      this.#runCommit(gaxOptions, callbackWithError(resolve));
-    };
-    this.#sendUserCallbackData(gaxOptions, resolver, callback);
+    this.#sendUserCallbackData2(
+      gaxOptions,
+      () => {
+        this.#runCommit(gaxOptions, callback);
+      },
+      callback
+    );
   }
 
   /**
@@ -399,10 +370,13 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: Resolver<GetResponse> = resolve => {
-      super.get(keys, options, callbackWithError(resolve));
-    };
-    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
+    this.#sendUserCallbackData2(
+      options.gaxOptions,
+      () => {
+        super.get(keys, options, callback);
+      },
+      callback
+    );
   }
 
   /**
@@ -809,10 +783,13 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: Resolver<any> = resolve => {
-      super.runAggregationQuery(query, options, callbackWithError(resolve));
-    };
-    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
+    this.#sendUserCallbackData2(
+      options.gaxOptions,
+      () => {
+        super.runAggregationQuery(query, options, callback);
+      },
+      callback
+    );
   }
 
   /**
@@ -844,10 +821,13 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: Resolver<RunQueryResponseOptional> = resolve => {
-      super.runQuery(query, options, callbackWithError(resolve));
-    };
-    this.#sendUserCallbackData(options.gaxOptions, resolver, callback);
+    this.#sendUserCallbackData2(
+      options.gaxOptions,
+      () => {
+        super.runQuery(query, options, callback);
+      },
+      callback
+    );
   }
 
   /**
@@ -1012,7 +992,7 @@ class Transaction extends DatastoreRequest {
    * arguments.
    * @private
    */
-  #sendUserCallbackData<T extends any[]>(
+  #sendUserCallbackData<T extends any[], Args extends any[]>(
     gaxOptions: CallOptions | undefined,
     resolver: Resolver<T>,
     callback: (...args: [Error | null, ...T] | [Error | null]) => void
@@ -1039,6 +1019,30 @@ class Transaction extends DatastoreRequest {
         callback(response.err);
       }
     });
+  }
+
+  // TODO: 4 parameters is too many, reduce number of parameters.
+  // TODO: Introduce more specific types for parameters.
+  #sendUserCallbackData2<T extends any[], Args extends any[]>(
+    gaxOptions: CallOptions | undefined,
+    fn: (...args: any[]) => void,
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+  ): void {
+    (async () => {
+      if (this.#state === TransactionState.NOT_STARTED) {
+        try {
+          await this.#mutex.runExclusive(async () => {
+            if (this.#state === TransactionState.NOT_STARTED) {
+              const runResults = await this.#runAsync({gaxOptions});
+              this.#parseRunSuccess(runResults);
+            }
+          });
+        } catch (err: any) {
+          return callback(err);
+        }
+      }
+      return fn();
+    })();
   }
 
   /**
