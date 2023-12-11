@@ -978,41 +978,6 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * If the transaction has not begun yet then this function ensures the transaction
-   * has started before running the function provided as a parameter.
-   *
-   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
-   * user that are used for the beginTransaction grpc call.
-   * @param {function} [fn] A function which is run after ensuring a
-   * beginTransaction call is made.
-   * @param {function} [callback] A callback provided by the user that expects
-   * an error in the first argument and a custom data type for the rest of the
-   * arguments.
-   * @private
-   */
-  #withBeginTransaction<T extends any[]>(
-    gaxOptions: CallOptions | undefined,
-    fn: () => void,
-    callback: (...args: [Error | null, ...T] | [Error | null]) => void
-  ): void {
-    (async () => {
-      if (this.#state === TransactionState.NOT_STARTED) {
-        try {
-          await this.#mutex.runExclusive(async () => {
-            if (this.#state === TransactionState.NOT_STARTED) {
-              const runResults = await this.#runAsync({gaxOptions});
-              this.#parseRunSuccess(runResults);
-            }
-          });
-        } catch (err: any) {
-          return callback(err);
-        }
-      }
-      return fn();
-    })();
-  }
-
-  /**
    * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `update`.
    *
    * @param {object|object[]} entities Datastore key object(s).
@@ -1054,6 +1019,41 @@ class Transaction extends DatastoreRequest {
       });
 
     this.save(entities);
+  }
+
+  /**
+   * If the transaction has not begun yet then this function ensures the transaction
+   * has started before running the function provided as a parameter.
+   *
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {function} [fn] A function which is run after ensuring a
+   * beginTransaction call is made.
+   * @param {function} [callback] A callback provided by the user that expects
+   * an error in the first argument and a custom data type for the rest of the
+   * arguments.
+   * @private
+   */
+  #withBeginTransaction<T extends any[]>(
+    gaxOptions: CallOptions | undefined,
+    fn: () => void,
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+  ): void {
+    (async () => {
+      if (this.#state === TransactionState.NOT_STARTED) {
+        try {
+          await this.#mutex.runExclusive(async () => {
+            if (this.#state === TransactionState.NOT_STARTED) {
+              const runResults = await this.#runAsync({gaxOptions});
+              this.#parseRunSuccess(runResults);
+            }
+          });
+        } catch (err: any) {
+          return callback(err);
+        }
+      }
+      return fn();
+    })();
   }
 }
 
