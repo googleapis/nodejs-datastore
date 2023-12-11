@@ -52,7 +52,7 @@ import {
   RunQueryInfo,
   RunQueryOptions,
   RunQueryResponse,
-  RunQueryCallback,
+  RunQueryCallback, QueryMode,
 } from './query';
 import {Datastore} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
@@ -68,6 +68,14 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   eventual: 2,
   strong: 1,
 };
+
+type GapicQueryMode = google.datastore.v1.QueryMode;
+
+const modeToProtoMode = new Map<QueryMode, google.datastore.v1.QueryMode>([
+  [QueryMode.NORMAL, google.datastore.v1.QueryMode.NORMAL],
+  [QueryMode.EXPLAIN, google.datastore.v1.QueryMode.PLAN],
+  [QueryMode.EXPLAIN_ANALYZE, google.datastore.v1.QueryMode.PROFILE],
+]);
 
 /**
  * Handle logic for Datastore API operations. Handles request logic for
@@ -895,6 +903,9 @@ class DatastoreRequest {
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
+    if (options.mode) {
+      sharedQueryOpts.mode = modeToProtoMode.get(options.mode);
+    }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
         namespaceId: query.namespace,
@@ -1152,6 +1163,7 @@ export interface RequestConfig {
   reqOpts?: RequestOptions;
 }
 export interface SharedQueryOptions {
+  mode?: string | GapicQueryMode;
   databaseId?: string;
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
@@ -1169,7 +1181,7 @@ export interface RequestOptions extends SharedQueryOptions {
     readWrite?: {previousTransaction?: string};
   } | null;
   transaction?: string | null;
-  mode?: string;
+  mode?: string | GapicQueryMode;
   query?: QueryProto;
   filter?: string;
   indexId?: string;
