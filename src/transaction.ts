@@ -741,7 +741,7 @@ class Transaction extends DatastoreRequest {
         // Always use resolve because then this function can return both the error and the response
         (err, resp) => {
           resolve({
-            err: err ? err : null,
+            err,
             resp,
           });
         }
