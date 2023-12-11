@@ -194,7 +194,7 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    this.#sendUserCallbackData2(
+    this.#withBeginTransaction(
       gaxOptions,
       () => {
         this.#runCommit(gaxOptions, callback);
@@ -370,7 +370,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.#sendUserCallbackData2(
+    this.#withBeginTransaction(
       options.gaxOptions,
       () => {
         super.get(keys, options, callback);
@@ -783,7 +783,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.#sendUserCallbackData2(
+    this.#withBeginTransaction(
       options.gaxOptions,
       () => {
         super.runAggregationQuery(query, options, callback);
@@ -821,7 +821,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.#sendUserCallbackData2(
+    this.#withBeginTransaction(
       options.gaxOptions,
       () => {
         super.runQuery(query, options, callback);
@@ -992,36 +992,7 @@ class Transaction extends DatastoreRequest {
    * arguments.
    * @private
    */
-  #sendUserCallbackData<T extends any[], Args extends any[]>(
-    gaxOptions: CallOptions | undefined,
-    resolver: Resolver<T>,
-    callback: (...args: [Error | null, ...T] | [Error | null]) => void
-  ): void {
-    (async () => {
-      if (this.#state === TransactionState.NOT_STARTED) {
-        try {
-          await this.#mutex.runExclusive(async () => {
-            if (this.#state === TransactionState.NOT_STARTED) {
-              const runResults = await this.#runAsync({gaxOptions});
-              this.#parseRunSuccess(runResults);
-            }
-          });
-        } catch (err: any) {
-          return {err};
-        }
-      }
-      return await new Promise(resolver);
-    })().then((response: UserCallbackData<T>) => {
-      const resp: T | undefined = response.resp;
-      if (resp) {
-        callback(response.err, ...resp);
-      } else {
-        callback(response.err);
-      }
-    });
-  }
-  
-  #sendUserCallbackData2<T extends any[]>(
+  #withBeginTransaction<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     fn: () => void,
     callback: (...args: [Error | null, ...T] | [Error | null]) => void
@@ -1129,7 +1100,6 @@ promisifyAll(Transaction, {
     'save',
     'update',
     'upsert',
-    '#withBeginTransaction',
   ],
 });
 

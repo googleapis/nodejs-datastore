@@ -67,7 +67,6 @@ const fakePfy = Object.assign({}, pfy, {
       'save',
       'update',
       'upsert',
-      '#withBeginTransaction',
     ]);
   },
 });
