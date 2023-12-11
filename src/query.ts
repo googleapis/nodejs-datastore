@@ -597,10 +597,17 @@ export interface IntegerTypeCastOptions {
   properties?: string | string[];
 }
 
+export enum QueryMode {
+  EXPLAIN_ANALYZE,
+  EXPLAIN,
+  NORMAL,
+}
+
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   readTime?: number;
   gaxOptions?: CallOptions;
+  mode?: QueryMode;
   wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
 
