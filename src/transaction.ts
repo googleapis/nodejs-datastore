@@ -48,7 +48,7 @@ import {Mutex} from 'async-mutex';
  * The data matches promises created from an argument of Resolver<T> type.
  */
 interface UserCallbackData<T> {
-  err: Error | null;
+  err?: Error | null;
   // T is the type of the data that the promise delivered to the user resolves to.
   // T also matches the type of the response data provided in the user's callback.
   resp?: T;
