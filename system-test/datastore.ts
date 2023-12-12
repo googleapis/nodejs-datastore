@@ -21,8 +21,9 @@ import {Datastore, DatastoreOptions, Index, Transaction} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
-import {PropertyFilter, and, or} from '../src/filter';
+import {and, or, PropertyFilter} from '../src/filter';
 import {entity} from '../src/entity';
+import {QueryMode} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 
 const async = require('async');
@@ -33,10 +34,12 @@ async.each(
   [
     {
       namespace: `${Date.now()}`,
+      apiEndpoint: 'nightly-datastore.sandbox.googleapis.com', // TODO: Remove before merge
     },
     {
       databaseId: SECOND_DATABASE_ID,
       namespace: `second-db-${Date.now()}`,
+      apiEndpoint: 'nightly-datastore.sandbox.googleapis.com', // TODO: Remove before merge
     },
   ],
   (clientOptions: DatastoreOptions) => {
@@ -1128,6 +1131,15 @@ async.each(
               const [entities] = await datastore.runQuery(q);
               assert.strictEqual(entities!.length, 3);
             });
+          });
+        });
+        describe.only('query profiling', () => {
+          it('should run a query profile with EXPLAIN', async () => {
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            const allResults = await datastore.runQuery(q, {
+              mode: QueryMode.EXPLAIN,
+            });
+            console.log(allResults);
           });
         });
         describe('with a sum filter', () => {

@@ -23,6 +23,7 @@ import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
+import {google} from '../protos/protos';
 
 export type Operator =
   | '='
@@ -598,9 +599,9 @@ export interface IntegerTypeCastOptions {
 }
 
 export enum QueryMode {
-  EXPLAIN_ANALYZE,
-  EXPLAIN,
-  NORMAL,
+  NORMAL = google.datastore.v1.QueryMode.NORMAL,
+  EXPLAIN = google.datastore.v1.QueryMode.PLAN,
+  EXPLAIN_ANALYZE = google.datastore.v1.QueryMode.PROFILE,
 }
 
 export interface RunQueryOptions {
