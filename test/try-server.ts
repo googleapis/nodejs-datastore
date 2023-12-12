@@ -1,0 +1,15 @@
+import {describe, it} from 'mocha';
+import {Datastore} from '../src';
+
+describe.only('Try server', () => {
+  it('should try to connect to the running server', async () => {
+    const datastore = new Datastore({
+      namespace: `${Date.now()}`,
+      apiEndpoint: 'localhost:50051',
+    });
+    const postKey = datastore.key(['Post', 'post1']);
+    const query = datastore.createQuery('Post').hasAncestor(postKey);
+    const allResults = await datastore.runQuery(query);
+    console.log(allResults);
+  });
+});
