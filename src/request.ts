@@ -15,15 +15,20 @@
  */
 
 import {promisifyAll} from '@google-cloud/promisify';
-import arrify = require('arrify');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const concat = require('concat-stream');
 import * as extend from 'extend';
 import {split} from 'split-array-stream';
 import {google} from '../protos/protos';
 import {CallOptions, CancellableStream} from 'google-gax';
 import {Duplex, PassThrough, Transform} from 'stream';
+import {Entities, Entity, entity, EntityProto, KeyProto, ResponseResult,} from './entity';
+import {Query, QueryMode, QueryProto, RunQueryCallback, RunQueryInfo, RunQueryOptions, RunQueryResponse,} from './query';
+import {Datastore} from '.';
+import {AggregateQuery} from './aggregate';
+import arrify = require('arrify');
+import ITimestamp = google.protobuf.ITimestamp;
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const concat = require('concat-stream');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const streamEvents = require('stream-events');
@@ -37,26 +42,6 @@ const gapic = Object.freeze({
   v1: require('./v1'),
 });
 
-import {
-  entity,
-  Entity,
-  EntityProto,
-  KeyProto,
-  ResponseResult,
-  Entities,
-  ValueProto,
-} from './entity';
-import {
-  Query,
-  QueryProto,
-  RunQueryInfo,
-  RunQueryOptions,
-  RunQueryResponse,
-  RunQueryCallback, QueryMode,
-} from './query';
-import {Datastore} from '.';
-import ITimestamp = google.protobuf.ITimestamp;
-import {AggregateQuery} from './aggregate';
 
 /**
  * A map of read consistency values to proto codes.
@@ -70,12 +55,6 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
 };
 
 type GapicQueryMode = google.datastore.v1.QueryMode;
-
-const modeToProtoMode = new Map<QueryMode, google.datastore.v1.QueryMode>([
-  [QueryMode.NORMAL, google.datastore.v1.QueryMode.NORMAL],
-  [QueryMode.EXPLAIN, google.datastore.v1.QueryMode.PLAN],
-  [QueryMode.EXPLAIN_ANALYZE, google.datastore.v1.QueryMode.PROFILE],
-]);
 
 /**
  * Handle logic for Datastore API operations. Handles request logic for
@@ -904,7 +883,11 @@ class DatastoreRequest {
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
     if (options.mode) {
-      sharedQueryOpts.mode = modeToProtoMode.get(options.mode);
+      sharedQueryOpts.mode = (new Map<QueryMode, google.datastore.v1.QueryMode>([
+        [QueryMode.NORMAL, google.datastore.v1.QueryMode.NORMAL],
+        [QueryMode.EXPLAIN, google.datastore.v1.QueryMode.PLAN],
+        [QueryMode.EXPLAIN_ANALYZE, google.datastore.v1.QueryMode.PROFILE],
+      ])).get(options.mode);
     }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
