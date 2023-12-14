@@ -1137,9 +1137,19 @@ async.each(
           it('should run a query profile with EXPLAIN', async () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
             const allResults = await datastore.runQuery(q, {
-              mode: QueryMode.EXPLAIN,
+              mode: QueryMode.NORMAL,
             });
             console.log(allResults);
+            const aggregate = datastore
+              .createAggregationQuery(q)
+              .addAggregation(AggregateField.sum('appearances'));
+            const aggregationQueryResults = await datastore.runAggregationQuery(
+              aggregate,
+              {
+                mode: QueryMode.EXPLAIN,
+              }
+            );
+            console.log(aggregationQueryResults);
           });
         });
         describe('with a sum filter', () => {
