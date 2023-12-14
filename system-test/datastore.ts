@@ -1133,7 +1133,7 @@ async.each(
             });
           });
         });
-        describe.only('query profiling', () => {
+        describe('query profiling', () => {
           it('should run a query profile with EXPLAIN', async () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
             const allResults = await datastore.runQuery(q, {
@@ -1150,6 +1150,18 @@ async.each(
               }
             );
             console.log(aggregationQueryResults);
+          });
+          it('sync aggregation query call', done => {
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            const aggregate = datastore
+              .createAggregationQuery(q)
+              .addAggregation(AggregateField.sum('appearances'));
+            const callback = (a?: Error | null, b?: any) => {
+              console.log(a);
+              console.log(b);
+              done();
+            };
+            datastore.runAggregationQuery(aggregate, {}, callback);
           });
         });
         describe('with a sum filter', () => {
@@ -1771,7 +1783,7 @@ async.each(
           assert.deepStrictEqual(results, [{property_1: 4}]);
         });
       });
-      describe('transactions', () => {
+      describe.only('transactions', () => {
         it('should run in a transaction', async () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
