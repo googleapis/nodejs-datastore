@@ -1049,6 +1049,7 @@ class Transaction extends DatastoreRequest {
             }
           });
         } catch (err: any) {
+          // Handle an error produced by the beginTransaction grpc call
           return callback(err);
         }
       }
