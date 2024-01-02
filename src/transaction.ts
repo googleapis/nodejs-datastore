@@ -42,12 +42,6 @@ import {
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
-import MutexInterface from 'async-mutex/lib/MutexInterface';
-
-type RunQueryResponseOptional = [
-  Entity[] | undefined,
-  RunQueryInfo | undefined,
-];
 
 /**
  * This type matches data typically passed into a callback the user supplies.
@@ -200,50 +194,13 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    const resolver: Resolver<google.datastore.v1.ICommitResponse> = resolve => {
-      this.#runCommit(
-        gaxOptions,
-        (err?: Error | null, resp?: google.datastore.v1.ICommitResponse) => {
-          resolve({err, resp});
-        }
-      );
-    };
-    this.#withBeginTransaction(gaxOptions, resolver).then(
-      (response: UserCallbackData<google.datastore.v1.ICommitResponse>) => {
-        callback(response.err, response.resp);
-      }
+    this.#withBeginTransaction(
+      gaxOptions,
+      () => {
+        this.#runCommit(gaxOptions, callback);
+      },
+      callback
     );
-  }
-
-  /**
-   * If the transaction has not begun yet then this function ensures the transaction
-   * has started before running the resolver provided. The resolver is a function with one
-   * argument. This argument is a function that is used to pass errors and
-   * response data back to the caller of the withBeginTransaction function.
-   *
-   * @param {CallOptions | undefined} [gaxOptions]
-   * @param {Resolver<T>} [resolver]
-   * @returns {Promise<UserCallbackData<T>>} Returns a promise that will run
-   * this code and resolve to an error or resolve with the data from the resolver.
-   * @private
-   */
-  async #withBeginTransaction<T>(
-    gaxOptions: CallOptions | undefined,
-    resolver: Resolver<T>
-  ): Promise<UserCallbackData<T>> {
-    if (this.#state === TransactionState.NOT_STARTED) {
-      try {
-        await this.#mutex.runExclusive(async () => {
-          if (this.#state === TransactionState.NOT_STARTED) {
-            const runResults = await this.#runAsync({gaxOptions});
-            this.#parseRunSuccess(runResults);
-          }
-        });
-      } catch (err: any) {
-        return {err};
-      }
-    }
-    return await new Promise(resolver);
   }
 
   /**
@@ -413,15 +370,12 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: Resolver<GetResponse> = resolve => {
-      super.get(keys, options, (err?: Error | null, resp?: GetResponse) => {
-        resolve({err, resp});
-      });
-    };
-    this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: UserCallbackData<GetResponse>) => {
-        callback(response.err, response.resp);
-      }
+    this.#withBeginTransaction(
+      options.gaxOptions,
+      () => {
+        super.get(keys, options, callback);
+      },
+      callback
     );
   }
 
@@ -573,7 +527,7 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     this.#mutex.runExclusive(async () => {
       if (this.#state === TransactionState.NOT_STARTED) {
-        const runResults = await this.#runAsync(options);
+        const runResults = await this.#beginTransactionAsync(options);
         this.#processBeginResults(runResults, callback);
       } else {
         process.emitWarning(
@@ -754,7 +708,7 @@ class Transaction extends DatastoreRequest {
    *
    *
    **/
-  async #runAsync(
+  async #beginTransactionAsync(
     options: RunOptions
   ): Promise<UserCallbackData<google.datastore.v1.IBeginTransactionResponse>> {
     const reqOpts: RequestOptions = {
@@ -829,20 +783,12 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: Resolver<any> = resolve => {
-      super.runAggregationQuery(
-        query,
-        options,
-        (err?: Error | null, resp?: any) => {
-          resolve({err, resp});
-        }
-      );
-    };
-    this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: UserCallbackData<UserCallbackData<any>>) => {
-        const error = response.err ? response.err : null;
-        callback(error, response.resp);
-      }
+    this.#withBeginTransaction(
+      options.gaxOptions,
+      () => {
+        super.runAggregationQuery(query, options, callback);
+      },
+      callback
     );
   }
 
@@ -875,22 +821,12 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    const resolver: Resolver<RunQueryResponseOptional> = resolve => {
-      super.runQuery(
-        query,
-        options,
-        (err: Error | null, entities?: Entity[], info?: RunQueryInfo) => {
-          resolve({err, resp: [entities, info]});
-        }
-      );
-    };
-    this.#withBeginTransaction(options.gaxOptions, resolver).then(
-      (response: UserCallbackData<RunQueryResponseOptional>) => {
-        const error = response.err ? response.err : null;
-        const entities = response.resp ? response.resp[0] : undefined;
-        const info = response.resp ? response.resp[1] : undefined;
-        callback(error, entities, info);
-      }
+    this.#withBeginTransaction(
+      options.gaxOptions,
+      () => {
+        super.runQuery(query, options, callback);
+      },
+      callback
     );
   }
 
@@ -1084,6 +1020,44 @@ class Transaction extends DatastoreRequest {
 
     this.save(entities);
   }
+
+  /**
+   * If the transaction has not begun yet then this function ensures the transaction
+   * has started before running the function provided as a parameter.
+   *
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {function} [fn] A function which is run after ensuring a
+   * beginTransaction call is made.
+   * @param {function} [callback] A callback provided by the user that expects
+   * an error in the first argument and a custom data type for the rest of the
+   * arguments.
+   * @private
+   */
+  #withBeginTransaction<T extends any[]>(
+    gaxOptions: CallOptions | undefined,
+    fn: () => void,
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+  ): void {
+    (async () => {
+      if (this.#state === TransactionState.NOT_STARTED) {
+        try {
+          await this.#mutex.runExclusive(async () => {
+            if (this.#state === TransactionState.NOT_STARTED) {
+              const runResults = await this.#beginTransactionAsync({
+                gaxOptions,
+              });
+              this.#parseRunSuccess(runResults);
+            }
+          });
+        } catch (err: any) {
+          // Handle an error produced by the beginTransaction grpc call
+          return callback(err);
+        }
+      }
+      return fn();
+    })();
+  }
 }
 
 export type ModifiedEntities = Array<{
@@ -1127,7 +1101,6 @@ promisifyAll(Transaction, {
     'save',
     'update',
     'upsert',
-    '#withBeginTransaction',
   ],
 });
 
