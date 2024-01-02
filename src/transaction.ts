@@ -527,7 +527,7 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     this.#mutex.runExclusive(async () => {
       if (this.#state === TransactionState.NOT_STARTED) {
-        const runResults = await this.#runAsync(options);
+        const runResults = await this.#beginTransactionAsync(options);
         this.#processBeginResults(runResults, callback);
       } else {
         process.emitWarning(
@@ -708,7 +708,7 @@ class Transaction extends DatastoreRequest {
    *
    *
    **/
-  async #runAsync(
+  async #beginTransactionAsync(
     options: RunOptions
   ): Promise<UserCallbackData<google.datastore.v1.IBeginTransactionResponse>> {
     const reqOpts: RequestOptions = {
@@ -1044,7 +1044,9 @@ class Transaction extends DatastoreRequest {
         try {
           await this.#mutex.runExclusive(async () => {
             if (this.#state === TransactionState.NOT_STARTED) {
-              const runResults = await this.#runAsync({gaxOptions});
+              const runResults = await this.#beginTransactionAsync({
+                gaxOptions,
+              });
               this.#parseRunSuccess(runResults);
             }
           });
