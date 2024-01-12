@@ -1134,10 +1134,10 @@ async.each(
           });
         });
         describe('query profiling', () => {
-          it('should run a query profile with EXPLAIN', async () => {
+          it.only('should run a query profile with EXPLAIN', async () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
             const allResults = await datastore.runQuery(q, {
-              mode: QueryMode.NORMAL,
+              mode: QueryMode.EXPLAIN,
             });
             console.log(allResults);
             const aggregate = datastore
