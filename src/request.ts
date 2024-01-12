@@ -20,8 +20,23 @@ import {split} from 'split-array-stream';
 import {google} from '../protos/protos';
 import {CallOptions, CancellableStream} from 'google-gax';
 import {Duplex, PassThrough, Transform} from 'stream';
-import {Entities, Entity, entity, EntityProto, KeyProto, ResponseResult,} from './entity';
-import {Query, QueryMode, QueryProto, RunQueryCallback, RunQueryInfo, RunQueryOptions, RunQueryResponse,} from './query';
+import {
+  Entities,
+  Entity,
+  entity,
+  EntityProto,
+  KeyProto,
+  ResponseResult,
+} from './entity';
+import {
+  Query,
+  QueryMode,
+  QueryProto,
+  RunQueryCallback,
+  RunQueryInfo,
+  RunQueryOptions,
+  RunQueryResponse,
+} from './query';
 import {Datastore} from '.';
 import {AggregateQuery} from './aggregate';
 import arrify = require('arrify');
@@ -41,7 +56,6 @@ export interface AbortableDuplex extends Duplex {
 const gapic = Object.freeze({
   v1: require('./v1'),
 });
-
 
 /**
  * A map of read consistency values to proto codes.
@@ -799,9 +813,15 @@ class DatastoreRequest {
         return;
       }
 
-      const info: RunQueryInfo = {
-        moreResults: resp.batch.moreResults,
-      };
+      const info: RunQueryInfo = resp.stats ? {stats: resp.stats} : {};
+
+      if (!resp.batch) {
+        stream.emit('info', info);
+        stream.push(null);
+        return;
+      }
+
+      Object.assign(info, { moreResults: resp.batch.moreResults});
 
       if (resp.batch.endCursor) {
         info.endCursor = resp.batch.endCursor.toString('base64');
@@ -883,11 +903,11 @@ class DatastoreRequest {
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
     if (options.mode) {
-      sharedQueryOpts.mode = (new Map<QueryMode, google.datastore.v1.QueryMode>([
+      sharedQueryOpts.mode = new Map<QueryMode, google.datastore.v1.QueryMode>([
         [QueryMode.NORMAL, google.datastore.v1.QueryMode.NORMAL],
         [QueryMode.EXPLAIN, google.datastore.v1.QueryMode.PLAN],
         [QueryMode.EXPLAIN_ANALYZE, google.datastore.v1.QueryMode.PROFILE],
-      ])).get(options.mode);
+      ]).get(options.mode);
     }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
