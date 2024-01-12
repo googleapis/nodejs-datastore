@@ -636,4 +636,18 @@ export interface RunQueryInfo {
     | 'MORE_RESULTS_AFTER_LIMIT'
     | 'MORE_RESULTS_AFTER_CURSOR'
     | 'NO_MORE_RESULTS';
+  stats?: ResultSetStats;
+}
+
+export interface ResultSetStats {
+  queryPlan: QueryPlan;
+  queryStats: {
+    [key: string]: any;
+  };
+}
+
+export interface QueryPlan {
+  planInfo: {
+    [key: string]: any;
+  };
 }
