@@ -1131,7 +1131,6 @@ async.each(
             });
           });
         });
-        /*
         describe('query profiling', () => {
           it.only('should run a query profile with EXPLAIN', async () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
@@ -1163,7 +1162,6 @@ async.each(
             datastore.runAggregationQuery(aggregate, {}, callback);
           });
         });
-        */
         describe('with a sum filter', () => {
           it('should run a sum aggregation', async () => {
             const q = datastore.createQuery('Character');
