@@ -2,97 +2,81 @@
   "schema": "1.0",
   "comment": "This file maps proto services/RPCs to the corresponding library clients/methods",
   "language": "typescript",
-  "protoPackage": "google.datastore.v1",
-  "libraryPackage": "@google-cloud/datastore",
+  "protoPackage": "google.datastore.admin.v1",
+  "libraryPackage": "@google-cloud/datastore-admin",
   "services": {
-    "Datastore": {
+    "DatastoreAdmin": {
       "clients": {
         "grpc": {
-          "libraryClient": "DatastoreClient",
+          "libraryClient": "DatastoreAdminClient",
           "rpcs": {
-            "Lookup": {
+            "GetIndex": {
               "methods": [
-                "lookup"
+                "getIndex"
               ]
             },
-            "RunQuery": {
+            "ExportEntities": {
               "methods": [
-                "runQuery"
+                "exportEntities"
               ]
             },
-            "RunAggregationQuery": {
+            "ImportEntities": {
               "methods": [
-                "runAggregationQuery"
+                "importEntities"
               ]
             },
-            "BeginTransaction": {
+            "CreateIndex": {
               "methods": [
-                "beginTransaction"
+                "createIndex"
               ]
             },
-            "Commit": {
+            "DeleteIndex": {
               "methods": [
-                "commit"
+                "deleteIndex"
               ]
             },
-            "Rollback": {
+            "ListIndexes": {
               "methods": [
-                "rollback"
-              ]
-            },
-            "AllocateIds": {
-              "methods": [
-                "allocateIds"
-              ]
-            },
-            "ReserveIds": {
-              "methods": [
-                "reserveIds"
+                "listIndexes",
+                "listIndexesStream",
+                "listIndexesAsync"
               ]
             }
           }
         },
         "grpc-fallback": {
-          "libraryClient": "DatastoreClient",
+          "libraryClient": "DatastoreAdminClient",
           "rpcs": {
-            "Lookup": {
+            "GetIndex": {
               "methods": [
-                "lookup"
+                "getIndex"
               ]
             },
-            "RunQuery": {
+            "ExportEntities": {
               "methods": [
-                "runQuery"
+                "exportEntities"
               ]
             },
-            "RunAggregationQuery": {
+            "ImportEntities": {
               "methods": [
-                "runAggregationQuery"
+                "importEntities"
               ]
             },
-            "BeginTransaction": {
+            "CreateIndex": {
               "methods": [
-                "beginTransaction"
+                "createIndex"
               ]
             },
-            "Commit": {
+            "DeleteIndex": {
               "methods": [
-                "commit"
+                "deleteIndex"
               ]
             },
-            "Rollback": {
+            "ListIndexes": {
               "methods": [
-                "rollback"
-              ]
-            },
-            "AllocateIds": {
-              "methods": [
-                "allocateIds"
-              ]
-            },
-            "ReserveIds": {
-              "methods": [
-                "reserveIds"
+                "listIndexes",
+                "listIndexesStream",
+                "listIndexesAsync"
               ]
             }
           }
