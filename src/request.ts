@@ -816,6 +816,7 @@ class DatastoreRequest {
       const info: RunQueryInfo = resp.stats ? {stats: resp.stats} : {};
 
       if (!resp.batch) {
+        // If there are no results then send any stats back and end the stream.
         stream.emit('info', info);
         stream.push(null);
         return;
