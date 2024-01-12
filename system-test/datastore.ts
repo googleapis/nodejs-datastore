@@ -1783,7 +1783,7 @@ async.each(
           assert.deepStrictEqual(results, [{property_1: 4}]);
         });
       });
-      describe.only('transactions', () => {
+      describe('transactions', () => {
         it('should run in a transaction', async () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
