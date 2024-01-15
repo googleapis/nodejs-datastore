@@ -641,7 +641,7 @@ export interface RunQueryInfo {
 
 export interface ResultSetStats {
   queryPlan: QueryPlan;
-  queryStats: {
+  queryStats?: {
     [key: string]: any;
   };
 }
