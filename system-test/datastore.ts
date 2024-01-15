@@ -1133,26 +1133,63 @@ async.each(
             });
           });
         });
-        describe('query profiling', () => {
-          it.only('should run a query profile with EXPLAIN', async () => {
-            const q = datastore.createQuery('Character').hasAncestor(ancestor);
-            const allResults = await datastore.runQuery(q, {
-              mode: QueryMode.EXPLAIN,
+        describe.only('query profiling', () => {
+          const compare = (a: any, b: any) => {
+            return a.name > b.name ? 1 : -1;
+          };
+          describe('when using the runQuery function', () => {
+            it('should run a query with NORMAL mode specified', async () => {
+              const q = datastore
+                .createQuery('Character')
+                .hasAncestor(ancestor);
+              const [entities, info] = await datastore.runQuery(q, {
+                mode: QueryMode.NORMAL,
+              });
+              assert(!info.stats);
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
             });
-            console.log(allResults);
-            const aggregate = datastore
-              .createAggregationQuery(q)
-              .addAggregation(AggregateField.sum('appearances'));
-            const aggregationQueryResults = await datastore.runAggregationQuery(
-              aggregate,
-              {
+            it('should run a query with EXPLAIN mode specified', async () => {
+              const q = datastore
+                .createQuery('Character')
+                .hasAncestor(ancestor);
+              const [entities, info] = await datastore.runQuery(q, {
                 mode: QueryMode.EXPLAIN,
-              }
-            );
-            console.log(aggregationQueryResults);
+              });
+              console.log(entities);
+            });
+            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+              const q = datastore
+                .createQuery('Character')
+                .hasAncestor(ancestor);
+              const [entities, info] = await datastore.runQuery(q, {
+                mode: QueryMode.EXPLAIN_ANALYZE,
+              });
+              console.log(entities);
+            });
           });
+          describe('when using the runAggregationQuery function', () => {
+            it('should run a query with NORMAL mode specified', async () => {
+              const q = datastore
+                .createQuery('Character')
+                .hasAncestor(ancestor);
+              const aggregate = datastore
+                .createAggregationQuery(q)
+                .addAggregation(AggregateField.sum('appearances'));
+              const aggregationQueryResults =
+                await datastore.runAggregationQuery(aggregate, {
+                  mode: QueryMode.EXPLAIN,
+                });
+              console.log(aggregationQueryResults);
+            });
+          });
+          /*
           it('sync aggregation query call', done => {
-            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            const q = datastore
+              .createQuery('Character')
+              .hasAncestor(ancestor);
             const aggregate = datastore
               .createAggregationQuery(q)
               .addAggregation(AggregateField.sum('appearances'));
@@ -1163,6 +1200,7 @@ async.each(
             };
             datastore.runAggregationQuery(aggregate, {}, callback);
           });
+          */
         });
         describe('with a sum filter', () => {
           it('should run a sum aggregation', async () => {
