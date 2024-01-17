@@ -1133,7 +1133,7 @@ async.each(
             });
           });
         });
-        describe.only('query profiling', () => {
+        describe('query profiling', () => {
           const compare = (a: any, b: any) => {
             return a.name > b.name ? 1 : -1;
           };
@@ -1201,19 +1201,21 @@ async.each(
               assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
             });
           });
-          describe('when using the runAggregationQuery function', () => {
-            it('should run a query with NORMAL mode specified', async () => {
+          describe.only('when using the runAggregationQuery function', () => {
+            it('should run a query with EXPLAIN mode specified', async () => {
               const q = datastore
                 .createQuery('Character')
                 .hasAncestor(ancestor);
               const aggregate = datastore
                 .createAggregationQuery(q)
                 .addAggregation(AggregateField.sum('appearances'));
-              const aggregationQueryResults =
-                await datastore.runAggregationQuery(aggregate, {
+              const [entities, info] = await datastore.runAggregationQuery(
+                aggregate,
+                {
                   mode: QueryMode.EXPLAIN,
-                });
-              console.log(aggregationQueryResults);
+                }
+              );
+              console.log('test');
             });
           });
           /*
