@@ -1137,6 +1137,24 @@ async.each(
           const compare = (a: any, b: any) => {
             return a.name > b.name ? 1 : -1;
           };
+          const expectedStats = [
+            'total_execution_time',
+            'index_entries_scanned',
+            'billing',
+            'results_returned',
+            'bytes_returned',
+            'documents_scanned',
+          ].sort();
+          const expectedQueryPlan = {
+            planInfo: {
+              indexes_used: [
+                {
+                  properties: '(__name__ ASC)',
+                  query_scope: 'Collection Group',
+                },
+              ],
+            },
+          };
           describe('when using the runQuery function', () => {
             it('should run a query with NORMAL mode specified', async () => {
               const q = datastore
@@ -1158,7 +1176,10 @@ async.each(
               const [entities, info] = await datastore.runQuery(q, {
                 mode: QueryMode.EXPLAIN,
               });
-              console.log(entities);
+              assert.deepStrictEqual(entities, []);
+              assert.deepStrictEqual(info.stats, {
+                queryPlan: expectedQueryPlan,
+              });
             });
             it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
               const q = datastore
@@ -1167,7 +1188,17 @@ async.each(
               const [entities, info] = await datastore.runQuery(q, {
                 mode: QueryMode.EXPLAIN_ANALYZE,
               });
-              console.log(entities);
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
+              assert(info.stats);
+              assert(info.stats.queryStats);
+              assert.deepStrictEqual(
+                Object.keys(info.stats.queryStats).sort(),
+                expectedStats
+              );
+              assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
             });
           });
           describe('when using the runAggregationQuery function', () => {
