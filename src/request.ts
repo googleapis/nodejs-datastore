@@ -30,7 +30,7 @@ import {
 } from './entity';
 import {
   Query,
-  QueryMode,
+  QueryMode, QueryPlan,
   QueryProto,
   RunQueryCallback,
   RunQueryInfo,
@@ -41,6 +41,17 @@ import {Datastore} from '.';
 import {AggregateQuery} from './aggregate';
 import arrify = require('arrify');
 import ITimestamp = google.protobuf.ITimestamp;
+import * as serializer from 'proto3-json-serializer';
+import {JSONValue} from 'proto3-json-serializer';
+
+const protobuf = require('protobufjs'); // TODO: Prefer import
+const root = protobuf.loadSync('google/protobuf/struct.proto');
+const Struct = root.lookupType('Struct');
+
+// This function decodes Struct proto values
+function decodeStruct(structValue: any) {
+  return serializer.toProto3JSON(Struct.fromObject(structValue))
+}
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const concat = require('concat-stream');
@@ -813,16 +824,22 @@ class DatastoreRequest {
         return;
       }
 
-      const info: RunQueryInfo = resp.stats ? {stats: resp.stats} : {};
+      // Decode structValues stored in queryPlan and queryStats
+      const planInfo: JSONValue | undefined = resp.stats && resp.stats.queryPlan && resp.stats.queryPlan.planInfo ?
+        decodeStruct(resp.stats.queryPlan.planInfo) : undefined;
+      const queryPlan: QueryPlan = resp.stats && resp.stats.queryPlan ?
+          Object.assign(resp.stats.queryPlan, {planInfo: decodeStruct(resp.stats.queryPlan.planInfo)})
+          : undefined;
+      const statsInfo: RunQueryInfo = resp.stats ? { stats: Object.assign({ queryPlan }, resp.stats.queryStats ? { queryStats:  decodeStruct(resp.stats.queryStats)} : {}) } : {};
 
       if (!resp.batch) {
         // If there are no results then send any stats back and end the stream.
-        stream.emit('info', info);
+        stream.emit('info', statsInfo);
         stream.push(null);
         return;
       }
 
-      Object.assign(info, { moreResults: resp.batch.moreResults});
+      const info = Object.assign(statsInfo, { moreResults: resp.batch.moreResults});
 
       if (resp.batch.endCursor) {
         info.endCursor = resp.batch.endCursor.toString('base64');
