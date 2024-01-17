@@ -24,6 +24,7 @@ import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
 import {google} from '../protos/protos';
+import {JSONValue} from 'proto3-json-serializer';
 
 export type Operator =
   | '='
@@ -641,13 +642,9 @@ export interface RunQueryInfo {
 
 export interface ResultSetStats {
   queryPlan: QueryPlan;
-  queryStats?: {
-    [key: string]: any;
-  };
+  queryStats?: JSONValue;
 }
 
 export interface QueryPlan {
-  planInfo: {
-    [key: string]: any;
-  };
+  planInfo: JSONValue;
 }
