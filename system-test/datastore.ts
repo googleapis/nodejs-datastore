@@ -1215,7 +1215,10 @@ async.each(
                   mode: QueryMode.EXPLAIN,
                 }
               );
-              console.log('test');
+              assert.deepStrictEqual(entities, []);
+              assert.deepStrictEqual(info.stats, {
+                queryPlan: expectedQueryPlan,
+              });
             });
           });
           /*
