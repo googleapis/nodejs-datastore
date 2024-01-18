@@ -1161,62 +1161,83 @@ async.each(
                 const transaction = datastore.transaction();
                 await transaction.run();
                 const query = transaction.createQuery('Character');
-                let entities;
+                let entities, info;
                 try {
-                  [entities] = await query.run();
+                  [entities, info] = await transaction.runQuery(query);
                 } catch (e) {
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(entities!.length > 0);
+                assert(!info.stats);
+                assert.deepStrictEqual(
+                  entities.sort(compare).map(entity => entity.name),
+                  [...characters].sort(compare).map(entity => entity.name)
+                );
                 await transaction.commit();
               });
               it('should run a query with NORMAL mode specified', async () => {
                 const transaction = datastore.transaction();
                 await transaction.run();
                 const query = transaction.createQuery('Character');
-                let entities;
+                let entities, info;
                 try {
-                  [entities] = await query.run({
+                  [entities, info] = await transaction.runQuery(query, {
                     mode: QueryMode.NORMAL,
                   });
                 } catch (e) {
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(entities!.length > 0);
+                assert(!info.stats);
+                assert.deepStrictEqual(
+                  entities.sort(compare).map(entity => entity.name),
+                  [...characters].sort(compare).map(entity => entity.name)
+                );
                 await transaction.commit();
               });
               it('should run a query with EXPLAIN mode specified', async () => {
                 const transaction = datastore.transaction();
                 await transaction.run();
                 const query = transaction.createQuery('Character');
-                let entities;
+                let entities, info;
                 try {
-                  [entities] = await query.run({
+                  [entities, info] = await transaction.runQuery(query, {
                     mode: QueryMode.EXPLAIN,
                   });
                 } catch (e) {
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(entities!.length > 0);
+                assert.deepStrictEqual(entities, []);
+                assert.deepStrictEqual(info.stats, {
+                  queryPlan: expectedQueryPlan,
+                });
                 await transaction.commit();
               });
               it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
                 const transaction = datastore.transaction();
                 await transaction.run();
                 const query = transaction.createQuery('Character');
-                let entities;
+                let entities, info;
                 try {
-                  [entities] = await query.run({
+                  [entities, info] = await transaction.runQuery(query, {
                     mode: QueryMode.EXPLAIN_ANALYZE,
                   });
                 } catch (e) {
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(entities!.length > 0);
+                assert.deepStrictEqual(
+                  entities.sort(compare).map(entity => entity.name),
+                  [...characters].sort(compare).map(entity => entity.name)
+                );
+                assert(info.stats);
+                assert(info.stats.queryStats);
+                assert.deepStrictEqual(
+                  Object.keys(info.stats.queryStats).sort(),
+                  expectedStats
+                );
+                assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
                 await transaction.commit();
               });
             });
