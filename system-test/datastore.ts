@@ -1145,6 +1145,82 @@ async.each(
             'bytes_returned',
             'documents_scanned',
           ].sort();
+          describe('when using transactions', () => {
+            describe('when using the runQuery function with transactions', () => {
+              const expectedQueryPlan = {
+                planInfo: {
+                  indexes_used: [
+                    {
+                      properties: '(__name__ ASC)',
+                      query_scope: 'Collection Group',
+                    },
+                  ],
+                },
+              };
+              it('should run a query with no mode specified', async () => {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                const query = transaction.createQuery('Character');
+                let entities;
+                try {
+                  [entities] = await query.run();
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(entities!.length > 0);
+                await transaction.commit();
+              });
+              it('should run a query with NORMAL mode specified', async () => {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                const query = transaction.createQuery('Character');
+                let entities;
+                try {
+                  [entities] = await query.run({
+                    mode: QueryMode.NORMAL,
+                  });
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(entities!.length > 0);
+                await transaction.commit();
+              });
+              it('should run a query with EXPLAIN mode specified', async () => {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                const query = transaction.createQuery('Character');
+                let entities;
+                try {
+                  [entities] = await query.run({
+                    mode: QueryMode.EXPLAIN,
+                  });
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(entities!.length > 0);
+                await transaction.commit();
+              });
+              it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                const query = transaction.createQuery('Character');
+                let entities;
+                try {
+                  [entities] = await query.run({
+                    mode: QueryMode.EXPLAIN_ANALYZE,
+                  });
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(entities!.length > 0);
+                await transaction.commit();
+              });
+            });
+          });
           describe('when using the runQuery function', () => {
             const expectedQueryPlan = {
               planInfo: {
