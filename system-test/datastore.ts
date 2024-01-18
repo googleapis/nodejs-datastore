@@ -1157,10 +1157,10 @@ async.each(
                   ],
                 },
               };
-              it('should run a query with no mode specified', async () => {
-                const transaction = datastore.transaction();
+              const transaction = datastore.transaction();
+              const query = transaction.createQuery('Character');
+              it('should run a query in a transaction with no mode specified', async () => {
                 await transaction.run();
-                const query = transaction.createQuery('Character');
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query);
@@ -1175,10 +1175,8 @@ async.each(
                 );
                 await transaction.commit();
               });
-              it('should run a query with NORMAL mode specified', async () => {
-                const transaction = datastore.transaction();
+              it('should run a query in a transaction with NORMAL mode specified', async () => {
                 await transaction.run();
-                const query = transaction.createQuery('Character');
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query, {
@@ -1195,10 +1193,8 @@ async.each(
                 );
                 await transaction.commit();
               });
-              it('should run a query with EXPLAIN mode specified', async () => {
-                const transaction = datastore.transaction();
+              it('should run a query in a transaction with EXPLAIN mode specified', async () => {
                 await transaction.run();
-                const query = transaction.createQuery('Character');
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query, {
@@ -1214,10 +1210,8 @@ async.each(
                 });
                 await transaction.commit();
               });
-              it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
-                const transaction = datastore.transaction();
+              it('should run a query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
                 await transaction.run();
-                const query = transaction.createQuery('Character');
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query, {
@@ -1231,6 +1225,106 @@ async.each(
                   entities.sort(compare).map(entity => entity.name),
                   [...characters].sort(compare).map(entity => entity.name)
                 );
+                assert(info.stats);
+                assert(info.stats.queryStats);
+                assert.deepStrictEqual(
+                  Object.keys(info.stats.queryStats).sort(),
+                  expectedStats
+                );
+                assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
+                await transaction.commit();
+              });
+            });
+            describe('when using the runAggregationQuery function with transactions', () => {
+              const expectedAggregationResults = [
+                {
+                  property_1: 187,
+                },
+              ];
+              const expectedQueryPlan = {
+                planInfo: {
+                  indexes_used: [
+                    {
+                      properties: '(appearances ASC, __name__ ASC)',
+                      query_scope: 'Includes Ancestors',
+                    },
+                  ],
+                },
+              };
+              const q = datastore
+                .createQuery('Character')
+                .hasAncestor(ancestor);
+              const transaction = datastore.transaction();
+              const aggregate = transaction
+                .createAggregationQuery(q)
+                .addAggregation(AggregateField.sum('appearances'));
+              it('should run an aggregation query in a transaction with no mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] =
+                    await transaction.runAggregationQuery(aggregate);
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(!info.stats);
+                assert.deepStrictEqual(entities, expectedAggregationResults);
+                await transaction.commit();
+              });
+              it('should run an aggregation query in a transaction with NORMAL mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runAggregationQuery(
+                    aggregate,
+                    {
+                      mode: QueryMode.NORMAL,
+                    }
+                  );
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(!info.stats);
+                assert.deepStrictEqual(entities, expectedAggregationResults);
+                await transaction.commit();
+              });
+              it('should run an aggregation query in a transaction with EXPLAIN mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runAggregationQuery(
+                    aggregate,
+                    {
+                      mode: QueryMode.EXPLAIN,
+                    }
+                  );
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert.deepStrictEqual(entities, []);
+                assert.deepStrictEqual(info.stats, {
+                  queryPlan: expectedQueryPlan,
+                });
+                await transaction.commit();
+              });
+              it('should run an aggregation query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runAggregationQuery(
+                    aggregate,
+                    {
+                      mode: QueryMode.EXPLAIN_ANALYZE,
+                    }
+                  );
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert.deepStrictEqual(entities, expectedAggregationResults);
                 assert(info.stats);
                 assert(info.stats.queryStats);
                 assert.deepStrictEqual(
