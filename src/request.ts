@@ -30,7 +30,8 @@ import {
 } from './entity';
 import {
   Query,
-  QueryMode, QueryPlan,
+  QueryMode,
+  QueryPlan,
   QueryProto,
   RunQueryCallback,
   RunQueryInfo,
@@ -50,18 +51,32 @@ const Struct = root.lookupType('Struct');
 
 // This function decodes Struct proto values
 function decodeStruct(structValue: any) {
-  return serializer.toProto3JSON(Struct.fromObject(structValue))
+  return serializer.toProto3JSON(Struct.fromObject(structValue));
 }
 
 // This function gets a RunQueryInfo object that contains stats from the server.
-function getInfoFromStats(stats: google.datastore.v1.IResultSetStats): RunQueryInfo {
+function getInfoFromStats(
+  stats: google.datastore.v1.IResultSetStats
+): RunQueryInfo {
   // Decode structValues stored in queryPlan and queryStats
-  const planInfo: JSONValue | undefined = stats && stats.queryPlan && stats.queryPlan.planInfo ?
-      decodeStruct(stats.queryPlan.planInfo) : undefined;
-  const queryPlan: QueryPlan = stats && stats.queryPlan ?
-      Object.assign(stats.queryPlan, {planInfo: decodeStruct(stats.queryPlan.planInfo)})
+  const planInfo: JSONValue | undefined =
+    stats && stats.queryPlan && stats.queryPlan.planInfo
+      ? decodeStruct(stats.queryPlan.planInfo)
+      : undefined;
+  const queryPlan: QueryPlan =
+    stats && stats.queryPlan
+      ? Object.assign(stats.queryPlan, {
+          planInfo: decodeStruct(stats.queryPlan.planInfo),
+        })
       : {planInfo: null};
-  return stats ? { stats: Object.assign({ queryPlan }, stats.queryStats ? { queryStats:  decodeStruct(stats.queryStats)} : {}) } : {};
+  return stats
+    ? {
+        stats: Object.assign(
+          {queryPlan},
+          stats.queryStats ? {queryStats: decodeStruct(stats.queryStats)} : {}
+        ),
+      }
+    : {};
 }
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -578,7 +593,10 @@ class DatastoreRequest {
     options: RunQueryOptions,
     callback: RunAggregationQueryCallback
   ): void;
-  runAggregationQuery(query: AggregateQuery, callback: RunAggregationQueryCallback): void;
+  runAggregationQuery(
+    query: AggregateQuery,
+    callback: RunAggregationQueryCallback
+  ): void;
   runAggregationQuery(
     query: AggregateQuery,
     optionsOrCallback?: RunQueryOptions | RunAggregationQueryCallback,
@@ -615,7 +633,7 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
-        const info = getInfoFromStats(res.stats)
+        const info = getInfoFromStats(res.stats);
         let finalResults = [];
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
@@ -842,7 +860,9 @@ class DatastoreRequest {
         return;
       }
 
-      const info = Object.assign(getInfoFromStats(resp.stats), { moreResults: resp.batch.moreResults});
+      const info = Object.assign(getInfoFromStats(resp.stats), {
+        moreResults: resp.batch.moreResults,
+      });
 
       if (resp.batch.endCursor) {
         info.endCursor = resp.batch.endCursor.toString('base64');

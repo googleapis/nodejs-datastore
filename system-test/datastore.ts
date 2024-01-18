@@ -25,6 +25,7 @@ import {and, or, PropertyFilter} from '../src/filter';
 import {entity} from '../src/entity';
 import {QueryMode, RunQueryInfo} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
+import Entity = google.datastore.v1.Entity;
 
 const async = require('async');
 
@@ -1133,7 +1134,7 @@ async.each(
             });
           });
         });
-        describe.only('query profiling', () => {
+        describe('query profiling', () => {
           const compare = (a: any, b: any) => {
             return a.name > b.name ? 1 : -1;
           };
@@ -1443,6 +1444,75 @@ async.each(
               );
               assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
             });
+          });
+          describe('when calling runQueryStream', () => {
+            const expectedQueryPlan = {
+              planInfo: {
+                indexes_used: [
+                  {
+                    properties: '(__name__ ASC)',
+                    query_scope: 'Collection Group',
+                  },
+                ],
+              },
+            };
+
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            it.only('should call runQueryStream with no mode specified', async () => {
+              // TODO: Finish this test
+              const stream = await datastore.runQueryStream(q);
+              const entities = [];
+              // TODO: Change this data.
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                console.log('test info');
+              });
+              /*
+                  const [entities, info] = await q.run();
+                  assert(!info.stats);
+                  assert.deepStrictEqual(
+                    entities.sort(compare).map(entity => entity.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                   */
+            });
+            /*
+                it('should run a query with NORMAL mode specified', async () => {
+                  const [entities, info] = await q.run({mode: QueryMode.NORMAL});
+                  assert(!info.stats);
+                  assert.deepStrictEqual(
+                    entities.sort(compare).map(entity => entity.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                });
+                it('should run a query with EXPLAIN mode specified', async () => {
+                  const [entities, info] = await q.run({mode: QueryMode.EXPLAIN});
+                  assert.deepStrictEqual(entities, []);
+                  assert.deepStrictEqual(info.stats, {
+                    queryPlan: expectedQueryPlan,
+                  });
+                });
+                it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+                  const [entities, info] = await q.run({
+                    mode: QueryMode.EXPLAIN_ANALYZE,
+                  });
+                  assert.deepStrictEqual(
+                    entities.sort(compare).map(entity => entity.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                  assert(info.stats);
+                  assert(info.stats.queryStats);
+                  assert.deepStrictEqual(
+                    Object.keys(info.stats.queryStats).sort(),
+                    expectedStats
+                  );
+                  assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
+                });
+                */
           });
           describe('when using the runAggregationQuery function', () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
