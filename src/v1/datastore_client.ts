@@ -490,10 +490,6 @@ export class DatastoreClient {
    *   The query to run.
    * @param {google.datastore.v1.GqlQuery} request.gqlQuery
    *   The GQL query to run. This query must be a non-aggregation query.
-   * @param {google.datastore.v1.QueryMode} [request.mode]
-   *   Optional. The mode in which the query request is processed. This field is
-   *   optional, and when not provided, it defaults to `NORMAL` mode where no
-   *   additional statistics will be returned with the query results.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
@@ -611,10 +607,6 @@ export class DatastoreClient {
    *   The query to run.
    * @param {google.datastore.v1.GqlQuery} request.gqlQuery
    *   The GQL query to run. This query must be an aggregation query.
-   * @param {google.datastore.v1.QueryMode} [request.mode]
-   *   Optional. The mode in which the query request is processed. This field is
-   *   optional, and when not provided, it defaults to `NORMAL` mode where no
-   *   additional statistics will be returned with the query results.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
