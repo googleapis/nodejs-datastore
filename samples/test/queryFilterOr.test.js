@@ -23,8 +23,10 @@ const sinon = require('sinon');
 const {Datastore} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 
-const {queryFilterOr} = require('../queryFilterOr');
+const cp = require('child_process');
 let taskKey1, taskKey2;
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('Creating a union query', () => {
   const stubConsole = function () {
@@ -67,7 +69,7 @@ describe('Creating a union query', () => {
   });
 
   it('should get a combination of items from the Datastore', async () => {
-    await queryFilterOr();
+    execSync(`node ./queryFilterOr.js`);
     assert.include(console.log.firstCall.args[0], 'Entity');
   });
 });

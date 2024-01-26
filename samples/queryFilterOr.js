@@ -50,4 +50,5 @@ async function main() {
   // [END datastore_query_filter_or]
 }
 
-exports.queryFilterOr = main;
+const args = process.argv.slice(2);
+main(...args).catch(console.error);
