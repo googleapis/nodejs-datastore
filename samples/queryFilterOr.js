@@ -46,7 +46,7 @@ async function main() {
     }
   }
 
-  await queryFilterOr();
+  queryFilterOr();
   // [END datastore_query_filter_or]
 }
 
