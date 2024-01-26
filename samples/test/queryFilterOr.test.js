@@ -20,7 +20,7 @@ const path = require('path');
 const {assert} = require('chai');
 const {describe, it, after, before} = require('mocha');
 const sinon = require('sinon');
-const {Datastore} = require('@google-cloud/datastore');
+const {Datastore, PropertyFilter, or} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 
 const cp = require('child_process');
@@ -59,6 +59,18 @@ describe('Creating a union query', () => {
       },
     };
 
+    // Ensure the datastore database has no existing data for the task keys.
+    const query = datastore
+      .createQuery('Task')
+      .filter(
+        or([
+          new PropertyFilter('description', '=', 'Buy milk'),
+          new PropertyFilter('description', '=', 'Feed cats'),
+        ])
+      );
+    const [entities] = await datastore.runQuery(query);
+    await datastore.delete(entities.map(entity => entity[datastore.KEY]));
+
     await datastore.upsert(entity1);
     await datastore.upsert(entity2);
   });
@@ -69,7 +81,7 @@ describe('Creating a union query', () => {
   });
 
   it('should get a combination of items from the Datastore', async () => {
-    execSync(`node ./queryFilterOr.js`);
-    assert.include(console.log.firstCall.args[0], 'Entity');
+    const stdout = execSync(`node ./queryFilterOr.js`);
+    assert.strictEqual(stdout, 'Entity found: Feed cats\nEntity found: Buy milk\n');
   });
 });
