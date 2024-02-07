@@ -160,7 +160,6 @@ async.each(
         });
       });
 
-      it('should send an error back when using withBeginTransaction', () => {});
       describe('testing various transaction functions when transaction.run returns a response', () => {
         type RequestType =
           | protos.google.datastore.v1.ICommitRequest
@@ -317,6 +316,13 @@ async.each(
         let transactionWrapper: MockedTransactionWrapper;
         let transaction: Transaction;
 
+        afterEach(() => {
+          transactionWrapper.resetBeginTransaction();
+          transactionWrapper.resetGapicFunctions();
+        });
+
+        it('should send an error back when using withBeginTransaction', () => {});
+
         describe('commit', () => {
           // These tests were created to catch regressions for transaction.commit changes.
           const testCommitResp = {
@@ -336,11 +342,6 @@ async.each(
 
           beforeEach(async () => {
             transactionWrapper = new MockedTransactionWrapper();
-          });
-
-          afterEach(() => {
-            transactionWrapper.resetBeginTransaction();
-            transactionWrapper.resetGapicFunctions();
           });
 
           describe('should pass error back to the user', async () => {
@@ -450,11 +451,6 @@ async.each(
               .addAggregation(AggregateField.average('appearances'));
           });
 
-          afterEach(() => {
-            transactionWrapper.resetBeginTransaction();
-            transactionWrapper.resetGapicFunctions();
-          });
-
           describe('should pass error back to the user', async () => {
             beforeEach(() => {
               transactionWrapper.mockGapicFunction(
@@ -558,11 +554,6 @@ async.each(
             transactionWrapper = new MockedTransactionWrapper();
             transaction = transactionWrapper.transaction;
             q = transactionWrapper.datastore.createQuery('Character');
-          });
-
-          afterEach(() => {
-            transactionWrapper.resetBeginTransaction();
-            transactionWrapper.resetGapicFunctions();
           });
 
           describe('should pass error back to the user', async () => {
@@ -680,11 +671,6 @@ async.each(
             transactionWrapper = new MockedTransactionWrapper();
             transaction = transactionWrapper.transaction;
             key = transactionWrapper.datastore.key(['Company', 'Google']);
-          });
-
-          afterEach(() => {
-            transactionWrapper.resetBeginTransaction();
-            transactionWrapper.resetGapicFunctions();
           });
 
           describe('should pass error back to the user', async () => {
