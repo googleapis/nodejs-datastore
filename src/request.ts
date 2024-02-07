@@ -1181,7 +1181,7 @@ export interface RequestOptions extends SharedQueryOptions {
     readOnly?: {};
     readWrite?: {previousTransaction?: string | Uint8Array | null};
   } | null;
-  transaction?: string | null;
+  transaction?: string | null | Uint8Array;
   mode?: string;
   query?: QueryProto;
   filter?: string;
