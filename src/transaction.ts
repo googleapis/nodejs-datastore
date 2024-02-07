@@ -1002,8 +1002,15 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * If the transaction has not begun yet then this function ensures the transaction
-   * has started before running the function provided as a parameter.
+   * Some rpc calls require that the transaction has been started (i.e, has a
+   * valid id) before they can be sent. #withBeginTransaction acts as a wrapper
+   * over those functions.
+   *
+   * If the transaction has not begun yet, `#withBeginTransaction` will first
+   * send an rpc to begin the transaction, and then execute the wrapped
+   * function. If it has begun, the wrapped function will be called directly
+   * instead. If an error is encountered during the beginTransaction call, the
+   * callback will be executed instead of the wrapped function.
    *
    * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
    * user that are used for the beginTransaction grpc call.
