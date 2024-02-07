@@ -1179,7 +1179,7 @@ export interface RequestOptions extends SharedQueryOptions {
   keys?: Entity;
   transactionOptions?: {
     readOnly?: {};
-    readWrite?: {previousTransaction?: string};
+    readWrite?: {previousTransaction?: string | Uint8Array | null};
   } | null;
   transaction?: string | null;
   mode?: string;
