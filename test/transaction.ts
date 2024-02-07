@@ -160,6 +160,7 @@ async.each(
         });
       });
 
+      it('should send an error back when using withBeginTransaction', () => {});
       describe('testing various transaction functions when transaction.run returns a response', () => {
         type RequestType =
           | protos.google.datastore.v1.ICommitRequest
@@ -199,7 +200,10 @@ async.each(
             request?: RequestType
           ) => void = () => {};
 
-          constructor() {
+          constructor(
+            err: Error | null = null,
+            resp: google.datastore.v1.IBeginTransactionResponse = testRunResp
+          ) {
             const namespace = 'run-without-mock';
             const projectId = 'project-id';
             const options = {
@@ -245,7 +249,7 @@ async.each(
                   GapicFunctionName.BEGIN_TRANSACTION,
                   request
                 );
-                callback(null, testRunResp);
+                callback(err, resp);
               };
             }
             this.dataClient = dataClient;
