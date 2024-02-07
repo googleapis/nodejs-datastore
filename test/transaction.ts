@@ -321,7 +321,39 @@ async.each(
           transactionWrapper.resetGapicFunctions();
         });
 
-        it('should send an error back when using withBeginTransaction', () => {});
+        describe('sending an error back from the beginTransaction gapic function', () => {
+          const testErrorMessage = 'test-beginTransaction-error';
+          beforeEach(async () => {
+            transactionWrapper = new MockedTransactionWrapper(
+              new Error(testErrorMessage),
+              undefined
+            );
+          });
+          it('should send back the error when awaiting a promise', async () => {
+            try {
+              await transactionWrapper.transaction.commit();
+              assert.fail('The run call should have failed.');
+            } catch (error: any) {
+              assert.strictEqual(error['message'], testErrorMessage);
+            }
+          });
+          it('should send back the error when using a callback', done => {
+            const commitCallback: CommitCallback = (
+              error: Error | null | undefined,
+              response?: google.datastore.v1.ICommitResponse
+            ) => {
+              try {
+                assert(error);
+                assert.strictEqual(error.message, testErrorMessage);
+                assert.deepStrictEqual(response, undefined);
+                done();
+              } catch (e) {
+                done(e);
+              }
+            };
+            transactionWrapper.transaction.commit(commitCallback);
+          });
+        });
 
         describe('commit', () => {
           // These tests were created to catch regressions for transaction.commit changes.
