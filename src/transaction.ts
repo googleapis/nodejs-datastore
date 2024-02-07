@@ -54,22 +54,6 @@ interface UserCallbackData<T> {
   resp?: T;
 }
 
-/**
- * This is a type that matches the argument for a promise's resolve function.
- * It is also constrained to match data returned that may contain an error.
- */
-interface PromiseResolveFunction<T> {
-  (value: UserCallbackData<T> | PromiseLike<UserCallbackData<T>>): void;
-}
-
-/**
- * This is a type that matches the argument passed in when building a promise.
- * It is also assures that the promise will resolve with data of PassThroughReturnType<T> type.
- */
-interface Resolver<T> {
-  (resolve: PromiseResolveFunction<T>): void;
-}
-
 enum TransactionState {
   NOT_STARTED,
   IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
@@ -728,26 +712,29 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    const resolver: Resolver<google.datastore.v1.IBeginTransactionResponse> = (
-      resolve: PromiseResolveFunction<google.datastore.v1.IBeginTransactionResponse>
-    ) => {
-      this.request_(
-        {
-          client: 'DatastoreClient',
-          method: 'beginTransaction',
-          reqOpts,
-          gaxOpts: options.gaxOptions,
-        },
-        // Always use resolve because then this function can return both the error and the response
-        (err, resp) => {
-          resolve({
-            err,
-            resp,
-          });
-        }
-      );
-    };
-    return new Promise(resolver);
+    return new Promise(
+      (
+        resolve: (
+          value: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
+        ) => void
+      ) => {
+        this.request_(
+          {
+            client: 'DatastoreClient',
+            method: 'beginTransaction',
+            reqOpts,
+            gaxOpts: options.gaxOptions,
+          },
+          // Always use resolve because then this function can return both the error and the response
+          (err, resp) => {
+            resolve({
+              err,
+              resp,
+            });
+          }
+        );
+      }
+    );
   }
 
   /**
