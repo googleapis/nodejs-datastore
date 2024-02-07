@@ -1036,6 +1036,8 @@ class Transaction extends DatastoreRequest {
                 gaxOptions,
               });
               if (runResults.err) {
+                // The rpc getting the id was unsuccessful.
+                // Do not call the wrapped function.
                 throw runResults.err;
               }
               this.#parseRunSuccess(runResults);
@@ -1044,7 +1046,7 @@ class Transaction extends DatastoreRequest {
             }
           });
         } catch (err: any) {
-          // Handle an error produced by the beginTransaction grpc call
+          // Handle an error produced by the beginTransactionAsync call
           return callback(err);
         }
       }
