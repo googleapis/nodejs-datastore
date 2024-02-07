@@ -79,7 +79,7 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
  * @class
  */
 class DatastoreRequest {
-  id: string | undefined;
+  id: string | undefined | Uint8Array | null;
   requests_:
     | Entity
     | {

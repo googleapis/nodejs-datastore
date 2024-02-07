@@ -677,7 +677,9 @@ class Transaction extends DatastoreRequest {
    * begin a transaction that completed successfully.
    *
    **/
-  #parseRunSuccess(runResults: UserCallbackData<any>) {
+  #parseRunSuccess(
+    runResults: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
+  ) {
     const resp = runResults.resp;
     this.id = resp!.transaction;
     this.#state = TransactionState.IN_PROGRESS;
