@@ -1031,10 +1031,16 @@ class Transaction extends DatastoreRequest {
         try {
           await this.#mutex.runExclusive(async () => {
             if (this.#state === TransactionState.NOT_STARTED) {
+              // This sends an rpc call to get the transaction id
               const runResults = await this.#beginTransactionAsync({
                 gaxOptions,
               });
+              if (runResults.err) {
+                throw runResults.err;
+              }
               this.#parseRunSuccess(runResults);
+              // The rpc saving the transaction id was successful.
+              // Now the wrapped function fn will be called.
             }
           });
         } catch (err: any) {
