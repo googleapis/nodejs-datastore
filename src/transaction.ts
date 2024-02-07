@@ -43,15 +43,14 @@ import {
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
 
-/**
- * This type matches data typically passed into a callback the user supplies.
- * The data matches promises created from an argument of Resolver<T> type.
+/*
+ * This type matches the value returned by the promise in the
+ * #beginTransactionAsync function and subsequently passed into various other
+ * methods in this class.
  */
-interface UserCallbackData<T> {
+interface BeginAsyncResponse {
   err?: Error | null;
-  // T is the type of the data that the promise delivered to the user resolves to.
-  // T also matches the type of the response data provided in the user's callback.
-  resp?: T;
+  resp?: google.datastore.v1.IBeginTransactionResponse;
 }
 
 enum TransactionState {
@@ -650,14 +649,14 @@ class Transaction extends DatastoreRequest {
   /**
    * This function parses results from a beginTransaction call
    *
-   * @param {UserCallbackData<google.datastore.v1.IBeginTransactionResponse>} [response]
+   * @param {BeginAsyncResponse} [response]
    * The response data from a call to begin a transaction.
    * @param {RunCallback} [callback] A callback that accepts an error and a
    * response as arguments.
    *
    **/
   #processBeginResults(
-    runResults: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>,
+    runResults: BeginAsyncResponse,
     callback: RunCallback
   ): void {
     const err = runResults.err;
@@ -673,13 +672,11 @@ class Transaction extends DatastoreRequest {
   /**
    * This function saves results from a successful beginTransaction call.
    *
-   * @param {UserCallbackData<any>} [response] The response from a call to
+   * @param {BeginAsyncResponse} [response] The response from a call to
    * begin a transaction that completed successfully.
    *
    **/
-  #parseRunSuccess(
-    runResults: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
-  ) {
+  #parseRunSuccess(runResults: BeginAsyncResponse) {
     const resp = runResults.resp;
     this.id = resp!.transaction;
     this.#state = TransactionState.IN_PROGRESS;
@@ -696,7 +693,7 @@ class Transaction extends DatastoreRequest {
    **/
   async #beginTransactionAsync(
     options: RunOptions
-  ): Promise<UserCallbackData<google.datastore.v1.IBeginTransactionResponse>> {
+  ): Promise<BeginAsyncResponse> {
     const reqOpts: RequestOptions = {
       transactionOptions: {},
     };
@@ -714,29 +711,23 @@ class Transaction extends DatastoreRequest {
     if (options.transactionOptions) {
       reqOpts.transactionOptions = options.transactionOptions;
     }
-    return new Promise(
-      (
-        resolve: (
-          value: UserCallbackData<google.datastore.v1.IBeginTransactionResponse>
-        ) => void
-      ) => {
-        this.request_(
-          {
-            client: 'DatastoreClient',
-            method: 'beginTransaction',
-            reqOpts,
-            gaxOpts: options.gaxOptions,
-          },
-          // Always use resolve because then this function can return both the error and the response
-          (err, resp) => {
-            resolve({
-              err,
-              resp,
-            });
-          }
-        );
-      }
-    );
+    return new Promise((resolve: (value: BeginAsyncResponse) => void) => {
+      this.request_(
+        {
+          client: 'DatastoreClient',
+          method: 'beginTransaction',
+          reqOpts,
+          gaxOpts: options.gaxOptions,
+        },
+        // Always use resolve because then this function can return both the error and the response
+        (err, resp) => {
+          resolve({
+            err,
+            resp,
+          });
+        }
+      );
+    });
   }
 
   /**
