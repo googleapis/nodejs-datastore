@@ -1170,7 +1170,7 @@ export interface SharedQueryOptions {
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {
     readConsistency?: number;
-    transaction?: string;
+    transaction?: string | Uint8Array | null;
     readTime?: ITimestamp;
   };
 }
