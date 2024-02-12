@@ -177,6 +177,7 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
+    // This ensures that the transaction is started before calling runCommit
     this.#withBeginTransaction(
       gaxOptions,
       () => {
@@ -353,6 +354,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling get
     this.#withBeginTransaction(
       options.gaxOptions,
       () => {
@@ -763,6 +765,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling runAggregationQuery
     this.#withBeginTransaction(
       options.gaxOptions,
       () => {
@@ -801,6 +804,7 @@ class Transaction extends DatastoreRequest {
         : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling runQuery
     this.#withBeginTransaction(
       options.gaxOptions,
       () => {
