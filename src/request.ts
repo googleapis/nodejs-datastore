@@ -44,6 +44,7 @@ import arrify = require('arrify');
 import ITimestamp = google.protobuf.ITimestamp;
 import * as serializer from 'proto3-json-serializer';
 import {JSONValue} from 'proto3-json-serializer';
+import * as protos from '../protos/protos';
 
 const protobuf = require('protobufjs'); // TODO: Prefer import
 const root = protobuf.loadSync('google/protobuf/struct.proto');
@@ -56,27 +57,30 @@ function decodeStruct(structValue: any) {
 
 // This function gets a RunQueryInfo object that contains stats from the server.
 function getInfoFromStats(
-  stats: google.datastore.v1.IResultSetStats
+  resp: any // protos.google.datastore.v1.IRunQueryResponse
 ): RunQueryInfo {
   // Decode structValues stored in queryPlan and queryStats
   const planInfo: JSONValue | undefined =
-    stats && stats.queryPlan && stats.queryPlan.planInfo
-      ? decodeStruct(stats.queryPlan.planInfo)
+    resp && resp.plan
+      ? decodeStruct(resp.plan)
       : undefined;
   const queryPlan: QueryPlan =
-    stats && stats.queryPlan
-      ? Object.assign(stats.queryPlan, {
-          planInfo: decodeStruct(stats.queryPlan.planInfo),
+    resp && resp.plan
+      ? Object.assign(resp.plan, {
+          planInfo: decodeStruct(resp.plan),
         })
       : {planInfo: null};
+  return {};
+  /*
   return stats
     ? {
         stats: Object.assign(
           {queryPlan},
-          stats.queryStats ? {queryStats: decodeStruct(stats.queryStats)} : {}
+          stats.queryStats ? {queryStats: decodeStruct(resp.executionStats)} : {}
         ),
       }
     : {};
+   */
 }
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -105,8 +109,7 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   strong: 1,
 };
 
-type GapicQueryMode = google.datastore.v1.QueryMode;
-
+type GapicExplainOptions = google.datastore.v1.IExplainOptions;
 /**
  * Handle logic for Datastore API operations. Handles request logic for
  * Datastore.
@@ -633,7 +636,7 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
-        const info = getInfoFromStats(res.stats);
+        const info = getInfoFromStats(res);
         let finalResults = [];
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
@@ -855,12 +858,12 @@ class DatastoreRequest {
 
       if (!resp.batch) {
         // If there are no results then send any stats back and end the stream.
-        stream.emit('info', getInfoFromStats(resp.stats));
+        stream.emit('info', getInfoFromStats(resp));
         stream.push(null);
         return;
       }
 
-      const info = Object.assign(getInfoFromStats(resp.stats), {
+      const info = Object.assign(getInfoFromStats(resp), {
         moreResults: resp.batch.moreResults,
       });
 
@@ -943,12 +946,15 @@ class DatastoreRequest {
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
-    if (options.mode) {
-      sharedQueryOpts.mode = new Map<QueryMode, google.datastore.v1.QueryMode>([
-        [QueryMode.NORMAL, google.datastore.v1.QueryMode.NORMAL],
-        [QueryMode.EXPLAIN, google.datastore.v1.QueryMode.PLAN],
-        [QueryMode.EXPLAIN_ANALYZE, google.datastore.v1.QueryMode.PROFILE],
-      ]).get(options.mode);
+    switch(options.mode) {
+      case QueryMode.EXPLAIN: {
+        sharedQueryOpts.explainOptions = {analyze: false}
+        break;
+      }
+      case QueryMode.EXPLAIN_ANALYZE: {
+        sharedQueryOpts.explainOptions = {analyze: true}
+        break;
+      }
     }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
@@ -1216,8 +1222,9 @@ export interface RequestConfig {
   reqOpts?: RequestOptions;
 }
 export interface SharedQueryOptions {
-  mode?: string | GapicQueryMode;
+  mode?: string;
   databaseId?: string;
+  explainOptions?: GapicExplainOptions;
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {
@@ -1234,7 +1241,7 @@ export interface RequestOptions extends SharedQueryOptions {
     readWrite?: {previousTransaction?: string};
   } | null;
   transaction?: string | null;
-  mode?: string | GapicQueryMode;
+  mode?: string;
   query?: QueryProto;
   filter?: string;
   indexId?: string;

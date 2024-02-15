@@ -1428,7 +1428,7 @@ async.each(
                 queryPlan: expectedQueryPlan,
               });
             });
-            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+            it.only('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
               const [entities, info] = await q.run({
                 mode: QueryMode.EXPLAIN_ANALYZE,
               });
@@ -1458,7 +1458,7 @@ async.each(
             };
 
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
-            it.only('should call runQueryStream with no mode specified', async () => {
+            it('should call runQueryStream with no mode specified', async () => {
               // TODO: Finish this test
               const stream = await datastore.runQueryStream(q);
               const entities = [];

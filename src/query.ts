@@ -600,9 +600,9 @@ export interface IntegerTypeCastOptions {
 }
 
 export enum QueryMode {
-  NORMAL = google.datastore.v1.QueryMode.NORMAL,
-  EXPLAIN = google.datastore.v1.QueryMode.PLAN,
-  EXPLAIN_ANALYZE = google.datastore.v1.QueryMode.PROFILE,
+  NORMAL,
+  EXPLAIN,
+  EXPLAIN_ANALYZE,
 }
 
 export interface RunQueryOptions {
