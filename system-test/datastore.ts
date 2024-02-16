@@ -22,10 +22,9 @@ import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
 import {AggregateField} from '../src/aggregate';
 import {and, or, PropertyFilter} from '../src/filter';
-import {entity} from '../src/entity';
+import {Entities, entity, Entity} from '../src/entity';
 import {QueryMode, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
-import Entity = google.datastore.v1.Entity;
 
 const async = require('async');
 
@@ -1134,7 +1133,7 @@ async.each(
             });
           });
         });
-        describe.only('query profiling', () => {
+        describe('query profiling', () => {
           const expectedRunQueryPlan = {
             indexesUsed: [
               {
@@ -1464,29 +1463,112 @@ async.each(
               assert.deepStrictEqual(info.plan, expectedRunQueryPlan);
             });
           });
-          describe('when calling runQueryStream', () => {
+          describe.only('when calling runQueryStream', () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
             it('should call runQueryStream with no mode specified', async () => {
-              // TODO: Finish this test
               const stream = await datastore.runQueryStream(q);
-              const entities = [];
-              // TODO: Change this data.
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
               stream.on('data', (data: Entity) => {
                 assert(datastore.KEY in data);
                 delete data[datastore.KEY];
                 entities.push(data);
               });
               stream.on('info', (info: any) => {
-                console.log('test info');
+                savedInfo = info;
               });
-              /*
-                  const [entities, info] = await q.run();
-                  assert(!info.stats);
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
                   assert.deepStrictEqual(
-                    entities.sort(compare).map(entity => entity.name),
+                    entities
+                      .sort(compare)
+                      .map((entity: Entity) => entity?.name),
                     [...characters].sort(compare).map(entity => entity.name)
                   );
-                   */
+                  assert(!savedInfo.executionStats);
+                  assert(!savedInfo.plan);
+                  resolve();
+                });
+              });
+            });
+            it('should call runQueryStream with NORMAL mode specified', async () => {
+              const stream = await datastore.runQueryStream(q, {
+                mode: QueryMode.NORMAL,
+              });
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(
+                    entities
+                      .sort(compare)
+                      .map((entity: Entity) => entity?.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                  assert(!savedInfo.executionStats);
+                  assert(!savedInfo.plan);
+                  resolve();
+                });
+              });
+            });
+            it('should call runQueryStream with EXPLAIN mode specified', async () => {
+              const stream = await datastore.runQueryStream(q, {
+                mode: QueryMode.EXPLAIN,
+              });
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(entities, []);
+                  assert(!savedInfo.executionStats);
+                  assert.deepStrictEqual(savedInfo.plan, expectedRunQueryPlan);
+                  resolve();
+                });
+              });
+            });
+            it('should call runQueryStream with EXPLAIN_ANALYZE mode specified', async () => {
+              const stream = await datastore.runQueryStream(q, {
+                mode: QueryMode.EXPLAIN_ANALYZE,
+              });
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(
+                    entities
+                      .sort(compare)
+                      .map((entity: Entity) => entity?.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                  checkQueryExecutionStats(savedInfo.executionStats);
+                  assert.deepStrictEqual(savedInfo.plan, expectedRunQueryPlan);
+                  resolve();
+                });
+              });
             });
             /*
                 it('should run a query with NORMAL mode specified', async () => {
