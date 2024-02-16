@@ -1169,7 +1169,8 @@ async.each(
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(!info.stats);
+                assert(!info.executionStats);
+                assert(!info.plan);
                 assert.deepStrictEqual(
                   entities.sort(compare).map(entity => entity.name),
                   [...characters].sort(compare).map(entity => entity.name)
@@ -1187,7 +1188,8 @@ async.each(
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(!info.stats);
+                assert(!info.executionStats);
+                assert(!info.plan);
                 assert.deepStrictEqual(
                   entities.sort(compare).map(entity => entity.name),
                   [...characters].sort(compare).map(entity => entity.name)
@@ -1206,9 +1208,7 @@ async.each(
                   assert.fail('transaction failed');
                 }
                 assert.deepStrictEqual(entities, []);
-                assert.deepStrictEqual(info.stats, {
-                  queryPlan: expectedQueryPlan,
-                });
+                assert.deepStrictEqual(info.plan, expectedQueryPlan);
                 await transaction.commit();
               });
               it('should run a query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
@@ -1226,13 +1226,12 @@ async.each(
                   entities.sort(compare).map(entity => entity.name),
                   [...characters].sort(compare).map(entity => entity.name)
                 );
-                assert(info.stats);
-                assert(info.stats.queryStats);
+                assert(info.executionStats);
                 assert.deepStrictEqual(
-                  Object.keys(info.stats.queryStats).sort(),
+                  Object.keys(info.executionStats).sort(),
                   expectedStats
                 );
-                assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
+                assert.deepStrictEqual(info.plan, expectedQueryPlan);
                 await transaction.commit();
               });
             });
@@ -1269,7 +1268,7 @@ async.each(
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(!info.stats);
+                assert(!info.executionStats);
                 assert.deepStrictEqual(entities, expectedAggregationResults);
                 await transaction.commit();
               });
@@ -1287,7 +1286,7 @@ async.each(
                   await transaction.rollback();
                   assert.fail('transaction failed');
                 }
-                assert(!info.stats);
+                assert(!info.executionStats);
                 assert.deepStrictEqual(entities, expectedAggregationResults);
                 await transaction.commit();
               });
@@ -1306,8 +1305,8 @@ async.each(
                   assert.fail('transaction failed');
                 }
                 assert.deepStrictEqual(entities, []);
-                assert.deepStrictEqual(info.stats, {
-                  queryPlan: expectedQueryPlan,
+                assert.deepStrictEqual(info.plan, {
+                  plan: expectedQueryPlan,
                 });
                 await transaction.commit();
               });
@@ -1326,13 +1325,12 @@ async.each(
                   assert.fail('transaction failed');
                 }
                 assert.deepStrictEqual(entities, expectedAggregationResults);
-                assert(info.stats);
-                assert(info.stats.queryStats);
+                assert(info.executionStats);
                 assert.deepStrictEqual(
-                  Object.keys(info.stats.queryStats).sort(),
+                  Object.keys(info.executionStats).sort(),
                   expectedStats
                 );
-                assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
+                assert.deepStrictEqual(info.plan, expectedQueryPlan);
                 await transaction.commit();
               });
             });
@@ -1351,7 +1349,7 @@ async.each(
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
             it('should run an aggregation query with no mode specified', async () => {
               const [entities, info] = await datastore.runQuery(q);
-              assert(!info.stats);
+              assert(!info.executionStats);
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
@@ -1361,7 +1359,7 @@ async.each(
               const [entities, info] = await datastore.runQuery(q, {
                 mode: QueryMode.NORMAL,
               });
-              assert(!info.stats);
+              assert(!info.executionStats);
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
@@ -1372,7 +1370,7 @@ async.each(
                 mode: QueryMode.EXPLAIN,
               });
               assert.deepStrictEqual(entities, []);
-              assert.deepStrictEqual(info.stats, {
+              assert.deepStrictEqual(info.executionStats, {
                 queryPlan: expectedQueryPlan,
               });
             });
@@ -1384,13 +1382,12 @@ async.each(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
               );
-              assert(info.stats);
-              assert(info.stats.queryStats);
+              assert(info.executionStats);
               assert.deepStrictEqual(
-                Object.keys(info.stats.queryStats).sort(),
+                Object.keys(info.executionStats).sort(),
                 expectedStats
               );
-              assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
+              assert.deepStrictEqual(info.plan, expectedQueryPlan);
             });
           });
           describe('when calling run on a Query object', () => {
@@ -1407,7 +1404,8 @@ async.each(
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
             it('should run an aggregation query with no mode specified', async () => {
               const [entities, info] = await q.run();
-              assert(!info.stats);
+              assert(!info.plan);
+              assert(!info.executionStats);
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
@@ -1415,7 +1413,8 @@ async.each(
             });
             it('should run a query with NORMAL mode specified', async () => {
               const [entities, info] = await q.run({mode: QueryMode.NORMAL});
-              assert(!info.stats);
+              assert(!info.executionStats);
+              assert(!info.plan);
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
@@ -1424,8 +1423,8 @@ async.each(
             it('should run a query with EXPLAIN mode specified', async () => {
               const [entities, info] = await q.run({mode: QueryMode.EXPLAIN});
               assert.deepStrictEqual(entities, []);
-              assert.deepStrictEqual(info.stats, {
-                queryPlan: expectedQueryPlan,
+              assert.deepStrictEqual(info.plan, {
+                plan: info.plan,
               });
             });
             it.only('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
@@ -1436,13 +1435,13 @@ async.each(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
               );
-              assert(info.stats);
-              assert(info.stats.queryStats);
+              assert(info.executionStats);
+              assert(info.plan);
               assert.deepStrictEqual(
-                Object.keys(info.stats.queryStats).sort(),
+                Object.keys(info.executionStats).sort(),
                 expectedStats
               );
-              assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
+              assert.deepStrictEqual(info.plan, expectedQueryPlan);
             });
           });
           describe('when calling runQueryStream', () => {
@@ -1537,7 +1536,8 @@ async.each(
             it('should run an aggregation query with no mode specified', async () => {
               const [entities, info] =
                 await datastore.runAggregationQuery(aggregate);
-              assert(!info.stats);
+              assert(!info.executionStats);
+              assert(!info.plan);
               assert.deepStrictEqual(entities, expectedAggregationResults);
             });
             it('should run an aggregation query with NORMAL mode specified', async () => {
@@ -1547,7 +1547,8 @@ async.each(
                   mode: QueryMode.NORMAL,
                 }
               );
-              assert(!info.stats);
+              assert(!info.executionStats);
+              assert(!info.plan);
               assert.deepStrictEqual(entities, expectedAggregationResults);
             });
             it('should run an aggregation query with EXPLAIN mode specified', async () => {
@@ -1558,8 +1559,9 @@ async.each(
                 }
               );
               assert.deepStrictEqual(entities, []);
-              assert.deepStrictEqual(info.stats, {
-                queryPlan: expectedQueryPlan,
+              assert(!info.executionStats);
+              assert.deepStrictEqual(info.plan, {
+                expectedQueryPlan,
               });
             });
             it('should run an aggregation query with EXPLAIN_ANALYZE mode specified', async () => {
@@ -1570,13 +1572,12 @@ async.each(
                 }
               );
               assert.deepStrictEqual(entities, expectedAggregationResults);
-              assert(info.stats);
-              assert(info.stats.queryStats);
+              assert(info.executionStats);
               assert.deepStrictEqual(
-                Object.keys(info.stats.queryStats).sort(),
+                Object.keys(info.executionStats).sort(),
                 expectedStats
               );
-              assert.deepStrictEqual(info.stats.queryPlan, expectedQueryPlan);
+              assert.deepStrictEqual(info.plan, expectedQueryPlan);
             });
           });
           describe('when using run on an AggregationQuery object', () => {
