@@ -31,7 +31,6 @@ import {
 import {
   Query,
   QueryMode,
-  QueryPlan,
   QueryProto,
   RunQueryCallback,
   RunQueryInfo,
@@ -46,7 +45,7 @@ import * as serializer from 'proto3-json-serializer';
 import {JSONValue} from 'proto3-json-serializer';
 import * as protos from '../protos/protos';
 
-const protobuf = require('protobufjs'); // TODO: Prefer import
+import * as protobuf from 'protobufjs';
 const root = protobuf.loadSync('google/protobuf/struct.proto');
 const Struct = root.lookupType('Struct');
 
