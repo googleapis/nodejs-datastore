@@ -55,32 +55,51 @@ function decodeStruct(structValue: any) {
   return serializer.toProto3JSON(Struct.fromObject(structValue));
 }
 
+// TODO: Consider unit testing this function
 // This function gets a RunQueryInfo object that contains stats from the server.
 function getInfoFromStats(
-  resp: any // protos.google.datastore.v1.IRunQueryResponse
+  resp: protos.google.datastore.v1.IRunQueryResponse
 ): RunQueryInfo {
   // Decode structValues stored in queryPlan and queryStats
-  const planInfo: JSONValue | undefined =
-    resp && resp.plan
-      ? decodeStruct(resp.plan)
-      : undefined;
-  const queryPlan: QueryPlan =
-    resp && resp.plan
-      ? Object.assign(resp.plan, {
-          planInfo: decodeStruct(resp.plan),
-        })
-      : {planInfo: null};
-  return {};
-  /*
-  return stats
-    ? {
-        stats: Object.assign(
-          {queryPlan},
-          stats.queryStats ? {queryStats: decodeStruct(resp.executionStats)} : {}
-        ),
+  const info = {};
+  if (resp && resp.plan && resp.plan.indexesUsed) {
+    Object.assign(info, {plan: {indexesUsed: resp.plan.indexesUsed.map((index: google.protobuf.IStruct) => decodeStruct(index))}})
+  }
+  if (resp && resp.executionStats) {
+    const executionStats = {};
+    {
+      const resultsReturned = resp.executionStats.resultsReturned;
+      if (resultsReturned) {
+        Object.assign(executionStats, {resultsReturned: typeof resultsReturned === 'string' ? parseInt(resultsReturned) : resultsReturned});
       }
-    : {};
-   */
+    }
+    {
+      const bytesReturned = resp.executionStats.bytesReturned;
+      if (bytesReturned) {
+        Object.assign(executionStats, {bytesReturned: typeof bytesReturned === 'string' ? parseInt(bytesReturned) : bytesReturned});
+      }
+    }
+    {
+      const executionDuration = resp.executionStats.executionDuration;
+      if (executionDuration) {
+        Object.assign(executionStats, {executionDuration: typeof executionDuration === 'string' ? parseInt(executionDuration) : executionDuration});
+      }
+    }
+    {
+      const readOperations = resp.executionStats.readOperations;
+      if (readOperations) {
+        Object.assign(executionStats, {readOperations: typeof readOperations === 'string' ? parseInt(readOperations) : readOperations});
+      }
+    }
+    {
+      const debugStats = resp.executionStats.debugStats;
+      if (debugStats) {
+        Object.assign(executionStats, {debugStats: decodeStruct(debugStats)});
+      }
+    }
+    Object.assign(info, {executionStats});
+  }
+  return info;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -637,14 +637,18 @@ export interface RunQueryInfo {
     | 'MORE_RESULTS_AFTER_LIMIT'
     | 'MORE_RESULTS_AFTER_CURSOR'
     | 'NO_MORE_RESULTS';
-  stats?: ResultSetStats;
+  plan?: Plan;
+  executionStats?: ExecutionStats;
 }
 
-export interface ResultSetStats {
-  queryPlan: QueryPlan;
-  queryStats?: JSONValue;
+export interface ExecutionStats {
+  resultsReturned?: number;
+  bytesReturned?: number;
+  executionDuration?: any;
+  readOperations?: number;
+  debugStats?: JSONValue;
 }
 
-export interface QueryPlan {
-  planInfo: JSONValue;
+export interface Plan {
+  indexesUsed: JSONValue;
 }
