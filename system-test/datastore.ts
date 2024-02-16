@@ -1134,7 +1134,7 @@ async.each(
             });
           });
         });
-        describe('query profiling', () => {
+        describe.only('query profiling', () => {
           const expectedRunQueryPlan = {
             indexesUsed: [
               {
@@ -1154,7 +1154,7 @@ async.each(
           const compare = (a: any, b: any) => {
             return a.name > b.name ? 1 : -1;
           };
-          function checkExecutionStats(executionStats?: ExecutionStats) {
+          function checkQueryExecutionStats(executionStats?: ExecutionStats) {
             // This function ensures the execution stats returned from the server are correct.
             // First fix stats values that will be different every time a query profiling
             // request is made so the assertion check only compares values that are
@@ -1179,6 +1179,37 @@ async.each(
                   small_ops: '0',
                   index_entries_billable: '0',
                   documents_billable: '8',
+                },
+              },
+            });
+          }
+          function checkAggregationQueryExecutionStats(
+            executionStats?: ExecutionStats
+          ) {
+            // This function ensures the execution stats returned from the server are correct.
+            // First fix stats values that will be different every time a query profiling
+            // request is made so the assertion check only compares values that are
+            // expected to be the same every time the test is run.
+            const duration = {
+              seconds: '0',
+              nanos: 26806000,
+            };
+            assert(executionStats);
+            executionStats.executionDuration = duration;
+            // Then do the assertion check.
+            assert.deepStrictEqual(executionStats, {
+              resultsReturned: 1,
+              bytesReturned: 51,
+              executionDuration: duration,
+              readOperations: 1,
+              debugStats: {
+                documents_scanned: '0',
+                index_entries_scanned: '8',
+                billing_details: {
+                  min_query_cost: '0',
+                  small_ops: '0',
+                  index_entries_billable: '8',
+                  documents_billable: '0',
                 },
               },
             });
@@ -1255,7 +1286,7 @@ async.each(
                   entities.sort(compare).map(entity => entity.name),
                   [...characters].sort(compare).map(entity => entity.name)
                 );
-                checkExecutionStats(info.executionStats);
+                checkQueryExecutionStats(info.executionStats);
                 assert.deepStrictEqual(info.plan, expectedRunQueryPlan);
                 await transaction.commit();
               });
@@ -1322,9 +1353,10 @@ async.each(
                   assert.fail('transaction failed');
                 }
                 assert.deepStrictEqual(entities, []);
-                assert.deepStrictEqual(info.plan, {
-                  plan: expectedRunAggregationQueryPlan,
-                });
+                assert.deepStrictEqual(
+                  info.plan,
+                  expectedRunAggregationQueryPlan
+                );
                 await transaction.commit();
               });
               it('should run an aggregation query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
@@ -1342,7 +1374,7 @@ async.each(
                   assert.fail('transaction failed');
                 }
                 assert.deepStrictEqual(entities, expectedAggregationResults);
-                checkExecutionStats(info.executionStats);
+                checkAggregationQueryExecutionStats(info.executionStats);
                 assert.deepStrictEqual(
                   info.plan,
                   expectedRunAggregationQueryPlan
@@ -1389,7 +1421,7 @@ async.each(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
               );
-              checkExecutionStats(info.executionStats);
+              checkQueryExecutionStats(info.executionStats);
               assert.deepStrictEqual(info.plan, expectedRunQueryPlan);
             });
           });
@@ -1417,11 +1449,9 @@ async.each(
               const [entities, info] = await q.run({mode: QueryMode.EXPLAIN});
               assert.deepStrictEqual(entities, []);
               assert(!info.executionStats);
-              assert.deepStrictEqual(info.plan, {
-                plan: info.plan,
-              });
+              assert.deepStrictEqual(info.plan, expectedRunQueryPlan);
             });
-            it.only('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
               const [entities, info] = await q.run({
                 mode: QueryMode.EXPLAIN_ANALYZE,
               });
@@ -1429,7 +1459,7 @@ async.each(
                 entities.sort(compare).map(entity => entity.name),
                 [...characters].sort(compare).map(entity => entity.name)
               );
-              checkExecutionStats(info.executionStats);
+              checkQueryExecutionStats(info.executionStats);
               assert(info.plan);
               assert.deepStrictEqual(info.plan, expectedRunQueryPlan);
             });
@@ -1529,7 +1559,10 @@ async.each(
               );
               assert.deepStrictEqual(entities, []);
               assert(!info.executionStats);
-              assert.deepStrictEqual(info.plan, expectedRunAggregationQueryPlan);
+              assert.deepStrictEqual(
+                info.plan,
+                expectedRunAggregationQueryPlan
+              );
             });
             it('should run an aggregation query with EXPLAIN_ANALYZE mode specified', async () => {
               const [entities, info] = await datastore.runAggregationQuery(
@@ -1539,8 +1572,11 @@ async.each(
                 }
               );
               assert.deepStrictEqual(entities, expectedAggregationResults);
-              checkExecutionStats(info.executionStats);
-              assert.deepStrictEqual(info.plan, expectedRunAggregationQueryPlan);
+              checkAggregationQueryExecutionStats(info.executionStats);
+              assert.deepStrictEqual(
+                info.plan,
+                expectedRunAggregationQueryPlan
+              );
             });
           });
           describe('when using run on an AggregationQuery object', () => {
@@ -1573,15 +1609,21 @@ async.each(
               });
               assert.deepStrictEqual(entities, []);
               assert(!info.executionStats);
-              assert.deepStrictEqual(info.plan, expectedRunAggregationQueryPlan);
+              assert.deepStrictEqual(
+                info.plan,
+                expectedRunAggregationQueryPlan
+              );
             });
             it('should run an aggregation query with EXPLAIN_ANALYZE mode specified', async () => {
               const [entities, info] = await aggregate.run({
                 mode: QueryMode.EXPLAIN_ANALYZE,
               });
               assert.deepStrictEqual(entities, expectedAggregationResults);
-              checkExecutionStats(info.executionStats);
-              assert.deepStrictEqual(info.plan, expectedRunAggregationQueryPlan);
+              checkAggregationQueryExecutionStats(info.executionStats);
+              assert.deepStrictEqual(
+                info.plan,
+                expectedRunAggregationQueryPlan
+              );
             });
           });
         });
