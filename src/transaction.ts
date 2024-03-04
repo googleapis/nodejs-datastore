@@ -39,7 +39,7 @@ import {
   GetResponse,
   GetCallback,
   RequestCallback,
-  TransactionState,
+  TransactionState, getTransactionRequest,
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
@@ -692,29 +692,12 @@ class Transaction extends DatastoreRequest {
   async #beginTransactionAsync(
     options: RunOptions
   ): Promise<BeginAsyncResponse> {
-    const reqOpts: RequestOptions = {
-      transactionOptions: {},
-    };
-
-    if (options.readOnly || this.readOnly) {
-      reqOpts.transactionOptions!.readOnly = {};
-    }
-
-    if (options.transactionId || this.id) {
-      reqOpts.transactionOptions!.readWrite = {
-        previousTransaction: options.transactionId || this.id,
-      };
-    }
-
-    if (options.transactionOptions) {
-      reqOpts.transactionOptions = options.transactionOptions;
-    }
     return new Promise((resolve: (value: BeginAsyncResponse) => void) => {
       this.request_(
         {
           client: 'DatastoreClient',
           method: 'beginTransaction',
-          reqOpts,
+          reqOpts: {transactionOptions: getTransactionRequest(this, {})},
           gaxOpts: options.gaxOptions,
         },
         // Always use resolve because then this function can return both the error and the response
@@ -1054,12 +1037,15 @@ class Transaction extends DatastoreRequest {
     })();
   }
 
+  // TODO: Add description of method
   #withMutex(fn: () => void) {
     (async () => {
       if (this.state === TransactionState.NOT_STARTED) {
         await this.#mutex.runExclusive(async () => {
           fn();
         });
+      } else {
+        fn();
       }
     })();
   }

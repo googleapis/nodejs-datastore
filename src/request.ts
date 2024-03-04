@@ -32,6 +32,11 @@ export interface AbortableDuplex extends Duplex {
   abort(): void;
 }
 
+interface TransactionRequestOptions {
+  readOnly?: {};
+  readWrite?: {previousTransaction?: string | Uint8Array | null};
+}
+
 // Import the clients for each version supported by this package.
 const gapic = Object.freeze({
   v1: require('./v1'),
@@ -54,9 +59,10 @@ import {
   RunQueryResponse,
   RunQueryCallback,
 } from './query';
-import {Datastore} from '.';
+import {Datastore, Transaction} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';
+import {RunOptions} from './transaction';
 
 /**
  * A map of read consistency values to proto codes.
@@ -891,6 +897,14 @@ class DatastoreRequest {
     options: RunQueryStreamOptions
   ): SharedQueryOptions {
     const sharedQueryOpts = {} as SharedQueryOptions;
+    if (isTransaction(this)) {
+      if (this.state === TransactionState.NOT_STARTED) {
+        if (sharedQueryOpts.readOptions === undefined) {
+          sharedQueryOpts.readOptions = {};
+        }
+        sharedQueryOpts.readOptions.newTransaction = getTransactionRequest(this, {});
+      }
+    }
     if (options.consistency) {
       const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
       sharedQueryOpts.readOptions = {
@@ -1123,6 +1137,32 @@ class DatastoreRequest {
   }
 }
 
+function isTransaction(request: DatastoreRequest): request is Transaction {
+  return request instanceof Transaction;
+}
+
+export function getTransactionRequest(transaction: Transaction, options: RunOptions): TransactionRequestOptions {
+  let reqOpts: TransactionRequestOptions = {};
+  if (options.readOnly || transaction.readOnly) {
+    reqOpts.readOnly = {};
+  }
+  if (options.transactionId || transaction.id) {
+    reqOpts.readWrite = {
+      previousTransaction: options.transactionId || transaction.id,
+    };
+  }
+  if (options.transactionOptions) {
+    if (options.transactionOptions.readOnly) {
+      reqOpts.readOnly = {};
+    }
+    const id = options.transactionOptions.id;
+    if (id) {
+      reqOpts.readWrite = { previousTransaction: id };
+    }
+  }
+  return reqOpts
+}
+
 export interface ConsistencyProtoCode {
   [key: string]: number;
 }
@@ -1179,15 +1219,13 @@ export interface SharedQueryOptions {
     readConsistency?: number;
     transaction?: string | Uint8Array | null;
     readTime?: ITimestamp;
+    newTransaction?: TransactionRequestOptions;
   };
 }
 export interface RequestOptions extends SharedQueryOptions {
   mutations?: google.datastore.v1.IMutation[];
   keys?: Entity;
-  transactionOptions?: {
-    readOnly?: {};
-    readWrite?: {previousTransaction?: string | Uint8Array | null};
-  } | null;
+  transactionOptions?: TransactionRequestOptions | null;
   transaction?: string | null | Uint8Array;
   mode?: string;
   query?: QueryProto;
