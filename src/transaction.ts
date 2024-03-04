@@ -39,6 +39,7 @@ import {
   GetResponse,
   GetCallback,
   RequestCallback,
+  TransactionState,
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
@@ -51,11 +52,6 @@ import {Mutex} from 'async-mutex';
 interface BeginAsyncResponse {
   err?: Error | null;
   resp?: google.datastore.v1.IBeginTransactionResponse;
-}
-
-enum TransactionState {
-  NOT_STARTED,
-  IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
 }
 
 /**
@@ -85,7 +81,6 @@ class Transaction extends DatastoreRequest {
   modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
   #mutex = new Mutex();
-  #state = TransactionState.NOT_STARTED;
   constructor(datastore: Datastore, options?: TransactionOptions) {
     super();
     /**
@@ -115,6 +110,7 @@ class Transaction extends DatastoreRequest {
 
     // Queue the requests to make when we send the transactional commit.
     this.requests_ = [];
+    this.state = TransactionState.NOT_STARTED;
   }
 
   /*! Developer Documentation
@@ -511,7 +507,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     this.#mutex.runExclusive(async () => {
-      if (this.#state === TransactionState.NOT_STARTED) {
+      if (this.state === TransactionState.NOT_STARTED) {
         const runResults = await this.#beginTransactionAsync(options);
         this.#processBeginResults(runResults, callback);
       } else {
@@ -681,7 +677,7 @@ class Transaction extends DatastoreRequest {
   #parseRunSuccess(runResults: BeginAsyncResponse) {
     const resp = runResults.resp;
     this.id = resp!.transaction;
-    this.#state = TransactionState.IN_PROGRESS;
+    this.state = TransactionState.IN_PROGRESS;
   }
 
   /**
@@ -1031,10 +1027,10 @@ class Transaction extends DatastoreRequest {
     callback: (...args: [Error | null, ...T] | [Error | null]) => void
   ): void {
     (async () => {
-      if (this.#state === TransactionState.NOT_STARTED) {
+      if (this.state === TransactionState.NOT_STARTED) {
         try {
           await this.#mutex.runExclusive(async () => {
-            if (this.#state === TransactionState.NOT_STARTED) {
+            if (this.state === TransactionState.NOT_STARTED) {
               // This sends an rpc call to get the transaction id
               const runResults = await this.#beginTransactionAsync({
                 gaxOptions,
@@ -1055,6 +1051,16 @@ class Transaction extends DatastoreRequest {
         }
       }
       return fn();
+    })();
+  }
+
+  #withMutex(fn: () => void) {
+    (async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        await this.#mutex.runExclusive(async () => {
+          fn();
+        });
+      }
     })();
   }
 }

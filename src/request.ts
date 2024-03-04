@@ -69,6 +69,12 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   strong: 1,
 };
 
+export enum TransactionState {
+  NOT_TRANSACTION,
+  NOT_STARTED,
+  IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
+}
+
 /**
  * Handle logic for Datastore API operations. Handles request logic for
  * Datastore.
@@ -89,6 +95,7 @@ class DatastoreRequest {
     | Array<(err: Error | null, resp: Entity | null) => void>
     | Entity;
   datastore!: Datastore;
+  protected state: TransactionState = TransactionState.NOT_TRANSACTION;
   [key: string]: Entity;
 
   /**
