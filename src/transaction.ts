@@ -693,11 +693,14 @@ class Transaction extends DatastoreRequest {
     options: RunOptions
   ): Promise<BeginAsyncResponse> {
     return new Promise((resolve: (value: BeginAsyncResponse) => void) => {
+      const reqOpts = {
+        transactionOptions: getTransactionRequest(this, options),
+      };
       this.request_(
         {
           client: 'DatastoreClient',
           method: 'beginTransaction',
-          reqOpts: {transactionOptions: getTransactionRequest(this, {})},
+          reqOpts,
           gaxOpts: options.gaxOptions,
         },
         // Always use resolve because then this function can return both the error and the response

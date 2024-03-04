@@ -1152,6 +1152,7 @@ export function getTransactionRequest(transaction: Transaction, options: RunOpti
     };
   }
   if (options.transactionOptions) {
+    reqOpts = {};
     if (options.transactionOptions.readOnly) {
       reqOpts.readOnly = {};
     }

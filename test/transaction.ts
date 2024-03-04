@@ -1854,13 +1854,18 @@ async.each(
                 },
               },
             } as {} as TransactionOptions;
+            const inputOptions = {
+              transactionOptions: {
+                id: 'transaction-id',
+              },
+            };
 
             transaction.request_ = (config: RequestConfig) => {
               assert.deepStrictEqual(config.reqOpts, options);
               done();
             };
 
-            transaction.run(options, assert.ifError);
+            transaction.run(inputOptions, assert.ifError);
           });
         });
 
