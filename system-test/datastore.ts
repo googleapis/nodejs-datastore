@@ -1750,6 +1750,30 @@ async.each(
         });
       });
       describe('transactions with and without run', () => {
+        describe('comparing times with and without transaction.run', async () => {
+          const key = datastore.key(['Company', 'Google']);
+          // Record time for transaction with run
+          const startTimeWithRun = new Date().getTime();
+          const transactionWithRun = datastore.transaction({readOnly: true});
+          await transactionWithRun.run();
+          await Promise.all([
+            transactionWithRun.get(key),
+            transactionWithRun.get(key),
+          ]);
+          await transactionWithRun.commit();
+          const timeElapsedWithRun = new Date().getTime() - startTimeWithRun;
+          // Record time for transaction without run
+          const startTimeWithoutRun = new Date().getTime();
+          const transactionWithoutRun = datastore.transaction({readOnly: true});
+          await Promise.all([
+            transactionWithoutRun.get(key),
+            transactionWithoutRun.get(key),
+          ]);
+          await transactionWithoutRun.commit();
+          const timeElapsedWithoutRun =
+            new Date().getTime() - startTimeWithoutRun;
+          assert(timeElapsedWithoutRun < timeElapsedWithRun);
+        });
         describe('lookup, put, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -1858,7 +1882,7 @@ async.each(
             const transaction = datastore.transaction({readOnly: true});
             await doPutRunQueryCommit(transaction);
           });
-        })
+        });
         describe('put, runQuery, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
