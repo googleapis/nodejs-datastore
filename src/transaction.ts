@@ -668,7 +668,7 @@ class Transaction extends DatastoreRequest {
     if (err) {
       callback(err, null, resp);
     } else {
-      this.parseRunSuccess(resp);
+      this.parseTransactionResponse(resp);
       callback(null, this, resp);
     }
   }
@@ -1029,7 +1029,7 @@ class Transaction extends DatastoreRequest {
                 // Do not call the wrapped function.
                 throw runResults.err;
               }
-              this.parseRunSuccess(runResults.resp);
+              this.parseTransactionResponse(runResults.resp);
               // The rpc saving the transaction id was successful.
               // Now the wrapped function fn will be called.
             }

@@ -299,6 +299,7 @@ class DatastoreRequest {
           gaxOpts: options.gaxOptions,
         },
         (err, resp) => {
+          this.parseTransactionResponse(resp);
           if (err) {
             stream.destroy(err);
             return;
@@ -566,11 +567,13 @@ class DatastoreRequest {
    * begin a transaction that completed successfully.
    *
    **/
-  protected parseRunSuccess(
+  protected parseTransactionResponse(
     resp?: {transaction?: Uint8Array|string|undefined|null}
   ): void {
-    this.id = resp!.transaction;
-    this.state = TransactionState.IN_PROGRESS;
+    if (resp && resp.transaction && Buffer.byteLength(resp.transaction) > 0) {
+      this.id = resp!.transaction;
+      this.state = TransactionState.IN_PROGRESS;
+    }
   }
 
   /**
@@ -632,6 +635,7 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
+        this.parseTransactionResponse(res);
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
           const finalResults = results
@@ -846,7 +850,8 @@ class DatastoreRequest {
       );
     };
 
-    function onResultSet(err?: Error | null, resp?: Entity) {
+    const onResultSet = (err?: Error | null, resp?: Entity) => {
+      this.parseTransactionResponse(resp);
       if (err) {
         stream.destroy(err);
         return;
