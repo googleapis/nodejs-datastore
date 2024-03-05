@@ -1832,6 +1832,33 @@ async.each(
             await doRunQueryPutCommit(transaction);
           });
         });
+        describe('readOnly for runQuery looks at snapshot from first read', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doPutRunQueryCommit(transaction: Transaction) {
+            const query = transaction.createQuery('Company');
+            const [results] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results, []);
+            await datastore.save({key, data: obj});
+            const [results2] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results2, []);
+            await transaction.commit();
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction({readOnly: true});
+            await transaction.run();
+            await doPutRunQueryCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction({readOnly: true});
+            await doPutRunQueryCommit(transaction);
+          });
+        })
         describe('put, runQuery, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -2125,12 +2152,49 @@ async.each(
             assert.deepStrictEqual(resultsAgain, [{total: 2}]);
             await transaction.commit();
           });
+          it('readOnly transaction should see consistent snapshot of database without transaction.run', async () => {
+            async function getResults(transaction: Transaction) {
+              const query = transaction.createQuery('Company');
+              const aggregateQuery = transaction
+                .createAggregationQuery(query)
+                .count('total');
+              let result;
+              try {
+                [result] = await aggregateQuery.run();
+              } catch (e) {
+                await transaction.rollback();
+                throw e;
+              }
+              return result;
+            }
+            const key = datastore.key(['Company', 'Google']);
+            const transaction = datastore.transaction({readOnly: true});
+            const results = await getResults(transaction);
+            assert.deepStrictEqual(results, [{total: 3}]);
+            await datastore.save([
+              {
+                key,
+                data: {
+                  rating: 100,
+                },
+              },
+            ]);
+            const resultsAgain = await getResults(transaction);
+            assert.deepStrictEqual(resultsAgain, [{total: 3}]);
+            await transaction.commit();
+          });
         });
 
         it('should read in a readOnly transaction', async () => {
           const transaction = datastore.transaction({readOnly: true});
           const key = datastore.key(['Company', 'Google']);
           await transaction.run();
+          await transaction.get(key);
+        });
+
+        it('should read in a readOnly transaction without transaction.run', async () => {
+          const transaction = datastore.transaction({readOnly: true});
+          const key = datastore.key(['Company', 'Google']);
           await transaction.get(key);
         });
 
