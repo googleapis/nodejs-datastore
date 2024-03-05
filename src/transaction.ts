@@ -39,7 +39,8 @@ import {
   GetResponse,
   GetCallback,
   RequestCallback,
-  TransactionState, getTransactionRequest,
+  TransactionState,
+  getTransactionRequest,
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
@@ -351,6 +352,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling get
+    /*
     this.#withBeginTransaction(
       options.gaxOptions,
       () => {
@@ -358,6 +360,10 @@ class Transaction extends DatastoreRequest {
       },
       callback
     );
+     */
+    this.#withMutex(() => {
+      super.get(keys, options, callback);
+    });
   }
 
   /**
@@ -662,7 +668,7 @@ class Transaction extends DatastoreRequest {
     if (err) {
       callback(err, null, resp);
     } else {
-      this.#parseRunSuccess(runResults);
+      this.#parseRunSuccess(runResults.resp);
       callback(null, this, resp);
     }
   }
@@ -674,8 +680,9 @@ class Transaction extends DatastoreRequest {
    * begin a transaction that completed successfully.
    *
    **/
-  #parseRunSuccess(runResults: BeginAsyncResponse) {
-    const resp = runResults.resp;
+  #parseRunSuccess(
+    resp: google.datastore.v1.IBeginTransactionResponse | undefined
+  ) {
     this.id = resp!.transaction;
     this.state = TransactionState.IN_PROGRESS;
   }
@@ -748,6 +755,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling runAggregationQuery
+    /*
     this.#withBeginTransaction(
       options.gaxOptions,
       () => {
@@ -755,6 +763,10 @@ class Transaction extends DatastoreRequest {
       },
       callback
     );
+     */
+    this.#withMutex(() => {
+      super.runAggregationQuery(query, options, callback);
+    });
   }
 
   /**
@@ -787,6 +799,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling runQuery
+    /*
     this.#withBeginTransaction(
       options.gaxOptions,
       () => {
@@ -794,6 +807,10 @@ class Transaction extends DatastoreRequest {
       },
       callback
     );
+     */
+    this.#withMutex(() => {
+      super.runQuery(query, options, callback);
+    });
   }
 
   /**
@@ -1026,7 +1043,7 @@ class Transaction extends DatastoreRequest {
                 // Do not call the wrapped function.
                 throw runResults.err;
               }
-              this.#parseRunSuccess(runResults);
+              this.#parseRunSuccess(runResults.resp);
               // The rpc saving the transaction id was successful.
               // Now the wrapped function fn will be called.
             }
