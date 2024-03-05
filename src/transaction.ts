@@ -668,23 +668,9 @@ class Transaction extends DatastoreRequest {
     if (err) {
       callback(err, null, resp);
     } else {
-      this.#parseRunSuccess(runResults.resp);
+      this.parseRunSuccess(resp);
       callback(null, this, resp);
     }
-  }
-
-  /**
-   * This function saves results from a successful beginTransaction call.
-   *
-   * @param {BeginAsyncResponse} [response] The response from a call to
-   * begin a transaction that completed successfully.
-   *
-   **/
-  #parseRunSuccess(
-    resp: google.datastore.v1.IBeginTransactionResponse | undefined
-  ) {
-    this.id = resp!.transaction;
-    this.state = TransactionState.IN_PROGRESS;
   }
 
   /**
@@ -1043,7 +1029,7 @@ class Transaction extends DatastoreRequest {
                 // Do not call the wrapped function.
                 throw runResults.err;
               }
-              this.#parseRunSuccess(runResults.resp);
+              this.parseRunSuccess(runResults.resp);
               // The rpc saving the transaction id was successful.
               // Now the wrapped function fn will be called.
             }

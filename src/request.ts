@@ -560,6 +560,20 @@ class DatastoreRequest {
   }
 
   /**
+   * This function saves results from a successful beginTransaction call.
+   *
+   * @param {BeginAsyncResponse} [response] The response from a call to
+   * begin a transaction that completed successfully.
+   *
+   **/
+  protected parseRunSuccess(
+    resp?: {transaction?: Uint8Array|string|undefined|null}
+  ): void {
+    this.id = resp!.transaction;
+    this.state = TransactionState.IN_PROGRESS;
+  }
+
+  /**
    * Datastore allows you to run aggregate queries by supplying aggregate fields
    * which will determine the type of aggregation that is performed.
    *
