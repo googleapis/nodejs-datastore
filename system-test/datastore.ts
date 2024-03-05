@@ -920,7 +920,7 @@ async.each(
         });
 
         it('should run a transaction query as a stream via query#runStream', done => {
-          const transaction = datastore.transaction();
+          const transaction = datastore.transaction({readOnly: true});
           const q = transaction.createQuery('Character').hasAncestor(ancestor);
           let resultsReturned = 0;
           q.runStream()
