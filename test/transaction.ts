@@ -1257,6 +1257,158 @@ async.each(
             });
           });
         });
+        describe.only('Testing requests passed into the gapic layer', () => {
+          let transactionWrapper: MockedTransactionWrapper;
+          let transaction: Transaction;
+          let key: entity.Key;
+          const testErrorMessage = 'test-error-message';
+          const runQueryResp = {
+            batch: {
+              entityResults: [],
+              endCursor: {
+                type: 'Buffer',
+                data: Buffer.from(Array.from(Array(100).keys())),
+              },
+            },
+          };
+          const runAggregationQueryResp = {
+            batch: {
+              aggregationResults: [
+                {
+                  aggregateProperties: {
+                    'average rating': {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      doubleValue: 100,
+                      valueType: 'doubleValue',
+                    },
+                  },
+                },
+              ],
+              moreResults:
+                google.datastore.v1.QueryResultBatch.MoreResultsType
+                  .NO_MORE_RESULTS,
+              readTime: {seconds: '1699390681', nanos: 961667000},
+            },
+            query: null,
+            transaction: testRunResp.transaction,
+          };
+          const getResp = {
+            found: [
+              {
+                entity: {
+                  key: {
+                    path: [
+                      {
+                        kind: 'Post',
+                        name: 'post1',
+                        idType: 'name',
+                      },
+                    ],
+                    partitionId: {
+                      projectId: 'projectId',
+                      databaseId: 'databaseId',
+                      namespaceId: 'namespaceId',
+                    },
+                  },
+                  excludeFromIndexes: false,
+                  properties: {},
+                },
+              },
+            ],
+            missing: [],
+            deferred: [],
+            transaction: testRunResp.transaction,
+            readTime: {
+              seconds: '1699470605',
+              nanos: 201398000,
+            },
+          };
+          afterEach(() => {
+            transactionWrapper.resetBeginTransaction();
+            transactionWrapper.resetGapicFunctions();
+          });
+          beforeEach(async () => {
+            transactionWrapper = new MockedTransactionWrapper();
+            key = transactionWrapper.datastore.key(['Company', 'Google']);
+            transactionWrapper.mockGapicFunction(
+              GapicFunctionName.RUN_AGGREGATION_QUERY,
+              runAggregationQueryResp,
+              null
+            );
+            transactionWrapper.mockGapicFunction(
+              GapicFunctionName.LOOKUP,
+              getResp,
+              null
+            );
+            transactionWrapper.mockGapicFunction(
+              GapicFunctionName.RUN_QUERY,
+              runQueryResp,
+              null
+            );
+          });
+          describe('lookup, lookup, put, commit', () => {
+            it('without using transaction.run', done => {
+              let lookupCallCount = 0;
+              // This gets called when the program reaches the gapic layer.
+              // It ensures the data that reaches the gapic layer is correct.
+              transactionWrapper.callBackSignaler = (
+                callbackReached: GapicFunctionName,
+                request?: RequestType
+              ) => {
+                console.log(callbackReached);
+                try {
+                  switch (callbackReached) {
+                    case GapicFunctionName.BEGIN_TRANSACTION:
+                      throw Error(
+                        'BeginTransaction should not have been called'
+                      );
+                    case GapicFunctionName.LOOKUP: {
+                      const lookupRequest =
+                        request as protos.google.datastore.v1.ILookupRequest;
+                      switch (lookupCallCount) {
+                        case 0:
+                          assert.deepStrictEqual(lookupRequest.readOptions, {
+                            newTransaction: {},
+                          });
+                          break;
+                        case 1:
+                          assert.deepStrictEqual(lookupRequest.readOptions, {
+                            transaction: testRunResp.transaction,
+                          });
+                          break;
+                        default:
+                          throw Error('Lookup was called too many times');
+                      }
+                      lookupCallCount++;
+                      break;
+                    }
+                    case GapicFunctionName.COMMIT:
+                      done();
+                      break;
+                    default:
+                      throw Error(
+                        'A gapic function was called that should not have been called'
+                      );
+                  }
+                } catch (err: any) {
+                  done(err);
+                }
+              };
+              (async () => {
+                try {
+                  transaction = transactionWrapper.transaction;
+                  await transaction.get(key);
+                  await transaction.get(key);
+                  transaction.save({key, data: ''});
+                  await transaction.commit();
+                } catch (err: any) {
+                  done(err);
+                }
+              })();
+            });
+          });
+        });
       });
 
       describe('run without setting up transaction id', () => {
