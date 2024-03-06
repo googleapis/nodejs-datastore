@@ -1422,6 +1422,54 @@ async.each(
                 }
               })();
             });
+            it('with using transaction.run', done => {
+              // This gets called when the program reaches the gapic layer.
+              // It ensures the data that reaches the gapic layer is correct.
+              transactionWrapper.callBackSignaler = (
+                callbackReached: GapicFunctionName,
+                request?: RequestType
+              ) => {
+                try {
+                  switch (callbackReached) {
+                    case GapicFunctionName.BEGIN_TRANSACTION:
+                      assert.deepStrictEqual(request, {
+                        projectId: 'project-id',
+                        transactionOptions: {},
+                      });
+                      break;
+                    case GapicFunctionName.LOOKUP: {
+                      const lookupRequest =
+                        request as protos.google.datastore.v1.ILookupRequest;
+                      assert.deepStrictEqual(lookupRequest.readOptions, {
+                        transaction: testRunResp.transaction,
+                      });
+                      break;
+                    }
+                    case GapicFunctionName.COMMIT:
+                      done();
+                      break;
+                    default:
+                      throw Error(
+                        'A gapic function was called that should not have been called'
+                      );
+                  }
+                } catch (err: any) {
+                  done(err);
+                }
+              };
+              (async () => {
+                try {
+                  transaction = transactionWrapper.transaction;
+                  await transaction.run();
+                  await transaction.get(key);
+                  await transaction.get(key);
+                  transaction.save({key, data: ''});
+                  await transaction.commit();
+                } catch (err: any) {
+                  done(err);
+                }
+              })();
+            });
           });
         });
       });
