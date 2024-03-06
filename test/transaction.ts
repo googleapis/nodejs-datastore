@@ -1399,9 +1399,20 @@ async.each(
                       lookupCallCount++;
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1446,9 +1457,20 @@ async.each(
                       });
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1503,9 +1525,20 @@ async.each(
                       });
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1560,9 +1593,20 @@ async.each(
                       });
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1622,9 +1666,20 @@ async.each(
                       );
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1685,9 +1740,20 @@ async.each(
                       );
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1739,9 +1805,20 @@ async.each(
                       });
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1786,9 +1863,20 @@ async.each(
                       });
                       break;
                     }
-                    case GapicFunctionName.COMMIT:
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
                       done();
                       break;
+                    }
                     default:
                       throw Error(
                         'A gapic function was called that should not have been called'
@@ -1805,6 +1893,113 @@ async.each(
                   transaction.save({key, data: ''});
                   transaction.save({key, data: 'more-data'});
                   await transaction.get(key);
+                  await transaction.commit();
+                } catch (err: any) {
+                  done(err);
+                }
+              })();
+            });
+          });
+          describe('put, commit', () => {
+            it('without using transaction.run', done => {
+              // This gets called when the program reaches the gapic layer.
+              // It ensures the data that reaches the gapic layer is correct.
+              transactionWrapper.callBackSignaler = (
+                callbackReached: GapicFunctionName,
+                request?: RequestType
+              ) => {
+                try {
+                  switch (callbackReached) {
+                    case GapicFunctionName.BEGIN_TRANSACTION:
+                      assert.deepStrictEqual(request, {
+                        projectId: 'project-id',
+                        transactionOptions: {},
+                      });
+                      break;
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
+                      done();
+                      break;
+                    }
+                    default:
+                      throw Error(
+                        'A gapic function was called that should not have been called'
+                      );
+                  }
+                } catch (err: any) {
+                  done(err);
+                }
+              };
+              (async () => {
+                try {
+                  transaction = transactionWrapper.transaction;
+                  transaction.save({key, data: ''});
+                  await transaction.commit();
+                } catch (err: any) {
+                  done(err);
+                }
+              })();
+            });
+            it('with using transaction.run', done => {
+              // This gets called when the program reaches the gapic layer.
+              // It ensures the data that reaches the gapic layer is correct.
+              transactionWrapper.callBackSignaler = (
+                callbackReached: GapicFunctionName,
+                request?: RequestType
+              ) => {
+                try {
+                  switch (callbackReached) {
+                    case GapicFunctionName.BEGIN_TRANSACTION:
+                      assert.deepStrictEqual(request, {
+                        projectId: 'project-id',
+                        transactionOptions: {},
+                      });
+                      break;
+                    case GapicFunctionName.LOOKUP: {
+                      const lookupRequest =
+                        request as protos.google.datastore.v1.ILookupRequest;
+                      assert.deepStrictEqual(lookupRequest.readOptions, {
+                        transaction: testRunResp.transaction,
+                      });
+                      break;
+                    }
+                    case GapicFunctionName.COMMIT: {
+                      const commitRequest =
+                        request as protos.google.datastore.v1.ICommitRequest;
+                      assert.deepStrictEqual(
+                        commitRequest.mode,
+                        'TRANSACTIONAL'
+                      );
+                      assert.deepStrictEqual(
+                        commitRequest.transaction,
+                        testRunResp.transaction
+                      );
+                      done();
+                      break;
+                    }
+                    default:
+                      throw Error(
+                        'A gapic function was called that should not have been called'
+                      );
+                  }
+                } catch (err: any) {
+                  done(err);
+                }
+              };
+              (async () => {
+                try {
+                  transaction = transactionWrapper.transaction;
+                  await transaction.run();
+                  transaction.save({key, data: ''});
                   await transaction.commit();
                 } catch (err: any) {
                   done(err);
