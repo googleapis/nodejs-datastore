@@ -567,9 +567,9 @@ class DatastoreRequest {
    * begin a transaction that completed successfully.
    *
    **/
-  protected parseTransactionResponse(
-    resp?: {transaction?: Uint8Array|string|undefined|null}
-  ): void {
+  protected parseTransactionResponse(resp?: {
+    transaction?: Uint8Array | string | undefined | null;
+  }): void {
     if (resp && resp.transaction && Buffer.byteLength(resp.transaction) > 0) {
       this.id = resp!.transaction;
       this.state = TransactionState.IN_PROGRESS;
@@ -903,7 +903,7 @@ class DatastoreRequest {
 
         makeRequest(query);
       });
-    }
+    };
 
     const stream = streamEvents(new Transform({objectMode: true}));
     stream.once('reading', () => {
@@ -921,7 +921,10 @@ class DatastoreRequest {
         if (sharedQueryOpts.readOptions === undefined) {
           sharedQueryOpts.readOptions = {};
         }
-        sharedQueryOpts.readOptions.newTransaction = getTransactionRequest(this, {});
+        sharedQueryOpts.readOptions.newTransaction = getTransactionRequest(
+          this,
+          {}
+        );
       }
     }
     if (options.consistency) {
@@ -1160,7 +1163,10 @@ function isTransaction(request: DatastoreRequest): request is Transaction {
   return request instanceof Transaction;
 }
 
-export function getTransactionRequest(transaction: Transaction, options: RunOptions): TransactionRequestOptions {
+export function getTransactionRequest(
+  transaction: Transaction,
+  options: RunOptions
+): TransactionRequestOptions {
   let reqOpts: TransactionRequestOptions = {};
   if (options.readOnly || transaction.readOnly) {
     reqOpts.readOnly = {};
@@ -1177,10 +1183,10 @@ export function getTransactionRequest(transaction: Transaction, options: RunOpti
     }
     const id = options.transactionOptions.id;
     if (id) {
-      reqOpts.readWrite = { previousTransaction: id };
+      reqOpts.readWrite = {previousTransaction: id};
     }
   }
-  return reqOpts
+  return reqOpts;
 }
 
 export interface ConsistencyProtoCode {
