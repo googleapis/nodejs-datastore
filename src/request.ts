@@ -925,6 +925,7 @@ class DatastoreRequest {
           this,
           {}
         );
+        sharedQueryOpts.readOptions.consistencyType = 'newTransaction';
       }
     }
     if (options.consistency) {
@@ -1246,6 +1247,7 @@ export interface SharedQueryOptions {
     transaction?: string | Uint8Array | null;
     readTime?: ITimestamp;
     newTransaction?: TransactionRequestOptions;
+    consistencyType?: ("readConsistency"|"transaction"|"newTransaction"|"readTime");
   };
 }
 export interface RequestOptions extends SharedQueryOptions {

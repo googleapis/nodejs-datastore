@@ -1258,10 +1258,20 @@ async.each(
           });
         });
         describe.only('Testing requests passed into the gapic layer', () => {
-          let transactionWrapper: MockedTransactionWrapper;
-          let transaction: Transaction;
           let key: entity.Key;
-          const testErrorMessage = 'test-error-message';
+          const testCommitResp = {
+            mutationResults: [
+              {
+                key: {
+                  path: [
+                    {
+                      kind: 'some-kind',
+                    },
+                  ],
+                },
+              },
+            ],
+          };
           const runQueryResp = {
             batch: {
               entityResults: [],
@@ -1346,6 +1356,11 @@ async.each(
               runQueryResp,
               null
             );
+            transactionWrapper.mockGapicFunction(
+              GapicFunctionName.COMMIT,
+              testCommitResp,
+              null
+            );
           });
           describe('lookup, lookup, put, commit', () => {
             it('without using transaction.run', done => {
@@ -1356,7 +1371,6 @@ async.each(
                 callbackReached: GapicFunctionName,
                 request?: RequestType
               ) => {
-                console.log(callbackReached);
                 try {
                   switch (callbackReached) {
                     case GapicFunctionName.BEGIN_TRANSACTION:
@@ -1370,6 +1384,7 @@ async.each(
                         case 0:
                           assert.deepStrictEqual(lookupRequest.readOptions, {
                             newTransaction: {},
+                            consistencyType: 'newTransaction',
                           });
                           break;
                         case 1:
