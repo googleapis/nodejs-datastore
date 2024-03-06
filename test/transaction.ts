@@ -1472,7 +1472,7 @@ async.each(
               })();
             });
           });
-          describe.only('runQuery, lookup, put, commit', () => {
+          describe('runQuery, lookup, put, commit', () => {
             it('without using transaction.run', done => {
               // This gets called when the program reaches the gapic layer.
               // It ensures the data that reaches the gapic layer is correct.
@@ -1579,6 +1579,134 @@ async.each(
                   const query =
                     transactionWrapper.datastore.createQuery('Task');
                   await transaction.runQuery(query);
+                  await transaction.get(key);
+                  transaction.save({key, data: ''});
+                  await transaction.commit();
+                } catch (err: any) {
+                  done(err);
+                }
+              })();
+            });
+          });
+          describe('runAggregationQuery, lookup, put, commit', () => {
+            it('without using transaction.run', done => {
+              // This gets called when the program reaches the gapic layer.
+              // It ensures the data that reaches the gapic layer is correct.
+              transactionWrapper.callBackSignaler = (
+                callbackReached: GapicFunctionName,
+                request?: RequestType
+              ) => {
+                try {
+                  switch (callbackReached) {
+                    case GapicFunctionName.BEGIN_TRANSACTION:
+                      throw Error(
+                        'BeginTransaction should not have been called'
+                      );
+                    case GapicFunctionName.LOOKUP: {
+                      const lookupRequest =
+                        request as protos.google.datastore.v1.ILookupRequest;
+                      assert.deepStrictEqual(lookupRequest.readOptions, {
+                        transaction: testRunResp.transaction,
+                      });
+                      break;
+                    }
+                    case GapicFunctionName.RUN_AGGREGATION_QUERY: {
+                      const runAggregationQueryRequest =
+                        request as protos.google.datastore.v1.IRunAggregationQueryRequest;
+                      assert.deepStrictEqual(
+                        runAggregationQueryRequest.readOptions,
+                        {
+                          newTransaction: {},
+                          consistencyType: 'newTransaction',
+                        }
+                      );
+                      break;
+                    }
+                    case GapicFunctionName.COMMIT:
+                      done();
+                      break;
+                    default:
+                      throw Error(
+                        'A gapic function was called that should not have been called'
+                      );
+                  }
+                } catch (err: any) {
+                  done(err);
+                }
+              };
+              (async () => {
+                try {
+                  transaction = transactionWrapper.transaction;
+                  const query =
+                    transactionWrapper.datastore.createQuery('Task');
+                  const aggregate = transactionWrapper.datastore
+                    .createAggregationQuery(query)
+                    .addAggregation(AggregateField.average('appearances'));
+                  await transaction.runAggregationQuery(aggregate);
+                  await transaction.get(key);
+                  transaction.save({key, data: ''});
+                  await transaction.commit();
+                } catch (err: any) {
+                  done(err);
+                }
+              })();
+            });
+            it('with using transaction.run', done => {
+              // This gets called when the program reaches the gapic layer.
+              // It ensures the data that reaches the gapic layer is correct.
+              transactionWrapper.callBackSignaler = (
+                callbackReached: GapicFunctionName,
+                request?: RequestType
+              ) => {
+                try {
+                  switch (callbackReached) {
+                    case GapicFunctionName.BEGIN_TRANSACTION:
+                      assert.deepStrictEqual(request, {
+                        projectId: 'project-id',
+                        transactionOptions: {},
+                      });
+                      break;
+                    case GapicFunctionName.LOOKUP: {
+                      const lookupRequest =
+                        request as protos.google.datastore.v1.ILookupRequest;
+                      assert.deepStrictEqual(lookupRequest.readOptions, {
+                        transaction: testRunResp.transaction,
+                      });
+                      break;
+                    }
+                    case GapicFunctionName.RUN_AGGREGATION_QUERY: {
+                      const runAggregationQueryRequest =
+                        request as protos.google.datastore.v1.IRunAggregationQueryRequest;
+                      assert.deepStrictEqual(
+                        runAggregationQueryRequest.readOptions,
+                        {
+                          transaction: testRunResp.transaction,
+                        }
+                      );
+                      break;
+                    }
+                    case GapicFunctionName.COMMIT:
+                      done();
+                      break;
+                    default:
+                      throw Error(
+                        'A gapic function was called that should not have been called'
+                      );
+                  }
+                } catch (err: any) {
+                  done(err);
+                }
+              };
+              (async () => {
+                try {
+                  transaction = transactionWrapper.transaction;
+                  await transaction.run();
+                  const query =
+                    transactionWrapper.datastore.createQuery('Task');
+                  const aggregate = transactionWrapper.datastore
+                    .createAggregationQuery(query)
+                    .addAggregation(AggregateField.average('appearances'));
+                  await transaction.runAggregationQuery(aggregate);
                   await transaction.get(key);
                   transaction.save({key, data: ''});
                   await transaction.commit();
