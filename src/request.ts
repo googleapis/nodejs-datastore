@@ -75,6 +75,12 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   strong: 1,
 };
 
+/**
+ * By default a DatastoreRequest is in the NOT_TRANSACTION state. If the
+ * DatastoreRequest is a Transaction object, then initially it will be in
+ * the NOT_STARTED state, but then the state will become IN_PROGRESS after the
+ * transaction has started.
+ */
 export enum TransactionState {
   NOT_TRANSACTION,
   NOT_STARTED,
