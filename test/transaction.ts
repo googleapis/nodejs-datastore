@@ -1435,6 +1435,7 @@ async.each(
               })();
             });
             it('with using transaction.run', done => {
+              let beginCount = 0;
               // This gets called when the program reaches the gapic layer.
               // It ensures the data that reaches the gapic layer is correct.
               transactionWrapper.callBackSignaler = (
@@ -1448,6 +1449,7 @@ async.each(
                         projectId: 'project-id',
                         transactionOptions: {},
                       });
+                      beginCount++;
                       break;
                     case GapicFunctionName.LOOKUP: {
                       const lookupRequest =
@@ -1468,6 +1470,7 @@ async.each(
                         commitRequest.transaction,
                         testRunResp.transaction
                       );
+                      assert.strictEqual(beginCount, 1);
                       done();
                       break;
                     }
@@ -1563,6 +1566,7 @@ async.each(
               })();
             });
             it('with using transaction.run', done => {
+              let beginCount = 0;
               // This gets called when the program reaches the gapic layer.
               // It ensures the data that reaches the gapic layer is correct.
               transactionWrapper.callBackSignaler = (
@@ -1576,6 +1580,7 @@ async.each(
                         projectId: 'project-id',
                         transactionOptions: {},
                       });
+                      beginCount++;
                       break;
                     case GapicFunctionName.LOOKUP: {
                       const lookupRequest =
@@ -1604,6 +1609,7 @@ async.each(
                         commitRequest.transaction,
                         testRunResp.transaction
                       );
+                      assert.strictEqual(beginCount, 1);
                       done();
                       break;
                     }
@@ -1707,6 +1713,7 @@ async.each(
               })();
             });
             it('with using transaction.run', done => {
+              let beginCount = 0;
               // This gets called when the program reaches the gapic layer.
               // It ensures the data that reaches the gapic layer is correct.
               transactionWrapper.callBackSignaler = (
@@ -1716,6 +1723,7 @@ async.each(
                 try {
                   switch (callbackReached) {
                     case GapicFunctionName.BEGIN_TRANSACTION:
+                      beginCount++;
                       assert.deepStrictEqual(request, {
                         projectId: 'project-id',
                         transactionOptions: {},
@@ -1751,6 +1759,7 @@ async.each(
                         commitRequest.transaction,
                         testRunResp.transaction
                       );
+                      assert.strictEqual(beginCount, 1);
                       done();
                       break;
                     }
@@ -1841,6 +1850,7 @@ async.each(
               })();
             });
             it('with using transaction.run', done => {
+              let beginCount = 0;
               // This gets called when the program reaches the gapic layer.
               // It ensures the data that reaches the gapic layer is correct.
               transactionWrapper.callBackSignaler = (
@@ -1854,6 +1864,7 @@ async.each(
                         projectId: 'project-id',
                         transactionOptions: {},
                       });
+                      beginCount++;
                       break;
                     case GapicFunctionName.LOOKUP: {
                       const lookupRequest =
@@ -1874,6 +1885,7 @@ async.each(
                         commitRequest.transaction,
                         testRunResp.transaction
                       );
+                      assert.strictEqual(beginCount, 1);
                       done();
                       break;
                     }
@@ -1902,6 +1914,7 @@ async.each(
           });
           describe('put, commit', () => {
             it('without using transaction.run', done => {
+              let beginCount = 0;
               // This gets called when the program reaches the gapic layer.
               // It ensures the data that reaches the gapic layer is correct.
               transactionWrapper.callBackSignaler = (
@@ -1915,6 +1928,7 @@ async.each(
                         projectId: 'project-id',
                         transactionOptions: {},
                       });
+                      beginCount++;
                       break;
                     case GapicFunctionName.COMMIT: {
                       const commitRequest =
@@ -1927,6 +1941,7 @@ async.each(
                         commitRequest.transaction,
                         testRunResp.transaction
                       );
+                      assert.strictEqual(beginCount, 1);
                       done();
                       break;
                     }
@@ -1952,6 +1967,7 @@ async.each(
             it('with using transaction.run', done => {
               // This gets called when the program reaches the gapic layer.
               // It ensures the data that reaches the gapic layer is correct.
+              let beginCount = 0;
               transactionWrapper.callBackSignaler = (
                 callbackReached: GapicFunctionName,
                 request?: RequestType
@@ -1963,6 +1979,7 @@ async.each(
                         projectId: 'project-id',
                         transactionOptions: {},
                       });
+                      beginCount++;
                       break;
                     case GapicFunctionName.LOOKUP: {
                       const lookupRequest =
@@ -1983,6 +2000,7 @@ async.each(
                         commitRequest.transaction,
                         testRunResp.transaction
                       );
+                      assert.strictEqual(beginCount, 1);
                       done();
                       break;
                     }
