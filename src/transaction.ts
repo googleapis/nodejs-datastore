@@ -352,16 +352,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling get
-    /*
-    this.#withBeginTransaction(
-      options.gaxOptions,
-      () => {
-        super.get(keys, options, callback);
-      },
-      callback
-    );
-     */
-    this.#withMutex(() => {
+    this.#blockWithMutex(() => {
       super.get(keys, options, callback);
     });
   }
@@ -741,16 +732,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling runAggregationQuery
-    /*
-    this.#withBeginTransaction(
-      options.gaxOptions,
-      () => {
-        super.runAggregationQuery(query, options, callback);
-      },
-      callback
-    );
-     */
-    this.#withMutex(() => {
+    this.#blockWithMutex(() => {
       super.runAggregationQuery(query, options, callback);
     });
   }
@@ -785,16 +767,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling runQuery
-    /*
-    this.#withBeginTransaction(
-      options.gaxOptions,
-      () => {
-        super.runQuery(query, options, callback);
-      },
-      callback
-    );
-     */
-    this.#withMutex(() => {
+    this.#blockWithMutex(() => {
       super.runQuery(query, options, callback);
     });
   }
@@ -1004,7 +977,7 @@ class Transaction extends DatastoreRequest {
    * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
    * user that are used for the beginTransaction grpc call.
    * @param {function} [fn] A function which is run after ensuring a
-   * beginTransaction call is made.
+   * transaction has begun.
    * @param {function} [callback] A callback provided by the user that expects
    * an error in the first argument and a custom data type for the rest of the
    * arguments.
@@ -1043,8 +1016,20 @@ class Transaction extends DatastoreRequest {
     })();
   }
 
-  // TODO: Add description of method
-  #withMutex(fn: () => void) {
+  /*
+   * Some rpc calls require that the transaction has been started (i.e, has a
+   * valid id) before they can be sent. #withBeginTransaction acts as a wrapper
+   * over those functions.
+   *
+   * If the transaction has not begun yet, `#blockWithMutex` will call the
+   * wrapped function which will begin the transaction in the rpc call it sends.
+   * If the transaction has begun, the wrapped function will be called, but it
+   * will not begin a transaction.
+   *
+   * @param {function} [fn] A function which is run after ensuring a
+   * transaction has begun.
+   */
+  #blockWithMutex(fn: () => void) {
     (async () => {
       if (this.state === TransactionState.NOT_STARTED) {
         await this.#mutex.runExclusive(async () => {
