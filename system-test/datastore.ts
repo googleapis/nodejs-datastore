@@ -1885,6 +1885,52 @@ async.each(
               }
             });
           });
+          describe('commit', () => {
+            it('with transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                await transaction.commit();
+                await transaction.commit();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.commit();
+                await transaction.commit();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+          describe('rollback', () => {
+            it('with transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                await transaction.commit();
+                await transaction.rollback();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.commit();
+                await transaction.rollback();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
         });
         describe('comparing times with and without transaction.run', async () => {
           const key = datastore.key(['Company', 'Google']);
