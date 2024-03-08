@@ -569,7 +569,7 @@ class DatastoreRequest {
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
     if (this.state === TransactionState.EXPIRED) {
-      callback(new Error(transactionExpiredError))
+      callback(new Error(transactionExpiredError));
     }
     this.createReadStream(keys, options)
       .on('error', callback)
