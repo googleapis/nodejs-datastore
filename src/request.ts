@@ -27,6 +27,7 @@ import {Duplex, PassThrough, Transform} from 'stream';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const streamEvents = require('stream-events');
+export const transactionExpiredError = 'This transaction has already expired.';
 
 export interface AbortableDuplex extends Duplex {
   abort(): void;
@@ -84,7 +85,8 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
 export enum TransactionState {
   NOT_TRANSACTION,
   NOT_STARTED,
-  IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
+  IN_PROGRESS,
+  EXPIRED,
 }
 
 /**
@@ -259,6 +261,15 @@ class DatastoreRequest {
     );
   }
 
+  /* This throws an error if the transaction has already expired.
+   *
+   */
+  protected checkExpired() {
+    if (this.state === TransactionState.EXPIRED) {
+      throw Error(transactionExpiredError);
+    }
+  }
+
   /**
    * Retrieve the entities as a readable object stream.
    *
@@ -289,6 +300,7 @@ class DatastoreRequest {
     keys: Entities,
     options: CreateReadStreamOptions = {}
   ): Transform {
+    this.checkExpired();
     keys = arrify(keys).map(entity.keyToKeyProto);
     if (keys.length === 0) {
       throw new Error('At least one Key object is required.');
@@ -556,6 +568,9 @@ class DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError))
+    }
     this.createReadStream(keys, options)
       .on('error', callback)
       .pipe(
@@ -615,6 +630,9 @@ class DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     query.query = extend(true, new Query(), query.query);
     let queryProto: QueryProto;
     try {
@@ -784,6 +802,9 @@ class DatastoreRequest {
 
     let info: RunQueryInfo;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     this.runQueryStream(query, options)
       .on('error', callback)
       .on('info', info_ => {
@@ -830,6 +851,7 @@ class DatastoreRequest {
    * ```
    */
   runQueryStream(query: Query, options: RunQueryStreamOptions = {}): Transform {
+    this.checkExpired();
     query = extend(true, new Query(), query);
     const makeRequest = (query: Query) => {
       let queryProto: QueryProto;
@@ -1294,7 +1316,7 @@ export type DeleteResponse = CommitResponse;
  * that a callback is omitted.
  */
 promisifyAll(DatastoreRequest, {
-  exclude: ['getQueryOptions', 'getRequestOptions'],
+  exclude: ['checkExpired', 'getQueryOptions', 'getRequestOptions'],
 });
 
 /**

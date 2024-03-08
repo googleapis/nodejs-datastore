@@ -15,35 +15,17 @@
  */
 
 import {promisifyAll} from '@google-cloud/promisify';
-import arrify = require('arrify');
 import {CallOptions} from 'google-gax';
 
 import {google} from '../protos/protos';
 
 import {Datastore, TransactionOptions} from '.';
-import {entity, Entity, Entities} from './entity';
-import {
-  Query,
-  RunQueryCallback,
-  RunQueryInfo,
-  RunQueryOptions,
-  RunQueryResponse,
-} from './query';
-import {
-  CommitCallback,
-  CommitResponse,
-  DatastoreRequest,
-  RequestOptions,
-  PrepareEntityObjectResponse,
-  CreateReadStreamOptions,
-  GetResponse,
-  GetCallback,
-  RequestCallback,
-  TransactionState,
-  getTransactionRequest,
-} from './request';
+import {Entities, Entity, entity} from './entity';
+import {Query, RunQueryCallback, RunQueryOptions, RunQueryResponse,} from './query';
+import {CommitCallback, CommitResponse, CreateReadStreamOptions, DatastoreRequest, GetCallback, GetResponse, getTransactionRequest, PrepareEntityObjectResponse, RequestCallback, transactionExpiredError, TransactionState,} from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
+import arrify = require('arrify');
 
 /*
  * This type matches the value returned by the promise in the
@@ -174,6 +156,9 @@ class Transaction extends DatastoreRequest {
         : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     // This ensures that the transaction is started before calling runCommit
     this.#withBeginTransaction(
       gaxOptions,
@@ -427,6 +412,9 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     this.request_(
       {
         client: 'DatastoreClient',
@@ -628,6 +616,7 @@ class Transaction extends DatastoreRequest {
           return;
         }
 
+        this.state = TransactionState.EXPIRED;
         // The `callbacks` array was built previously. These are the callbacks
         // that handle the API response normally when using the
         // DatastoreRequest.save and .delete methods.
