@@ -61,37 +61,31 @@ function getInfoFromStats(
 ): RunQueryInfo {
   // Decode structValues stored in queryPlan and queryStats
   const info = {};
-  if (resp && resp.plan && resp.plan.indexesUsed) {
-    Object.assign(info, {plan: {indexesUsed: resp.plan.indexesUsed.map((index: google.protobuf.IStruct) => decodeStruct(index))}})
+  if (resp && resp.explainMetrics && resp.explainMetrics.planSummary && resp.explainMetrics.planSummary.indexesUsed) {
+    Object.assign(info, {plan: {indexesUsed: resp.explainMetrics.planSummary.indexesUsed.map((index: google.protobuf.IStruct) => decodeStruct(index))}})
   }
-  if (resp && resp.executionStats) {
+  if (resp && resp.explainMetrics && resp.explainMetrics.executionStats) {
     const executionStats = {};
     {
-      const resultsReturned = resp.executionStats.resultsReturned;
+      const resultsReturned = resp.explainMetrics.executionStats.resultsReturned;
       if (resultsReturned) {
         Object.assign(executionStats, {resultsReturned: typeof resultsReturned === 'string' ? parseInt(resultsReturned) : resultsReturned});
       }
     }
     {
-      const bytesReturned = resp.executionStats.bytesReturned;
-      if (bytesReturned) {
-        Object.assign(executionStats, {bytesReturned: typeof bytesReturned === 'string' ? parseInt(bytesReturned) : bytesReturned});
-      }
-    }
-    {
-      const executionDuration = resp.executionStats.executionDuration;
+      const executionDuration = resp.explainMetrics.executionStats.executionDuration;
       if (executionDuration) {
         Object.assign(executionStats, {executionDuration: typeof executionDuration === 'string' ? parseInt(executionDuration) : executionDuration});
       }
     }
     {
-      const readOperations = resp.executionStats.readOperations;
+      const readOperations = resp.explainMetrics.executionStats.readOperations;
       if (readOperations) {
         Object.assign(executionStats, {readOperations: typeof readOperations === 'string' ? parseInt(readOperations) : readOperations});
       }
     }
     {
-      const debugStats = resp.executionStats.debugStats;
+      const debugStats = resp.explainMetrics.executionStats.debugStats;
       if (debugStats) {
         Object.assign(executionStats, {debugStats: decodeStruct(debugStats)});
       }
