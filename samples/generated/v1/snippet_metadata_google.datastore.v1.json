@@ -74,7 +74,7 @@
       "segments": [
         {
           "start": 25,
-          "end": 84,
+          "end": 83,
           "type": "FULL"
         }
       ],
@@ -108,8 +108,8 @@
             "type": ".google.datastore.v1.GqlQuery"
           },
           {
-            "name": "mode",
-            "type": ".google.datastore.v1.QueryMode"
+            "name": "explain_options",
+            "type": ".google.datastore.v1.ExplainOptions"
           }
         ],
         "resultType": ".google.datastore.v1.RunQueryResponse",
@@ -138,7 +138,7 @@
       "segments": [
         {
           "start": 25,
-          "end": 84,
+          "end": 83,
           "type": "FULL"
         }
       ],
@@ -172,8 +172,8 @@
             "type": ".google.datastore.v1.GqlQuery"
           },
           {
-            "name": "mode",
-            "type": ".google.datastore.v1.QueryMode"
+            "name": "explain_options",
+            "type": ".google.datastore.v1.ExplainOptions"
           }
         ],
         "resultType": ".google.datastore.v1.RunAggregationQueryResponse",

@@ -4,6 +4,26 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [8.6.0](https://github.com/googleapis/nodejs-datastore/compare/v8.5.0...v8.6.0) (2024-03-25)
+
+
+### Features
+
+* Add new types ExplainOptions, ExplainMetrics, PlanSummary, ExecutionStats ([#1241](https://github.com/googleapis/nodejs-datastore/issues/1241)) ([6c409d5](https://github.com/googleapis/nodejs-datastore/commit/6c409d5c922288bd8286917b266cdb553cfd43cf))
+* Nodejs transaction redesign feature branch ([#1235](https://github.com/googleapis/nodejs-datastore/issues/1235)) ([1585d4a](https://github.com/googleapis/nodejs-datastore/commit/1585d4a4e1b4b16d198307a3e97ffcf156d000b1))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency async-mutex to ^0.5.0 ([#1240](https://github.com/googleapis/nodejs-datastore/issues/1240)) ([0ba1281](https://github.com/googleapis/nodejs-datastore/commit/0ba1281efe16ef0b725937627445c32c36b9f705))
+
+## [8.5.0](https://github.com/googleapis/nodejs-datastore/compare/v8.4.0...v8.5.0) (2024-02-06)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter ([#1227](https://github.com/googleapis/nodejs-datastore/issues/1227)) ([10480ed](https://github.com/googleapis/nodejs-datastore/commit/10480edfdda99cde5fef470fbf163861528398a0))
+
 ## [8.4.0](https://github.com/googleapis/nodejs-datastore/compare/v8.3.0...v8.4.0) (2024-01-09)
 
 

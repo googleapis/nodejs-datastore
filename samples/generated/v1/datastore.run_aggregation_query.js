@@ -58,11 +58,10 @@ function main(projectId) {
    */
   // const gqlQuery = {}
   /**
-   *  Optional. The mode in which the query request is processed. This field is
-   *  optional, and when not provided, it defaults to `NORMAL` mode where no
-   *  additional statistics will be returned with the query results.
+   *  Optional. Explain options for the query. If set, additional query
+   *  statistics will be returned. If not, only query results will be returned.
    */
-  // const mode = {}
+  // const explainOptions = {}
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
