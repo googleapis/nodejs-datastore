@@ -24,6 +24,7 @@ import {AggregateField} from '../src/aggregate';
 import {PropertyFilter, and, or} from '../src/filter';
 import {entity} from '../src/entity';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
+import {transactionExpiredError} from '../src/request';
 
 const async = require('async');
 
@@ -920,7 +921,7 @@ async.each(
         });
 
         it('should run a transaction query as a stream via query#runStream', done => {
-          const transaction = datastore.transaction();
+          const transaction = datastore.transaction({readOnly: true});
           const q = transaction.createQuery('Character').hasAncestor(ancestor);
           let resultsReturned = 0;
           q.runStream()
@@ -1750,6 +1751,211 @@ async.each(
         });
       });
       describe('transactions with and without run', () => {
+        describe('test to make sure various endpoints report an expired state', () => {
+          describe('get', () => {
+            it('with transaction.run', async () => {
+              try {
+                const key = datastore.key(['Company', 'Google']);
+                const transaction = datastore.transaction();
+                await transaction.run();
+                await transaction.commit();
+                await transaction.get(key);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const key = datastore.key(['Company', 'Google']);
+                const transaction = datastore.transaction();
+                await transaction.commit();
+                await transaction.get(key);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+          describe('runQuery', () => {
+            it('with transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Company');
+                await transaction.run();
+                await transaction.commit();
+                await transaction.runQuery(query);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Company');
+                await transaction.commit();
+                await transaction.runQuery(query);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+          describe('runAggregationQuery', () => {
+            it('with transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Company');
+                const aggregationQuery = transaction
+                  .createAggregationQuery(query)
+                  .count('total');
+                await transaction.run();
+                await transaction.commit();
+                await transaction.runAggregationQuery(aggregationQuery);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Company');
+                const aggregationQuery = transaction
+                  .createAggregationQuery(query)
+                  .count('total');
+                await transaction.commit();
+                await transaction.runAggregationQuery(aggregationQuery);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+          describe('runQueryStream', () => {
+            it('with transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Company');
+                await transaction.run();
+                await transaction.commit();
+                transaction.runQueryStream(query);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Company');
+                await transaction.commit();
+                transaction.runQueryStream(query);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+          describe('createReadStream', () => {
+            it('with transaction.run', async () => {
+              try {
+                const datastore = new Datastore(clientOptions);
+                const key = datastore.key(['Company', 'Google']);
+                const transaction = datastore.transaction();
+                await transaction.run();
+                await transaction.commit();
+                transaction.createReadStream(key);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const datastore = new Datastore(clientOptions);
+                const key = datastore.key(['Company', 'Google']);
+                const transaction = datastore.transaction();
+                await transaction.commit();
+                transaction.createReadStream(key);
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+          describe('commit', () => {
+            it('with transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                await transaction.commit();
+                await transaction.commit();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.commit();
+                await transaction.commit();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+          describe('rollback', () => {
+            it('with transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.run();
+                await transaction.commit();
+                await transaction.rollback();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+            it('without transaction.run', async () => {
+              try {
+                const transaction = datastore.transaction();
+                await transaction.commit();
+                await transaction.rollback();
+                assert.fail('The expire error should have appeared');
+              } catch (err: any) {
+                assert.strictEqual(err.message, transactionExpiredError);
+              }
+            });
+          });
+        });
+        describe('comparing times with and without transaction.run', async () => {
+          const key = datastore.key(['Company', 'Google']);
+          // Record time for transaction with run
+          const startTimeWithRun = new Date().getTime();
+          const transactionWithRun = datastore.transaction({readOnly: true});
+          await transactionWithRun.run();
+          await Promise.all([
+            transactionWithRun.get(key),
+            transactionWithRun.get(key),
+          ]);
+          await transactionWithRun.commit();
+          const timeElapsedWithRun = new Date().getTime() - startTimeWithRun;
+          // Record time for transaction without run
+          const startTimeWithoutRun = new Date().getTime();
+          const transactionWithoutRun = datastore.transaction({readOnly: true});
+          await Promise.all([
+            transactionWithoutRun.get(key),
+            transactionWithoutRun.get(key),
+          ]);
+          await transactionWithoutRun.commit();
+          const timeElapsedWithoutRun =
+            new Date().getTime() - startTimeWithoutRun;
+          assert(timeElapsedWithoutRun < timeElapsedWithRun);
+        });
         describe('lookup, put, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -1830,6 +2036,33 @@ async.each(
           it('should run in a transaction without run', async () => {
             const transaction = datastore.transaction();
             await doRunQueryPutCommit(transaction);
+          });
+        });
+        describe('readOnly for runQuery looks at snapshot from first read', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doPutRunQueryCommit(transaction: Transaction) {
+            const query = transaction.createQuery('Company');
+            const [results] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results, []);
+            await datastore.save({key, data: obj});
+            const [results2] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results2, []);
+            await transaction.commit();
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction({readOnly: true});
+            await transaction.run();
+            await doPutRunQueryCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction({readOnly: true});
+            await doPutRunQueryCommit(transaction);
           });
         });
         describe('put, runQuery, commit', () => {
@@ -2125,12 +2358,49 @@ async.each(
             assert.deepStrictEqual(resultsAgain, [{total: 2}]);
             await transaction.commit();
           });
+          it('readOnly transaction should see consistent snapshot of database without transaction.run', async () => {
+            async function getResults(transaction: Transaction) {
+              const query = transaction.createQuery('Company');
+              const aggregateQuery = transaction
+                .createAggregationQuery(query)
+                .count('total');
+              let result;
+              try {
+                [result] = await aggregateQuery.run();
+              } catch (e) {
+                await transaction.rollback();
+                throw e;
+              }
+              return result;
+            }
+            const key = datastore.key(['Company', 'Google']);
+            const transaction = datastore.transaction({readOnly: true});
+            const results = await getResults(transaction);
+            assert.deepStrictEqual(results, [{total: 3}]);
+            await datastore.save([
+              {
+                key,
+                data: {
+                  rating: 100,
+                },
+              },
+            ]);
+            const resultsAgain = await getResults(transaction);
+            assert.deepStrictEqual(resultsAgain, [{total: 3}]);
+            await transaction.commit();
+          });
         });
 
         it('should read in a readOnly transaction', async () => {
           const transaction = datastore.transaction({readOnly: true});
           const key = datastore.key(['Company', 'Google']);
           await transaction.run();
+          await transaction.get(key);
+        });
+
+        it('should read in a readOnly transaction without transaction.run', async () => {
+          const transaction = datastore.transaction({readOnly: true});
+          const key = datastore.key(['Company', 'Google']);
           await transaction.get(key);
         });
 

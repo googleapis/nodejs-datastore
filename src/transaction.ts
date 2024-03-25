@@ -15,33 +15,34 @@
  */
 
 import {promisifyAll} from '@google-cloud/promisify';
-import arrify = require('arrify');
 import {CallOptions} from 'google-gax';
 
 import {google} from '../protos/protos';
 
 import {Datastore, TransactionOptions} from '.';
-import {entity, Entity, Entities} from './entity';
+import {Entities, Entity, entity} from './entity';
 import {
   Query,
   RunQueryCallback,
-  RunQueryInfo,
   RunQueryOptions,
   RunQueryResponse,
 } from './query';
 import {
   CommitCallback,
   CommitResponse,
-  DatastoreRequest,
-  RequestOptions,
-  PrepareEntityObjectResponse,
   CreateReadStreamOptions,
-  GetResponse,
+  DatastoreRequest,
   GetCallback,
+  GetResponse,
+  getTransactionRequest,
+  PrepareEntityObjectResponse,
   RequestCallback,
+  transactionExpiredError,
+  TransactionState,
 } from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
+import arrify = require('arrify');
 
 /*
  * This type matches the value returned by the promise in the
@@ -51,11 +52,6 @@ import {Mutex} from 'async-mutex';
 interface BeginAsyncResponse {
   err?: Error | null;
   resp?: google.datastore.v1.IBeginTransactionResponse;
-}
-
-enum TransactionState {
-  NOT_STARTED,
-  IN_PROGRESS, // IN_PROGRESS currently tracks the expired state as well
 }
 
 /**
@@ -85,7 +81,6 @@ class Transaction extends DatastoreRequest {
   modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
   #mutex = new Mutex();
-  #state = TransactionState.NOT_STARTED;
   constructor(datastore: Datastore, options?: TransactionOptions) {
     super();
     /**
@@ -115,6 +110,7 @@ class Transaction extends DatastoreRequest {
 
     // Queue the requests to make when we send the transactional commit.
     this.requests_ = [];
+    this.state = TransactionState.NOT_STARTED;
   }
 
   /*! Developer Documentation
@@ -177,6 +173,9 @@ class Transaction extends DatastoreRequest {
           : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     // This ensures that the transaction is started before calling runCommit
     this.#withBeginTransaction(
       gaxOptions,
@@ -355,13 +354,9 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling get
-    this.#withBeginTransaction(
-      options.gaxOptions,
-      () => {
-        super.get(keys, options, callback);
-      },
-      callback
-    );
+    this.#blockWithMutex(() => {
+      super.get(keys, options, callback);
+    });
   }
 
   /**
@@ -434,6 +429,9 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     this.request_(
       {
         client: 'DatastoreClient',
@@ -511,7 +509,7 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     this.#mutex.runExclusive(async () => {
-      if (this.#state === TransactionState.NOT_STARTED) {
+      if (this.state === TransactionState.NOT_STARTED) {
         const runResults = await this.#beginTransactionAsync(options);
         this.#processBeginResults(runResults, callback);
       } else {
@@ -635,6 +633,7 @@ class Transaction extends DatastoreRequest {
           return;
         }
 
+        this.state = TransactionState.EXPIRED;
         // The `callbacks` array was built previously. These are the callbacks
         // that handle the API response normally when using the
         // DatastoreRequest.save and .delete methods.
@@ -666,22 +665,9 @@ class Transaction extends DatastoreRequest {
     if (err) {
       callback(err, null, resp);
     } else {
-      this.#parseRunSuccess(runResults);
+      this.parseTransactionResponse(resp);
       callback(null, this, resp);
     }
-  }
-
-  /**
-   * This function saves results from a successful beginTransaction call.
-   *
-   * @param {BeginAsyncResponse} [response] The response from a call to
-   * begin a transaction that completed successfully.
-   *
-   **/
-  #parseRunSuccess(runResults: BeginAsyncResponse) {
-    const resp = runResults.resp;
-    this.id = resp!.transaction;
-    this.#state = TransactionState.IN_PROGRESS;
   }
 
   /**
@@ -696,24 +682,10 @@ class Transaction extends DatastoreRequest {
   async #beginTransactionAsync(
     options: RunOptions
   ): Promise<BeginAsyncResponse> {
-    const reqOpts: RequestOptions = {
-      transactionOptions: {},
-    };
-
-    if (options.readOnly || this.readOnly) {
-      reqOpts.transactionOptions!.readOnly = {};
-    }
-
-    if (options.transactionId || this.id) {
-      reqOpts.transactionOptions!.readWrite = {
-        previousTransaction: options.transactionId || this.id,
-      };
-    }
-
-    if (options.transactionOptions) {
-      reqOpts.transactionOptions = options.transactionOptions;
-    }
     return new Promise((resolve: (value: BeginAsyncResponse) => void) => {
+      const reqOpts = {
+        transactionOptions: getTransactionRequest(this, options),
+      };
       this.request_(
         {
           client: 'DatastoreClient',
@@ -766,13 +738,9 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling runAggregationQuery
-    this.#withBeginTransaction(
-      options.gaxOptions,
-      () => {
-        super.runAggregationQuery(query, options, callback);
-      },
-      callback
-    );
+    this.#blockWithMutex(() => {
+      super.runAggregationQuery(query, options, callback);
+    });
   }
 
   /**
@@ -805,13 +773,9 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
     // This ensures that the transaction is started before calling runQuery
-    this.#withBeginTransaction(
-      options.gaxOptions,
-      () => {
-        super.runQuery(query, options, callback);
-      },
-      callback
-    );
+    this.#blockWithMutex(() => {
+      super.runQuery(query, options, callback);
+    });
   }
 
   /**
@@ -1019,7 +983,7 @@ class Transaction extends DatastoreRequest {
    * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
    * user that are used for the beginTransaction grpc call.
    * @param {function} [fn] A function which is run after ensuring a
-   * beginTransaction call is made.
+   * transaction has begun.
    * @param {function} [callback] A callback provided by the user that expects
    * an error in the first argument and a custom data type for the rest of the
    * arguments.
@@ -1031,10 +995,10 @@ class Transaction extends DatastoreRequest {
     callback: (...args: [Error | null, ...T] | [Error | null]) => void
   ): void {
     (async () => {
-      if (this.#state === TransactionState.NOT_STARTED) {
+      if (this.state === TransactionState.NOT_STARTED) {
         try {
           await this.#mutex.runExclusive(async () => {
-            if (this.#state === TransactionState.NOT_STARTED) {
+            if (this.state === TransactionState.NOT_STARTED) {
               // This sends an rpc call to get the transaction id
               const runResults = await this.#beginTransactionAsync({
                 gaxOptions,
@@ -1044,7 +1008,7 @@ class Transaction extends DatastoreRequest {
                 // Do not call the wrapped function.
                 throw runResults.err;
               }
-              this.#parseRunSuccess(runResults);
+              this.parseTransactionResponse(runResults.resp);
               // The rpc saving the transaction id was successful.
               // Now the wrapped function fn will be called.
             }
@@ -1055,6 +1019,31 @@ class Transaction extends DatastoreRequest {
         }
       }
       return fn();
+    })();
+  }
+
+  /*
+   * Some rpc calls require that the transaction has been started (i.e, has a
+   * valid id) before they can be sent. #withBeginTransaction acts as a wrapper
+   * over those functions.
+   *
+   * If the transaction has not begun yet, `#blockWithMutex` will call the
+   * wrapped function which will begin the transaction in the rpc call it sends.
+   * If the transaction has begun, the wrapped function will be called, but it
+   * will not begin a transaction.
+   *
+   * @param {function} [fn] A function which is run after ensuring a
+   * transaction has begun.
+   */
+  #blockWithMutex(fn: () => void) {
+    (async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        await this.#mutex.runExclusive(async () => {
+          fn();
+        });
+      } else {
+        fn();
+      }
     })();
   }
 }

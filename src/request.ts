@@ -27,9 +27,15 @@ import {Duplex, PassThrough, Transform} from 'stream';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const streamEvents = require('stream-events');
+export const transactionExpiredError = 'This transaction has already expired.';
 
 export interface AbortableDuplex extends Duplex {
   abort(): void;
+}
+
+interface TransactionRequestOptions {
+  readOnly?: {};
+  readWrite?: {previousTransaction?: string | Uint8Array | null};
 }
 
 // Import the clients for each version supported by this package.
@@ -54,9 +60,10 @@ import {
   RunQueryResponse,
   RunQueryCallback,
 } from './query';
-import {Datastore} from '.';
+import {Datastore, Transaction} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';
+import {RunOptions} from './transaction';
 
 /**
  * A map of read consistency values to proto codes.
@@ -68,6 +75,19 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   eventual: 2,
   strong: 1,
 };
+
+/**
+ * By default a DatastoreRequest is in the NOT_TRANSACTION state. If the
+ * DatastoreRequest is a Transaction object, then initially it will be in
+ * the NOT_STARTED state, but then the state will become IN_PROGRESS after the
+ * transaction has started.
+ */
+export enum TransactionState {
+  NOT_TRANSACTION,
+  NOT_STARTED,
+  IN_PROGRESS,
+  EXPIRED,
+}
 
 /**
  * Handle logic for Datastore API operations. Handles request logic for
@@ -89,6 +109,7 @@ class DatastoreRequest {
     | Array<(err: Error | null, resp: Entity | null) => void>
     | Entity;
   datastore!: Datastore;
+  protected state: TransactionState = TransactionState.NOT_TRANSACTION;
   [key: string]: Entity;
 
   /**
@@ -240,6 +261,15 @@ class DatastoreRequest {
     );
   }
 
+  /* This throws an error if the transaction has already expired.
+   *
+   */
+  protected checkExpired() {
+    if (this.state === TransactionState.EXPIRED) {
+      throw Error(transactionExpiredError);
+    }
+  }
+
   /**
    * Retrieve the entities as a readable object stream.
    *
@@ -270,6 +300,7 @@ class DatastoreRequest {
     keys: Entities,
     options: CreateReadStreamOptions = {}
   ): Transform {
+    this.checkExpired();
     keys = arrify(keys).map(entity.keyToKeyProto);
     if (keys.length === 0) {
       throw new Error('At least one Key object is required.');
@@ -286,6 +317,7 @@ class DatastoreRequest {
           gaxOpts: options.gaxOptions,
         },
         (err, resp) => {
+          this.parseTransactionResponse(resp);
           if (err) {
             stream.destroy(err);
             return;
@@ -536,6 +568,9 @@ class DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     this.createReadStream(keys, options)
       .on('error', callback)
       .pipe(
@@ -544,6 +579,22 @@ class DatastoreRequest {
           callback(null, isSingleLookup ? results[0] : results);
         })
       );
+  }
+
+  /**
+   * This function saves results from a successful beginTransaction call.
+   *
+   * @param {BeginAsyncResponse} [response] The response from a call to
+   * begin a transaction that completed successfully.
+   *
+   **/
+  protected parseTransactionResponse(resp?: {
+    transaction?: Uint8Array | string | undefined | null;
+  }): void {
+    if (resp && resp.transaction && Buffer.byteLength(resp.transaction) > 0) {
+      this.id = resp!.transaction;
+      this.state = TransactionState.IN_PROGRESS;
+    }
   }
 
   /**
@@ -579,6 +630,9 @@ class DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     query.query = extend(true, new Query(), query.query);
     let queryProto: QueryProto;
     try {
@@ -605,6 +659,7 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
+        this.parseTransactionResponse(res);
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
           const finalResults = results
@@ -747,6 +802,9 @@ class DatastoreRequest {
 
     let info: RunQueryInfo;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+    }
     this.runQueryStream(query, options)
       .on('error', callback)
       .on('info', info_ => {
@@ -793,6 +851,7 @@ class DatastoreRequest {
    * ```
    */
   runQueryStream(query: Query, options: RunQueryStreamOptions = {}): Transform {
+    this.checkExpired();
     query = extend(true, new Query(), query);
     const makeRequest = (query: Query) => {
       let queryProto: QueryProto;
@@ -819,7 +878,8 @@ class DatastoreRequest {
       );
     };
 
-    function onResultSet(err?: Error | null, resp?: Entity) {
+    const onResultSet = (err?: Error | null, resp?: Entity) => {
+      this.parseTransactionResponse(resp);
       if (err) {
         stream.destroy(err);
         return;
@@ -871,7 +931,7 @@ class DatastoreRequest {
 
         makeRequest(query);
       });
-    }
+    };
 
     const stream = streamEvents(new Transform({objectMode: true}));
     stream.once('reading', () => {
@@ -884,6 +944,18 @@ class DatastoreRequest {
     options: RunQueryStreamOptions
   ): SharedQueryOptions {
     const sharedQueryOpts = {} as SharedQueryOptions;
+    if (isTransaction(this)) {
+      if (this.state === TransactionState.NOT_STARTED) {
+        if (sharedQueryOpts.readOptions === undefined) {
+          sharedQueryOpts.readOptions = {};
+        }
+        sharedQueryOpts.readOptions.newTransaction = getTransactionRequest(
+          this,
+          {}
+        );
+        sharedQueryOpts.readOptions.consistencyType = 'newTransaction';
+      }
+    }
     if (options.consistency) {
       const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
       sharedQueryOpts.readOptions = {
@@ -1116,6 +1188,36 @@ class DatastoreRequest {
   }
 }
 
+function isTransaction(request: DatastoreRequest): request is Transaction {
+  return request instanceof Transaction;
+}
+
+export function getTransactionRequest(
+  transaction: Transaction,
+  options: RunOptions
+): TransactionRequestOptions {
+  let reqOpts: TransactionRequestOptions = {};
+  if (options.readOnly || transaction.readOnly) {
+    reqOpts.readOnly = {};
+  }
+  if (options.transactionId || transaction.id) {
+    reqOpts.readWrite = {
+      previousTransaction: options.transactionId || transaction.id,
+    };
+  }
+  if (options.transactionOptions) {
+    reqOpts = {};
+    if (options.transactionOptions.readOnly) {
+      reqOpts.readOnly = {};
+    }
+    const id = options.transactionOptions.id;
+    if (id) {
+      reqOpts.readWrite = {previousTransaction: id};
+    }
+  }
+  return reqOpts;
+}
+
 export interface ConsistencyProtoCode {
   [key: string]: number;
 }
@@ -1172,15 +1274,18 @@ export interface SharedQueryOptions {
     readConsistency?: number;
     transaction?: string | Uint8Array | null;
     readTime?: ITimestamp;
+    newTransaction?: TransactionRequestOptions;
+    consistencyType?:
+      | 'readConsistency'
+      | 'transaction'
+      | 'newTransaction'
+      | 'readTime';
   };
 }
 export interface RequestOptions extends SharedQueryOptions {
   mutations?: google.datastore.v1.IMutation[];
   keys?: Entity;
-  transactionOptions?: {
-    readOnly?: {};
-    readWrite?: {previousTransaction?: string | Uint8Array | null};
-  } | null;
+  transactionOptions?: TransactionRequestOptions | null;
   transaction?: string | null | Uint8Array;
   mode?: string;
   query?: QueryProto;
@@ -1211,7 +1316,7 @@ export type DeleteResponse = CommitResponse;
  * that a callback is omitted.
  */
 promisifyAll(DatastoreRequest, {
-  exclude: ['getQueryOptions', 'getRequestOptions'],
+  exclude: ['checkExpired', 'getQueryOptions', 'getRequestOptions'],
 });
 
 /**
