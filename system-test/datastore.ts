@@ -20,10 +20,10 @@ import * as yaml from 'js-yaml';
 import {Datastore, DatastoreOptions, Index, Transaction} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
-import {AggregateField} from '../src/aggregate';
+import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {and, or, PropertyFilter} from '../src/filter';
 import {Entities, entity, Entity} from '../src/entity';
-import {QueryMode, RunQueryInfo, ExecutionStats} from '../src/query';
+import {Query, QueryMode, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 
 const async = require('async');
@@ -1214,8 +1214,12 @@ async.each(
 
           describe('when using transactions', () => {
             describe('when using the runQuery function with transactions', () => {
-              const transaction = datastore.transaction();
-              const query = transaction.createQuery('Character');
+              let transaction: Transaction;
+              let query: Query;
+              beforeEach(async () => {
+                transaction = datastore.transaction();
+                query = transaction.createQuery('Character');
+              });
               it('should run a query in a transaction with no mode specified', async () => {
                 await transaction.run();
                 let entities, info;
@@ -1233,6 +1237,8 @@ async.each(
                 await transaction.commit();
               });
               it('should run a query in a transaction with NORMAL mode specified', async () => {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Character');
                 await transaction.run();
                 let entities, info;
                 try {
@@ -1251,6 +1257,8 @@ async.each(
                 await transaction.commit();
               });
               it('should run a query in a transaction with EXPLAIN mode specified', async () => {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Character');
                 await transaction.run();
                 let entities, info;
                 try {
@@ -1271,6 +1279,8 @@ async.each(
                 await transaction.commit();
               });
               it('should run a query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Character');
                 await transaction.run();
                 let entities, info;
                 try {
@@ -1300,13 +1310,17 @@ async.each(
                   property_1: 187,
                 },
               ];
-              const q = datastore
-                .createQuery('Character')
-                .hasAncestor(ancestor);
-              const transaction = datastore.transaction();
-              const aggregate = transaction
-                .createAggregationQuery(q)
-                .addAggregation(AggregateField.sum('appearances'));
+              let transaction: Transaction;
+              let aggregate: AggregateQuery;
+              beforeEach(async () => {
+                const q = datastore
+                  .createQuery('Character')
+                  .hasAncestor(ancestor);
+                transaction = datastore.transaction();
+                aggregate = transaction
+                  .createAggregationQuery(q)
+                  .addAggregation(AggregateField.sum('appearances'));
+              });
               it('should run an aggregation query in a transaction with no mode specified', async () => {
                 await transaction.run();
                 let entities, info;
@@ -1668,16 +1682,14 @@ async.each(
             ];
             it('should run an aggregation query with no mode specified', async () => {
               const [entities, info] = await aggregate.run();
-              assert(!info.executionStats);
-              assert(!info.plan);
+              assert(!info.explainMetrics);
               assert.deepStrictEqual(entities, expectedAggregationResults);
             });
             it('should run an aggregation query with NORMAL mode specified', async () => {
               const [entities, info] = await aggregate.run({
                 mode: QueryMode.NORMAL,
               });
-              assert(!info.executionStats);
-              assert(!info.plan);
+              assert(!info.explainMetrics);
               assert.deepStrictEqual(entities, expectedAggregationResults);
             });
             it('should run an aggregation query with EXPLAIN mode specified', async () => {
@@ -1685,9 +1697,10 @@ async.each(
                 mode: QueryMode.EXPLAIN,
               });
               assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
               assert(!info.executionStats);
               assert.deepStrictEqual(
-                info.plan,
+                info.explainMetrics.planSummary,
                 expectedRunAggregationQueryPlan
               );
             });
@@ -1696,9 +1709,12 @@ async.each(
                 mode: QueryMode.EXPLAIN_ANALYZE,
               });
               assert.deepStrictEqual(entities, expectedAggregationResults);
-              checkAggregationQueryExecutionStats(info.executionStats);
+              assert(info.explainMetrics);
+              checkAggregationQueryExecutionStats(
+                info.explainMetrics.executionStats
+              );
               assert.deepStrictEqual(
-                info.plan,
+                info.explainMetrics.planSummary,
                 expectedRunAggregationQueryPlan
               );
             });
