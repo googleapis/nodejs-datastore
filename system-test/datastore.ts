@@ -34,12 +34,10 @@ async.each(
   [
     {
       namespace: `${Date.now()}`,
-      apiEndpoint: 'nightly-datastore.sandbox.googleapis.com', // TODO: Remove before merge
     },
     {
       databaseId: SECOND_DATABASE_ID,
       namespace: `second-db-${Date.now()}`,
-      apiEndpoint: 'nightly-datastore.sandbox.googleapis.com', // TODO: Remove before merge
     },
   ],
   (clientOptions: DatastoreOptions) => {
