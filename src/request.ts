@@ -29,6 +29,7 @@ import {
   ResponseResult,
 } from './entity';
 import {
+  ExplainMetrics,
   Query,
   QueryMode,
   QueryProto,
@@ -60,9 +61,9 @@ function getInfoFromStats(
   resp: protos.google.datastore.v1.IRunQueryResponse
 ): RunQueryInfo {
   // Decode structValues stored in queryPlan and queryStats
-  const info = {};
+  const explainMetrics: ExplainMetrics = {};
   if (resp && resp.explainMetrics && resp.explainMetrics.planSummary && resp.explainMetrics.planSummary.indexesUsed) {
-    Object.assign(info, {plan: {indexesUsed: resp.explainMetrics.planSummary.indexesUsed.map((index: google.protobuf.IStruct) => decodeStruct(index))}})
+    Object.assign(explainMetrics, {planSummary: {indexesUsed: resp.explainMetrics.planSummary.indexesUsed.map((index: google.protobuf.IStruct) => decodeStruct(index))}})
   }
   if (resp && resp.explainMetrics && resp.explainMetrics.executionStats) {
     const executionStats = {};
@@ -90,9 +91,12 @@ function getInfoFromStats(
         Object.assign(executionStats, {debugStats: decodeStruct(debugStats)});
       }
     }
-    Object.assign(info, {executionStats});
+    Object.assign(explainMetrics, {executionStats});
   }
-  return info;
+  if (explainMetrics.planSummary || explainMetrics.executionStats) {
+    return {explainMetrics};
+  }
+  return {};
 }
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

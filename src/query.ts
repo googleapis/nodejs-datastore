@@ -637,10 +637,13 @@ export interface RunQueryInfo {
     | 'MORE_RESULTS_AFTER_LIMIT'
     | 'MORE_RESULTS_AFTER_CURSOR'
     | 'NO_MORE_RESULTS';
-  plan?: Plan;
-  executionStats?: ExecutionStats;
+  explainMetrics?: ExplainMetrics;
 }
 
+export interface ExplainMetrics {
+  planSummary?: PlanSummary;
+  executionStats?: ExecutionStats;
+}
 export interface ExecutionStats {
   resultsReturned?: number;
   bytesReturned?: number;
@@ -649,6 +652,6 @@ export interface ExecutionStats {
   debugStats?: JSONValue;
 }
 
-export interface Plan {
+export interface PlanSummary {
   indexesUsed: JSONValue;
 }
