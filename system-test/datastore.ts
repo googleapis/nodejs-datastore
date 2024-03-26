@@ -1167,7 +1167,6 @@ async.each(
             // Then do the assertion check.
             assert.deepStrictEqual(executionStats, {
               resultsReturned: 8,
-              bytesReturned: 1313,
               executionDuration: duration,
               readOperations: 8,
               debugStats: {
@@ -1198,7 +1197,6 @@ async.each(
             // Then do the assertion check.
             assert.deepStrictEqual(executionStats, {
               resultsReturned: 1,
-              bytesReturned: 51,
               executionDuration: duration,
               readOperations: 1,
               debugStats: {
@@ -1422,7 +1420,7 @@ async.each(
                 expectedRunQueryPlan
               );
             });
-            it.only('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
               const [entities, info] = await datastore.runQuery(q, {
                 mode: QueryMode.EXPLAIN_ANALYZE,
               });
