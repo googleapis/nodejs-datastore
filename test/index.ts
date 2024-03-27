@@ -33,6 +33,7 @@ import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
 import {google} from '../protos/protos';
+import {QueryMode} from '../src/query';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
@@ -2459,6 +2460,103 @@ async.each(
             otherDatastore.getDatabaseId(),
             SECOND_DATABASE_ID
           );
+        });
+      });
+
+      describe('Query Profiling', () => {
+        const datastore = new ds.Datastore();
+        const explainMetrics = {
+          executionStats: {
+            resultsReturned: '8',
+            executionDuration: {
+              seconds: '0',
+              nanos: 95389000,
+            },
+            readOperations: '8',
+            debugStats: {
+              fields: {
+                index_entries_scanned: {
+                  stringValue: '8',
+                  kind: 'stringValue',
+                },
+                documents_scanned: {
+                  stringValue: '8',
+                  kind: 'stringValue',
+                },
+              },
+            },
+          },
+          planSummary: {
+            indexesUsed: [
+              {
+                fields: {
+                  query_scope: {
+                    stringValue: 'Collection Group',
+                    kind: 'stringValue',
+                  },
+                  properties: {
+                    stringValue: '(__name__ASC)',
+                    kind: 'stringValue',
+                  },
+                },
+              },
+            ],
+          },
+        };
+        const expectedInfo = {
+          moreResults: 'NO_MORE_RESULTS',
+          explainMetrics: {
+            planSummary: {
+              indexesUsed: [
+                {
+                  query_scope: 'Collection Group',
+                  properties: '(__name__ASC)',
+                },
+              ],
+            },
+            executionStats: {
+              resultsReturned: 8,
+              readOperations: 8,
+              executionDuration: {
+                seconds: '0',
+                nanos: 95389000,
+              },
+              debugStats: {
+                index_entries_scanned: '8',
+                documents_scanned: '8',
+              },
+            },
+          },
+        };
+        it.only('should provide correct mode for runQuery', async () => {
+          // Mock out the request function to compare config passed into it.
+          datastore.request_ = (
+            config: RequestConfig,
+            callback: RequestCallback
+          ) => {
+            assert.deepStrictEqual(config.client, 'DatastoreClient');
+            assert.deepStrictEqual(config.method, 'runQuery');
+            assert.deepStrictEqual(config.reqOpts?.explainOptions, {
+              analyze: true,
+            });
+            callback(null, {
+              batch: {entityResults: [], moreResults: 'NO_MORE_RESULTS'},
+              explainMetrics,
+            });
+          };
+          const ancestor = datastore.key(['Book', 'GoT']);
+          const q = datastore.createQuery('Character').hasAncestor(ancestor);
+          const [entities, info] = await datastore.runQuery(q, {
+            mode: QueryMode.EXPLAIN_ANALYZE,
+          });
+          assert.deepStrictEqual(entities, []);
+          assert.deepStrictEqual(info, expectedInfo);
+        });
+        it('should provide correct mode for runQueryStream', done => {
+          console.log('test');
+        });
+        it('should provide correct mode for runAggregationQuery', done => {
+          console.log('test');
         });
       });
     });
