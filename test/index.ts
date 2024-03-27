@@ -19,7 +19,7 @@ import * as proxyquire from 'proxyquire';
 import {PassThrough, Readable} from 'stream';
 
 import * as ds from '../src';
-import {Datastore, DatastoreOptions} from '../src';
+import {AggregateField, Datastore, DatastoreOptions} from '../src';
 import {Datastore as OriginalDatastore} from '../src';
 import {
   entity,
@@ -2504,7 +2504,6 @@ async.each(
           },
         };
         const expectedInfo = {
-          moreResults: 'NO_MORE_RESULTS',
           explainMetrics: {
             planSummary: {
               indexesUsed: [
@@ -2528,7 +2527,7 @@ async.each(
             },
           },
         };
-        it.only('should provide correct mode for runQuery', async () => {
+        it('should provide correct request/response data for runQuery', async () => {
           // Mock out the request function to compare config passed into it.
           datastore.request_ = (
             config: RequestConfig,
@@ -2550,13 +2549,40 @@ async.each(
             mode: QueryMode.EXPLAIN_ANALYZE,
           });
           assert.deepStrictEqual(entities, []);
+          assert.deepStrictEqual(
+            info,
+            Object.assign({moreResults: 'NO_MORE_RESULTS'}, expectedInfo)
+          );
+        });
+        it('should provide correct request/response data for runAggregationQuery', async () => {
+          // Mock out the request function to compare config passed into it.
+          datastore.request_ = (
+            config: RequestConfig,
+            callback: RequestCallback
+          ) => {
+            assert.deepStrictEqual(config.client, 'DatastoreClient');
+            assert.deepStrictEqual(config.method, 'runAggregationQuery');
+            assert.deepStrictEqual(config.reqOpts?.explainOptions, {
+              analyze: true,
+            });
+            callback(null, {
+              batch: {aggregationResults: [], moreResults: 'NO_MORE_RESULTS'},
+              explainMetrics,
+            });
+          };
+          const ancestor = datastore.key(['Book', 'GoT']);
+          const q = datastore.createQuery('Character').hasAncestor(ancestor);
+          const aggregate = datastore
+            .createAggregationQuery(q)
+            .addAggregation(AggregateField.sum('appearances'));
+          const [entities, info] = await datastore.runAggregationQuery(
+            aggregate,
+            {
+              mode: QueryMode.EXPLAIN_ANALYZE,
+            }
+          );
+          assert.deepStrictEqual(entities, []);
           assert.deepStrictEqual(info, expectedInfo);
-        });
-        it('should provide correct mode for runQueryStream', done => {
-          console.log('test');
-        });
-        it('should provide correct mode for runAggregationQuery', done => {
-          console.log('test');
         });
       });
     });
