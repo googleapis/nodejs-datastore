@@ -62,27 +62,55 @@ function getInfoFromStats(
 ): RunQueryInfo {
   // Decode structValues stored in queryPlan and queryStats
   const explainMetrics: ExplainMetrics = {};
-  if (resp && resp.explainMetrics && resp.explainMetrics.planSummary && resp.explainMetrics.planSummary.indexesUsed) {
-    Object.assign(explainMetrics, {planSummary: {indexesUsed: resp.explainMetrics.planSummary.indexesUsed.map((index: google.protobuf.IStruct) => decodeStruct(index))}})
+  if (
+    resp &&
+    resp.explainMetrics &&
+    resp.explainMetrics.planSummary &&
+    resp.explainMetrics.planSummary.indexesUsed
+  ) {
+    Object.assign(explainMetrics, {
+      planSummary: {
+        indexesUsed: resp.explainMetrics.planSummary.indexesUsed.map(
+          (index: google.protobuf.IStruct) => decodeStruct(index)
+        ),
+      },
+    });
   }
   if (resp && resp.explainMetrics && resp.explainMetrics.executionStats) {
     const executionStats = {};
     {
-      const resultsReturned = resp.explainMetrics.executionStats.resultsReturned;
+      const resultsReturned =
+        resp.explainMetrics.executionStats.resultsReturned;
       if (resultsReturned) {
-        Object.assign(executionStats, {resultsReturned: typeof resultsReturned === 'string' ? parseInt(resultsReturned) : resultsReturned});
+        Object.assign(executionStats, {
+          resultsReturned:
+            typeof resultsReturned === 'string'
+              ? parseInt(resultsReturned)
+              : resultsReturned,
+        });
       }
     }
     {
-      const executionDuration = resp.explainMetrics.executionStats.executionDuration;
+      const executionDuration =
+        resp.explainMetrics.executionStats.executionDuration;
       if (executionDuration) {
-        Object.assign(executionStats, {executionDuration: typeof executionDuration === 'string' ? parseInt(executionDuration) : executionDuration});
+        Object.assign(executionStats, {
+          executionDuration:
+            typeof executionDuration === 'string'
+              ? parseInt(executionDuration)
+              : executionDuration,
+        });
       }
     }
     {
       const readOperations = resp.explainMetrics.executionStats.readOperations;
       if (readOperations) {
-        Object.assign(executionStats, {readOperations: typeof readOperations === 'string' ? parseInt(readOperations) : readOperations});
+        Object.assign(executionStats, {
+          readOperations:
+            typeof readOperations === 'string'
+              ? parseInt(readOperations)
+              : readOperations,
+        });
       }
     }
     {
@@ -975,13 +1003,13 @@ class DatastoreRequest {
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
-    switch(options.mode) {
+    switch (options.mode) {
       case QueryMode.EXPLAIN: {
-        sharedQueryOpts.explainOptions = {analyze: false}
+        sharedQueryOpts.explainOptions = {analyze: false};
         break;
       }
       case QueryMode.EXPLAIN_ANALYZE: {
-        sharedQueryOpts.explainOptions = {analyze: true}
+        sharedQueryOpts.explainOptions = {analyze: true};
         break;
       }
     }
