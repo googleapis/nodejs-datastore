@@ -23,6 +23,8 @@ import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
+import {google} from '../protos/protos';
+import {JSONValue} from 'proto3-json-serializer';
 
 export type Operator =
   | '='
@@ -597,16 +599,31 @@ export interface IntegerTypeCastOptions {
   properties?: string | string[];
 }
 
+export enum QueryMode {
+  NORMAL,
+  EXPLAIN,
+  EXPLAIN_ANALYZE,
+}
+
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   readTime?: number;
   gaxOptions?: CallOptions;
+  mode?: QueryMode;
   wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
 
-export interface RunQueryCallback {
+export interface CallbackWithError<T extends any[]> {
+  (err: Error | null, ...args: T): void;
+}
+
+export type RunQueryCallback = CallbackWithError<RunQueryResponse>;
+
+/*
+}export interface RunQueryCallback {
   (err: Error | null, entities?: Entity[], info?: RunQueryInfo): void;
 }
+ */
 
 export type RunQueryResponse = [Entity[], RunQueryInfo];
 
@@ -620,4 +637,21 @@ export interface RunQueryInfo {
     | 'MORE_RESULTS_AFTER_LIMIT'
     | 'MORE_RESULTS_AFTER_CURSOR'
     | 'NO_MORE_RESULTS';
+  explainMetrics?: ExplainMetrics;
+}
+
+export interface ExplainMetrics {
+  planSummary?: PlanSummary;
+  executionStats?: ExecutionStats;
+}
+export interface ExecutionStats {
+  resultsReturned?: number;
+  bytesReturned?: number;
+  executionDuration?: any;
+  readOperations?: number;
+  debugStats?: JSONValue;
+}
+
+export interface PlanSummary {
+  indexesUsed: JSONValue;
 }

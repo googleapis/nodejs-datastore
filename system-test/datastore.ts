@@ -20,9 +20,10 @@ import * as yaml from 'js-yaml';
 import {Datastore, DatastoreOptions, Index, Transaction} from '../src';
 import {google} from '../protos/protos';
 import {Storage} from '@google-cloud/storage';
-import {AggregateField} from '../src/aggregate';
-import {PropertyFilter, and, or} from '../src/filter';
-import {entity} from '../src/entity';
+import {AggregateField, AggregateQuery} from '../src/aggregate';
+import {and, or, PropertyFilter} from '../src/filter';
+import {Entities, entity, Entity} from '../src/entity';
+import {Query, QueryMode, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 
 const async = require('async');
@@ -1127,6 +1128,593 @@ async.each(
                 .filter(new PropertyFilter('appearances', '<', 30));
               const [entities] = await datastore.runQuery(q);
               assert.strictEqual(entities!.length, 3);
+            });
+          });
+        });
+        describe('query profiling', () => {
+          const expectedRunQueryPlan = {
+            indexesUsed: [
+              {
+                properties: '(__name__ ASC)',
+                query_scope: 'Collection Group',
+              },
+            ],
+          };
+          const expectedRunAggregationQueryPlan = {
+            indexesUsed: [
+              {
+                properties: '(appearances ASC, __name__ ASC)',
+                query_scope: 'Includes Ancestors',
+              },
+            ],
+          };
+          const compare = (a: any, b: any) => {
+            return a.name > b.name ? 1 : -1;
+          };
+          function checkQueryExecutionStats(executionStats?: ExecutionStats) {
+            // This function ensures the execution stats returned from the server are correct.
+            // First fix stats values that will be different every time a query profiling
+            // request is made so the assertion check only compares values that are
+            // expected to be the same every time the test is run.
+            const duration = {
+              seconds: '0',
+              nanos: 26806000,
+            };
+            assert(executionStats);
+            executionStats.executionDuration = duration;
+            // Then do the assertion check.
+            assert.deepStrictEqual(executionStats, {
+              resultsReturned: 8,
+              executionDuration: duration,
+              readOperations: 8,
+              debugStats: {
+                documents_scanned: '8',
+                index_entries_scanned: '8',
+                billing_details: {
+                  min_query_cost: '0',
+                  small_ops: '0',
+                  index_entries_billable: '0',
+                  documents_billable: '8',
+                },
+              },
+            });
+          }
+          function checkAggregationQueryExecutionStats(
+            executionStats?: ExecutionStats
+          ) {
+            // This function ensures the execution stats returned from the server are correct.
+            // First fix stats values that will be different every time a query profiling
+            // request is made so the assertion check only compares values that are
+            // expected to be the same every time the test is run.
+            const duration = {
+              seconds: '0',
+              nanos: 26806000,
+            };
+            assert(executionStats);
+            executionStats.executionDuration = duration;
+            // Then do the assertion check.
+            assert.deepStrictEqual(executionStats, {
+              resultsReturned: 1,
+              executionDuration: duration,
+              readOperations: 1,
+              debugStats: {
+                documents_scanned: '0',
+                index_entries_scanned: '8',
+                billing_details: {
+                  min_query_cost: '0',
+                  small_ops: '0',
+                  index_entries_billable: '8',
+                  documents_billable: '0',
+                },
+              },
+            });
+          }
+
+          describe('when using transactions', () => {
+            describe('when using the runQuery function with transactions', () => {
+              let transaction: Transaction;
+              let query: Query;
+              beforeEach(async () => {
+                transaction = datastore.transaction();
+                query = transaction.createQuery('Character');
+              });
+              it('should run a query in a transaction with no mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runQuery(query);
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(!info.explainMetrics);
+                assert.deepStrictEqual(
+                  entities.sort(compare).map(entity => entity.name),
+                  [...characters].sort(compare).map(entity => entity.name)
+                );
+                await transaction.commit();
+              });
+              it('should run a query in a transaction with NORMAL mode specified', async () => {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Character');
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runQuery(query, {
+                    mode: QueryMode.NORMAL,
+                  });
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(!info.explainMetrics);
+                assert.deepStrictEqual(
+                  entities.sort(compare).map(entity => entity.name),
+                  [...characters].sort(compare).map(entity => entity.name)
+                );
+                await transaction.commit();
+              });
+              it('should run a query in a transaction with EXPLAIN mode specified', async () => {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Character');
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runQuery(query, {
+                    mode: QueryMode.EXPLAIN,
+                  });
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(info.explainMetrics);
+                assert(!info.explainMetrics.executionStats);
+                assert.deepStrictEqual(entities, []);
+                assert.deepStrictEqual(
+                  info.explainMetrics.planSummary,
+                  expectedRunQueryPlan
+                );
+                await transaction.commit();
+              });
+              it('should run a query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Character');
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runQuery(query, {
+                    mode: QueryMode.EXPLAIN_ANALYZE,
+                  });
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert.deepStrictEqual(
+                  entities.sort(compare).map(entity => entity.name),
+                  [...characters].sort(compare).map(entity => entity.name)
+                );
+                assert(info.explainMetrics);
+                checkQueryExecutionStats(info.explainMetrics.executionStats);
+                assert.deepStrictEqual(
+                  info.explainMetrics.planSummary,
+                  expectedRunQueryPlan
+                );
+                await transaction.commit();
+              });
+            });
+            describe('when using the runAggregationQuery function with transactions', () => {
+              const expectedAggregationResults = [
+                {
+                  property_1: 187,
+                },
+              ];
+              let transaction: Transaction;
+              let aggregate: AggregateQuery;
+              beforeEach(async () => {
+                const q = datastore
+                  .createQuery('Character')
+                  .hasAncestor(ancestor);
+                transaction = datastore.transaction();
+                aggregate = transaction
+                  .createAggregationQuery(q)
+                  .addAggregation(AggregateField.sum('appearances'));
+              });
+              it('should run an aggregation query in a transaction with no mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] =
+                    await transaction.runAggregationQuery(aggregate);
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(!info.explainMetrics);
+                assert.deepStrictEqual(entities, expectedAggregationResults);
+                await transaction.commit();
+              });
+              it('should run an aggregation query in a transaction with NORMAL mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runAggregationQuery(
+                    aggregate,
+                    {
+                      mode: QueryMode.NORMAL,
+                    }
+                  );
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(!info.explainMetrics);
+                assert.deepStrictEqual(entities, expectedAggregationResults);
+                await transaction.commit();
+              });
+              it('should run an aggregation query in a transaction with EXPLAIN mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runAggregationQuery(
+                    aggregate,
+                    {
+                      mode: QueryMode.EXPLAIN,
+                    }
+                  );
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(info.explainMetrics);
+                assert.deepStrictEqual(entities, []);
+                assert.deepStrictEqual(
+                  info.explainMetrics.planSummary,
+                  expectedRunAggregationQueryPlan
+                );
+                await transaction.commit();
+              });
+              it('should run an aggregation query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runAggregationQuery(
+                    aggregate,
+                    {
+                      mode: QueryMode.EXPLAIN_ANALYZE,
+                    }
+                  );
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(info.explainMetrics);
+                assert.deepStrictEqual(entities, expectedAggregationResults);
+                checkAggregationQueryExecutionStats(
+                  info.explainMetrics.executionStats
+                );
+                assert.deepStrictEqual(
+                  info.explainMetrics.planSummary,
+                  expectedRunAggregationQueryPlan
+                );
+                await transaction.commit();
+              });
+            });
+          });
+          describe('when using the runQuery function', () => {
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            it('should run an aggregation query with no mode specified', async () => {
+              const [entities, info] = await datastore.runQuery(q);
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
+            });
+            it('should run a query with NORMAL mode specified', async () => {
+              const [entities, info] = await datastore.runQuery(q, {
+                mode: QueryMode.NORMAL,
+              });
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
+            });
+            it('should run a query with EXPLAIN mode specified', async () => {
+              const [entities, info] = await datastore.runQuery(q, {
+                mode: QueryMode.EXPLAIN,
+              });
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.explainMetrics.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunQueryPlan
+              );
+            });
+            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+              const [entities, info] = await datastore.runQuery(q, {
+                mode: QueryMode.EXPLAIN_ANALYZE,
+              });
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
+              assert(info.explainMetrics);
+              checkQueryExecutionStats(info.explainMetrics.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunQueryPlan
+              );
+            });
+          });
+          describe('when calling run on a Query object', () => {
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            it('should run an aggregation query with no mode specified', async () => {
+              const [entities, info] = await q.run();
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
+            });
+            it('should run a query with NORMAL mode specified', async () => {
+              const [entities, info] = await q.run({mode: QueryMode.NORMAL});
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
+            });
+            it('should run a query with EXPLAIN mode specified', async () => {
+              const [entities, info] = await q.run({mode: QueryMode.EXPLAIN});
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.explainMetrics.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunQueryPlan
+              );
+            });
+            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+              const [entities, info] = await q.run({
+                mode: QueryMode.EXPLAIN_ANALYZE,
+              });
+              assert.deepStrictEqual(
+                entities.sort(compare).map(entity => entity.name),
+                [...characters].sort(compare).map(entity => entity.name)
+              );
+              assert(info.explainMetrics);
+              checkQueryExecutionStats(info.explainMetrics.executionStats);
+              assert(info.explainMetrics.planSummary);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunQueryPlan
+              );
+            });
+          });
+          describe('when calling runQueryStream', () => {
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            it('should call runQueryStream with no mode specified', async () => {
+              const stream = await datastore.runQueryStream(q);
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(
+                    entities
+                      .sort(compare)
+                      .map((entity: Entity) => entity?.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                  assert(!savedInfo.explainMetrics);
+                  resolve();
+                });
+              });
+            });
+            it('should call runQueryStream with NORMAL mode specified', async () => {
+              const stream = await datastore.runQueryStream(q, {
+                mode: QueryMode.NORMAL,
+              });
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(
+                    entities
+                      .sort(compare)
+                      .map((entity: Entity) => entity?.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                  assert(!savedInfo.explainMetrics);
+                  resolve();
+                });
+              });
+            });
+            it('should call runQueryStream with EXPLAIN mode specified', async () => {
+              const stream = await datastore.runQueryStream(q, {
+                mode: QueryMode.EXPLAIN,
+              });
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(entities, []);
+                  assert(savedInfo.explainMetrics);
+                  assert(!savedInfo.explainMetrics.executionStats);
+                  assert.deepStrictEqual(
+                    savedInfo.explainMetrics.planSummary,
+                    expectedRunQueryPlan
+                  );
+                  resolve();
+                });
+              });
+            });
+            it('should call runQueryStream with EXPLAIN_ANALYZE mode specified', async () => {
+              const stream = await datastore.runQueryStream(q, {
+                mode: QueryMode.EXPLAIN_ANALYZE,
+              });
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(
+                    entities
+                      .sort(compare)
+                      .map((entity: Entity) => entity?.name),
+                    [...characters].sort(compare).map(entity => entity.name)
+                  );
+                  assert(savedInfo.explainMetrics);
+                  checkQueryExecutionStats(
+                    savedInfo.explainMetrics.executionStats
+                  );
+                  assert.deepStrictEqual(
+                    savedInfo.explainMetrics.planSummary,
+                    expectedRunQueryPlan
+                  );
+                  resolve();
+                });
+              });
+            });
+          });
+          describe('when using the runAggregationQuery function', () => {
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            const aggregate = datastore
+              .createAggregationQuery(q)
+              .addAggregation(AggregateField.sum('appearances'));
+            const expectedAggregationResults = [
+              {
+                property_1: 187,
+              },
+            ];
+            it('should run an aggregation query with no mode specified', async () => {
+              const [entities, info] =
+                await datastore.runAggregationQuery(aggregate);
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(entities, expectedAggregationResults);
+            });
+            it('should run an aggregation query with NORMAL mode specified', async () => {
+              const [entities, info] = await datastore.runAggregationQuery(
+                aggregate,
+                {
+                  mode: QueryMode.NORMAL,
+                }
+              );
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(entities, expectedAggregationResults);
+            });
+            it('should run an aggregation query with EXPLAIN mode specified', async () => {
+              const [entities, info] = await datastore.runAggregationQuery(
+                aggregate,
+                {
+                  mode: QueryMode.EXPLAIN,
+                }
+              );
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.explainMetrics.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunAggregationQueryPlan
+              );
+            });
+            it('should run an aggregation query with EXPLAIN_ANALYZE mode specified', async () => {
+              const [entities, info] = await datastore.runAggregationQuery(
+                aggregate,
+                {
+                  mode: QueryMode.EXPLAIN_ANALYZE,
+                }
+              );
+              assert.deepStrictEqual(entities, expectedAggregationResults);
+              assert(info.explainMetrics);
+              checkAggregationQueryExecutionStats(
+                info.explainMetrics.executionStats
+              );
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunAggregationQueryPlan
+              );
+            });
+          });
+          describe('when using run on an AggregationQuery object', () => {
+            const q = datastore.createQuery('Character').hasAncestor(ancestor);
+            const aggregate = datastore
+              .createAggregationQuery(q)
+              .addAggregation(AggregateField.sum('appearances'));
+            const expectedAggregationResults = [
+              {
+                property_1: 187,
+              },
+            ];
+            it('should run an aggregation query with no mode specified', async () => {
+              const [entities, info] = await aggregate.run();
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(entities, expectedAggregationResults);
+            });
+            it('should run an aggregation query with NORMAL mode specified', async () => {
+              const [entities, info] = await aggregate.run({
+                mode: QueryMode.NORMAL,
+              });
+              assert(!info.explainMetrics);
+              assert.deepStrictEqual(entities, expectedAggregationResults);
+            });
+            it('should run an aggregation query with EXPLAIN mode specified', async () => {
+              const [entities, info] = await aggregate.run({
+                mode: QueryMode.EXPLAIN,
+              });
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunAggregationQueryPlan
+              );
+            });
+            it('should run an aggregation query with EXPLAIN_ANALYZE mode specified', async () => {
+              const [entities, info] = await aggregate.run({
+                mode: QueryMode.EXPLAIN_ANALYZE,
+              });
+              assert.deepStrictEqual(entities, expectedAggregationResults);
+              assert(info.explainMetrics);
+              checkAggregationQueryExecutionStats(
+                info.explainMetrics.executionStats
+              );
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunAggregationQueryPlan
+              );
             });
           });
         });

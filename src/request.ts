@@ -15,15 +15,120 @@
  */
 
 import {promisifyAll} from '@google-cloud/promisify';
-import arrify = require('arrify');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const concat = require('concat-stream');
 import * as extend from 'extend';
 import {split} from 'split-array-stream';
 import {google} from '../protos/protos';
 import {CallOptions, CancellableStream} from 'google-gax';
 import {Duplex, PassThrough, Transform} from 'stream';
+import {
+  Entities,
+  Entity,
+  entity,
+  EntityProto,
+  KeyProto,
+  ResponseResult,
+} from './entity';
+import {
+  ExplainMetrics,
+  Query,
+  QueryMode,
+  QueryProto,
+  RunQueryCallback,
+  RunQueryInfo,
+  RunQueryOptions,
+  RunQueryResponse,
+} from './query';
+import {Datastore} from '.';
+import {AggregateQuery} from './aggregate';
+import arrify = require('arrify');
+import ITimestamp = google.protobuf.ITimestamp;
+import * as serializer from 'proto3-json-serializer';
+import {JSONValue} from 'proto3-json-serializer';
+import * as protos from '../protos/protos';
+import * as protobuf from 'protobufjs';
+
+const root = protobuf.loadSync('google/protobuf/struct.proto');
+const Struct = root.lookupType('Struct');
+
+// This function decodes Struct proto values
+function decodeStruct(structValue: any) {
+  return serializer.toProto3JSON(Struct.fromObject(structValue));
+}
+
+// TODO: Consider unit testing this function
+// This function gets a RunQueryInfo object that contains stats from the server.
+function getInfoFromStats(
+  resp: protos.google.datastore.v1.IRunQueryResponse
+): RunQueryInfo {
+  // Decode structValues stored in queryPlan and queryStats
+  const explainMetrics: ExplainMetrics = {};
+  if (
+    resp &&
+    resp.explainMetrics &&
+    resp.explainMetrics.planSummary &&
+    resp.explainMetrics.planSummary.indexesUsed
+  ) {
+    Object.assign(explainMetrics, {
+      planSummary: {
+        indexesUsed: resp.explainMetrics.planSummary.indexesUsed.map(
+          (index: google.protobuf.IStruct) => decodeStruct(index)
+        ),
+      },
+    });
+  }
+  if (resp && resp.explainMetrics && resp.explainMetrics.executionStats) {
+    const executionStats = {};
+    {
+      const resultsReturned =
+        resp.explainMetrics.executionStats.resultsReturned;
+      if (resultsReturned) {
+        Object.assign(executionStats, {
+          resultsReturned:
+            typeof resultsReturned === 'string'
+              ? parseInt(resultsReturned)
+              : resultsReturned,
+        });
+      }
+    }
+    {
+      const executionDuration =
+        resp.explainMetrics.executionStats.executionDuration;
+      if (executionDuration) {
+        Object.assign(executionStats, {
+          executionDuration:
+            typeof executionDuration === 'string'
+              ? parseInt(executionDuration)
+              : executionDuration,
+        });
+      }
+    }
+    {
+      const readOperations = resp.explainMetrics.executionStats.readOperations;
+      if (readOperations) {
+        Object.assign(executionStats, {
+          readOperations:
+            typeof readOperations === 'string'
+              ? parseInt(readOperations)
+              : readOperations,
+        });
+      }
+    }
+    {
+      const debugStats = resp.explainMetrics.executionStats.debugStats;
+      if (debugStats) {
+        Object.assign(executionStats, {debugStats: decodeStruct(debugStats)});
+      }
+    }
+    Object.assign(explainMetrics, {executionStats});
+  }
+  if (explainMetrics.planSummary || explainMetrics.executionStats) {
+    return {explainMetrics};
+  }
+  return {};
+}
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const concat = require('concat-stream');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const streamEvents = require('stream-events');
@@ -37,27 +142,6 @@ const gapic = Object.freeze({
   v1: require('./v1'),
 });
 
-import {
-  entity,
-  Entity,
-  EntityProto,
-  KeyProto,
-  ResponseResult,
-  Entities,
-  ValueProto,
-} from './entity';
-import {
-  Query,
-  QueryProto,
-  RunQueryInfo,
-  RunQueryOptions,
-  RunQueryResponse,
-  RunQueryCallback,
-} from './query';
-import {Datastore} from '.';
-import ITimestamp = google.protobuf.ITimestamp;
-import {AggregateQuery} from './aggregate';
-
 /**
  * A map of read consistency values to proto codes.
  *
@@ -69,6 +153,7 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   strong: 1,
 };
 
+type GapicExplainOptions = google.datastore.v1.IExplainOptions;
 /**
  * Handle logic for Datastore API operations. Handles request logic for
  * Datastore.
@@ -566,12 +651,15 @@ class DatastoreRequest {
   runAggregationQuery(
     query: AggregateQuery,
     options: RunQueryOptions,
-    callback: RequestCallback
+    callback: RunAggregationQueryCallback
   ): void;
-  runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
   runAggregationQuery(
     query: AggregateQuery,
-    optionsOrCallback?: RunQueryOptions | RequestCallback,
+    callback: RunAggregationQueryCallback
+  ): void;
+  runAggregationQuery(
+    query: AggregateQuery,
+    optionsOrCallback?: RunQueryOptions | RunAggregationQueryCallback,
     cb?: RequestCallback
   ): void | Promise<RunQueryResponse> {
     const options =
@@ -605,9 +693,11 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
+        const info = getInfoFromStats(res);
+        let finalResults = [];
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
-          const finalResults = results
+          finalResults = results
             .map(
               (aggregationResult: any) => aggregationResult.aggregateProperties
             )
@@ -621,10 +711,8 @@ class DatastoreRequest {
                 )
               )
             );
-          callback(err, finalResults);
-        } else {
-          callback(err, res);
         }
+        callback(err, finalResults, info);
       }
     );
   }
@@ -825,9 +913,16 @@ class DatastoreRequest {
         return;
       }
 
-      const info: RunQueryInfo = {
+      if (!resp.batch) {
+        // If there are no results then send any stats back and end the stream.
+        stream.emit('info', getInfoFromStats(resp));
+        stream.push(null);
+        return;
+      }
+
+      const info = Object.assign(getInfoFromStats(resp), {
         moreResults: resp.batch.moreResults,
-      };
+      });
 
       if (resp.batch.endCursor) {
         info.endCursor = resp.batch.endCursor.toString('base64');
@@ -908,6 +1003,16 @@ class DatastoreRequest {
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
+    switch (options.mode) {
+      case QueryMode.EXPLAIN: {
+        sharedQueryOpts.explainOptions = {analyze: false};
+        break;
+      }
+      case QueryMode.EXPLAIN_ANALYZE: {
+        sharedQueryOpts.explainOptions = {analyze: true};
+        break;
+      }
+    }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
         namespaceId: query.namespace,
@@ -1157,6 +1262,15 @@ export interface RequestCallback {
     b?: any
   ): void;
 }
+// TODO: Make sure introducing RunAggregationQueryCallback isn't breaking.
+export interface RunAggregationQueryCallback {
+  (
+    a?: Error | null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    b?: any,
+    c?: RunQueryInfo
+  ): void;
+}
 export interface RequestConfig {
   client: string;
   gaxOpts?: CallOptions;
@@ -1165,7 +1279,9 @@ export interface RequestConfig {
   reqOpts?: RequestOptions;
 }
 export interface SharedQueryOptions {
+  mode?: string;
   databaseId?: string;
+  explainOptions?: GapicExplainOptions;
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {

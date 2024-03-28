@@ -173,8 +173,8 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'function'
         ? gaxOptionsOrCallback
         : typeof cb === 'function'
-          ? cb
-          : () => {};
+        ? cb
+        : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     // This ensures that the transaction is started before calling runCommit
@@ -1028,7 +1028,9 @@ class Transaction extends DatastoreRequest {
   #withBeginTransaction<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     fn: () => void,
-    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+    callback:
+      | ((...args: [Error | null]) => void)
+      | ((...args: [Error | null, ...T]) => void)
   ): void {
     (async () => {
       if (this.#state === TransactionState.NOT_STARTED) {
