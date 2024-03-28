@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,39 +15,27 @@
 'use strict';
 
 // sample-metadata:
-//   title: Create a union between two filters
-//   description: Create a union between two filters (logical OR operator)
+//   title: Run query profiling (regular query)
+//   description: Run query profiling for a standard query and print query results
 
 async function main() {
-  // [START datastore_query_filter_or]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-      // const projectId = "your Google Cloud project id";
+  // [START datastore_run_query_profiling]
 
-      // Imports the Cloud Datastore
-  const {Datastore, PropertyFilter, or} = require('@google-cloud/datastore');
+  // Imports the Cloud Datastore
+  const {Datastore, QueryMode} = require('@google-cloud/datastore');
 
-  async function queryFilterOr() {
-    // Instantiate the Datastore
-    const datastore = new Datastore();
-    const query = datastore
-        .createQuery('Task')
-        .filter(
-            or([
-              new PropertyFilter('description', '=', 'Buy milk'),
-              new PropertyFilter('description', '=', 'Feed cats'),
-            ])
-        );
-
-    const [entities] = await datastore.runQuery(query);
-    for (const entity of entities) {
-      console.log(`Entity found: ${entity['description']}`);
-    }
+  // Instantiate the Datastore
+  const datastore = new Datastore();
+  const ancestor = datastore.key(['Book', 'GoT']);
+  const q = datastore.createQuery('Character').hasAncestor(ancestor);
+  const [entities, info] = await datastore.runQuery(q, {
+    mode: QueryMode.EXPLAIN_ANALYZE,
+  });
+  for (const entity of entities) {
+    console.log(`Entity found: ${entity['description']}`);
   }
-
-  queryFilterOr();
-  // [END datastore_query_filter_or]
+  console.log(`info: ${info}`);
+  // [END datastore_run_query_profiling]
 }
 
 const args = process.argv.slice(2);
