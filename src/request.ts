@@ -1260,7 +1260,6 @@ export interface RequestCallback {
     b?: any
   ): void;
 }
-// TODO: Make sure introducing RunAggregationQueryCallback isn't breaking.
 export interface RunAggregationQueryCallback {
   (
     a?: Error | null,
