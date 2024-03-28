@@ -58,7 +58,7 @@ function decodeStruct(structValue: any) {
 function getInfoFromStats(
   resp: protos.google.datastore.v1.IRunQueryResponse
 ): RunQueryInfo {
-  // Decode structValues stored in queryPlan and queryStats
+  // Decode struct values stored in planSummary and executionStats
   const explainMetrics: ExplainMetrics = {};
   if (
     resp &&
