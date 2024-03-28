@@ -1906,7 +1906,7 @@ export interface TransactionOptions {
   readOnly?: boolean;
 }
 
-export {Index, DatastoreRequest, Query, Transaction};
+export {Index, DatastoreRequest, Query, Transaction, QueryMode};
 
 export interface DatastoreOptions extends GoogleAuthOptions {
   namespace?: string;
