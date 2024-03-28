@@ -613,17 +613,9 @@ export interface RunQueryOptions {
   wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
 
-export interface CallbackWithError<T extends any[]> {
-  (err: Error | null, ...args: T): void;
-}
-
-export type RunQueryCallback = CallbackWithError<RunQueryResponse>;
-
-/*
-}export interface RunQueryCallback {
+export interface RunQueryCallback {
   (err: Error | null, entities?: Entity[], info?: RunQueryInfo): void;
 }
- */
 
 export type RunQueryResponse = [Entity[], RunQueryInfo];
 
