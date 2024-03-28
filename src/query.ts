@@ -647,11 +647,11 @@ export interface ExplainMetrics {
 export interface ExecutionStats {
   resultsReturned?: number;
   bytesReturned?: number;
-  executionDuration?: any;
+  executionDuration?: google.protobuf.IDuration;
   readOperations?: number;
   debugStats?: JSONValue;
 }
 
 export interface PlanSummary {
-  indexesUsed: JSONValue;
+  indexesUsed: JSONValue[];
 }
