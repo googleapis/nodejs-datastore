@@ -55,7 +55,6 @@ function decodeStruct(structValue: any) {
   return serializer.toProto3JSON(Struct.fromObject(structValue));
 }
 
-// TODO: Consider unit testing this function
 // This function gets a RunQueryInfo object that contains stats from the server.
 function getInfoFromStats(
   resp: protos.google.datastore.v1.IRunQueryResponse
