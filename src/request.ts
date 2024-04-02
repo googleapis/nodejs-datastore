@@ -694,10 +694,9 @@ class DatastoreRequest {
       },
       (err, res) => {
         const info = getInfoFromStats(res);
-        let finalResults = [];
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
-          finalResults = results
+          const finalResults = results
             .map(
               (aggregationResult: any) => aggregationResult.aggregateProperties
             )
@@ -711,8 +710,10 @@ class DatastoreRequest {
                 )
               )
             );
+          callback(err, finalResults, info);
+        } else {
+          callback(err, [], info);
         }
-        callback(err, finalResults, info);
       }
     );
   }
