@@ -56,7 +56,9 @@ function decodeStruct(structValue: any) {
 
 // This function gets a RunQueryInfo object that contains stats from the server.
 function getInfoFromStats(
-  resp: protos.google.datastore.v1.IRunQueryResponse
+  resp:
+    | protos.google.datastore.v1.IRunQueryResponse
+    | protos.google.datastore.v1.IRunAggregationQueryResponse
 ): RunQueryInfo {
   // Decode struct values stored in planSummary and executionStats
   const explainMetrics: ExplainMetrics = {};
