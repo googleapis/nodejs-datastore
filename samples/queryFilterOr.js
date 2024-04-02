@@ -41,8 +41,9 @@ async function main() {
       );
 
     const [entities] = await datastore.runQuery(query);
-    entities.sort();
-    for (const entity of entities) {
+    for (const entity of entities.toSorted((entity1, entity2) =>
+      entity1.description < entity2.description ? -1 : 1
+    )) {
       console.log(`Entity found: ${entity['description']}`);
     }
   }
