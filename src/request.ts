@@ -1279,7 +1279,6 @@ export interface RequestConfig {
   reqOpts?: RequestOptions;
 }
 export interface SharedQueryOptions {
-  mode?: string;
   databaseId?: string;
   explainOptions?: GapicExplainOptions;
   projectId?: string;
