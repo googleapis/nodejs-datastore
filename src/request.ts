@@ -43,7 +43,6 @@ import {AggregateQuery} from './aggregate';
 import arrify = require('arrify');
 import ITimestamp = google.protobuf.ITimestamp;
 import * as serializer from 'proto3-json-serializer';
-import {JSONValue} from 'proto3-json-serializer';
 import * as protos from '../protos/protos';
 import * as protobuf from 'protobufjs';
 
@@ -55,12 +54,13 @@ function decodeStruct(structValue: any) {
   return serializer.toProto3JSON(Struct.fromObject(structValue));
 }
 
-// TODO: Consider unit testing this function
 // This function gets a RunQueryInfo object that contains stats from the server.
 function getInfoFromStats(
-  resp: protos.google.datastore.v1.IRunQueryResponse
+  resp:
+    | protos.google.datastore.v1.IRunQueryResponse
+    | protos.google.datastore.v1.IRunAggregationQueryResponse
 ): RunQueryInfo {
-  // Decode structValues stored in queryPlan and queryStats
+  // Decode struct values stored in planSummary and executionStats
   const explainMetrics: ExplainMetrics = {};
   if (
     resp &&
@@ -694,10 +694,9 @@ class DatastoreRequest {
       },
       (err, res) => {
         const info = getInfoFromStats(res);
-        let finalResults = [];
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
-          finalResults = results
+          const finalResults = results
             .map(
               (aggregationResult: any) => aggregationResult.aggregateProperties
             )
@@ -711,8 +710,10 @@ class DatastoreRequest {
                 )
               )
             );
+          callback(err, finalResults, info);
+        } else {
+          callback(err, [], info);
         }
-        callback(err, finalResults, info);
       }
     );
   }
@@ -1262,7 +1263,6 @@ export interface RequestCallback {
     b?: any
   ): void;
 }
-// TODO: Make sure introducing RunAggregationQueryCallback isn't breaking.
 export interface RunAggregationQueryCallback {
   (
     a?: Error | null,
