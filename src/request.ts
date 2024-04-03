@@ -38,9 +38,9 @@ const gapic = Object.freeze({
 });
 
 import {
+  entity,
   Entities,
   Entity,
-  entity,
   EntityProto,
   KeyProto,
   ResponseResult,
@@ -50,10 +50,10 @@ import {
   Query,
   QueryMode,
   QueryProto,
-  RunQueryCallback,
   RunQueryInfo,
   RunQueryOptions,
   RunQueryResponse,
+  RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
 import {AggregateQuery} from './aggregate';
