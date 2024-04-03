@@ -2520,13 +2520,6 @@ async.each(
             documents_scanned: '8',
           },
         };
-        interface ProfilingTestData {
-          modeName: string;
-          mode: QueryMode;
-          explainMetrics: any;
-          expectedInfo: any;
-          expectedExplainOptions: any;
-        }
         // mode string, mode enum type, explainMetrics, expectedInfo
         async.each(
           [
@@ -2574,7 +2567,13 @@ async.each(
               expectedExplainOptions: undefined,
             },
           ],
-          (modeOptions: ProfilingTestData) => {
+          (modeOptions: {
+            modeName: string;
+            mode: QueryMode;
+            explainMetrics: any;
+            expectedInfo: any;
+            expectedExplainOptions: any;
+          }) => {
             const datastore = new ds.Datastore();
             describe(`for the ${modeOptions.modeName} query mode`, () => {
               it('should provide correct request/response data for runQuery', async () => {
