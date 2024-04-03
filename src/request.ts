@@ -56,8 +56,8 @@ import {
   RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
-import {AggregateQuery} from './aggregate';
 import ITimestamp = google.protobuf.ITimestamp;
+import {AggregateQuery} from './aggregate';
 import * as serializer from 'proto3-json-serializer';
 import * as protos from '../protos/protos';
 import * as protobuf from 'protobufjs';
