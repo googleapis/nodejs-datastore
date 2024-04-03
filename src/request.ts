@@ -39,11 +39,11 @@ const gapic = Object.freeze({
 
 import {
   entity,
-  Entities,
   Entity,
   EntityProto,
   KeyProto,
   ResponseResult,
+  Entities,
 } from './entity';
 import {
   ExplainMetrics,
