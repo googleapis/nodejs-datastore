@@ -15,11 +15,28 @@
  */
 
 import {promisifyAll} from '@google-cloud/promisify';
+import arrify = require('arrify');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const concat = require('concat-stream');
 import * as extend from 'extend';
 import {split} from 'split-array-stream';
 import {google} from '../protos/protos';
 import {CallOptions, CancellableStream} from 'google-gax';
 import {Duplex, PassThrough, Transform} from 'stream';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const streamEvents = require('stream-events');
+
+export interface AbortableDuplex extends Duplex {
+  abort(): void;
+}
+
+// Import the clients for each version supported by this package.
+const gapic = Object.freeze({
+  v1: require('./v1'),
+});
+
 import {
   Entities,
   Entity,
@@ -40,7 +57,6 @@ import {
 } from './query';
 import {Datastore} from '.';
 import {AggregateQuery} from './aggregate';
-import arrify = require('arrify');
 import ITimestamp = google.protobuf.ITimestamp;
 import * as serializer from 'proto3-json-serializer';
 import * as protos from '../protos/protos';
@@ -126,21 +142,6 @@ function getInfoFromStats(
   }
   return {};
 }
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const concat = require('concat-stream');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const streamEvents = require('stream-events');
-
-export interface AbortableDuplex extends Duplex {
-  abort(): void;
-}
-
-// Import the clients for each version supported by this package.
-const gapic = Object.freeze({
-  v1: require('./v1'),
-});
 
 /**
  * A map of read consistency values to proto codes.
