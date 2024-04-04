@@ -16,6 +16,7 @@ import * as assert from 'assert';
 import {describe} from 'mocha';
 import {DatastoreClient, Datastore} from '../../src';
 import * as protos from '../../protos/protos';
+import {Callback} from 'google-gax';
 
 describe('Run Query', () => {
   const PROJECT_ID = 'project-id';
@@ -68,12 +69,31 @@ describe('Run Query', () => {
   }
 
   it('should pass read time into runQuery for transactions', async () => {
-    const id = 'test-id';
+    // First mock out beginTransaction
+    const dataClient = datastore.clients_.get(clientName);
+    const testId = Buffer.from(Array.from(Array(100).keys()));
+    if (dataClient) {
+      dataClient.beginTransaction = (
+        request: protos.google.datastore.v1.IBeginTransactionRequest,
+        options: protos.google.datastore.v1.IBeginTransactionResponse,
+        callback: Callback<
+          protos.google.datastore.v1.IBeginTransactionResponse,
+          | protos.google.datastore.v1.IBeginTransactionRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >
+      ) => {
+        callback(null, {
+          transaction: testId,
+        });
+      };
+    }
     setRunQueryComparison(
       (request: protos.google.datastore.v1.IRunQueryRequest) => {
         assert.deepStrictEqual(request, {
           readOptions: {
-            transaction: id,
+            transaction: testId,
             readTime: {
               seconds: 77,
             },
@@ -91,7 +111,7 @@ describe('Run Query', () => {
         });
       }
     );
-    const transaction = datastore.transaction({id});
+    const transaction = datastore.transaction();
     const query = datastore.createQuery('Task');
     await transaction.runQuery(query, {readTime: 77000});
   });
