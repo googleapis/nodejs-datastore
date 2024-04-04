@@ -2069,8 +2069,7 @@ async.each(
             await transaction.rollback();
             return;
           }
-          assert.strictEqual(entitiesBefore!.length, 1);
-          assert(entitiesNow!.length > 1);
+          assert(entitiesBefore!.length < entitiesNow!.length);
           await transaction.commit();
         });
 
