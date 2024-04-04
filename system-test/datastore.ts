@@ -1945,13 +1945,13 @@ async.each(
             data: {},
           };
           await datastore.save(emptyData);
-          // Sleep for 5 seconds to ensure timeBeforeDataCreation includes the empty data
-          await sleep(5000);
+          // Sleep for 10 seconds to ensure timeBeforeDataCreation includes the empty data
+          await sleep(10000);
           timeBeforeDataCreation = await getReadTime([
             {kind: 'Company', name: 'Google'},
           ]);
-          // Sleep for 5 seconds so that any future reads will be later than timeBeforeDataCreation.
-          await sleep(5000);
+          // Sleep for 10 seconds so that any future reads will be later than timeBeforeDataCreation.
+          await sleep(10000);
         });
 
         it('should run in a transaction', async () => {
@@ -2069,8 +2069,8 @@ async.each(
             await transaction.rollback();
             return;
           }
-          assert.strictEqual(entitiesBefore!.length, 0);
-          assert(entitiesNow!.length > 0);
+          assert.strictEqual(entitiesBefore!.length, 1);
+          assert(entitiesNow!.length > 1);
           await transaction.commit();
         });
 
