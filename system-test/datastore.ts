@@ -1749,6 +1749,187 @@ async.each(
           assert.deepStrictEqual(results, [{property_1: 4}]);
         });
       });
+      describe('transactions with and without run', () => {
+        describe('lookup, put, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doLookupPutCommit(transaction: Transaction) {
+            const [firstRead] = await transaction.get(key);
+            assert(!firstRead);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doLookupPutCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doLookupPutCommit(transaction);
+          });
+        });
+        describe('put, lookup, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doPutLookupCommit(transaction: Transaction) {
+            transaction.save({key, data: obj});
+            const [firstRead] = await transaction.get(key);
+            assert(!firstRead);
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doPutLookupCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doPutLookupCommit(transaction);
+          });
+        });
+        describe('runQuery, put, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doRunQueryPutCommit(transaction: Transaction) {
+            const query = transaction.createQuery('Company');
+            const [results] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results, []);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doRunQueryPutCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doRunQueryPutCommit(transaction);
+          });
+        });
+        describe('put, runQuery, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doPutRunQueryCommit(transaction: Transaction) {
+            transaction.save({key, data: obj});
+            const query = transaction.createQuery('Company');
+            const [results] = await transaction.runQuery(query);
+            assert.deepStrictEqual(results, []);
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doPutRunQueryCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doPutRunQueryCommit(transaction);
+          });
+        });
+
+        describe('runAggregationQuery, put, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doRunAggregationQueryPutCommit(
+            transaction: Transaction
+          ) {
+            const query = transaction.createQuery('Company');
+            const aggregateQuery = transaction
+              .createAggregationQuery(query)
+              .count('total');
+            const [results] =
+              await transaction.runAggregationQuery(aggregateQuery);
+            assert.deepStrictEqual(results, [{total: 0}]);
+            transaction.save({key, data: obj});
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doRunAggregationQueryPutCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doRunAggregationQueryPutCommit(transaction);
+          });
+        });
+        describe('put, runAggregationQuery, commit', () => {
+          const key = datastore.key(['Company', 'Google']);
+          const obj = {
+            url: 'www.google.com',
+          };
+          afterEach(async () => {
+            await datastore.delete(key);
+          });
+          async function doPutRunAggregationQueryCommit(
+            transaction: Transaction
+          ) {
+            transaction.save({key, data: obj});
+            const query = transaction.createQuery('Company');
+            const aggregateQuery = transaction
+              .createAggregationQuery(query)
+              .count('total');
+            const [results] =
+              await transaction.runAggregationQuery(aggregateQuery);
+            assert.deepStrictEqual(results, [{total: 0}]);
+            await transaction.commit();
+            const [entity] = await datastore.get(key);
+            delete entity[datastore.KEY];
+            assert.deepStrictEqual(entity, obj);
+          }
+          it('should run in a transaction', async () => {
+            const transaction = datastore.transaction();
+            await transaction.run();
+            await doPutRunAggregationQueryCommit(transaction);
+          });
+          it('should run in a transaction without run', async () => {
+            const transaction = datastore.transaction();
+            await doPutRunAggregationQueryCommit(transaction);
+          });
+        });
+      });
       describe('transactions', () => {
         before(async () => {
           // This 'sleep' function is used to ensure that when data is saved to datastore,
@@ -1899,9 +2080,7 @@ async.each(
               [result] = await aggregateQuery.run();
             } catch (e) {
               await transaction.rollback();
-              assert.fail(
-                'The aggregation query run should have been successful'
-              );
+              throw e;
             }
             assert.deepStrictEqual(result, [{total: 2}]);
             await transaction.commit();
@@ -1918,9 +2097,7 @@ async.each(
               [result] = await aggregateQuery.run();
             } catch (e) {
               await transaction.rollback();
-              assert.fail(
-                'The aggregation query run should have been successful'
-              );
+              throw e;
             }
             assert.deepStrictEqual(result, [{'total rating': 200}]);
             await transaction.commit();
@@ -1937,9 +2114,7 @@ async.each(
               [result] = await aggregateQuery.run();
             } catch (e) {
               await transaction.rollback();
-              assert.fail(
-                'The aggregation query run should have been successful'
-              );
+              throw e;
             }
             assert.deepStrictEqual(result, [{'average rating': 100}]);
             await transaction.commit();
@@ -1955,9 +2130,7 @@ async.each(
                 [result] = await aggregateQuery.run();
               } catch (e) {
                 await transaction.rollback();
-                assert.fail(
-                  'The aggregation query run should have been successful'
-                );
+                throw e;
               }
               return result;
             }
@@ -2056,19 +2229,63 @@ async.each(
       describe('importing and exporting entities', () => {
         const gcs = new Storage();
         const bucket = gcs.bucket('nodejs-datastore-system-tests');
+        let currentAttempt = 0;
 
+        const setupForDelay = () => {
+          currentAttempt++;
+        };
         const delay = async (test: Mocha.Context) => {
-          const retries = test.currentRetry();
-          if (retries === 0) return; // no retry on the first failure.
+          const retries = currentAttempt - 1;
+          if (retries === 0) return; // no retry on the first attempt.
           // see: https://cloud.google.com/storage/docs/exponential-backoff:
           const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
           return new Promise(done => {
-            console.info(`retrying "${test.title}" in ${ms}ms`);
+            console.info(
+              `retrying "${test.test?.title}" after attempt ${currentAttempt} in ${ms}ms`
+            );
             setTimeout(done, ms);
           });
         };
 
+        describe('running tests against the delay function', () => {
+          let consoleInfoFunction: (message: string) => void;
+          let infoLogCount = 0;
+
+          before(async () => {
+            infoLogCount = 0;
+            currentAttempt = 0;
+            consoleInfoFunction = console.info;
+          });
+
+          it('should be sure that the delay function emits console info messages', async function () {
+            // Override console.info to track the number of times it is called.
+            console.info = (message: string) => {
+              infoLogCount++;
+              consoleInfoFunction(message);
+            };
+            // Run code that will typically be used in any test with the delay function.
+            setupForDelay();
+            const numberOfRetries = 2;
+            this.retries(numberOfRetries);
+            setImmediate(() => delay(this));
+            // Throw an error on every retry except the last one
+            if (currentAttempt <= numberOfRetries) {
+              throw Error(
+                'This is not the last retry so throw an error to force the test to run again'
+              );
+            }
+            // Check that the attempt number and the number of times console.info is called is correct.
+            assert.strictEqual(infoLogCount, numberOfRetries - 1);
+            assert.strictEqual(currentAttempt, numberOfRetries + 1);
+          });
+
+          after(async () => {
+            console.info = consoleInfoFunction;
+          });
+        });
+
         it('should export, then import entities', async function () {
+          setupForDelay();
           this.retries(3);
           delay(this);
           const [exportOperation] = await datastore.export({bucket});
@@ -2104,6 +2321,16 @@ async.each(
           const query = customDatastore.createQuery('Kind').select('__key__');
           const [entities] = await customDatastore.runQuery(query);
           assert.strictEqual(entities.length, 0);
+        });
+      });
+      describe('using the rest fallback parameter', () => {
+        it('should make a get call using rest instead of grpc', async () => {
+          const customDatastore = new Datastore({
+            fallback: 'rest',
+          });
+          const postKey = datastore.key(['Post', 'post1']);
+          const [entity] = await customDatastore.get(postKey);
+          assert.strictEqual(entity, undefined);
         });
       });
     });
