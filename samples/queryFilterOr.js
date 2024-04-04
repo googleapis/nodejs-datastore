@@ -41,13 +41,15 @@ async function main() {
       );
 
     const [entities] = await datastore.runQuery(query);
+    entities.sort();
     for (const entity of entities) {
       console.log(`Entity found: ${entity['description']}`);
     }
   }
 
-  await queryFilterOr();
+  queryFilterOr();
   // [END datastore_query_filter_or]
 }
 
-exports.queryFilterOr = main;
+const args = process.argv.slice(2);
+main(...args).catch(console.error);
