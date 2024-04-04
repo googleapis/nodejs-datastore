@@ -1945,11 +1945,13 @@ async.each(
             data: {},
           };
           await datastore.save(emptyData);
+          // Sleep for 5 seconds to ensure timeBeforeDataCreation includes the empty data
+          await sleep(5000);
           timeBeforeDataCreation = await getReadTime([
             {kind: 'Company', name: 'Google'},
           ]);
-          // Sleep for 3 seconds so that any future reads will be later than timeBeforeDataCreation.
-          await sleep(3000);
+          // Sleep for 5 seconds so that any future reads will be later than timeBeforeDataCreation.
+          await sleep(5000);
         });
 
         it('should run in a transaction', async () => {
@@ -2035,6 +2037,21 @@ async.each(
 
           // Incomplete key should have been given an id.
           assert.strictEqual(incompleteKey.path.length, 2);
+        });
+
+        it('should query within a transaction', async () => {
+          const transaction = datastore.transaction();
+          await transaction.run();
+          const query = transaction.createQuery('Company');
+          let entities;
+          try {
+            [entities] = await query.run();
+          } catch (e) {
+            await transaction.rollback();
+            return;
+          }
+          assert(entities!.length > 0);
+          await transaction.commit();
         });
 
         it('should query within a transaction at a previous read time', async () => {
