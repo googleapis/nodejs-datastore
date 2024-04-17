@@ -2463,7 +2463,7 @@ async.each(
         });
       });
 
-      describe.only('Query Profiling', () => {
+      describe('Query Profiling', () => {
         const executionStats = {
           resultsReturned: '8',
           executionDuration: {

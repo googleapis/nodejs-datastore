@@ -1234,7 +1234,7 @@ async.each(
                 );
                 await transaction.commit();
               });
-              it('should run a query in a transaction with analyze not specified', async () => {
+              it('should run a query in a transaction with explain options and analyze not specified', async () => {
                 const transaction = datastore.transaction();
                 const query = transaction.createQuery('Character');
                 await transaction.run();
@@ -1256,8 +1256,29 @@ async.each(
                 );
                 await transaction.commit();
               });
-              // TODO: analyze=false test
-              it('should run a query in a transaction with analyze set to true', async () => {
+              it('should run a query in a transaction with explain options and analyze set to false', async () => {
+                const transaction = datastore.transaction();
+                const query = transaction.createQuery('Character');
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runQuery(query, {
+                    explainOptions: {analyze: false},
+                  });
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(info.explainMetrics);
+                assert(!info.explainMetrics.executionStats);
+                assert.deepStrictEqual(entities, []);
+                assert.deepStrictEqual(
+                  info.explainMetrics.planSummary,
+                  expectedRunQueryPlan
+                );
+                await transaction.commit();
+              });
+              it('should run a query in a transaction with explain options and analyze set to true', async () => {
                 const transaction = datastore.transaction();
                 const query = transaction.createQuery('Character');
                 await transaction.run();
@@ -1338,7 +1359,28 @@ async.each(
                 );
                 await transaction.commit();
               });
-              // TODO: Add test for explain options false
+              it('should run an aggregation query in a transaction with analyze set to false in explain options', async () => {
+                await transaction.run();
+                let entities, info;
+                try {
+                  [entities, info] = await transaction.runAggregationQuery(
+                    aggregate,
+                    {
+                      explainOptions: {},
+                    }
+                  );
+                } catch (e) {
+                  await transaction.rollback();
+                  assert.fail('transaction failed');
+                }
+                assert(info.explainMetrics);
+                assert.deepStrictEqual(entities, []);
+                assert.deepStrictEqual(
+                  info.explainMetrics.planSummary,
+                  expectedRunAggregationQueryPlan
+                );
+                await transaction.commit();
+              });
               it('should run an aggregation query in a transaction with analyze set to true in explain options', async () => {
                 await transaction.run();
                 let entities, info;
