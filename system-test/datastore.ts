@@ -23,7 +23,7 @@ import {Storage} from '@google-cloud/storage';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {and, or, PropertyFilter} from '../src/filter';
 import {Entities, entity, Entity} from '../src/entity';
-import {Query, QueryMode, RunQueryInfo, ExecutionStats} from '../src/query';
+import {Query, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 
 const async = require('async');
@@ -1218,7 +1218,7 @@ async.each(
                 transaction = datastore.transaction();
                 query = transaction.createQuery('Character');
               });
-              it('should run a query in a transaction with no mode specified', async () => {
+              it('should run a query in a transaction with no explain options specified', async () => {
                 await transaction.run();
                 let entities, info;
                 try {
@@ -1234,34 +1234,14 @@ async.each(
                 );
                 await transaction.commit();
               });
-              it('should run a query in a transaction with NORMAL mode specified', async () => {
+              it('should run a query in a transaction with analyze not specified', async () => {
                 const transaction = datastore.transaction();
                 const query = transaction.createQuery('Character');
                 await transaction.run();
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query, {
-                    mode: QueryMode.NORMAL,
-                  });
-                } catch (e) {
-                  await transaction.rollback();
-                  assert.fail('transaction failed');
-                }
-                assert(!info.explainMetrics);
-                assert.deepStrictEqual(
-                  entities.sort(compare).map(entity => entity.name),
-                  [...characters].sort(compare).map(entity => entity.name)
-                );
-                await transaction.commit();
-              });
-              it('should run a query in a transaction with EXPLAIN mode specified', async () => {
-                const transaction = datastore.transaction();
-                const query = transaction.createQuery('Character');
-                await transaction.run();
-                let entities, info;
-                try {
-                  [entities, info] = await transaction.runQuery(query, {
-                    mode: QueryMode.EXPLAIN,
+                    explainOptions: {},
                   });
                 } catch (e) {
                   await transaction.rollback();
@@ -1276,14 +1256,15 @@ async.each(
                 );
                 await transaction.commit();
               });
-              it('should run a query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
+              // TODO: analyze=false test
+              it('should run a query in a transaction with analyze set to true', async () => {
                 const transaction = datastore.transaction();
                 const query = transaction.createQuery('Character');
                 await transaction.run();
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query, {
-                    mode: QueryMode.EXPLAIN_ANALYZE,
+                    explainOptions: {analyze: true},
                   });
                 } catch (e) {
                   await transaction.rollback();
@@ -1319,29 +1300,13 @@ async.each(
                   .createAggregationQuery(q)
                   .addAggregation(AggregateField.sum('appearances'));
               });
-              it('should run an aggregation query in a transaction with no mode specified', async () => {
-                await transaction.run();
-                let entities, info;
-                try {
-                  [entities, info] =
-                    await transaction.runAggregationQuery(aggregate);
-                } catch (e) {
-                  await transaction.rollback();
-                  assert.fail('transaction failed');
-                }
-                assert(!info.explainMetrics);
-                assert.deepStrictEqual(entities, expectedAggregationResults);
-                await transaction.commit();
-              });
-              it('should run an aggregation query in a transaction with NORMAL mode specified', async () => {
+              it('should run an aggregation query in a transaction with no explain options specified', async () => {
                 await transaction.run();
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runAggregationQuery(
                     aggregate,
-                    {
-                      mode: QueryMode.NORMAL,
-                    }
+                    {}
                   );
                 } catch (e) {
                   await transaction.rollback();
@@ -1351,14 +1316,14 @@ async.each(
                 assert.deepStrictEqual(entities, expectedAggregationResults);
                 await transaction.commit();
               });
-              it('should run an aggregation query in a transaction with EXPLAIN mode specified', async () => {
+              it('should run an aggregation query in a transaction with empty explain options', async () => {
                 await transaction.run();
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runAggregationQuery(
                     aggregate,
                     {
-                      mode: QueryMode.EXPLAIN,
+                      explainOptions: {},
                     }
                   );
                 } catch (e) {
@@ -1373,14 +1338,15 @@ async.each(
                 );
                 await transaction.commit();
               });
-              it('should run an aggregation query in a transaction with EXPLAIN_ANALYZE mode specified', async () => {
+              // TODO: Add test for explain options false
+              it('should run an aggregation query in a transaction with analyze set to true in explain options', async () => {
                 await transaction.run();
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runAggregationQuery(
                     aggregate,
                     {
-                      mode: QueryMode.EXPLAIN_ANALYZE,
+                      explainOptions: {analyze: true},
                     }
                   );
                 } catch (e) {
@@ -1402,7 +1368,7 @@ async.each(
           });
           describe('when using the runQuery function', () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
-            it('should run an aggregation query with no mode specified', async () => {
+            it('should run a query with no explain options', async () => {
               const [entities, info] = await datastore.runQuery(q);
               assert(!info.explainMetrics);
               assert.deepStrictEqual(
@@ -1410,19 +1376,9 @@ async.each(
                 [...characters].sort(compare).map(entity => entity.name)
               );
             });
-            it('should run a query with NORMAL mode specified', async () => {
+            it('should run a query with explain options and no analyze option specified', async () => {
               const [entities, info] = await datastore.runQuery(q, {
-                mode: QueryMode.NORMAL,
-              });
-              assert(!info.explainMetrics);
-              assert.deepStrictEqual(
-                entities.sort(compare).map(entity => entity.name),
-                [...characters].sort(compare).map(entity => entity.name)
-              );
-            });
-            it('should run a query with EXPLAIN mode specified', async () => {
-              const [entities, info] = await datastore.runQuery(q, {
-                mode: QueryMode.EXPLAIN,
+                explainOptions: {},
               });
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
@@ -1432,9 +1388,10 @@ async.each(
                 expectedRunQueryPlan
               );
             });
-            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+            // TODO: Do an explain options false test
+            it('should run a query with explain options and analyze set to true', async () => {
               const [entities, info] = await datastore.runQuery(q, {
-                mode: QueryMode.EXPLAIN_ANALYZE,
+                explainOptions: {analyze: true},
               });
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
@@ -1450,7 +1407,7 @@ async.each(
           });
           describe('when calling run on a Query object', () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
-            it('should run an aggregation query with no mode specified', async () => {
+            it('should run an aggregation query with no explain options specified', async () => {
               const [entities, info] = await q.run();
               assert(!info.explainMetrics);
               assert.deepStrictEqual(
@@ -1458,16 +1415,8 @@ async.each(
                 [...characters].sort(compare).map(entity => entity.name)
               );
             });
-            it('should run a query with NORMAL mode specified', async () => {
-              const [entities, info] = await q.run({mode: QueryMode.NORMAL});
-              assert(!info.explainMetrics);
-              assert.deepStrictEqual(
-                entities.sort(compare).map(entity => entity.name),
-                [...characters].sort(compare).map(entity => entity.name)
-              );
-            });
-            it('should run a query with EXPLAIN mode specified', async () => {
-              const [entities, info] = await q.run({mode: QueryMode.EXPLAIN});
+            it('should run a query with explain options and no value set for analyze', async () => {
+              const [entities, info] = await q.run({explainOptions: {}});
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
               assert(!info.explainMetrics.executionStats);
@@ -1476,9 +1425,10 @@ async.each(
                 expectedRunQueryPlan
               );
             });
-            it('should run a query with EXPLAIN_ANALYZE mode specified', async () => {
+            // TODO: Add test for analyze set to false.
+            it('should run a query with explain options and analyze set to true', async () => {
               const [entities, info] = await q.run({
-                mode: QueryMode.EXPLAIN_ANALYZE,
+                explainOptions: {analyze: true},
               });
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
@@ -1495,7 +1445,7 @@ async.each(
           });
           describe('when calling runQueryStream', () => {
             const q = datastore.createQuery('Character').hasAncestor(ancestor);
-            it('should call runQueryStream with no mode specified', async () => {
+            it('should call runQueryStream with no explain options specified', async () => {
               const stream = await datastore.runQueryStream(q);
               const entities: Entities = [];
               let savedInfo: RunQueryInfo;
@@ -1520,36 +1470,9 @@ async.each(
                 });
               });
             });
-            it('should call runQueryStream with NORMAL mode specified', async () => {
+            it('should call runQueryStream with explain options specified and analyze not specified', async () => {
               const stream = await datastore.runQueryStream(q, {
-                mode: QueryMode.NORMAL,
-              });
-              const entities: Entities = [];
-              let savedInfo: RunQueryInfo;
-              stream.on('data', (data: Entity) => {
-                assert(datastore.KEY in data);
-                delete data[datastore.KEY];
-                entities.push(data);
-              });
-              stream.on('info', (info: any) => {
-                savedInfo = info;
-              });
-              await new Promise<void>((resolve, reject) => {
-                stream.on('end', () => {
-                  assert.deepStrictEqual(
-                    entities
-                      .sort(compare)
-                      .map((entity: Entity) => entity?.name),
-                    [...characters].sort(compare).map(entity => entity.name)
-                  );
-                  assert(!savedInfo.explainMetrics);
-                  resolve();
-                });
-              });
-            });
-            it('should call runQueryStream with EXPLAIN mode specified', async () => {
-              const stream = await datastore.runQueryStream(q, {
-                mode: QueryMode.EXPLAIN,
+                explainOptions: {},
               });
               const entities: Entities = [];
               let savedInfo: RunQueryInfo;
@@ -1574,9 +1497,9 @@ async.each(
                 });
               });
             });
-            it('should call runQueryStream with EXPLAIN_ANALYZE mode specified', async () => {
+            it('should call runQueryStream with explain options specified and analyze set to true', async () => {
               const stream = await datastore.runQueryStream(q, {
-                mode: QueryMode.EXPLAIN_ANALYZE,
+                explainOptions: {analyze: true},
               });
               const entities: Entities = [];
               let savedInfo: RunQueryInfo;
@@ -1625,21 +1548,11 @@ async.each(
               assert(!info.explainMetrics);
               assert.deepStrictEqual(entities, expectedAggregationResults);
             });
-            it('should run an aggregation query with NORMAL mode specified', async () => {
+            it('should run an aggregation query with explain options specified and analyze not specified', async () => {
               const [entities, info] = await datastore.runAggregationQuery(
                 aggregate,
                 {
-                  mode: QueryMode.NORMAL,
-                }
-              );
-              assert(!info.explainMetrics);
-              assert.deepStrictEqual(entities, expectedAggregationResults);
-            });
-            it('should run an aggregation query with EXPLAIN mode specified', async () => {
-              const [entities, info] = await datastore.runAggregationQuery(
-                aggregate,
-                {
-                  mode: QueryMode.EXPLAIN,
+                  explainOptions: {},
                 }
               );
               assert.deepStrictEqual(entities, []);
@@ -1650,11 +1563,11 @@ async.each(
                 expectedRunAggregationQueryPlan
               );
             });
-            it('should run an aggregation query with EXPLAIN_ANALYZE mode specified', async () => {
+            it('should run an aggregation query with explain options and analyze set to true', async () => {
               const [entities, info] = await datastore.runAggregationQuery(
                 aggregate,
                 {
-                  mode: QueryMode.EXPLAIN_ANALYZE,
+                  explainOptions: {analyze: true},
                 }
               );
               assert.deepStrictEqual(entities, expectedAggregationResults);
@@ -1678,21 +1591,14 @@ async.each(
                 property_1: 187,
               },
             ];
-            it('should run an aggregation query with no mode specified', async () => {
+            it('should run an aggregation query with no explain options specified', async () => {
               const [entities, info] = await aggregate.run();
               assert(!info.explainMetrics);
               assert.deepStrictEqual(entities, expectedAggregationResults);
             });
-            it('should run an aggregation query with NORMAL mode specified', async () => {
+            it('should run an aggregation query with explain options specified and analyze not specified', async () => {
               const [entities, info] = await aggregate.run({
-                mode: QueryMode.NORMAL,
-              });
-              assert(!info.explainMetrics);
-              assert.deepStrictEqual(entities, expectedAggregationResults);
-            });
-            it('should run an aggregation query with EXPLAIN mode specified', async () => {
-              const [entities, info] = await aggregate.run({
-                mode: QueryMode.EXPLAIN,
+                explainOptions: {},
               });
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
@@ -1702,9 +1608,10 @@ async.each(
                 expectedRunAggregationQueryPlan
               );
             });
-            it('should run an aggregation query with EXPLAIN_ANALYZE mode specified', async () => {
+            // TODO: Add test here for analyze set to false.
+            it('should run an aggregation query with explain options specified and analyze set to true', async () => {
               const [entities, info] = await aggregate.run({
-                mode: QueryMode.EXPLAIN_ANALYZE,
+                explainOptions: {analyze: true},
               });
               assert.deepStrictEqual(entities, expectedAggregationResults);
               assert(info.explainMetrics);

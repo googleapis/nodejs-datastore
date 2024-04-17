@@ -52,7 +52,7 @@ import {
   IIndex,
   Index,
 } from './index-class';
-import {Query, QueryMode} from './query';
+import {Query} from './query';
 import {
   DatastoreRequest,
   CommitCallback,
@@ -1906,7 +1906,7 @@ export interface TransactionOptions {
   readOnly?: boolean;
 }
 
-export {Index, DatastoreRequest, Query, Transaction, QueryMode};
+export {Index, DatastoreRequest, Query, Transaction};
 
 export interface DatastoreOptions extends GoogleAuthOptions {
   namespace?: string;

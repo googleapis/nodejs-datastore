@@ -48,7 +48,6 @@ import {
 import {
   ExplainMetrics,
   Query,
-  QueryMode,
   QueryProto,
   RunQueryInfo,
   RunQueryOptions,
@@ -1005,15 +1004,8 @@ class DatastoreRequest {
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
-    switch (options.mode) {
-      case QueryMode.EXPLAIN: {
-        sharedQueryOpts.explainOptions = {analyze: false};
-        break;
-      }
-      case QueryMode.EXPLAIN_ANALYZE: {
-        sharedQueryOpts.explainOptions = {analyze: true};
-        break;
-      }
+    if (options.explainOptions) {
+      sharedQueryOpts.explainOptions = options.explainOptions
     }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {

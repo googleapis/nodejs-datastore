@@ -599,17 +599,15 @@ export interface IntegerTypeCastOptions {
   properties?: string | string[];
 }
 
-export enum QueryMode {
-  NORMAL,
-  EXPLAIN,
-  EXPLAIN_ANALYZE,
+export interface ExplainOptions {
+  analyze?: boolean;
 }
 
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   readTime?: number;
   gaxOptions?: CallOptions;
-  mode?: QueryMode;
+  explainOptions?: ExplainOptions;
   wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
 

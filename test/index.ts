@@ -33,7 +33,7 @@ import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
 import {google} from '../protos/protos';
-import {QueryMode} from '../src/query';
+import ExplainOptions = google.datastore.v1.ExplainOptions;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
@@ -2463,7 +2463,7 @@ async.each(
         });
       });
 
-      describe('Query Profiling', () => {
+      describe.only('Query Profiling', () => {
         const executionStats = {
           resultsReturned: '8',
           executionDuration: {
@@ -2525,7 +2525,11 @@ async.each(
           [
             {
               modeName: 'ExplainAnalyze',
-              mode: QueryMode.EXPLAIN_ANALYZE,
+              options: {
+                explainOptions: {
+                  analyze: true,
+                },
+              },
               expectedInfo: {
                 explainMetrics: {
                   planSummary: expectedPlanSummary,
@@ -2544,7 +2548,11 @@ async.each(
             },
             {
               modeName: 'Explain',
-              mode: QueryMode.EXPLAIN,
+              options: {
+                explainOptions: {
+                  analyze: false,
+                },
+              },
               expectedInfo: {
                 explainMetrics: {
                   planSummary: expectedPlanSummary,
@@ -2561,7 +2569,7 @@ async.each(
             },
             {
               modeName: 'Normal',
-              mode: QueryMode.NORMAL,
+              options: {},
               expectedInfo: {},
               explainMetrics: {},
               expectedExplainOptions: undefined,
@@ -2569,7 +2577,9 @@ async.each(
           ],
           (modeOptions: {
             modeName: string;
-            mode: QueryMode;
+            options: {
+              explainOptions?: ExplainOptions;
+            };
             explainMetrics: any;
             expectedInfo: any;
             expectedExplainOptions: any;
@@ -2605,9 +2615,7 @@ async.each(
                 const q = datastore
                   .createQuery('Character')
                   .hasAncestor(ancestor);
-                const [entities, info] = await datastore.runQuery(q, {
-                  mode: modeOptions.mode,
-                });
+                const [entities, info] = await datastore.runQuery(q, modeOptions.options);
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(
                   info,
@@ -2651,9 +2659,7 @@ async.each(
                   .addAggregation(AggregateField.sum('appearances'));
                 const [entities, info] = await datastore.runAggregationQuery(
                   aggregate,
-                  {
-                    mode: modeOptions.mode,
-                  }
+                  modeOptions.options
                 );
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(info, modeOptions.expectedInfo);
