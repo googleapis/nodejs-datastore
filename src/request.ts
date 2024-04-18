@@ -1124,9 +1124,13 @@ class DatastoreRequest {
         );
       }
 
-      reqOpts.readOptions = {
-        transaction: this.id,
-      };
+      if (reqOpts.readOptions) {
+        Object.assign(reqOpts.readOptions, {transaction: this.id});
+      } else {
+        reqOpts.readOptions = {
+          transaction: this.id,
+        };
+      }
     }
 
     datastore.auth.getProjectId((err, projectId) => {
