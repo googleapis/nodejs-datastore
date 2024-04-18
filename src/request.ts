@@ -155,7 +155,6 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   strong: 1,
 };
 
-type GapicExplainOptions = google.datastore.v1.IExplainOptions;
 /**
  * Handle logic for Datastore API operations. Handles request logic for
  * Datastore.
@@ -1279,7 +1278,7 @@ export interface RequestConfig {
 }
 export interface SharedQueryOptions {
   databaseId?: string;
-  explainOptions?: GapicExplainOptions;
+  explainOptions?: ExplainOptions;
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {
