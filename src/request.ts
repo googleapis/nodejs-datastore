@@ -70,7 +70,8 @@ function decodeStruct(structValue: google.protobuf.IStruct): JSONValue {
   return serializer.toProto3JSON(Struct.fromObject(structValue));
 }
 
-// This function gets a RunQueryInfo object that contains stats from the server.
+// This function gets a RunQueryInfo object that contains explain metrics that
+// were returned from the server.
 function getInfoFromStats(
   resp:
     | protos.google.datastore.v1.IRunQueryResponse
