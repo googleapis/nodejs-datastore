@@ -60,12 +60,13 @@ import {AggregateQuery} from './aggregate';
 import * as serializer from 'proto3-json-serializer';
 import * as protos from '../protos/protos';
 import * as protobuf from 'protobufjs';
+import {JSONValue} from 'proto3-json-serializer/build/src/types';
 
 const root = protobuf.loadSync('google/protobuf/struct.proto');
 const Struct = root.lookupType('Struct');
 
 // This function decodes Struct proto values
-function decodeStruct(structValue: any) {
+function decodeStruct(structValue: google.protobuf.IStruct): JSONValue {
   return serializer.toProto3JSON(Struct.fromObject(structValue));
 }
 
