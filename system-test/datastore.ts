@@ -1563,6 +1563,35 @@ async.each(
                 });
               });
             });
+            it('should call runQueryStream with explain options specified and analyze set to false', async () => {
+              const stream = await datastore.runQueryStream(q, {
+                explainOptions: {
+                  analyze: false,
+                },
+              });
+              const entities: Entities = [];
+              let savedInfo: RunQueryInfo;
+              stream.on('data', (data: Entity) => {
+                assert(datastore.KEY in data);
+                delete data[datastore.KEY];
+                entities.push(data);
+              });
+              stream.on('info', (info: any) => {
+                savedInfo = info;
+              });
+              await new Promise<void>((resolve, reject) => {
+                stream.on('end', () => {
+                  assert.deepStrictEqual(entities, []);
+                  assert(savedInfo.explainMetrics);
+                  assert(!savedInfo.explainMetrics.executionStats);
+                  assert.deepStrictEqual(
+                    savedInfo.explainMetrics.planSummary,
+                    expectedRunQueryPlan
+                  );
+                  resolve();
+                });
+              });
+            });
             it('should call runQueryStream with explain options specified and analyze set to true', async () => {
               const stream = await datastore.runQueryStream(q, {
                 explainOptions: {analyze: true},
