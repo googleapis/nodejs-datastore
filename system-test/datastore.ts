@@ -1366,7 +1366,9 @@ async.each(
                   [entities, info] = await transaction.runAggregationQuery(
                     aggregate,
                     {
-                      explainOptions: {},
+                      explainOptions: {
+                        analyze: false,
+                      },
                     }
                   );
                 } catch (e) {
