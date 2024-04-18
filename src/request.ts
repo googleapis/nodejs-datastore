@@ -47,6 +47,7 @@ import {
 } from './entity';
 import {
   ExplainMetrics,
+  ExplainOptions,
   Query,
   QueryProto,
   RunQueryInfo,
