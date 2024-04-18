@@ -1658,6 +1658,21 @@ async.each(
                 expectedRunAggregationQueryPlan
               );
             });
+            it('should run an aggregation query with explain options specified and analyze set to false', async () => {
+              const [entities, info] = await datastore.runAggregationQuery(
+                aggregate,
+                {
+                  explainOptions: {analyze: false},
+                }
+              );
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.explainMetrics.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunAggregationQueryPlan
+              );
+            });
             it('should run an aggregation query with explain options and analyze set to true', async () => {
               const [entities, info] = await datastore.runAggregationQuery(
                 aggregate,
