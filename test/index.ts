@@ -29,11 +29,11 @@ import {
   Entities,
 } from '../src/entity';
 import {RequestCallback, RequestConfig} from '../src/request';
+import {ExplainOptions, ExplainMetrics, RunQueryInfo} from '../src/query';
 import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
 import {google} from '../protos/protos';
-import ExplainOptions = google.datastore.v1.ExplainOptions;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
@@ -2580,9 +2580,9 @@ async.each(
             options: {
               explainOptions?: ExplainOptions;
             };
-            explainMetrics: any;
-            expectedInfo: any;
-            expectedExplainOptions: any;
+            explainMetrics: ExplainMetrics;
+            expectedInfo: RunQueryInfo;
+            expectedExplainOptions: ExplainOptions;
           }) => {
             const datastore = new ds.Datastore();
             describe(`for the ${modeOptions.modeName} query mode`, () => {
