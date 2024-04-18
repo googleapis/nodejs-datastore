@@ -2615,7 +2615,10 @@ async.each(
                 const q = datastore
                   .createQuery('Character')
                   .hasAncestor(ancestor);
-                const [entities, info] = await datastore.runQuery(q, modeOptions.options);
+                const [entities, info] = await datastore.runQuery(
+                  q,
+                  modeOptions.options
+                );
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(
                   info,

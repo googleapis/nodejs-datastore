@@ -1430,7 +1430,18 @@ async.each(
                 expectedRunQueryPlan
               );
             });
-            // TODO: Do an explain options false test
+            it('should run a query with explain options and analyze set to false', async () => {
+              const [entities, info] = await datastore.runQuery(q, {
+                explainOptions: {analyze: false},
+              });
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.explainMetrics.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunQueryPlan
+              );
+            });
             it('should run a query with explain options and analyze set to true', async () => {
               const [entities, info] = await datastore.runQuery(q, {
                 explainOptions: {analyze: true},
@@ -1467,7 +1478,18 @@ async.each(
                 expectedRunQueryPlan
               );
             });
-            // TODO: Add test for analyze set to false.
+            it('should run a query with explain options and analyze set to false', async () => {
+              const [entities, info] = await q.run({
+                explainOptions: {analyze: false},
+              });
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.explainMetrics.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunQueryPlan
+              );
+            });
             it('should run a query with explain options and analyze set to true', async () => {
               const [entities, info] = await q.run({
                 explainOptions: {analyze: true},
@@ -1633,12 +1655,12 @@ async.each(
                 property_1: 187,
               },
             ];
-            it('should run an aggregation query with no explain options specified', async () => {
+            it('should run an aggregation query with no explain options', async () => {
               const [entities, info] = await aggregate.run();
               assert(!info.explainMetrics);
               assert.deepStrictEqual(entities, expectedAggregationResults);
             });
-            it('should run an aggregation query with explain options specified and analyze not specified', async () => {
+            it('should run an aggregation query with explain options and analyze not specified', async () => {
               const [entities, info] = await aggregate.run({
                 explainOptions: {},
               });
@@ -1650,7 +1672,20 @@ async.each(
                 expectedRunAggregationQueryPlan
               );
             });
-            // TODO: Add test here for analyze set to false.
+            it('should run an aggregation query with explain options and analyze set to false', async () => {
+              const [entities, info] = await aggregate.run({
+                explainOptions: {
+                  analyze: false,
+                },
+              });
+              assert.deepStrictEqual(entities, []);
+              assert(info.explainMetrics);
+              assert(!info.executionStats);
+              assert.deepStrictEqual(
+                info.explainMetrics.planSummary,
+                expectedRunAggregationQueryPlan
+              );
+            });
             it('should run an aggregation query with explain options specified and analyze set to true', async () => {
               const [entities, info] = await aggregate.run({
                 explainOptions: {analyze: true},

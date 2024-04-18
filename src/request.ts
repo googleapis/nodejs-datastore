@@ -1005,7 +1005,7 @@ class DatastoreRequest {
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
     if (options.explainOptions) {
-      sharedQueryOpts.explainOptions = options.explainOptions
+      sharedQueryOpts.explainOptions = options.explainOptions;
     }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
