@@ -1148,7 +1148,7 @@ async.each(
               },
             ],
           };
-          const compare = (a: any, b: any) => {
+          const compare = (a: {name: string}, b: {name: string}) => {
             return a.name > b.name ? 1 : -1;
           };
           function checkQueryExecutionStats(executionStats?: ExecutionStats) {
