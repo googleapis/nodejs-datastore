@@ -637,9 +637,13 @@ export interface ExecutionStats {
   resultsReturned?: number;
   executionDuration?: google.protobuf.IDuration;
   readOperations?: number;
-  debugStats?: JSONValue;
+  debugStats?: {
+    [key: string]: any;
+  };
 }
 
 export interface PlanSummary {
-  indexesUsed: JSONValue[];
+  indexesUsed: {
+    [key: string]: any;
+  }[];
 }
