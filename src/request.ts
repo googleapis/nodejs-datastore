@@ -61,9 +61,15 @@ import {AggregateQuery} from './aggregate';
 import * as protos from '../protos/protos';
 import {serializer} from 'google-gax';
 import * as gax from 'google-gax';
-type JSONValue = string | number | boolean | null | JSONValue[] | {
-  [key: string]: JSONValue;
-};
+type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | {
+      [key: string]: JSONValue;
+    };
 
 const root = gax.protobuf.loadSync('google/protobuf/struct.proto');
 const Struct = root.lookupType('Struct');
