@@ -24,7 +24,6 @@ import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
 import {google} from '../protos/protos';
-import {JSONValue} from 'proto3-json-serializer';
 
 export type Operator =
   | '='
