@@ -1136,7 +1136,7 @@ async.each(
             indexesUsed: [
               {
                 properties: '(__name__ ASC)',
-                query_scope: 'Collection Group',
+                query_scope: 'Collection group',
               },
             ],
           };
@@ -1144,7 +1144,7 @@ async.each(
             indexesUsed: [
               {
                 properties: '(appearances ASC, __name__ ASC)',
-                query_scope: 'Includes Ancestors',
+                query_scope: 'Includes ancestors',
               },
             ],
           };
