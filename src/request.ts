@@ -58,12 +58,14 @@ import {
 import {Datastore} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';
-import * as serializer from 'proto3-json-serializer';
 import * as protos from '../protos/protos';
-import * as protobuf from 'protobufjs';
-import {JSONValue} from 'proto3-json-serializer/build/src/types';
+import {serializer} from 'google-gax';
+import * as gax from 'google-gax';
+type JSONValue = string | number | boolean | null | JSONValue[] | {
+  [key: string]: JSONValue;
+};
 
-const root = protobuf.loadSync('google/protobuf/struct.proto');
+const root = gax.protobuf.loadSync('google/protobuf/struct.proto');
 const Struct = root.lookupType('Struct');
 
 // This function decodes Struct proto values
