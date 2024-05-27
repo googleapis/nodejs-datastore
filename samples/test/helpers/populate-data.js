@@ -14,6 +14,11 @@
 
 /* eslint-disable */
 
+/*
+This module is used in various samples to set datastore data to a fixed state
+so that the output of the sample is predictable.
+ */
+
 const {after, before} = require('mocha');
 const {Datastore} = require('@google-cloud/datastore');
 let taskKey1, taskKey2;
