@@ -15,31 +15,29 @@
 'use strict';
 
 // sample-metadata:
-//   title: Run query profiling (aggregation query)
-//   description: Run query profiling for an aggregation query and print query results
+//   title: Run query profiling (regular query)
+//   description: Run query profiling for a standard query and print query results
 
 async function main() {
-  // [START datastore_run_aggregation_query_profiling]
+  // [START datastore_query_explain_analyze_entity]
 
   // Imports the Cloud Datastore
-  const {Datastore, AggregateField} = require('@google-cloud/datastore');
+  const {Datastore} = require('@google-cloud/datastore');
 
   // Instantiate the Datastore
   const datastore = new Datastore();
   const q = datastore.createQuery('Task');
-  const aggregate = datastore
-    .createAggregationQuery(q)
-    .addAggregation(AggregateField.sum('created'));
-
-  const [entities, info] = await datastore.runAggregationQuery(aggregate, {
+  const [entities, info] = await datastore.runQuery(q, {
     explainOptions: {analyze: true},
   });
-
+  entities.sort((e1, e2) => {
+    return e1.description < e2.description ? -1 : 1;
+  });
   for (const entity of entities) {
-    console.log(`Entity found: ${JSON.stringify(entity)}`);
+    console.log(`Entity found: ${entity['description']}`);
   }
   console.log(`info: ${Object.keys(info.explainMetrics)}`);
-  // [END datastore_run_aggregation_query_profiling]
+  // [END datastore_query_explain_analyze_entity]
 }
 
 const args = process.argv.slice(2);

@@ -26,11 +26,11 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Query Profiling', () => {
   require('./helpers/populate-data');
 
-  it('should run query profiling for a query', async () => {
-    assert.strictEqual(execSync(`node ./runQueryProfilingAnalyzeTrue.js`), 'Entity found: Buy milk\nEntity found: Feed cats\ninfo: planSummary,executionStats\n');
+  it('should run query profiling for a query with analyze set to true', async () => {
+    assert.strictEqual(execSync(`node ./queryProfileExplainAnalyze.js`), 'Entity found: Buy milk\nEntity found: Feed cats\ninfo: planSummary,executionStats\n');
   });
 
-  it('should run query profiling for an aggregation query', async () => {
-    assert.strictEqual(execSync(`node ./runAggregateQueryProfilingAnalyzeTrue.js`), 'Entity found: {"property_1":0}\ninfo: planSummary,executionStats\n');
+  it('should run query profiling for an aggregation query with analyze set to true', async () => {
+    assert.strictEqual(execSync(`node ./queryProfileExplainAnalyzeAggregation.js`), 'Entity found: {"property_1":0}\ninfo: planSummary,executionStats\n');
   });
 });
