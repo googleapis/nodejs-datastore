@@ -26,18 +26,19 @@ async function main() {
 
   // Instantiate the Datastore
   const datastore = new Datastore();
-  const ancestor = datastore.key(['Book', 'GoT']);
-  const q = datastore.createQuery('Task').hasAncestor(ancestor);
+  const q = datastore.createQuery('Task');
   const aggregate = datastore
     .createAggregationQuery(q)
-    .addAggregation(AggregateField.sum('appearances'));
+    .addAggregation(AggregateField.sum('created'));
+
   const [entities, info] = await datastore.runAggregationQuery(aggregate, {
     explainOptions: {analyze: true},
   });
+
   for (const entity of entities) {
-    console.log(`Entity found: ${entity['description']}`);
+    console.log(`Entity found: ${JSON.stringify(entity)}`);
   }
-  console.log(`info: ${info}`);
+  console.log(`info: ${Object.keys(info.explainMetrics)}`);
   // [END datastore_run_aggregation_query_profiling]
 }
 

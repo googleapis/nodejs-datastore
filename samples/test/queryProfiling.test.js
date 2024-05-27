@@ -31,6 +31,6 @@ describe('Query Profiling', () => {
   });
 
   it('should run query profiling for an aggregation query', async () => {
-    assert.strictEqual(execSync(`node ./runQueryProfiling.js`), 'Entity found: Buy milk\nEntity found: Feed cats\n[planSummary,executionStats]\n');
+    assert.strictEqual(execSync(`node ./runAggregateQueryProfiling.js`), 'Entity found: {"property_1":0}\ninfo: planSummary,executionStats\n');
   });
 });
