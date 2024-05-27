@@ -27,7 +27,7 @@ async function main() {
   // Instantiate the Datastore
   const datastore = new Datastore();
   const ancestor = datastore.key(['Book', 'GoT']);
-  const q = datastore.createQuery('Character').hasAncestor(ancestor);
+  const q = datastore.createQuery('Task').hasAncestor(ancestor);
   const aggregate = datastore
     .createAggregationQuery(q)
     .addAggregation(AggregateField.sum('appearances'));

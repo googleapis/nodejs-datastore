@@ -24,11 +24,13 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('Query Profiling', () => {
+  require('./helpers/populate-data');
+
   it('should run query profiling for a query', async () => {
-    assert.strictEqual(execSync(`node ./runQueryProfiling.js`), 'Entity found: Feed cats\nEntity found: Buy milk\n');
+    assert.strictEqual(execSync(`node ./runQueryProfiling.js`), 'Entity found: Buy milk\nEntity found: Feed cats\ninfo: planSummary,executionStats\n');
   });
 
   it('should run query profiling for an aggregation query', async () => {
-    assert.strictEqual(execSync(`node ./runAggregateQueryProfiling.js`), 'Entity found: Feed cats\nEntity found: Buy milk\n');
+    assert.strictEqual(execSync(`node ./runQueryProfiling.js`), 'Entity found: Buy milk\nEntity found: Feed cats\n[planSummary,executionStats]\n');
   });
 });

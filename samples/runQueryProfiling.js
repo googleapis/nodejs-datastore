@@ -26,15 +26,17 @@ async function main() {
 
   // Instantiate the Datastore
   const datastore = new Datastore();
-  const ancestor = datastore.key(['Book', 'GoT']);
-  const q = datastore.createQuery('Character').hasAncestor(ancestor);
+  const q = datastore.createQuery('Task');
   const [entities, info] = await datastore.runQuery(q, {
     explainOptions: {analyze: true},
+  });
+  entities.sort((e1, e2) => {
+    return e1.description < e2.description ? -1 : 1;
   });
   for (const entity of entities) {
     console.log(`Entity found: ${entity['description']}`);
   }
-  console.log(`info: ${info}`);
+  console.log(`info: ${Object.keys(info.explainMetrics)}`);
   // [END datastore_run_query_profiling]
 }
 
