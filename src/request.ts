@@ -38,39 +38,49 @@ const gapic = Object.freeze({
 });
 
 import {
-  Entities,
-  Entity,
   entity,
+  Entity,
   EntityProto,
   KeyProto,
   ResponseResult,
+  Entities,
 } from './entity';
 import {
   ExplainMetrics,
+  ExplainOptions,
   Query,
-  QueryMode,
   QueryProto,
-  RunQueryCallback,
   RunQueryInfo,
   RunQueryOptions,
   RunQueryResponse,
+  RunQueryCallback,
 } from './query';
 import {Datastore} from '.';
-import {AggregateQuery} from './aggregate';
 import ITimestamp = google.protobuf.ITimestamp;
-import * as serializer from 'proto3-json-serializer';
+import {AggregateQuery} from './aggregate';
 import * as protos from '../protos/protos';
-import * as protobuf from 'protobufjs';
+import {serializer} from 'google-gax';
+import * as gax from 'google-gax';
+type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | {
+      [key: string]: JSONValue;
+    };
 
-const root = protobuf.loadSync('google/protobuf/struct.proto');
+const root = gax.protobuf.loadSync('google/protobuf/struct.proto');
 const Struct = root.lookupType('Struct');
 
 // This function decodes Struct proto values
-function decodeStruct(structValue: any) {
+function decodeStruct(structValue: google.protobuf.IStruct): JSONValue {
   return serializer.toProto3JSON(Struct.fromObject(structValue));
 }
 
-// This function gets a RunQueryInfo object that contains stats from the server.
+// This function gets a RunQueryInfo object that contains explain metrics that
+// were returned from the server.
 function getInfoFromStats(
   resp:
     | protos.google.datastore.v1.IRunQueryResponse
@@ -154,7 +164,6 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
   strong: 1,
 };
 
-type GapicExplainOptions = google.datastore.v1.IExplainOptions;
 /**
  * Handle logic for Datastore API operations. Handles request logic for
  * Datastore.
@@ -1005,15 +1014,8 @@ class DatastoreRequest {
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
-    switch (options.mode) {
-      case QueryMode.EXPLAIN: {
-        sharedQueryOpts.explainOptions = {analyze: false};
-        break;
-      }
-      case QueryMode.EXPLAIN_ANALYZE: {
-        sharedQueryOpts.explainOptions = {analyze: true};
-        break;
-      }
+    if (options.explainOptions) {
+      sharedQueryOpts.explainOptions = options.explainOptions;
     }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
@@ -1132,9 +1134,13 @@ class DatastoreRequest {
         );
       }
 
-      reqOpts.readOptions = {
-        transaction: this.id,
-      };
+      if (reqOpts.readOptions) {
+        Object.assign(reqOpts.readOptions, {transaction: this.id});
+      } else {
+        reqOpts.readOptions = {
+          transaction: this.id,
+        };
+      }
     }
 
     datastore.auth.getProjectId((err, projectId) => {
@@ -1280,9 +1286,8 @@ export interface RequestConfig {
   reqOpts?: RequestOptions;
 }
 export interface SharedQueryOptions {
-  mode?: string;
   databaseId?: string;
-  explainOptions?: GapicExplainOptions;
+  explainOptions?: ExplainOptions;
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {

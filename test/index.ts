@@ -29,11 +29,11 @@ import {
   Entities,
 } from '../src/entity';
 import {RequestCallback, RequestConfig} from '../src/request';
+import {ExplainOptions, ExplainMetrics, RunQueryInfo} from '../src/query';
 import * as is from 'is';
 import * as sinon from 'sinon';
 import * as extend from 'extend';
 import {google} from '../protos/protos';
-import {QueryMode} from '../src/query';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v1 = require('../src/v1/index.js');
@@ -2520,19 +2520,16 @@ async.each(
             documents_scanned: '8',
           },
         };
-        interface ProfilingTestData {
-          modeName: string;
-          mode: QueryMode;
-          explainMetrics: any;
-          expectedInfo: any;
-          expectedExplainOptions: any;
-        }
         // mode string, mode enum type, explainMetrics, expectedInfo
         async.each(
           [
             {
               modeName: 'ExplainAnalyze',
-              mode: QueryMode.EXPLAIN_ANALYZE,
+              options: {
+                explainOptions: {
+                  analyze: true,
+                },
+              },
               expectedInfo: {
                 explainMetrics: {
                   planSummary: expectedPlanSummary,
@@ -2551,7 +2548,11 @@ async.each(
             },
             {
               modeName: 'Explain',
-              mode: QueryMode.EXPLAIN,
+              options: {
+                explainOptions: {
+                  analyze: false,
+                },
+              },
               expectedInfo: {
                 explainMetrics: {
                   planSummary: expectedPlanSummary,
@@ -2568,13 +2569,21 @@ async.each(
             },
             {
               modeName: 'Normal',
-              mode: QueryMode.NORMAL,
+              options: {},
               expectedInfo: {},
               explainMetrics: {},
               expectedExplainOptions: undefined,
             },
           ],
-          (modeOptions: ProfilingTestData) => {
+          (modeOptions: {
+            modeName: string;
+            options: {
+              explainOptions?: ExplainOptions;
+            };
+            explainMetrics: ExplainMetrics;
+            expectedInfo: RunQueryInfo;
+            expectedExplainOptions: ExplainOptions;
+          }) => {
             const datastore = new ds.Datastore();
             describe(`for the ${modeOptions.modeName} query mode`, () => {
               it('should provide correct request/response data for runQuery', async () => {
@@ -2606,9 +2615,10 @@ async.each(
                 const q = datastore
                   .createQuery('Character')
                   .hasAncestor(ancestor);
-                const [entities, info] = await datastore.runQuery(q, {
-                  mode: modeOptions.mode,
-                });
+                const [entities, info] = await datastore.runQuery(
+                  q,
+                  modeOptions.options
+                );
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(
                   info,
@@ -2652,9 +2662,7 @@ async.each(
                   .addAggregation(AggregateField.sum('appearances'));
                 const [entities, info] = await datastore.runAggregationQuery(
                   aggregate,
-                  {
-                    mode: modeOptions.mode,
-                  }
+                  modeOptions.options
                 );
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(info, modeOptions.expectedInfo);

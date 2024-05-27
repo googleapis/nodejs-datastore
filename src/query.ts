@@ -24,7 +24,6 @@ import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
 import {google} from '../protos/protos';
-import {JSONValue} from 'proto3-json-serializer';
 
 export type Operator =
   | '='
@@ -599,17 +598,15 @@ export interface IntegerTypeCastOptions {
   properties?: string | string[];
 }
 
-export enum QueryMode {
-  NORMAL,
-  EXPLAIN,
-  EXPLAIN_ANALYZE,
+export interface ExplainOptions {
+  analyze?: boolean;
 }
 
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   readTime?: number;
   gaxOptions?: CallOptions;
-  mode?: QueryMode;
+  explainOptions?: ExplainOptions;
   wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
 
@@ -638,12 +635,15 @@ export interface ExplainMetrics {
 }
 export interface ExecutionStats {
   resultsReturned?: number;
-  bytesReturned?: number;
   executionDuration?: google.protobuf.IDuration;
   readOperations?: number;
-  debugStats?: JSONValue;
+  debugStats?: {
+    [key: string]: any;
+  };
 }
 
 export interface PlanSummary {
-  indexesUsed: JSONValue[];
+  indexesUsed: {
+    [key: string]: any;
+  }[];
 }
