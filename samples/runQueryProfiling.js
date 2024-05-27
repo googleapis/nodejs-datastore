@@ -22,14 +22,14 @@ async function main() {
   // [START datastore_run_query_profiling]
 
   // Imports the Cloud Datastore
-  const {Datastore, QueryMode} = require('@google-cloud/datastore');
+  const {Datastore} = require('@google-cloud/datastore');
 
   // Instantiate the Datastore
   const datastore = new Datastore();
   const ancestor = datastore.key(['Book', 'GoT']);
   const q = datastore.createQuery('Character').hasAncestor(ancestor);
   const [entities, info] = await datastore.runQuery(q, {
-    mode: QueryMode.EXPLAIN_ANALYZE,
+    explainOptions: {analyze: true},
   });
   for (const entity of entities) {
     console.log(`Entity found: ${entity['description']}`);

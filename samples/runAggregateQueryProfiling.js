@@ -22,11 +22,7 @@ async function main() {
   // [START datastore_run_aggregation_query_profiling]
 
   // Imports the Cloud Datastore
-  const {
-    Datastore,
-    QueryMode,
-    AggregateField,
-  } = require('@google-cloud/datastore');
+  const {Datastore, AggregateField} = require('@google-cloud/datastore');
 
   // Instantiate the Datastore
   const datastore = new Datastore();
@@ -36,7 +32,7 @@ async function main() {
     .createAggregationQuery(q)
     .addAggregation(AggregateField.sum('appearances'));
   const [entities, info] = await datastore.runAggregationQuery(aggregate, {
-    mode: QueryMode.EXPLAIN_ANALYZE,
+    explainOptions: {analyze: true},
   });
   for (const entity of entities) {
     console.log(`Entity found: ${entity['description']}`);
