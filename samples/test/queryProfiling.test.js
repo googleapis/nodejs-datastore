@@ -27,10 +27,10 @@ describe('Query Profiling', () => {
   require('./helpers/populate-data');
 
   it('should run query profiling for a query', async () => {
-    assert.strictEqual(execSync(`node ./runQueryProfiling.js`), 'Entity found: Buy milk\nEntity found: Feed cats\ninfo: planSummary,executionStats\n');
+    assert.strictEqual(execSync(`node ./runQueryProfilingAnalyzeTrue.js`), 'Entity found: Buy milk\nEntity found: Feed cats\ninfo: planSummary,executionStats\n');
   });
 
   it('should run query profiling for an aggregation query', async () => {
-    assert.strictEqual(execSync(`node ./runAggregateQueryProfiling.js`), 'Entity found: {"property_1":0}\ninfo: planSummary,executionStats\n');
+    assert.strictEqual(execSync(`node ./runAggregateQueryProfilingAnalyzeTrue.js`), 'Entity found: {"property_1":0}\ninfo: planSummary,executionStats\n');
   });
 });
