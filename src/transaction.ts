@@ -1028,9 +1028,7 @@ class Transaction extends DatastoreRequest {
   #withBeginTransaction<T extends any[]>(
     gaxOptions: CallOptions | undefined,
     fn: () => void,
-    callback:
-      | ((...args: [Error | null]) => void)
-      | ((...args: [Error | null, ...T]) => void)
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
   ): void {
     (async () => {
       if (this.#state === TransactionState.NOT_STARTED) {
