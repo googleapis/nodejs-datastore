@@ -16,7 +16,7 @@
 
 // sample-metadata:
 //   title: Run query profiling (regular query)
-//   description: Run query profiling for a standard query and print query results
+//   description: Run query explain for a standard query and print query explain metrics
 
 async function main() {
   // [START datastore_query_explain_entity]
