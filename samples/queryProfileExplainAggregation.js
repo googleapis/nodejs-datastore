@@ -16,7 +16,7 @@
 
 // sample-metadata:
 //   title: Run query profiling (aggregation query)
-//   description: Run query profiling for an aggregation query and print query results
+//   description: Run query explain for an aggregate query and print query explain metrics
 
 async function main() {
   // [START datastore_query_explain_aggregation]
