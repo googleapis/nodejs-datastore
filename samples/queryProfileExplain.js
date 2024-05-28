@@ -27,15 +27,9 @@ async function main() {
   // Instantiate the Datastore
   const datastore = new Datastore();
   const q = datastore.createQuery('Task');
-  const [entities, info] = await datastore.runQuery(q, {
+  const [, info] = await datastore.runQuery(q, {
     explainOptions: {analyze: false},
   });
-  entities.sort((e1, e2) => {
-    return e1.description < e2.description ? -1 : 1;
-  });
-  for (const entity of entities) {
-    console.log(`Entity found: ${entity['description']}`);
-  }
   console.log(`info: ${Object.keys(info.explainMetrics)}`);
   // [END datastore_query_explain_entity]
 }

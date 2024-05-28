@@ -31,13 +31,9 @@ async function main() {
     .createAggregationQuery(q)
     .addAggregation(AggregateField.sum('created'));
 
-  const [entities, info] = await datastore.runAggregationQuery(aggregate, {
+  const [, info] = await datastore.runAggregationQuery(aggregate, {
     explainOptions: {analyze: false},
   });
-
-  for (const entity of entities) {
-    console.log(`Entity found: ${JSON.stringify(entity)}`);
-  }
   console.log(`info: ${Object.keys(info.explainMetrics)}`);
   // [END datastore_query_explain_aggregation]
 }
