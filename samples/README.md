@@ -19,6 +19,10 @@
   * [Indexes.get](#indexes.get)
   * [Indexes.list](#indexes.list)
   * [Create a union between two filters](#create-a-union-between-two-filters)
+  * [Run query profiling (regular query)](#run-query-profiling-regular-query)
+  * [Run query profiling (aggregation query)](#run-query-profiling-aggregation-query)
+  * [Run query profiling (regular query)](#run-query-profiling-regular-query)
+  * [Run query profiling (aggregation query)](#run-query-profiling-aggregation-query)
   * [Quickstart](#quickstart)
   * [Add Task](#add-task)
   * [Delete Task](#delete-task)
@@ -155,6 +159,82 @@ __Usage:__
 
 
 `node samples/queryFilterOr.js`
+
+
+-----
+
+
+
+
+### Run query profiling (regular query)
+
+Run query profiling for a standard query and print query results
+
+View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplain.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplain.js,samples/README.md)
+
+__Usage:__
+
+
+`node samples/queryProfileExplain.js`
+
+
+-----
+
+
+
+
+### Run query profiling (aggregation query)
+
+Run query profiling for an aggregation query and print query results
+
+View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAggregation.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplainAggregation.js,samples/README.md)
+
+__Usage:__
+
+
+`node samples/queryProfileExplainAggregation.js`
+
+
+-----
+
+
+
+
+### Run query profiling (regular query)
+
+Run query profiling for a standard query and print query results
+
+View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAnalyze.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplainAnalyze.js,samples/README.md)
+
+__Usage:__
+
+
+`node samples/queryProfileExplainAnalyze.js`
+
+
+-----
+
+
+
+
+### Run query profiling (aggregation query)
+
+Run query profiling for an aggregation query and print query results
+
+View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAnalyzeAggregation.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplainAnalyzeAggregation.js,samples/README.md)
+
+__Usage:__
+
+
+`node samples/queryProfileExplainAnalyzeAggregation.js`
 
 
 -----
