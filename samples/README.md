@@ -19,7 +19,7 @@
   * [Indexes.get](#indexes.get)
   * [Indexes.list](#indexes.list)
   * [Create a union between two filters](#create-a-union-between-two-filters)
-  * [Run query profiling (regular query)](#run-query-profiling-regular-query)
+  * [Run query explain (regular query)](#run-query-explain-regular-query)
   * [Run query profiling (aggregation query)](#run-query-profiling-aggregation-query)
   * [Run query profiling (regular query)](#run-query-profiling-regular-query)
   * [Run query profiling (aggregation query)](#run-query-profiling-aggregation-query)
@@ -166,9 +166,9 @@ __Usage:__
 
 
 
-### Run query profiling (regular query)
+### Run query explain (regular query)
 
-Run query profiling for a standard query and print query results
+Run query explain for a standard query and print query explain metrics
 
 View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplain.js).
 
@@ -187,7 +187,7 @@ __Usage:__
 
 ### Run query profiling (aggregation query)
 
-Run query profiling for an aggregation query and print query results
+Run query explain for an aggregate query and print query explain metrics
 
 View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAggregation.js).
 
@@ -206,7 +206,7 @@ __Usage:__
 
 ### Run query profiling (regular query)
 
-Run query profiling for a standard query and print query results
+Run query explain analyze for a standard query and print query explain metrics
 
 View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAnalyze.js).
 
@@ -225,7 +225,7 @@ __Usage:__
 
 ### Run query profiling (aggregation query)
 
-Run query profiling for an aggregation query and print query results
+Run query explain analyze for an aggregate query and print query explain metrics
 
 View the [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAnalyzeAggregation.js).
 
