@@ -20,6 +20,7 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const cp = require('child_process');
+const sort = require('./helpers/sorting');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -27,18 +28,18 @@ describe('Query Profiling', () => {
   require('./helpers/populate-data');
 
   it('should run query profiling for a query with analyze set to false', async () => {
-    assert.strictEqual(execSync(`node ./queryProfileExplain.js`), 'info: planSummary\n');
+    assert.strictEqual(sort(execSync(`node ./queryProfileExplain.js`)), '\ninfo: planSummary');
   });
 
   it('should run query profiling for an aggregation query with analyze set to false', async () => {
-    assert.strictEqual(execSync(`node ./queryProfileExplainAggregation.js`), 'info: planSummary\n');
+    assert.strictEqual(sort(execSync(`node ./queryProfileExplainAggregation.js`)), '\ninfo: planSummary');
   });
 
   it('should run query profiling for a query with analyze set to true', async () => {
-    assert.strictEqual(execSync(`node ./queryProfileExplainAnalyze.js`), 'Entity found: Buy milk\nEntity found: Feed cats\ninfo: planSummary,executionStats\n');
+    assert.strictEqual(sort(execSync(`node ./queryProfileExplainAnalyze.js`)), '\nEntity found: Buy milk\nEntity found: Feed cats\ninfo: planSummary,executionStats');
   });
 
   it('should run query profiling for an aggregation query with analyze set to true', async () => {
-    assert.strictEqual(execSync(`node ./queryProfileExplainAnalyzeAggregation.js`), 'Entity found: {"property_1":0}\ninfo: planSummary,executionStats\n');
+    assert.strictEqual(sort(execSync(`node ./queryProfileExplainAnalyzeAggregation.js`)), '\nEntity found: {"property_1":0}\ninfo: planSummary,executionStats');
   });
 });

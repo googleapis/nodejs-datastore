@@ -34,7 +34,6 @@ async function main() {
   const [entities, info] = await datastore.runAggregationQuery(aggregate, {
     explainOptions: {analyze: true},
   });
-
   for (const entity of entities) {
     console.log(`Entity found: ${JSON.stringify(entity)}`);
   }

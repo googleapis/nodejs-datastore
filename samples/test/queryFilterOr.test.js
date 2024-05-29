@@ -22,6 +22,7 @@ const sinon = require('sinon');
 // TODO: delete unused imports
 
 const cp = require('child_process');
+const sort = require('./helpers/sorting');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -42,6 +43,6 @@ describe('Creating a union query', () => {
   require('./helpers/populate-data');
 
   it('should get a combination of items from the Datastore', async () => {
-    assert.strictEqual(execSync(`node ./queryFilterOr.js`), 'Entity found: Buy milk\nEntity found: Feed cats\n');
+    assert.strictEqual(sort(execSync(`node ./queryFilterOr.js`)), '\nEntity found: Buy milk\nEntity found: Feed cats');
   });
 });

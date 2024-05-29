@@ -30,7 +30,6 @@ async function main() {
   const aggregate = datastore
     .createAggregationQuery(q)
     .addAggregation(AggregateField.sum('created'));
-
   const [, info] = await datastore.runAggregationQuery(aggregate, {
     explainOptions: {analyze: false},
   });

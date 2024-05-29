@@ -30,9 +30,6 @@ async function main() {
   const [entities, info] = await datastore.runQuery(q, {
     explainOptions: {analyze: true},
   });
-  entities.sort((e1, e2) => {
-    return e1.description < e2.description ? -1 : 1;
-  });
   for (const entity of entities) {
     console.log(`Entity found: ${entity['description']}`);
   }
