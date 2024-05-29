@@ -15,7 +15,7 @@
 'use strict';
 
 // sample-metadata:
-//   title: Run query profiling (regular query)
+//   title: Run query explain analyze (regular query)
 //   description: Run query explain analyze for a standard query and print query explain metrics
 
 async function main() {
