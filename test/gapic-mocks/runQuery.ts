@@ -70,6 +70,14 @@ describe('Run Query', () => {
       };
     }
   }
+  function errorOnGapicCall(done: mocha.Done) {
+    const dataClient = datastore.clients_.get(clientName);
+    if (dataClient) {
+      dataClient.runQuery = () => {
+        done(new Error('The gapic layer should not have received a call'));
+      };
+    }
+  }
 
   it('should pass new transaction into runQuery for transactions', async () => {
     setRunQueryComparison(
@@ -100,10 +108,7 @@ describe('Run Query', () => {
     return (error: Error | null) => {
       try {
         if (error) {
-          assert.strictEqual(
-            error.message,
-            message
-          );
+          assert.strictEqual(error.message, message);
           done();
           return;
         }
@@ -113,9 +118,10 @@ describe('Run Query', () => {
       }
     };
   }
-  it.only('should error when new transaction and read time are specified', done => {
+  it('should error when new transaction and read time are specified', done => {
     const transaction = datastore.transaction();
     const query = datastore.createQuery('Task');
+    errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
     transaction.runQuery(
       query,
       {readTime: 77000},
@@ -125,19 +131,17 @@ describe('Run Query', () => {
       )
     );
   });
-  it('should error when new transaction and eventual consistency are specified', async () => {
+  it('should error when new transaction and eventual consistency are specified', done => {
     const transaction = datastore.transaction();
     const query = datastore.createQuery('Task');
-    const spy = sandbox.spy(() => {});
-    try {
-      await transaction.runQuery(query, {consistency: 'eventual'}, spy);
-      assert.fail('The call to runQuery should have failed.');
-    } catch (e: unknown) {
-      assert.strictEqual(
-        (e as {message: string}).message,
-        'Read time cannot be specified in a transaction.'
-      );
-    }
-    assert.strictEqual(spy.callCount, 1);
+    errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+    transaction.runQuery(
+      query,
+      {consistency: 'eventual'},
+      getCallbackExpectingError(
+        done,
+        'Read consistency cannot be specified in a transaction.'
+      )
+    );
   });
 });

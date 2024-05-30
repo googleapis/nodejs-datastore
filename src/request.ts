@@ -1066,9 +1066,10 @@ class DatastoreRequest {
     }
     if (options.consistency) {
       const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
-      sharedQueryOpts.readOptions = {
-        readConsistency: code,
-      };
+      if (sharedQueryOpts.readOptions === undefined) {
+        sharedQueryOpts.readOptions = {};
+      }
+      sharedQueryOpts.readOptions.readConsistency = code;
     }
     if (options.readTime) {
       if (sharedQueryOpts.readOptions === undefined) {
@@ -1202,16 +1203,17 @@ class DatastoreRequest {
     }
 
     if (isTransaction || (reqOpts.readOptions && reqOpts.readOptions.newTransaction)) {
-      // If the request is going to be a request for a transaction.
       if (reqOpts.readOptions && reqOpts.readOptions.readConsistency) {
-        throw new Error(
+        callback(new Error(
             'Read consistency cannot be specified in a transaction.'
-        );
+        ));
+        return;
       }
       if (reqOpts.readOptions && reqOpts.readOptions.readTime) {
         callback(new Error(
             'Read time cannot be specified in a transaction.'
         ));
+        return;
       }
     }
     if (
