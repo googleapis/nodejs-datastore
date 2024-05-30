@@ -905,7 +905,10 @@ class DatastoreRequest {
       callback(new Error(transactionExpiredError));
     }
     this.runQueryStream(query, options)
-      .on('error', callback)
+      .on('error', (err: Error| null) => {
+        console.log('Catching in runQuery');
+        callback(err);
+      })
       .on('info', info_ => {
         info = info_;
       })
@@ -978,6 +981,7 @@ class DatastoreRequest {
     };
 
     const onResultSet = (err?: Error | null, resp?: Entity) => {
+      console.log('Catching error')
       this.parseTransactionResponse(resp);
       if (err) {
         stream.destroy(err);
@@ -1177,6 +1181,7 @@ class DatastoreRequest {
   prepareGaxRequest_(config: RequestConfig, callback: Function): void {
     const datastore = this.datastore;
 
+    console.log('in prepareGaxRequest_');
     const isTransaction = this.id ? true : false;
     const method = config.method;
     const reqOpts = extend(true, {}, config.reqOpts);
@@ -1199,23 +1204,27 @@ class DatastoreRequest {
       reqOpts.transaction = this.id;
     }
 
+    if (isTransaction || (reqOpts.readOptions && reqOpts.readOptions.newTransaction)) {
+      console.log('in if');
+      // If the request is going to be a request for a transaction.
+      if (reqOpts.readOptions && reqOpts.readOptions.readConsistency) {
+        throw new Error(
+            'Read consistency cannot be specified in a transaction.'
+        );
+      }
+      if (reqOpts.readOptions && reqOpts.readOptions.readTime) {
+        console.log('throwing error');
+        callback(new Error(
+            'Read time cannot be specified in a transaction.'
+        ));
+      }
+    }
     if (
       isTransaction &&
       (method === 'lookup' ||
         method === 'runQuery' ||
         method === 'runAggregationQuery')
     ) {
-      if (reqOpts.readOptions && reqOpts.readOptions.readConsistency) {
-        throw new Error(
-          'Read consistency cannot be specified in a transaction.'
-        );
-      }
-      if (reqOpts.readOptions && reqOpts.readOptions.readTime) {
-        throw new Error(
-            'Read time cannot be specified in a transaction.'
-        );
-      }
-
       if (reqOpts.readOptions) {
         Object.assign(reqOpts.readOptions, {transaction: this.id});
       } else {

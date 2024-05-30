@@ -17,8 +17,10 @@ import {describe} from 'mocha';
 import {DatastoreClient, Datastore} from '../../src';
 import * as protos from '../../protos/protos';
 import {Callback} from 'google-gax';
+import * as sinon from 'sinon';
 
 describe('Run Query', () => {
+  const sandbox = sinon.createSandbox();
   const PROJECT_ID = 'project-id';
   const NAMESPACE = 'namespace';
   const clientName = 'DatastoreClient';
@@ -68,35 +70,13 @@ describe('Run Query', () => {
     }
   }
 
-  it('should pass read time into runQuery for transactions', async () => {
-    // First mock out beginTransaction
-    const dataClient = datastore.clients_.get(clientName);
-    const testId = Buffer.from(Array.from(Array(100).keys()));
-    if (dataClient) {
-      dataClient.beginTransaction = (
-        request: protos.google.datastore.v1.IBeginTransactionRequest,
-        options: protos.google.datastore.v1.IBeginTransactionResponse,
-        callback: Callback<
-          protos.google.datastore.v1.IBeginTransactionResponse,
-          | protos.google.datastore.v1.IBeginTransactionRequest
-          | null
-          | undefined,
-          {} | null | undefined
-        >
-      ) => {
-        callback(null, {
-          transaction: testId,
-        });
-      };
-    }
+  it('should pass new transaction into runQuery for transactions', async () => {
     setRunQueryComparison(
       (request: protos.google.datastore.v1.IRunQueryRequest) => {
         assert.deepStrictEqual(request, {
           readOptions: {
-            transaction: testId,
-            readTime: {
-              seconds: 77,
-            },
+            consistencyType: 'newTransaction',
+            newTransaction: {},
           },
           partitionId: {
             namespaceId: 'namespace',
@@ -113,6 +93,41 @@ describe('Run Query', () => {
     );
     const transaction = datastore.transaction();
     const query = datastore.createQuery('Task');
-    await transaction.runQuery(query, {readTime: 77000});
+    await transaction.runQuery(query);
+  });
+  it.only('should error when new transaction and read time are specified', done => {
+    const transaction = datastore.transaction();
+    const query = datastore.createQuery('Task');
+    const callback = (error: Error | null) => {
+      try {
+        if (error) {
+          assert.strictEqual(
+            error.message,
+            'Read time cannot be specified in a transaction.'
+          );
+          done();
+          return;
+        }
+        done(new Error('The callback should have received an error'));
+      } catch (err: unknown) {
+        done(err);
+      }
+    };
+    transaction.runQuery(query, {readTime: 77000}, callback);
+  });
+  it('should error when new transaction and eventual consistency are specified', async () => {
+    const transaction = datastore.transaction();
+    const query = datastore.createQuery('Task');
+    const spy = sandbox.spy(() => {});
+    try {
+      await transaction.runQuery(query, {consistency: 'eventual'}, spy);
+      assert.fail('The call to runQuery should have failed.');
+    } catch (e: unknown) {
+      assert.strictEqual(
+        (e as {message: string}).message,
+        'Read time cannot be specified in a transaction.'
+      );
+    }
+    assert.strictEqual(spy.callCount, 1);
   });
 });
