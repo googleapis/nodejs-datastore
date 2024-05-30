@@ -1096,6 +1096,11 @@ class DatastoreRequest {
           'Read consistency cannot be specified in a transaction.'
         );
       }
+      if (reqOpts.readOptions && reqOpts.readOptions.readTime) {
+        throw new Error(
+            'Read time cannot be specified in a transaction.'
+        );
+      }
 
       reqOpts.readOptions = {
         transaction: this.id,
