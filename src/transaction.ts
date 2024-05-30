@@ -169,8 +169,8 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'function'
         ? gaxOptionsOrCallback
         : typeof cb === 'function'
-        ? cb
-        : () => {};
+          ? cb
+          : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     if (this.state === TransactionState.EXPIRED) {
