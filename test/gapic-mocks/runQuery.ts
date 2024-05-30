@@ -18,6 +18,7 @@ import {DatastoreClient, Datastore} from '../../src';
 import * as protos from '../../protos/protos';
 import {Callback} from 'google-gax';
 import * as sinon from 'sinon';
+import * as mocha from 'mocha';
 
 describe('Run Query', () => {
   const sandbox = sinon.createSandbox();
@@ -95,15 +96,13 @@ describe('Run Query', () => {
     const query = datastore.createQuery('Task');
     await transaction.runQuery(query);
   });
-  it.only('should error when new transaction and read time are specified', done => {
-    const transaction = datastore.transaction();
-    const query = datastore.createQuery('Task');
-    const callback = (error: Error | null) => {
+  function getCallbackExpectingError(done: mocha.Done, message: string) {
+    return (error: Error | null) => {
       try {
         if (error) {
           assert.strictEqual(
             error.message,
-            'Read time cannot be specified in a transaction.'
+            message
           );
           done();
           return;
@@ -113,7 +112,18 @@ describe('Run Query', () => {
         done(err);
       }
     };
-    transaction.runQuery(query, {readTime: 77000}, callback);
+  }
+  it.only('should error when new transaction and read time are specified', done => {
+    const transaction = datastore.transaction();
+    const query = datastore.createQuery('Task');
+    transaction.runQuery(
+      query,
+      {readTime: 77000},
+      getCallbackExpectingError(
+        done,
+        'Read time cannot be specified in a transaction.'
+      )
+    );
   });
   it('should error when new transaction and eventual consistency are specified', async () => {
     const transaction = datastore.transaction();
