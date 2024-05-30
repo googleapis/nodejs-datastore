@@ -906,7 +906,6 @@ class DatastoreRequest {
     }
     this.runQueryStream(query, options)
       .on('error', (err: Error| null) => {
-        console.log('Catching in runQuery');
         callback(err);
       })
       .on('info', info_ => {
@@ -981,7 +980,6 @@ class DatastoreRequest {
     };
 
     const onResultSet = (err?: Error | null, resp?: Entity) => {
-      console.log('Catching error')
       this.parseTransactionResponse(resp);
       if (err) {
         stream.destroy(err);
@@ -1181,7 +1179,6 @@ class DatastoreRequest {
   prepareGaxRequest_(config: RequestConfig, callback: Function): void {
     const datastore = this.datastore;
 
-    console.log('in prepareGaxRequest_');
     const isTransaction = this.id ? true : false;
     const method = config.method;
     const reqOpts = extend(true, {}, config.reqOpts);
@@ -1205,7 +1202,6 @@ class DatastoreRequest {
     }
 
     if (isTransaction || (reqOpts.readOptions && reqOpts.readOptions.newTransaction)) {
-      console.log('in if');
       // If the request is going to be a request for a transaction.
       if (reqOpts.readOptions && reqOpts.readOptions.readConsistency) {
         throw new Error(
@@ -1213,7 +1209,6 @@ class DatastoreRequest {
         );
       }
       if (reqOpts.readOptions && reqOpts.readOptions.readTime) {
-        console.log('throwing error');
         callback(new Error(
             'Read time cannot be specified in a transaction.'
         ));
