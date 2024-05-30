@@ -966,6 +966,11 @@ class DatastoreRequest {
       if (sharedQueryOpts.readOptions === undefined) {
         sharedQueryOpts.readOptions = {};
       }
+      if (options.consistency) {
+        throw new Error(
+            'Read time and read consistency cannot both be specified.'
+        );
+      }
       const readTime = options.readTime;
       const seconds = readTime / 1000;
       sharedQueryOpts.readOptions.readTime = {
