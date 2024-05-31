@@ -20,9 +20,9 @@
   * [Indexes.list](#indexes.list)
   * [Create a union between two filters](#create-a-union-between-two-filters)
   * [Run query explain (regular query)](#run-query-explain-regular-query)
-  * [Run query profiling (aggregation query)](#run-query-profiling-aggregation-query)
-  * [Run query profiling (regular query)](#run-query-profiling-regular-query)
-  * [Run query profiling (aggregation query)](#run-query-profiling-aggregation-query)
+  * [Run query explain (aggregate query)](#run-query-explain-aggregate-query)
+  * [Run query explain analyze (regular query)](#run-query-explain-analyze-regular-query)
+  * [Run query explain analyze (aggregate query)](#run-query-explain-analyze-aggregate-query)
   * [Quickstart](#quickstart)
   * [Add Task](#add-task)
   * [Delete Task](#delete-task)
@@ -185,7 +185,7 @@ __Usage:__
 
 
 
-### Run query profiling (aggregation query)
+### Run query explain (aggregate query)
 
 Run query explain for an aggregate query and print query explain metrics
 
@@ -204,7 +204,7 @@ __Usage:__
 
 
 
-### Run query profiling (regular query)
+### Run query explain analyze (regular query)
 
 Run query explain analyze for a standard query and print query explain metrics
 
@@ -223,7 +223,7 @@ __Usage:__
 
 
 
-### Run query profiling (aggregation query)
+### Run query explain analyze (aggregate query)
 
 Run query explain analyze for an aggregate query and print query explain metrics
 
