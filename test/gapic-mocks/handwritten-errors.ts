@@ -7,7 +7,7 @@ import {RunQueryOptions} from '../../src/query';
 const async = require('async');
 
 describe('HandwrittenLayerErrors', () => {
-  describe('With a callback expecting an error', () => {
+  describe('Can only specify one of transaction, consistency, readTime', () => {
     const clientName = 'DatastoreClient';
     const datastore = getInitializedDatastoreClient();
 
