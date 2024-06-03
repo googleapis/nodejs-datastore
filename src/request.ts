@@ -905,7 +905,7 @@ class DatastoreRequest {
       callback(new Error(transactionExpiredError));
     }
     this.runQueryStream(query, options)
-      .on('error', (err: Error| null) => {
+      .on('error', (err: Error | null) => {
         callback(err);
       })
       .on('info', info_ => {
@@ -1077,7 +1077,7 @@ class DatastoreRequest {
       }
       if (options.consistency) {
         throw new Error(
-            'Read time and read consistency cannot both be specified.'
+          'Read time and read consistency cannot both be specified.'
         );
       }
       const readTime = options.readTime;
@@ -1202,17 +1202,18 @@ class DatastoreRequest {
       reqOpts.transaction = this.id;
     }
 
-    if (isTransaction || (reqOpts.readOptions && reqOpts.readOptions.newTransaction)) {
+    if (
+      isTransaction ||
+      (reqOpts.readOptions && reqOpts.readOptions.newTransaction)
+    ) {
       if (reqOpts.readOptions && reqOpts.readOptions.readConsistency) {
-        callback(new Error(
-            'Read consistency cannot be specified in a transaction.'
-        ));
+        callback(
+          new Error('Read consistency cannot be specified in a transaction.')
+        );
         return;
       }
       if (reqOpts.readOptions && reqOpts.readOptions.readTime) {
-        callback(new Error(
-            'Read time cannot be specified in a transaction.'
-        ));
+        callback(new Error('Read time cannot be specified in a transaction.'));
         return;
       }
     }
