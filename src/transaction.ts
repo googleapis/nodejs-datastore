@@ -175,6 +175,7 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     if (this.state === TransactionState.EXPIRED) {
       callback(new Error(transactionExpiredError));
+      return;
     }
     // This ensures that the transaction is started before calling runCommit
     this.#withBeginTransaction(
@@ -431,6 +432,7 @@ class Transaction extends DatastoreRequest {
 
     if (this.state === TransactionState.EXPIRED) {
       callback(new Error(transactionExpiredError));
+      return;
     }
     this.request_(
       {

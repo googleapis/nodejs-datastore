@@ -665,6 +665,7 @@ class DatastoreRequest {
 
     if (this.state === TransactionState.EXPIRED) {
       callback(new Error(transactionExpiredError));
+      return;
     }
     this.createReadStream(keys, options)
       .on('error', callback)
@@ -730,6 +731,7 @@ class DatastoreRequest {
 
     if (this.state === TransactionState.EXPIRED) {
       callback(new Error(transactionExpiredError));
+      return;
     }
     query.query = extend(true, new Query(), query.query);
     let queryProto: QueryProto;
@@ -909,6 +911,7 @@ class DatastoreRequest {
 
     if (this.state === TransactionState.EXPIRED) {
       callback(new Error(transactionExpiredError));
+      return;
     }
     this.runQueryStream(query, options)
       .on('error', (err: Error | null) => {

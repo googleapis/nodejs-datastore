@@ -1,65 +1,14 @@
 import {describe} from 'mocha';
-import {AggregateField, Datastore, DatastoreOptions, Fallback} from '../../src';
-import * as mocha from 'mocha';
-import * as assert from 'assert';
+import {AggregateField} from '../../src';
 import {getInitializedDatastoreClient} from './get-initialized-datastore-client';
 import {RunQueryOptions} from '../../src/query';
+import {errorOnGapicCall, getCallbackExpectingError} from './error-mocks';
 const async = require('async');
 
 describe('HandwrittenLayerErrors', () => {
   describe('Can only specify one of transaction, consistency, readTime', () => {
     const clientName = 'DatastoreClient';
     const datastore = getInitializedDatastoreClient();
-
-    /**
-     * Returns a callback function that expects an error with a particular
-     * message. This is used for testing all client library functions that accept
-     * a callback in order to ensure the callback receives a particular error.
-     *
-     * @param {mocha.Done} done The mocha done function which is called when the
-     * test finishes.
-     * @param {string} message The expected error message in the test.
-     *
-     */
-    function getCallbackExpectingError(done: mocha.Done, message: string) {
-      return (error?: Error | null) => {
-        try {
-          if (error) {
-            assert.strictEqual(error.message, message);
-            done();
-            return;
-          }
-          done(new Error('The callback should have received an error'));
-        } catch (err: unknown) {
-          done(err);
-        }
-      };
-    }
-
-    /**
-     * This function ends the test with an error if a call reaches the gapic
-     * layer. Using this function in a test makes the test fail if any outgoing
-     * grpc calls are made in that test. This allows the test to ensure that no
-     * grpc calls happen, which is typically desired behaviour when an error is
-     * sent back to the user from the handwritten layer.
-     *
-     * @param {mocha.Done} done The mocha done function which is called when the
-     * test finishes.
-     */
-    function errorOnGapicCall(done: mocha.Done) {
-      const dataClient = datastore.clients_.get(clientName);
-      if (dataClient) {
-        dataClient.runQuery = () => {
-          done(new Error('The gapic layer should not have received a call'));
-        };
-        dataClient.runAggregationQuery = () => {
-          done(new Error('The gapic layer should not have received a call'));
-        };
-        dataClient.lookup = () => {
-          done(new Error('The gapic layer should not have received a call'));
-        };
-      }
-    }
     async.each(
       [
         {
@@ -92,7 +41,7 @@ describe('HandwrittenLayerErrors', () => {
           it('should error when runQuery is used', done => {
             const transaction = datastore.transaction();
             const query = datastore.createQuery('Task');
-            errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+            errorOnGapicCall(datastore, clientName, done); // Test fails if Gapic layer receives a call.
             transaction.runQuery(
               query,
               testParameters.options,
@@ -105,7 +54,7 @@ describe('HandwrittenLayerErrors', () => {
             const aggregate = datastore
               .createAggregationQuery(query)
               .addAggregation(AggregateField.sum('appearances'));
-            errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+            errorOnGapicCall(datastore, clientName, done); // Test fails if Gapic layer receives a call.
             transaction.runAggregationQuery(
               aggregate,
               testParameters.options,
@@ -115,7 +64,7 @@ describe('HandwrittenLayerErrors', () => {
           it('should error when get is used', done => {
             const transaction = datastore.transaction();
             const keys = datastore.key(['Company', 'Google']);
-            errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+            errorOnGapicCall(datastore, clientName, done); // Test fails if Gapic layer receives a call.
             transaction.get(
               keys,
               testParameters.options,
