@@ -60,32 +60,6 @@ describe('HandwrittenLayerErrors', () => {
         };
       }
     }
-    it('should error when new transaction and read time are specified', done => {
-      const transaction = datastore.transaction();
-      const query = datastore.createQuery('Task');
-      errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
-      transaction.runQuery(
-        query,
-        {readTime: 77000},
-        getCallbackExpectingError(
-          done,
-          'Read time cannot be specified in a transaction.'
-        )
-      );
-    });
-    it('should error when new transaction and eventual consistency are specified', done => {
-      const transaction = datastore.transaction();
-      const query = datastore.createQuery('Task');
-      errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
-      transaction.runQuery(
-        query,
-        {consistency: 'eventual'},
-        getCallbackExpectingError(
-          done,
-          'Read consistency cannot be specified in a transaction.'
-        )
-      );
-    });
     async.each(
       [
         {
@@ -94,6 +68,19 @@ describe('HandwrittenLayerErrors', () => {
             'Read time and read consistency cannot both be specified.',
           description:
             'should error when read time and eventual consistency are specified',
+        },
+        {
+          options: {consistency: 'eventual'},
+          expectedError:
+            'Read consistency cannot be specified in a transaction.',
+          description:
+            'should error when new transaction and eventual consistency are specified',
+        },
+        {
+          options: {readTime: 77000},
+          expectedError: 'Read time cannot be specified in a transaction.',
+          description:
+            'should error when new transaction and read time are specified',
         },
       ],
       (testParameters: {
