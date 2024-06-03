@@ -14,7 +14,7 @@
 
 import * as assert from 'assert';
 import {describe} from 'mocha';
-import {DatastoreClient, Datastore} from '../../src';
+import {DatastoreClient, Datastore, AggregateField} from '../../src';
 import * as protos from '../../protos/protos';
 import {Callback} from 'google-gax';
 import * as sinon from 'sinon';
@@ -98,7 +98,7 @@ describe('Run Query', () => {
   });
 });
 
-describe('With a callback expecting an error', () => {
+describe.only('With a callback expecting an error', () => {
   const clientName = 'DatastoreClient';
   const PROJECT_ID = 'project-id';
   const NAMESPACE = 'namespace';
@@ -128,7 +128,7 @@ describe('With a callback expecting an error', () => {
    *
    */
   function getCallbackExpectingError(done: mocha.Done, message: string) {
-    return (error: Error | null) => {
+    return (error?: Error | null) => {
       try {
         if (error) {
           assert.strictEqual(error.message, message);
@@ -199,6 +199,22 @@ describe('With a callback expecting an error', () => {
       errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
       transaction.runQuery(
         query,
+        {consistency: 'eventual', readTime: 77000},
+        getCallbackExpectingError(
+          done,
+          'Read time and read consistency cannot both be specified.'
+        )
+      );
+    });
+    it('should error when runAggregationQuery is used', done => {
+      const transaction = datastore.transaction();
+      const query = datastore.createQuery('Task');
+      const aggregate = datastore
+        .createAggregationQuery(query)
+        .addAggregation(AggregateField.sum('appearances'));
+      errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+      transaction.runAggregationQuery(
+        aggregate,
         {consistency: 'eventual', readTime: 77000},
         getCallbackExpectingError(
           done,

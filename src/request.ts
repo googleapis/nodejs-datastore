@@ -741,7 +741,13 @@ class DatastoreRequest {
       setImmediate(callback, e as Error);
       return;
     }
-    const sharedQueryOpts = this.getQueryOptions(query.query, options);
+    let sharedQueryOpts;
+    try {
+      sharedQueryOpts = this.getQueryOptions(query.query, options);
+    } catch (error: any) {
+      callback(error);
+      return;
+    }
     const aggregationQueryOptions: AggregationQueryOptions = {
       nestedQuery: queryProto,
       aggregations: query.toProto(),
