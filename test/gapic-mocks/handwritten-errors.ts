@@ -1,8 +1,10 @@
 import {describe} from 'mocha';
-import {AggregateField, Datastore} from '../../src';
+import {AggregateField, Datastore, DatastoreOptions, Fallback} from '../../src';
 import * as mocha from 'mocha';
 import * as assert from 'assert';
 import {getInitializedDatastoreClient} from './get-initialized-datastore-client';
+import {RunQueryOptions} from '../../src/query';
+const async = require('async');
 
 describe('HandwrittenLayerErrors', () => {
   describe('With a callback expecting an error', () => {
@@ -84,49 +86,66 @@ describe('HandwrittenLayerErrors', () => {
         )
       );
     });
-    describe('should error when read time and eventual consistency are specified', () => {
-      it('should error when runQuery is used', done => {
-        const transaction = datastore.transaction();
-        const query = datastore.createQuery('Task');
-        errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
-        transaction.runQuery(
-          query,
-          {consistency: 'eventual', readTime: 77000},
-          getCallbackExpectingError(
-            done,
-            'Read time and read consistency cannot both be specified.'
-          )
-        );
-      });
-      it('should error when runAggregationQuery is used', done => {
-        const transaction = datastore.transaction();
-        const query = datastore.createQuery('Task');
-        const aggregate = datastore
-          .createAggregationQuery(query)
-          .addAggregation(AggregateField.sum('appearances'));
-        errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
-        transaction.runAggregationQuery(
-          aggregate,
-          {consistency: 'eventual', readTime: 77000},
-          getCallbackExpectingError(
-            done,
-            'Read time and read consistency cannot both be specified.'
-          )
-        );
-      });
-      it('should error when get is used', done => {
-        const transaction = datastore.transaction();
-        const keys = datastore.key(['Company', 'Google']);
-        errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
-        transaction.get(
-          keys,
-          {consistency: 'eventual', readTime: 77000},
-          getCallbackExpectingError(
-            done,
-            'Read time and read consistency cannot both be specified.'
-          )
-        );
-      });
-    });
+    async.each(
+      [
+        {
+          options: {consistency: 'eventual', readTime: 77000},
+          expectedError:
+            'Read time and read consistency cannot both be specified.',
+          description:
+            'should error when read time and eventual consistency are specified',
+        },
+      ],
+      (testParameters: {
+        options: RunQueryOptions;
+        expectedError: string;
+        description: string;
+      }) => {
+        describe('should error when read time and eventual consistency are specified', () => {
+          it('should error when runQuery is used', done => {
+            const transaction = datastore.transaction();
+            const query = datastore.createQuery('Task');
+            errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+            transaction.runQuery(
+              query,
+              {consistency: 'eventual', readTime: 77000},
+              getCallbackExpectingError(
+                done,
+                'Read time and read consistency cannot both be specified.'
+              )
+            );
+          });
+          it('should error when runAggregationQuery is used', done => {
+            const transaction = datastore.transaction();
+            const query = datastore.createQuery('Task');
+            const aggregate = datastore
+              .createAggregationQuery(query)
+              .addAggregation(AggregateField.sum('appearances'));
+            errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+            transaction.runAggregationQuery(
+              aggregate,
+              {consistency: 'eventual', readTime: 77000},
+              getCallbackExpectingError(
+                done,
+                'Read time and read consistency cannot both be specified.'
+              )
+            );
+          });
+          it('should error when get is used', done => {
+            const transaction = datastore.transaction();
+            const keys = datastore.key(['Company', 'Google']);
+            errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+            transaction.get(
+              keys,
+              {consistency: 'eventual', readTime: 77000},
+              getCallbackExpectingError(
+                done,
+                'Read time and read consistency cannot both be specified.'
+              )
+            );
+          });
+        });
+      }
+    );
   });
 });
