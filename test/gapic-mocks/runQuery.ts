@@ -222,5 +222,18 @@ describe.only('With a callback expecting an error', () => {
         )
       );
     });
+    it('should error when get is used', done => {
+      const transaction = datastore.transaction();
+      const keys = datastore.key(['Company', 'Google']);
+      errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
+      transaction.get(
+        keys,
+        {consistency: 'eventual', readTime: 77000},
+        getCallbackExpectingError(
+          done,
+          'Read time and read consistency cannot both be specified.'
+        )
+      );
+    });
   });
 });
