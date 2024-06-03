@@ -2379,7 +2379,7 @@ async.each(
                 },
               },
               {
-                namespace: 'with rollback',
+                name: 'with rollback',
                 setupExpiredFn: async (tx: Transaction) => {
                   await tx.rollback();
                 },
