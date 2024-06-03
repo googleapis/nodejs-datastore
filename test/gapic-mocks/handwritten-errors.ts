@@ -101,18 +101,15 @@ describe('HandwrittenLayerErrors', () => {
         expectedError: string;
         description: string;
       }) => {
-        describe('should error when read time and eventual consistency are specified', () => {
+        describe(testParameters.description, () => {
           it('should error when runQuery is used', done => {
             const transaction = datastore.transaction();
             const query = datastore.createQuery('Task');
             errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
             transaction.runQuery(
               query,
-              {consistency: 'eventual', readTime: 77000},
-              getCallbackExpectingError(
-                done,
-                'Read time and read consistency cannot both be specified.'
-              )
+              testParameters.options,
+              getCallbackExpectingError(done, testParameters.expectedError)
             );
           });
           it('should error when runAggregationQuery is used', done => {
@@ -124,11 +121,8 @@ describe('HandwrittenLayerErrors', () => {
             errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
             transaction.runAggregationQuery(
               aggregate,
-              {consistency: 'eventual', readTime: 77000},
-              getCallbackExpectingError(
-                done,
-                'Read time and read consistency cannot both be specified.'
-              )
+              testParameters.options,
+              getCallbackExpectingError(done, testParameters.expectedError)
             );
           });
           it('should error when get is used', done => {
@@ -137,11 +131,8 @@ describe('HandwrittenLayerErrors', () => {
             errorOnGapicCall(done); // Test fails if Gapic layer receives a call.
             transaction.get(
               keys,
-              {consistency: 'eventual', readTime: 77000},
-              getCallbackExpectingError(
-                done,
-                'Read time and read consistency cannot both be specified.'
-              )
+              testParameters.options,
+              getCallbackExpectingError(done, testParameters.expectedError)
             );
           });
         });
