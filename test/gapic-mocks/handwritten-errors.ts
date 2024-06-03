@@ -4,7 +4,7 @@ import * as mocha from 'mocha';
 import * as assert from 'assert';
 import {getInitializedDatastoreClient} from './get-initialized-datastore-client';
 
-describe.only('HandwrittenErrors', () => {
+describe('HandwrittenLayerErrors', () => {
   describe('With a callback expecting an error', () => {
     const clientName = 'DatastoreClient';
     const datastore = getInitializedDatastoreClient();

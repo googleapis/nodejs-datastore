@@ -14,7 +14,7 @@
 
 import * as assert from 'assert';
 import {describe} from 'mocha';
-import {DatastoreClient, Datastore, AggregateField} from '../../src';
+import {DatastoreClient} from '../../src';
 import * as protos from '../../protos/protos';
 import {getInitializedDatastoreClient} from './get-initialized-datastore-client';
 
