@@ -2450,7 +2450,7 @@ async.each(
         });
       });
 
-      describe.only('rollback', () => {
+      describe('rollback', () => {
         beforeEach(done => {
           // The transaction state needs to be set to IN_PROGRESS in order for
           // the rollback function to reach request_.
