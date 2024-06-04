@@ -2466,7 +2466,6 @@ async.each(
         });
 
         it('should rollback', done => {
-          console.log('should rollback');
           transaction.request_ = config => {
             assert.strictEqual(config.client, 'DatastoreClient');
             assert.strictEqual(config.method, 'rollback');

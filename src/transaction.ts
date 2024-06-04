@@ -417,6 +417,10 @@ class Transaction extends DatastoreRequest {
       callback(new Error(transactionExpiredError));
       return;
     }
+    if (this.state === TransactionState.NOT_STARTED) {
+      callback(new Error('Transaction is not started'));
+      return;
+    }
     // This ensures that the transaction is started before calling rollback
     this.#withBeginTransaction(
       gaxOptions,
