@@ -2381,6 +2381,10 @@ async.each(
               {
                 name: 'with rollback',
                 setupExpiredFn: async (tx: Transaction) => {
+                  // We expect rollback to fail with an aborted error when
+                  // tx.run hasn't been called yet so these tests are only
+                  // valid when tx.run() has already been called.
+                  await tx.run();
                   await tx.rollback();
                 },
               },
@@ -2394,7 +2398,7 @@ async.each(
                   it('with transaction.run', async () => {
                     try {
                       const key = datastore.key(['Company', 'Google']);
-                      const transaction = datastore.transaction();
+                      const transaction: Transaction = datastore.transaction();
                       await transaction.run();
                       await test.setupExpiredFn(transaction);
                       await transaction.get(key);
