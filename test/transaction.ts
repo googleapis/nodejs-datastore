@@ -2450,12 +2450,23 @@ async.each(
         });
       });
 
-      describe('rollback', () => {
-        beforeEach(() => {
-          transaction.id = TRANSACTION_ID;
+      describe.only('rollback', () => {
+        beforeEach(done => {
+          // The transaction state needs to be set to IN_PROGRESS in order for
+          // the rollback function to reach request_.
+          transaction.request_ = (
+            config: RequestConfig,
+            callback: RequestCallback
+          ) => {
+            callback(null, {transaction: Buffer.from(TRANSACTION_ID)});
+          };
+          transaction.run(() => {
+            done();
+          });
         });
 
         it('should rollback', done => {
+          console.log('should rollback');
           transaction.request_ = config => {
             assert.strictEqual(config.client, 'DatastoreClient');
             assert.strictEqual(config.method, 'rollback');
