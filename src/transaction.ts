@@ -438,24 +438,17 @@ class Transaction extends DatastoreRequest {
       callback(new Error('Transaction is not started'));
       return;
     }
-    // This ensures that the transaction is started before calling rollback
-    this.#withBeginTransaction(
-      gaxOptions,
-      () => {
-        this.request_(
-          {
-            client: 'DatastoreClient',
-            method: 'rollback',
-            gaxOpts: gaxOptions || {},
-          },
-          (err, resp) => {
-            this.skipCommit = true;
-            this.state = TransactionState.EXPIRED;
-            callback(err || null, resp);
-          }
-        );
+    this.request_(
+      {
+        client: 'DatastoreClient',
+        method: 'rollback',
+        gaxOpts: gaxOptions || {},
       },
-      callback
+      (err, resp) => {
+        this.skipCommit = true;
+        this.state = TransactionState.EXPIRED;
+        callback(err || null, resp);
+      }
     );
   }
 
