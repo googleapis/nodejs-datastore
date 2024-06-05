@@ -934,9 +934,7 @@ class DatastoreRequest {
       return;
     }
     this.runQueryStream(query, options)
-      .on('error', (err: Error | null) => {
-        callback(err);
-      })
+      .on('error', callback)
       .on('info', info_ => {
         info = info_;
       })
