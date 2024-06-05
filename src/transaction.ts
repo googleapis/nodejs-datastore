@@ -21,8 +21,25 @@ import {google} from '../protos/protos';
 
 import {Datastore, TransactionOptions} from '.';
 import {Entities, Entity, entity} from './entity';
-import {Query, RunQueryCallback, RunQueryOptions, RunQueryResponse,} from './query';
-import {CommitCallback, CommitResponse, CreateReadStreamOptions, DatastoreRequest, GetCallback, GetResponse, getTransactionRequest, PrepareEntityObjectResponse, RequestCallback, transactionExpiredError, TransactionState,} from './request';
+import {
+  Query,
+  RunQueryCallback,
+  RunQueryOptions,
+  RunQueryResponse,
+} from './query';
+import {
+  CommitCallback,
+  CommitResponse,
+  CreateReadStreamOptions,
+  DatastoreRequest,
+  GetCallback,
+  GetResponse,
+  getTransactionRequest,
+  PrepareEntityObjectResponse,
+  RequestCallback,
+  transactionExpiredError,
+  TransactionState,
+} from './request';
 import {AggregateQuery} from './aggregate';
 import {Mutex} from 'async-mutex';
 import arrify = require('arrify');
