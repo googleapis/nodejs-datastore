@@ -160,10 +160,13 @@ function getInfoFromStats(
   return {};
 }
 
+const readTimeAndConsistencyError =
+  'Read time and read consistency cannot both be specified.';
+
 // Write function to check for readTime and readConsistency.
 function throwOnReadTimeAndConsistency(options: RunQueryStreamOptions) {
   if (options.readTime && options.consistency) {
-    throw new Error('Read time and read consistency cannot both be specified.');
+    throw new Error(readTimeAndConsistencyError);
   }
 }
 
@@ -747,9 +750,7 @@ class DatastoreRequest {
       return;
     }
     if (options.readTime && options.consistency) {
-      callback(
-        new Error('Read time and read consistency cannot both be specified.')
-      );
+      callback(new Error(readTimeAndConsistencyError));
       return;
     }
     query.query = extend(true, new Query(), query.query);
