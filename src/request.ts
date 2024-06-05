@@ -160,6 +160,13 @@ function getInfoFromStats(
   return {};
 }
 
+// Write function to check for readTime and readConsistency.
+function throwOnReadTimeAndConsistency(options: RunQueryStreamOptions) {
+  if (options.readTime && options.consistency) {
+    throw new Error('Read time and read consistency cannot both be specified.');
+  }
+}
+
 /**
  * A map of read consistency values to proto codes.
  *
@@ -402,6 +409,12 @@ class DatastoreRequest {
     }
 
     const makeRequest = (keys: entity.Key[] | KeyProto[]) => {
+      try {
+        throwOnReadTimeAndConsistency(options);
+      } catch (error: any) {
+        stream.destroy(error);
+        return;
+      }
       const reqOpts = this.getRequestOptions(options);
       Object.assign(reqOpts, {keys});
       this.request_(
@@ -733,6 +746,12 @@ class DatastoreRequest {
       callback(new Error(transactionExpiredError));
       return;
     }
+    if (options.readTime && options.consistency) {
+      callback(
+        new Error('Read time and read consistency cannot both be specified.')
+      );
+      return;
+    }
     query.query = extend(true, new Query(), query.query);
     let queryProto: QueryProto;
     try {
@@ -967,6 +986,7 @@ class DatastoreRequest {
       let queryProto: QueryProto;
       try {
         queryProto = entity.queryToQueryProto(query);
+        throwOnReadTimeAndConsistency(options);
       } catch (e) {
         // using setImmediate here to make sure this doesn't throw a
         // synchronous error
@@ -1083,11 +1103,6 @@ class DatastoreRequest {
     if (options.readTime) {
       if (sharedQueryOpts.readOptions === undefined) {
         sharedQueryOpts.readOptions = {};
-      }
-      if (options.consistency) {
-        throw new Error(
-          'Read time and read consistency cannot both be specified.'
-        );
       }
       const readTime = options.readTime;
       const seconds = readTime / 1000;
