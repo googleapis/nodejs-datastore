@@ -379,6 +379,7 @@ class DatastoreRequest {
    * Retrieve the entities as a readable object stream.
    *
    * @throws {Error} If at least one Key object is not provided.
+   * @throws {Error} If read time and read consistency cannot both be specified.
    *
    * @param {Key|Key[]} keys Datastore key object(s).
    * @param {object} [options] Optional configuration. See {@link Datastore#get}
@@ -721,6 +722,8 @@ class DatastoreRequest {
    * @param {function} [callback] The callback function. If omitted, a promise is
    * returned.
    *
+   * @throws {Error} If read time and read consistency cannot both be specified.
+   *
    **/
   runAggregationQuery(
     query: AggregateQuery,
@@ -954,6 +957,8 @@ class DatastoreRequest {
    * @param {object} [options] Optional configuration.
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   *
+   * @throws {Error} If read time and read consistency cannot both be specified.
    *
    * @example
    * ```
