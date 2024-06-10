@@ -406,20 +406,14 @@ class DatastoreRequest {
     keys: Entities,
     options: CreateReadStreamOptions = {}
   ): Transform {
-    this.checkExpired();
     keys = arrify(keys).map(entity.keyToKeyProto);
     if (keys.length === 0) {
       throw new Error('At least one Key object is required.');
     }
-
+    this.checkExpired();
+    throwOnReadTimeAndConsistency(options);
+    const reqOpts = this.getRequestOptions(options);
     const makeRequest = (keys: entity.Key[] | KeyProto[]) => {
-      try {
-        throwOnReadTimeAndConsistency(options);
-      } catch (error: any) {
-        stream.destroy(error);
-        return;
-      }
-      const reqOpts = this.getRequestOptions(options);
       Object.assign(reqOpts, {keys});
       this.request_(
         {
@@ -680,18 +674,20 @@ class DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
-    if (this.state === TransactionState.EXPIRED) {
-      callback(new Error(transactionExpiredError));
-      return;
-    }
-    this.createReadStream(keys, options)
-      .on('error', callback)
-      .pipe(
-        concat((results: Entity[]) => {
-          const isSingleLookup = !Array.isArray(keys);
-          callback(null, isSingleLookup ? results[0] : results);
+    try {
+      this.createReadStream(keys, options)
+        .on('error', (err: any) => {
+          callback(err);
         })
-      );
+        .pipe(
+          concat((results: Entity[]) => {
+            const isSingleLookup = !Array.isArray(keys);
+            callback(null, isSingleLookup ? results[0] : results);
+          })
+        );
+    } catch (err: any) {
+      callback(err);
+    }
   }
 
   /**
@@ -932,20 +928,20 @@ class DatastoreRequest {
 
     let info: RunQueryInfo;
 
-    if (this.state === TransactionState.EXPIRED) {
-      callback(new Error(transactionExpiredError));
-      return;
-    }
-    this.runQueryStream(query, options)
-      .on('error', callback)
-      .on('info', info_ => {
-        info = info_;
-      })
-      .pipe(
-        concat((results: Entity[]) => {
-          callback(null, results, info);
+    try {
+      this.runQueryStream(query, options)
+        .on('error', callback)
+        .on('info', info_ => {
+          info = info_;
         })
-      );
+        .pipe(
+          concat((results: Entity[]) => {
+            callback(null, results, info);
+          })
+        );
+    } catch (err: any) {
+      callback(err);
+    }
   }
 
   /**
@@ -985,19 +981,19 @@ class DatastoreRequest {
    */
   runQueryStream(query: Query, options: RunQueryStreamOptions = {}): Transform {
     this.checkExpired();
+    throwOnReadTimeAndConsistency(options);
     query = extend(true, new Query(), query);
+    const sharedQueryOpts = this.getQueryOptions(query, options);
     const makeRequest = (query: Query) => {
       let queryProto: QueryProto;
       try {
         queryProto = entity.queryToQueryProto(query);
-        throwOnReadTimeAndConsistency(options);
       } catch (e) {
         // using setImmediate here to make sure this doesn't throw a
         // synchronous error
         setImmediate(onResultSet, e as Error);
         return;
       }
-      const sharedQueryOpts = this.getQueryOptions(query, options);
 
       const reqOpts: RequestOptions = sharedQueryOpts;
       reqOpts.query = queryProto;

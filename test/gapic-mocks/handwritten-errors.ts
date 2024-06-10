@@ -17,6 +17,7 @@ import {AggregateField} from '../../src';
 import {getInitializedDatastoreClient} from './get-initialized-datastore-client';
 import {RunQueryOptions} from '../../src/query';
 import {errorOnGapicCall, getCallbackExpectingError} from './error-mocks';
+import * as assert from 'assert';
 const async = require('async');
 
 describe('HandwrittenLayerErrors', () => {
@@ -62,6 +63,18 @@ describe('HandwrittenLayerErrors', () => {
               getCallbackExpectingError(done, testParameters.expectedError)
             );
           });
+          it('should error when runQueryStream is used', done => {
+            const transaction = datastore.transaction();
+            const query = datastore.createQuery('Task');
+            errorOnGapicCall(datastore, clientName, done); // Test fails if Gapic layer receives a call.
+            try {
+              transaction.runQueryStream(query, testParameters.options);
+              done(new Error('runQueryStream should have thrown an error'));
+            } catch (err: any) {
+              assert.strictEqual(err.message, testParameters.expectedError);
+              done();
+            }
+          });
           it('should error when runAggregationQuery is used', done => {
             const transaction = datastore.transaction();
             const query = datastore.createQuery('Task');
@@ -84,6 +97,18 @@ describe('HandwrittenLayerErrors', () => {
               testParameters.options,
               getCallbackExpectingError(done, testParameters.expectedError)
             );
+          });
+          it('should error when createReadStream is used', done => {
+            const transaction = datastore.transaction();
+            const keys = datastore.key(['Company', 'Google']);
+            errorOnGapicCall(datastore, clientName, done); // Test fails if Gapic layer receives a call.
+            try {
+              transaction.createReadStream(keys, testParameters.options);
+              done(new Error('createReadStream should have thrown an error'));
+            } catch (err: any) {
+              assert.strictEqual(err.message, testParameters.expectedError);
+              done();
+            }
           });
         });
       }

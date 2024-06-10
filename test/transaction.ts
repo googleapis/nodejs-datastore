@@ -902,25 +902,25 @@ async.each(
              * be passed into the Gapic layer.
              * @private
              */
-            readonly #expectedRequests?: GapicRequestData[];
+            readonly expectedRequests?: GapicRequestData[];
             /**
              * requests are the actual order of the requests that are passed into the
              * gapic layer
              * @private
              */
-            readonly #requests: GapicRequestData[] = [];
+            readonly requests: GapicRequestData[] = [];
             /**
              * expectedEventOrder is the order the test expects different events to occur
              * such as a callback being called, Gapic functions being called or user
              * code being run.
              */
-            readonly #expectedEventOrder: TransactionEvent[] = [];
+            readonly expectedEventOrder: TransactionEvent[] = [];
             /**
              * eventOrder is the order events actually occur in the test and will be compared with
              * expectedEventOrder.
              * @private
              */
-            #eventOrder: TransactionEvent[] = [];
+            eventOrder: TransactionEvent[] = [];
             // A transaction wrapper object is used to contain the transaction and mocked Gapic functions.
             #transactionWrapper: MockedTransactionWrapper;
             // Stores the mocha done function so that it can be called from this object.
@@ -932,17 +932,17 @@ async.each(
              * happened then this function passes tests if the events happened in the
              * right order.
              */
-            #checkForCompletion() {
-              if (this.#eventOrder.length >= this.#expectedEventOrder.length) {
+            checkForCompletion() {
+              if (this.eventOrder.length >= this.expectedEventOrder.length) {
                 try {
                   assert.deepStrictEqual(
-                    this.#eventOrder,
-                    this.#expectedEventOrder
+                    this.eventOrder,
+                    this.expectedEventOrder
                   );
-                  if (this.#expectedRequests) {
+                  if (this.expectedRequests) {
                     assert.deepStrictEqual(
-                      this.#requests,
-                      this.#expectedRequests
+                      this.requests,
+                      this.expectedRequests
                     );
                   }
                   this.#done();
@@ -961,17 +961,17 @@ async.each(
                 request?: RequestType;
               }[]
             ) {
-              this.#expectedEventOrder = expectedOrder;
-              this.#expectedRequests = expectedRequests;
+              this.expectedEventOrder = expectedOrder;
+              this.expectedRequests = expectedRequests;
               this.#done = done;
               transactionWrapper.callBackSignaler = (
                 call: GapicFunctionName,
                 request?: RequestType
               ) => {
                 try {
-                  this.#requests.push({call, request});
-                  this.#eventOrder.push(call);
-                  this.#checkForCompletion();
+                  this.requests.push({call, request});
+                  this.eventOrder.push(call);
+                  this.checkForCompletion();
                 } catch (e) {
                   done(e);
                 }
@@ -988,8 +988,8 @@ async.each(
             push(event: UserCodeEvent) {
               return () => {
                 try {
-                  this.#eventOrder.push(event);
-                  this.#checkForCompletion();
+                  this.eventOrder.push(event);
+                  this.checkForCompletion();
                 } catch (e) {
                   this.#done(e);
                 }
@@ -1139,6 +1139,27 @@ async.each(
                 transaction: testRunResp.transaction,
               },
             };
+            const lookupTransactionRequestWithNewTransaction = {
+              keys: [
+                {
+                  partitionId: {
+                    namespaceId: 'run-without-mock',
+                  },
+                  path: [
+                    {
+                      kind: 'Company',
+                      name: 'Google',
+                    },
+                  ],
+                },
+              ],
+              projectId: 'project-id',
+              readOptions: {
+                newTransaction: {},
+                consistencyType: 'newTransaction',
+                transaction: testRunResp.transaction,
+              },
+            };
             describe('put, commit', () => {
               const expectedRequests = [
                 {
@@ -1188,25 +1209,25 @@ async.each(
               });
             });
             describe('lookup, lookup, put, commit', () => {
-              const expectedRequests = [
-                {
-                  call: GapicFunctionName.BEGIN_TRANSACTION,
-                  request: beginTransactionRequest,
-                },
-                {
-                  call: GapicFunctionName.COMMIT,
-                  request: commitRequest,
-                },
-                {
-                  call: GapicFunctionName.LOOKUP,
-                  request: lookupTransactionRequest,
-                },
-                {
-                  call: GapicFunctionName.LOOKUP,
-                  request: lookupTransactionRequest,
-                },
-              ];
-              it('should verify that there is a BeginTransaction call while beginning later', done => {
+              it('should verify that there is no BeginTransaction call while beginning later', done => {
+                const expectedRequests = [
+                  {
+                    call: GapicFunctionName.BEGIN_TRANSACTION,
+                    request: beginTransactionRequest,
+                  },
+                  {
+                    call: GapicFunctionName.COMMIT,
+                    request: commitRequest,
+                  },
+                  {
+                    call: GapicFunctionName.LOOKUP,
+                    request: lookupTransactionRequestWithNewTransaction,
+                  },
+                  {
+                    call: GapicFunctionName.LOOKUP,
+                    request: lookupTransactionRequestWithNewTransaction,
+                  },
+                ];
                 const tester = new TransactionOrderTester(
                   transactionWrapper,
                   done,
@@ -1230,6 +1251,24 @@ async.each(
                 transaction.commit(tester.push(UserCodeEvent.COMMIT_CALLBACK));
               });
               it('should verify that there is a BeginTransaction call while beginning early', done => {
+                const expectedRequests = [
+                  {
+                    call: GapicFunctionName.BEGIN_TRANSACTION,
+                    request: beginTransactionRequest,
+                  },
+                  {
+                    call: GapicFunctionName.COMMIT,
+                    request: commitRequest,
+                  },
+                  {
+                    call: GapicFunctionName.LOOKUP,
+                    request: lookupTransactionRequest,
+                  },
+                  {
+                    call: GapicFunctionName.LOOKUP,
+                    request: lookupTransactionRequest,
+                  },
+                ];
                 const tester = new TransactionOrderTester(
                   transactionWrapper,
                   done,
