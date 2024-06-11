@@ -677,9 +677,7 @@ class DatastoreRequest {
 
     try {
       this.createReadStream(keys, options)
-        .on('error', (err: any) => {
-          callback(err);
-        })
+        .on('error', callback)
         .pipe(
           concat((results: Entity[]) => {
             const isSingleLookup = !Array.isArray(keys);
