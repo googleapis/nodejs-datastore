@@ -413,6 +413,7 @@ class DatastoreRequest {
     this.checkExpired();
     throwOnReadTimeAndConsistency(options);
     const reqOpts = this.getRequestOptions(options);
+    throwOnTransactionErrors(this, reqOpts);
     const makeRequest = (keys: entity.Key[] | KeyProto[]) => {
       Object.assign(reqOpts, {keys});
       this.request_(
@@ -765,6 +766,7 @@ class DatastoreRequest {
     let sharedQueryOpts;
     try {
       sharedQueryOpts = this.getQueryOptions(query.query, options);
+      throwOnTransactionErrors(this, sharedQueryOpts);
     } catch (error: any) {
       callback(error);
       return;
@@ -984,6 +986,7 @@ class DatastoreRequest {
     throwOnReadTimeAndConsistency(options);
     query = extend(true, new Query(), query);
     const sharedQueryOpts = this.getQueryOptions(query, options);
+    throwOnTransactionErrors(this, sharedQueryOpts);
     const makeRequest = (query: Query) => {
       let queryProto: QueryProto;
       try {
@@ -1225,22 +1228,7 @@ class DatastoreRequest {
     if (method === 'rollback') {
       reqOpts.transaction = this.id;
     }
-
-    if (
-      isTransaction ||
-      (reqOpts.readOptions && reqOpts.readOptions.newTransaction)
-    ) {
-      if (reqOpts.readOptions && reqOpts.readOptions.readConsistency) {
-        callback(
-          new Error('Read consistency cannot be specified in a transaction.')
-        );
-        return;
-      }
-      if (reqOpts.readOptions && reqOpts.readOptions.readTime) {
-        callback(new Error('Read time cannot be specified in a transaction.'));
-        return;
-      }
-    }
+    throwOnTransactionErrors(this, reqOpts);
     if (
       isTransaction &&
       (method === 'lookup' ||
@@ -1344,6 +1332,24 @@ class DatastoreRequest {
 
 function isTransaction(request: DatastoreRequest): request is Transaction {
   return request instanceof Transaction;
+}
+
+function throwOnTransactionErrors(
+  request: DatastoreRequest,
+  options: SharedQueryOptions
+) {
+  const isTransaction = request.id ? true : false;
+  if (
+    isTransaction ||
+    (options.readOptions && options.readOptions.newTransaction)
+  ) {
+    if (options.readOptions && options.readOptions.readConsistency) {
+      throw new Error('Read consistency cannot be specified in a transaction.');
+    }
+    if (options.readOptions && options.readOptions.readTime) {
+      throw new Error('Read time cannot be specified in a transaction.');
+    }
+  }
 }
 
 export function getTransactionRequest(
