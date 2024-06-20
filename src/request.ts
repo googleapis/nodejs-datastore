@@ -1350,30 +1350,33 @@ function throwOnTransactionErrors(
   }
 }
 
+/**
+ * This function gets transaction request options used for defining a
+ * request to create a new transaction on the server.
+ *
+ * @param transaction The transaction for which the request will be made.
+ * @param options Custom options that will be used to create the request.
+ */
 export function getTransactionRequest(
   transaction: Transaction,
   options: RunOptions
 ): TransactionRequestOptions {
-  let reqOpts: TransactionRequestOptions = {};
-  if (options.readOnly || transaction.readOnly) {
-    reqOpts.readOnly = {};
-  } else if (options.transactionId || transaction.id) {
-    reqOpts.readWrite = {
-      previousTransaction: options.transactionId || transaction.id,
-    };
-  }
-  if (options.transactionOptions) {
-    reqOpts = {};
-    if (options.transactionOptions.readOnly) {
-      reqOpts.readOnly = {};
-    } else {
-      const id = options.transactionOptions.id;
-      if (id) {
-        reqOpts.readWrite = {previousTransaction: id};
-      }
-    }
-  }
-  return reqOpts;
+  return options.transactionOptions // If transactionOptions is specified:
+    ? options.transactionOptions.readOnly // Use readOnly on transactionOptions
+      ? {readOnly: {}}
+      : options.transactionOptions.id // Use retry transaction if specified:
+        ? {readWrite: {previousTransaction: options.transactionOptions.id}}
+        : {}
+    : options.readOnly || transaction.readOnly // If transactionOptions not set:
+      ? {readOnly: {}} // Create a readOnly transaction if readOnly option set
+      : options.transactionId || transaction.id
+        ? {
+            // Create readWrite transaction with a retry transaction set
+            readWrite: {
+              previousTransaction: options.transactionId || transaction.id,
+            },
+          }
+        : {}; // Request will be readWrite with no retry transaction set;
 }
 
 export interface ConsistencyProtoCode {
