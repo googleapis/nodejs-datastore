@@ -17,6 +17,8 @@ import arrify = require('arrify');
 import * as assert from 'assert';
 import {afterEach, beforeEach, before, describe, it} from 'mocha';
 import * as proxyquire from 'proxyquire';
+import {getTransactionRequest} from '../src/request';
+import {Transaction} from '../src';
 
 import {
   Datastore,
@@ -2856,3 +2858,87 @@ async.each(
     });
   }
 );
+
+describe('getTransactionRequest', () => {
+  const datastore = new Datastore();
+
+  it('should return an empty object if no options are provided', () => {
+    const transaction = new Transaction(datastore);
+    const options = {};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {});
+  });
+
+  it('should return a readOnly object if readOnly is true', () => {
+    const transaction = new Transaction(datastore);
+    const options = {readOnly: true};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {readOnly: {}});
+  });
+
+  it('should return a readWrite object with previousTransaction if transactionId is provided', () => {
+    const transaction = new Transaction(datastore);
+    const options = {transactionId: 'transaction-id'};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {
+      readWrite: {previousTransaction: 'transaction-id'},
+    });
+  });
+
+  it('should return a readWrite object with previousTransaction if transaction.id is provided', () => {
+    const transaction = new Transaction(datastore, {id: 'transaction-id'});
+    const options = {};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {
+      readWrite: {previousTransaction: 'transaction-id'},
+    });
+  });
+
+  it('should return a readOnly object if transactionOptions.readOnly is true', () => {
+    const transaction = new Transaction(datastore);
+    const options = {transactionOptions: {readOnly: true}};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {readOnly: {}});
+  });
+
+  it('should return a readWrite object with previousTransaction if transactionOptions.id is provided', () => {
+    const transaction = new Transaction(datastore);
+    const options = {transactionOptions: {id: 'transaction-id'}};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {
+      readWrite: {previousTransaction: 'transaction-id'},
+    });
+  });
+
+  it('should prioritize transactionOptions over other options', () => {
+    const transaction = new Transaction(datastore);
+    const options = {
+      readOnly: false,
+      transactionId: 'transaction-id-1',
+      transactionOptions: {
+        readOnly: true,
+        id: 'transaction-id-2',
+      },
+    };
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {
+      readWrite: {previousTransaction: 'transaction-id-2'},
+    });
+  });
+
+  it('should return a readOnly object if transaction is constructed with readOnly: true', () => {
+    const transaction = new Transaction(datastore, {readOnly: true});
+    const options = {};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {readOnly: {}});
+  });
+
+  it('should return a readWrite object with previousTransaction if transaction is constructed with id', () => {
+    const transaction = new Transaction(datastore, {id: 'transaction-id'});
+    const options = {};
+    const result = getTransactionRequest(transaction, options);
+    assert.deepStrictEqual(result, {
+      readWrite: {previousTransaction: 'transaction-id'},
+    });
+  });
+});
