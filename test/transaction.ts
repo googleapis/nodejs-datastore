@@ -18,7 +18,6 @@ import * as assert from 'assert';
 import {afterEach, beforeEach, before, describe, it} from 'mocha';
 import * as proxyquire from 'proxyquire';
 import {getTransactionRequest} from '../src/request';
-import {Transaction} from '../src';
 
 import {
   Datastore,
@@ -2922,7 +2921,7 @@ describe('getTransactionRequest', () => {
     };
     const result = getTransactionRequest(transaction, options);
     assert.deepStrictEqual(result, {
-      readWrite: {previousTransaction: 'transaction-id-2'},
+      readOnly: {},
     });
   });
 

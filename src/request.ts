@@ -1357,8 +1357,7 @@ export function getTransactionRequest(
   let reqOpts: TransactionRequestOptions = {};
   if (options.readOnly || transaction.readOnly) {
     reqOpts.readOnly = {};
-  }
-  if (options.transactionId || transaction.id) {
+  } else if (options.transactionId || transaction.id) {
     reqOpts.readWrite = {
       previousTransaction: options.transactionId || transaction.id,
     };
@@ -1367,10 +1366,11 @@ export function getTransactionRequest(
     reqOpts = {};
     if (options.transactionOptions.readOnly) {
       reqOpts.readOnly = {};
-    }
-    const id = options.transactionOptions.id;
-    if (id) {
-      reqOpts.readWrite = {previousTransaction: id};
+    } else {
+      const id = options.transactionOptions.id;
+      if (id) {
+        reqOpts.readWrite = {previousTransaction: id};
+      }
     }
   }
   return reqOpts;
