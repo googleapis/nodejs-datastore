@@ -1361,6 +1361,9 @@ export function getTransactionRequest(
   transaction: Transaction,
   options: RunOptions
 ): TransactionRequestOptions {
+  // If transactionOptions are provide then they will be used.
+  // Otherwise, options are used and when absent options that exist on
+  // Transaction are used.
   return options.transactionOptions // If transactionOptions is specified:
     ? options.transactionOptions.readOnly // Use readOnly on transactionOptions
       ? {readOnly: {}}
