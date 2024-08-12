@@ -59,8 +59,179 @@ describe('Commit', () => {
       }
     );
   }
-
+  const key = {
+    path: [
+      {
+        kind: 'Post',
+        name: 'post2',
+      },
+    ],
+    partitionId: {
+      namespaceId: 'namespace',
+    },
+  };
   describe.only('should pass the right request to gapic with excludeFromLargeProperties', () => {
+    async function runTest(
+      entities: Entities,
+      excludeFromIndexes: string[],
+      expectedMutations: google.datastore.v1.IMutation[]
+    ) {
+      expectCommitRequest(expectedMutations);
+      const postKey = datastore.key(['Post', 'post2']);
+      await datastore.save({
+        key: postKey,
+        data: entities,
+        excludeFromIndexes,
+        excludeLargeProperties: true,
+      });
+    }
+    it('should pass the right request with a bunch of large properties excluded', async () => {
+      const longString = Buffer.alloc(1501, '.').toString();
+      const entities = {
+        longString,
+        notMetadata: true,
+        longStringArray: [longString],
+        metadata: {
+          longString,
+          otherProperty: 'value',
+          obj: {
+            longStringArray: [
+              {
+                longString,
+                nestedLongStringArray: [
+                  {
+                    longString,
+                    nestedProperty: true,
+                  },
+                  {
+                    longString,
+                  },
+                ],
+              },
+            ],
+          },
+          longStringArray: [
+            {
+              longString,
+              nestedLongStringArray: [
+                {
+                  longString,
+                  nestedProperty: true,
+                },
+                {
+                  longString,
+                },
+              ],
+            },
+          ],
+        },
+      };
+      const excludeFromIndexes = [
+        'longString',
+        'notMetadata',
+        'longStringArray[]',
+        'metadata.longString',
+        'metadata.otherProperty',
+        'metadata.obj.*',
+        'metadata.longStringArray[].*',
+      ];
+      const expectedMutations: google.datastore.v1.IMutation[] = [
+        {
+          upsert: {
+            properties: {
+              longString: {
+                stringValue: longString,
+                excludeFromIndexes: true,
+              },
+              notMetadata: {
+                booleanValue: true,
+                excludeFromIndexes: true,
+              },
+              longStringArray: {
+                arrayValue: {
+                  values: [
+                    {
+                      stringValue: longString,
+                      excludeFromIndexes: true,
+                    },
+                  ],
+                },
+              },
+              metadata: {
+                entityValue: {
+                  properties: {
+                    longString: {
+                      stringValue: longString,
+                      excludeFromIndexes: true,
+                    },
+                    otherProperty: {
+                      stringValue: 'value',
+                      excludeFromIndexes: true,
+                    },
+                    obj: {
+                      entityValue: {
+                        properties: {
+                          longStringArray: {
+                            arrayValue: {
+                              values: [
+                                {
+                                  entityValue: {
+                                    properties: {
+                                      longString: {
+                                        stringValue: longString,
+                                        excludeFromIndexes: true,
+                                      },
+                                      nestedLongStringArray: {
+                                        arrayValue: {
+                                          values: [
+                                            {
+                                              entityValue: {
+                                                properties: {
+                                                  longString: {
+                                                    stringValue: longString,
+                                                    excludeFromIndexes: true,
+                                                  },
+                                                  nestedProperty: {
+                                                    booleanValue: true,
+                                                    excludeFromIndexes: true,
+                                                  },
+                                                },
+                                              },
+                                            },
+                                            {
+                                              entityValue: {
+                                                properties: {
+                                                  longString: {
+                                                    stringValue: longString,
+                                                    excludeFromIndexes: true,
+                                                  },
+                                                },
+                                              },
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            key,
+          },
+        },
+      ];
+      await runTest(entities, excludeFromIndexes, expectedMutations);
+    });
+  });
+  describe('should pass the right request to gapic with excludeFromLargeProperties', () => {
     async function runTest(
       entities: Entities,
       expectedMutations: google.datastore.v1.IMutation[]
@@ -73,7 +244,7 @@ describe('Commit', () => {
         excludeLargeProperties: true,
       });
     }
-    it.skip('should pass the right request to gapic with excludeFromLargeProperties', async () => {
+    it.skip('should pass the right request with a nested field', async () => {
       const entities = [
         {
           name: 'field_b',
@@ -93,17 +264,7 @@ describe('Commit', () => {
                 },
               },
             },
-            key: {
-              path: [
-                {
-                  kind: 'Post',
-                  name: 'post2',
-                },
-              ],
-              partitionId: {
-                namespaceId: 'namespace',
-              },
-            },
+            key,
           },
         },
       ];
