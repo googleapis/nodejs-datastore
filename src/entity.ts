@@ -181,11 +181,10 @@ export namespace entity {
         try {
           return this.typeCastFunction!(this.value);
         } catch (error) {
-          (
-            error as Error
-          ).message = `integerTypeCastFunction threw an error:\n\n  - ${
-            (error as Error).message
-          }`;
+          (error as Error).message =
+            `integerTypeCastFunction threw an error:\n\n  - ${
+              (error as Error).message
+            }`;
           throw error;
         }
       } else {
@@ -852,8 +851,11 @@ export namespace entity {
         return;
       }
 
+      const isFirstPathPartDefined =
+        entity.properties![firstPathPart] !== undefined;
       if (
         firstPathPartIsArray &&
+        isFirstPathPartDefined &&
         // check also if the property in question is actually an array value.
         entity.properties![firstPathPart].arrayValue &&
         // check if wildcard is not applied
@@ -879,7 +881,12 @@ export namespace entity {
             );
           }
         });
-      } else if (firstPathPartIsArray && hasWildCard && remainderPath === '*') {
+      } else if (
+        firstPathPartIsArray &&
+        hasWildCard &&
+        remainderPath === '*' &&
+        isFirstPathPartDefined
+      ) {
         const array = entity.properties![firstPathPart].arrayValue;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         array.values.forEach((value: any) => {
@@ -898,7 +905,7 @@ export namespace entity {
             excludePathFromEntity(entity, newPath);
           });
         } else {
-          if (hasWildCard && remainderPath === '*') {
+          if (hasWildCard && remainderPath === '*' && isFirstPathPartDefined) {
             const parentEntity = entity.properties![firstPathPart].entityValue;
 
             if (parentEntity) {
@@ -911,7 +918,7 @@ export namespace entity {
             } else {
               excludePathFromEntity(entity, firstPathPart);
             }
-          } else {
+          } else if (isFirstPathPartDefined) {
             const parentEntity = entity.properties![firstPathPart].entityValue;
             excludePathFromEntity(parentEntity, remainderPath);
           }

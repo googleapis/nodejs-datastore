@@ -20,6 +20,8 @@ const {Query} = require('../src/query');
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
 import {PropertyFilter, EntityFilter, or} from '../src/filter';
+import {entity} from '../src/entity';
+import {SECOND_DATABASE_ID} from './index';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -204,6 +206,29 @@ describe('Query', () => {
   });
 
   describe('filter', () => {
+    it('should issue a warning when a Filter instance is not provided', done => {
+      const onWarning = (warning: {message: unknown}) => {
+        assert.strictEqual(
+          warning.message,
+          'Providing Filter objects like Composite Filter or Property Filter is recommended when using .filter'
+        );
+        process.removeListener('warning', onWarning);
+        done();
+      };
+      process.on('warning', onWarning);
+      new Query(['kind1']).filter('name', 'Stephen');
+    });
+    it('should not issue a warning again when a Filter instance is not provided', done => {
+      const onWarning = () => {
+        assert.fail();
+      };
+      process.on('warning', onWarning);
+      new Query(['kind1']).filter('name', 'Stephen');
+      setImmediate(() => {
+        process.removeListener('warning', onWarning);
+        done();
+      });
+    });
     it('should support filtering', () => {
       const now = new Date();
       const query = new Query(['kind1']).filter('date', '<=', now);
@@ -568,5 +593,43 @@ describe('Query', () => {
       const results = query.runStream(options);
       assert.strictEqual(results, runQueryReturnValue);
     });
+  });
+
+  it('should pass the database id to the generated layer', async () => {
+    const options = {
+      namespace: `${Date.now()}`,
+      databaseId: SECOND_DATABASE_ID,
+      projectId: 'test-project-id',
+    };
+    const clientName = 'DatastoreClient';
+    const otherDatastore = new Datastore(options);
+    const postKey = new entity.Key({path: ['Post', 'post1']});
+    // Initialize the generated client so that we can mock it out
+    const gapic = Object.freeze({
+      v1: require('../src/v1'),
+    });
+    otherDatastore.clients_.set(clientName, new gapic.v1[clientName](options));
+    const dataClient = otherDatastore.clients_.get(clientName);
+    const projectId = await otherDatastore.getProjectId();
+    if (dataClient) {
+      dataClient['commit'] = (
+        request: any,
+        options: any,
+        callback: (err?: unknown) => void
+      ) => {
+        try {
+          assert.strictEqual(request.databaseId, SECOND_DATABASE_ID);
+          assert.strictEqual(request.projectId, projectId);
+          assert.strictEqual(
+            options.headers['google-cloud-resource-prefix'],
+            `projects/${projectId}`
+          );
+        } catch (e) {
+          callback(e);
+        }
+        callback();
+      };
+    }
+    await otherDatastore.save({key: postKey, data: {title: 'test'}});
   });
 });

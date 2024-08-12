@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,6 +46,13 @@ function main(projectId, keys) {
    *  Required. Keys of entities to look up.
    */
   // const keys = [1,2,3,4]
+  /**
+   *  The properties to return. Defaults to returning all properties.
+   *  If this field is set and an entity has a property not referenced in the
+   *  mask, it will be absent from LookupResponse.found.entity.properties .
+   *  The entity's key is always returned.
+   */
+  // const propertyMask = {}
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;

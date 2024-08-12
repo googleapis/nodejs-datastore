@@ -4,6 +4,110 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [9.1.0](https://github.com/googleapis/nodejs-datastore/compare/v9.0.0...v9.1.0) (2024-06-24)
+
+
+### Features
+
+* New transaction feature ([#1239](https://github.com/googleapis/nodejs-datastore/issues/1239)) ([cdd2ee9](https://github.com/googleapis/nodejs-datastore/commit/cdd2ee98c50b48b9a2a8cfb2f66b84a5937b3783))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency sinon to v18 ([#1250](https://github.com/googleapis/nodejs-datastore/issues/1250)) ([b7ff5c8](https://github.com/googleapis/nodejs-datastore/commit/b7ff5c86306f80d93f678a0638892c58a3b2088c))
+
+## [9.0.0](https://github.com/googleapis/nodejs-datastore/compare/v8.7.0...v9.0.0) (2024-05-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* An existing method `UpdateVehicleLocation` is removed from service `VehicleService` ([#1248](https://github.com/googleapis/nodejs-datastore/issues/1248))
+
+### Features
+
+* Query profiling feature ([#1221](https://github.com/googleapis/nodejs-datastore/issues/1221)) ([414dec4](https://github.com/googleapis/nodejs-datastore/commit/414dec4e1548f551be06df914d6b56362bdc1790))
+
+
+### Bug Fixes
+
+* An existing method `UpdateVehicleLocation` is removed from service `VehicleService` ([#1248](https://github.com/googleapis/nodejs-datastore/issues/1248)) ([ba79118](https://github.com/googleapis/nodejs-datastore/commit/ba79118ac00ccc3bb0380ee5693c3b687a7ae9c7))
+* Read time should be used for transaction reads ([#1171](https://github.com/googleapis/nodejs-datastore/issues/1171)) ([73a0a39](https://github.com/googleapis/nodejs-datastore/commit/73a0a39b4c0423a5b4802076cdce80fce7c9adda))
+
+## [8.7.0](https://github.com/googleapis/nodejs-datastore/compare/v8.6.0...v8.7.0) (2024-04-02)
+
+
+### Features
+
+* Add several fields to manage state of database encryption update ([#1243](https://github.com/googleapis/nodejs-datastore/issues/1243)) ([5d28cda](https://github.com/googleapis/nodejs-datastore/commit/5d28cda744c3bb11da5e72ea8a0f7d8d8e85c4b0))
+
+## [8.6.0](https://github.com/googleapis/nodejs-datastore/compare/v8.5.0...v8.6.0) (2024-03-25)
+
+
+### Features
+
+* Add new types ExplainOptions, ExplainMetrics, PlanSummary, ExecutionStats ([#1241](https://github.com/googleapis/nodejs-datastore/issues/1241)) ([6c409d5](https://github.com/googleapis/nodejs-datastore/commit/6c409d5c922288bd8286917b266cdb553cfd43cf))
+* Nodejs transaction redesign feature branch ([#1235](https://github.com/googleapis/nodejs-datastore/issues/1235)) ([1585d4a](https://github.com/googleapis/nodejs-datastore/commit/1585d4a4e1b4b16d198307a3e97ffcf156d000b1))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency async-mutex to ^0.5.0 ([#1240](https://github.com/googleapis/nodejs-datastore/issues/1240)) ([0ba1281](https://github.com/googleapis/nodejs-datastore/commit/0ba1281efe16ef0b725937627445c32c36b9f705))
+
+## [8.5.0](https://github.com/googleapis/nodejs-datastore/compare/v8.4.0...v8.5.0) (2024-02-06)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter ([#1227](https://github.com/googleapis/nodejs-datastore/issues/1227)) ([10480ed](https://github.com/googleapis/nodejs-datastore/commit/10480edfdda99cde5fef470fbf163861528398a0))
+
+## [8.4.0](https://github.com/googleapis/nodejs-datastore/compare/v8.3.0...v8.4.0) (2024-01-09)
+
+
+### Features
+
+* Add new types QueryMode, QueryPlan, ResultSetStats ([#1216](https://github.com/googleapis/nodejs-datastore/issues/1216)) ([49c1462](https://github.com/googleapis/nodejs-datastore/commit/49c14626271c45473d73b07cda39a288017f1432))
+
+## [8.3.0](https://github.com/googleapis/nodejs-datastore/compare/v8.2.2...v8.3.0) (2023-12-11)
+
+
+### Features
+
+* Allow the user to set fallback to rest ([#1203](https://github.com/googleapis/nodejs-datastore/issues/1203)) ([8a1fa54](https://github.com/googleapis/nodejs-datastore/commit/8a1fa54e3873230256895c48b8b9c6889f75dd98))
+
+
+### Bug Fixes
+
+* Change tests to use new filter and use gax warn for warning just once ([#1185](https://github.com/googleapis/nodejs-datastore/issues/1185)) ([532711b](https://github.com/googleapis/nodejs-datastore/commit/532711bfd19b1a12844b02fd314f1703be4b0125))
+* **deps:** Update dependency sinon to v17 ([#1183](https://github.com/googleapis/nodejs-datastore/issues/1183)) ([52adb5e](https://github.com/googleapis/nodejs-datastore/commit/52adb5e13ddc123c2bed33df76be76760d33c06e))
+
+## [8.2.2](https://github.com/googleapis/nodejs-datastore/compare/v8.2.1...v8.2.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* **deps:** Update google-gax ([#1173](https://github.com/googleapis/nodejs-datastore/issues/1173)) ([8237b15](https://github.com/googleapis/nodejs-datastore/commit/8237b152aa906cac55117cdeaf7a8bda85e94ac7))
+
+## [8.2.1](https://github.com/googleapis/nodejs-datastore/compare/v8.2.0...v8.2.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* Make aggregation query requests run properly inside a transaction ([#1166](https://github.com/googleapis/nodejs-datastore/issues/1166)) ([263804b](https://github.com/googleapis/nodejs-datastore/commit/263804b768322de39bf87b4c5265c303a2bda173))
+
+## [8.2.0](https://github.com/googleapis/nodejs-datastore/compare/v8.1.0...v8.2.0) (2023-10-02)
+
+
+### Features
+
+* Support for using multiple databases in datastore ([#1090](https://github.com/googleapis/nodejs-datastore/issues/1090)) ([10ce563](https://github.com/googleapis/nodejs-datastore/commit/10ce563dae7e1164d3ee23a5887265c9de7b106f))
+
+
+### Bug Fixes
+
+* Allow users to set environment variable to connect to emulator running on docker ([#1164](https://github.com/googleapis/nodejs-datastore/issues/1164)) ([a41741b](https://github.com/googleapis/nodejs-datastore/commit/a41741b1412b1854aeecbe50441aa85015c3d399))
+* Check property existence for exclude from indexes with wildcard ([#1114](https://github.com/googleapis/nodejs-datastore/issues/1114)) ([e6b8ef7](https://github.com/googleapis/nodejs-datastore/commit/e6b8ef74ff10107943d0ae194f9a8d540d8557c1))
+* **deps:** Update dependency sinon to v16 ([#1150](https://github.com/googleapis/nodejs-datastore/issues/1150)) ([0d8b715](https://github.com/googleapis/nodejs-datastore/commit/0d8b7153fc156a4b55e965f39161bd5c19bffff6))
+
 ## [8.1.0](https://github.com/googleapis/nodejs-datastore/compare/v8.0.0...v8.1.0) (2023-09-07)
 
 
