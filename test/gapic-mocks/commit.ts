@@ -21,6 +21,7 @@ import {Entities} from '../../src/entity';
 import {google} from '../../protos/protos';
 
 describe('Commit', () => {
+  const longString = Buffer.alloc(1501, '.').toString();
   const clientName = 'DatastoreClient';
   const datastore = getInitializedDatastoreClient();
 
@@ -50,12 +51,21 @@ describe('Commit', () => {
       };
     }
   }
+  function replaceLongStrings(input?: google.datastore.v1.IMutation[] | null) {
+    const stringifiedInput = JSON.stringify(input);
+    const replacedInput = stringifiedInput
+      .split(longString)
+      .join('<longString>');
+    return JSON.parse(replacedInput);
+  }
   function expectCommitRequest(
     expectedMutations: google.datastore.v1.IMutation[]
   ) {
     setCommitComparison(
       (request: protos.google.datastore.v1.ICommitRequest) => {
-        assert.deepStrictEqual(request.mutations, expectedMutations);
+        const actual = replaceLongStrings(request.mutations);
+        const expected = replaceLongStrings(expectedMutations);
+        assert.deepStrictEqual(actual, expected);
       }
     );
   }
@@ -86,7 +96,6 @@ describe('Commit', () => {
       });
     }
     it('should pass the right request with a bunch of large properties excluded', async () => {
-      const longString = Buffer.alloc(1501, '.').toString();
       const entities = {
         longString,
         notMetadata: true,
