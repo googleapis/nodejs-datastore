@@ -229,6 +229,52 @@ describe('Commit', () => {
                         },
                       },
                     },
+                    longStringArray: {
+                      arrayValue: {
+                        values: [
+                          {
+                            entityValue: {
+                              properties: {
+                                longString: {
+                                  stringValue: longString,
+                                  excludeFromIndexes: true,
+                                },
+                                nestedLongStringArray: {
+                                  arrayValue: {
+                                    values: [
+                                      {
+                                        entityValue: {
+                                          properties: {
+                                            longString: {
+                                              stringValue: longString,
+                                              excludeFromIndexes: true,
+                                            },
+                                            nestedProperty: {
+                                              booleanValue: true,
+                                              excludeFromIndexes: true,
+                                            },
+                                          },
+                                        },
+                                      },
+                                      {
+                                        entityValue: {
+                                          properties: {
+                                            longString: {
+                                              stringValue: longString,
+                                              excludeFromIndexes: true,
+                                            },
+                                          },
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
                   },
                 },
               },
