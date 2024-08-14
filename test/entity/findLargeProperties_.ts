@@ -64,7 +64,21 @@ describe.only('findLargeProperties_', () => {
         ],
       },
       {
-        name: 'For a complex case involving lots of entities',
+        name: 'For a complex case wrapped in an array',
+        entities: complexCaseEntities,
+        skipped: false,
+        expectedOutput: [
+          'longString',
+          'longStringArray[]',
+          'metadata.longString',
+          'metadata.obj.longStringArray[].longString',
+          'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+          'metadata.longStringArray[].longString',
+          'metadata.longStringArray[].nestedLongStringArray[].longString',
+        ],
+      },
+      {
+        name: 'For a complex case involving and array and name/value',
         entities: [
           {
             name: 'firstElementName',
