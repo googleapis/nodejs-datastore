@@ -303,6 +303,7 @@ describe.only('Commit', () => {
     async.each(
       [
         {
+          // TODO: Add note about excludeFromIndexes that should match
           name: 'should pass the right request with a bunch of large properties excluded',
           skipped: false,
           entities: complexCaseEntities,
@@ -417,109 +418,5 @@ describe.only('Commit', () => {
         });
       }
     );
-  });
-
-  describe('should pass the right request to gapic with an object containing many long strings', () => {
-    it('should pass the right request with a bunch of large properties excluded', async () => {
-      // TODO: Add note about excludeFromIndexes that should match
-      const excludeFromIndexes = [
-        'longString',
-        'longStringArray[]',
-        'metadata.longString',
-        'metadata.obj.longStringArray[].longString',
-        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-        'metadata.longStringArray[].longString',
-        'metadata.longStringArray[].nestedLongStringArray[].longString',
-      ];
-      const expectedMutations: google.datastore.v1.IMutation[] = [
-        {
-          upsert: {
-            properties: complexCaseProperties,
-            key,
-          },
-        },
-      ];
-      await checkSaveMutations(
-        complexCaseEntities,
-        excludeFromIndexes,
-        false,
-        expectedMutations
-      );
-      await checkSaveMutations(
-        complexCaseEntities,
-        excludeFromIndexes,
-        true,
-        expectedMutations
-      );
-    });
-    describe('should pass the right request with no indexes excluded and excludeLargeProperties set', async () => {
-      it('should pass the right properties for an object', async () => {
-        const expectedMutations: google.datastore.v1.IMutation[] = [
-          {
-            upsert: {
-              properties: complexCaseProperties,
-              key,
-            },
-          },
-        ];
-        await checkSaveMutations(
-          complexCaseEntities,
-          [],
-          true,
-          expectedMutations
-        );
-      });
-      it.skip('should pass the right properties for an array', async () => {
-        const arrayEntities = [
-          {
-            name: 'arrayEntities',
-            value: complexCaseEntities,
-          },
-        ];
-        const expectedMutations: google.datastore.v1.IMutation[] = [
-          {
-            upsert: {
-              properties: {
-                arrayEntities: {
-                  entityValue: {
-                    properties: complexCaseProperties,
-                  },
-                },
-              },
-              key,
-            },
-          },
-        ];
-        await checkSaveMutations(arrayEntities, [], true, expectedMutations);
-      });
-    });
-  });
-  describe('should pass the right request to gapic with excludeFromLargeProperties', () => {
-    it.skip('should pass the right request with a nested field', async () => {
-      const entities = [
-        {
-          name: 'field_b',
-          value: {
-            nestedField: Buffer.alloc(1501, '.').toString(),
-          },
-          excludeFromIndexes: true,
-        },
-      ];
-      const expectedMutations = [
-        {
-          upsert: {
-            properties: {
-              field_b: {
-                entityValue: {
-                  properties: {},
-                },
-              },
-            },
-            key,
-          },
-        },
-      ];
-      await checkSaveMutations(entities, [], true, expectedMutations);
-    });
   });
 });
