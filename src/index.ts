@@ -69,7 +69,6 @@ import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
 
 const {grpc} = new GrpcClient();
-const addExcludeFromIndexes = entity.addExcludeFromIndexes;
 
 export type PathType = string | number | entity.Int;
 export interface BooleanObject {
@@ -1131,6 +1130,12 @@ class Datastore extends DatastoreRequest {
               acc: EntityProtoReduceAccumulator,
               data: EntityProtoReduceData
             ) => {
+              /*
+              const subEntityObject = {
+                data:
+                excludeFromIndexes: [],
+              };
+               */
               const value = entity.encodeValue(
                 data.value,
                 data.name.toString()
@@ -1156,7 +1161,6 @@ class Datastore extends DatastoreRequest {
             },
             {}
           );
-          addExcludeFromIndexes(entityObject, entityProto);
         } else {
           entityProto = entity.entityToEntityProto(entityObject);
         }
