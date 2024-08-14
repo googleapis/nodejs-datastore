@@ -144,7 +144,8 @@ describe('Commit', () => {
         'metadata.longString',
         'metadata.obj.longStringArray[].longString',
         'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-        'metadata.longStringArray[].*',
+        'metadata.longStringArray[].longString',
+        'metadata.longStringArray[].nestedLongStringArray[].longString',
       ];
       const expectedMutations: google.datastore.v1.IMutation[] = [
         {
@@ -250,7 +251,6 @@ describe('Commit', () => {
                                             },
                                             nestedProperty: {
                                               booleanValue: true,
-                                              excludeFromIndexes: true,
                                             },
                                           },
                                         },
