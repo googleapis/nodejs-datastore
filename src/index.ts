@@ -1130,12 +1130,6 @@ class Datastore extends DatastoreRequest {
               acc: EntityProtoReduceAccumulator,
               data: EntityProtoReduceData
             ) => {
-              /*
-              const subEntityObject = {
-                data:
-                excludeFromIndexes: [],
-              };
-               */
               const value = entity.encodeValue(
                 data.value,
                 data.name.toString()
