@@ -59,6 +59,15 @@ describe('Commit', () => {
       .join('<longString>');
     return JSON.parse(replacedInput);
   }
+
+  /**
+   * Sets up the gapic client so that when it receives mutations it ensures that
+   * the mutations match the expectedMutations and throw an assertion error if
+   * they don't.
+   *
+   * @param {google.datastore.v1.IMutation[]} expectedMutations The mutations
+   * that are expected to reach the Gapic layer.
+   */
   function expectCommitRequest(
     expectedMutations: google.datastore.v1.IMutation[]
   ) {
@@ -70,6 +79,33 @@ describe('Commit', () => {
       }
     );
   }
+  /**
+   * Calls save and ensures that the right mutations are passed to the Gapic layer.
+   * Fails an assertion check if the mutations object is incorrect.
+   *
+   * @param {Entities} entities The entities to save.
+   * @param {string[]} excludeFromIndexes The list of properties to exclude from indexing
+   * @param {boolean} excludeLargeProperties A flag passed to save that when
+   * set to true should add excludeFromIndexes to all large values
+   * @param {google.datastore.v1.IMutation[]} expectedMutations A list of
+   * mutations to pass into save.
+   */
+  async function checkSaveMutations(
+    entities: Entities,
+    excludeFromIndexes: string[],
+    excludeLargeProperties: boolean,
+    expectedMutations: google.datastore.v1.IMutation[]
+  ) {
+    expectCommitRequest(expectedMutations);
+    const postKey = datastore.key(['Post', 'post2']);
+    await datastore.save({
+      key: postKey,
+      data: entities,
+      excludeFromIndexes,
+      excludeLargeProperties,
+    });
+  }
+
   const key = {
     path: [
       {
@@ -81,22 +117,8 @@ describe('Commit', () => {
       namespaceId: 'namespace',
     },
   };
+
   describe('should pass the right request to gapic with an object containing many long strings', () => {
-    async function runTest(
-      entities: Entities,
-      excludeFromIndexes: string[],
-      excludeLargeProperties: boolean,
-      expectedMutations: google.datastore.v1.IMutation[]
-    ) {
-      expectCommitRequest(expectedMutations);
-      const postKey = datastore.key(['Post', 'post2']);
-      await datastore.save({
-        key: postKey,
-        data: entities,
-        excludeFromIndexes,
-        excludeLargeProperties,
-      });
-    }
     const properties: {[k: string]: IValue} = {
       longString: {
         stringValue: longString,
@@ -283,8 +305,8 @@ describe('Commit', () => {
           },
         },
       ];
-      await runTest(entities, excludeFromIndexes, false, expectedMutations);
-      await runTest(entities, excludeFromIndexes, true, expectedMutations);
+      await checkSaveMutations(entities, excludeFromIndexes, false, expectedMutations);
+      await checkSaveMutations(entities, excludeFromIndexes, true, expectedMutations);
     });
     describe('should pass the right request with no indexes excluded and excludeLargeProperties set', async () => {
       it('should pass the right properties for an object', async () => {
@@ -296,7 +318,7 @@ describe('Commit', () => {
             },
           },
         ];
-        await runTest(entities, [], true, expectedMutations);
+        await checkSaveMutations(entities, [], true, expectedMutations);
       });
       it.skip('should pass the right properties for an array', async () => {
         const arrayEntities = [
@@ -319,23 +341,11 @@ describe('Commit', () => {
             },
           },
         ];
-        await runTest(arrayEntities, [], true, expectedMutations);
+        await checkSaveMutations(arrayEntities, [], true, expectedMutations);
       });
     });
   });
   describe('should pass the right request to gapic with excludeFromLargeProperties', () => {
-    async function runTest(
-      entities: Entities,
-      expectedMutations: google.datastore.v1.IMutation[]
-    ) {
-      expectCommitRequest(expectedMutations);
-      const postKey = datastore.key(['Post', 'post2']);
-      await datastore.save({
-        key: postKey,
-        data: entities,
-        excludeLargeProperties: true,
-      });
-    }
     it.skip('should pass the right request with a nested field', async () => {
       const entities = [
         {
@@ -360,7 +370,7 @@ describe('Commit', () => {
           },
         },
       ];
-      await runTest(entities, expectedMutations);
+      await checkSaveMutations(entities, [], true, expectedMutations);
     });
   });
 });
