@@ -20,7 +20,7 @@ import type {CallOptions} from 'google-gax';
 import {Entities} from '../../src/entity';
 import {google} from '../../protos/protos';
 import IValue = google.datastore.v1.IValue;
-import {DatastoreOptions} from '../../src';
+
 const async = require('async');
 
 describe.only('Commit', () => {
@@ -131,172 +131,142 @@ describe.only('Commit', () => {
     },
   };
 
-  async.each(
-    [
-      {
-        namespace: `${Date.now()}`,
-      },
-      {
-        namespace: `second-db-${Date.now()}`,
-      },
-    ],
-    (clientOptions: DatastoreOptions) => {
-
+  const complexCaseProperties: {[k: string]: IValue} = {
+    longString: {
+      stringValue: longString,
+      excludeFromIndexes: true,
     },
-  );
-
-  describe('should pass the right request to gapic with an object containing many long strings', () => {
-    const complexCaseProperties: {[k: string]: IValue} = {
-      longString: {
-        stringValue: longString,
-        excludeFromIndexes: true,
+    notMetadata: {
+      booleanValue: true,
+    },
+    longStringArray: {
+      arrayValue: {
+        values: [
+          {
+            stringValue: longString,
+            excludeFromIndexes: true,
+          },
+        ],
       },
-      notMetadata: {
-        booleanValue: true,
-      },
-      longStringArray: {
-        arrayValue: {
-          values: [
-            {
-              stringValue: longString,
-              excludeFromIndexes: true,
-            },
-          ],
-        },
-      },
-      metadata: {
-        entityValue: {
-          properties: {
-            longString: {
-              stringValue: longString,
-              excludeFromIndexes: true,
-            },
-            otherProperty: {
-              stringValue: 'value',
-            },
-            obj: {
-              entityValue: {
-                properties: {
-                  longStringArray: {
-                    arrayValue: {
-                      values: [
-                        {
-                          entityValue: {
-                            properties: {
-                              longString: {
-                                stringValue: longString,
-                                excludeFromIndexes: true,
-                              },
-                              nestedLongStringArray: {
-                                arrayValue: {
-                                  values: [
-                                    {
-                                      entityValue: {
-                                        properties: {
-                                          longString: {
-                                            stringValue: longString,
-                                            excludeFromIndexes: true,
-                                          },
-                                          nestedProperty: {
-                                            booleanValue: true,
-                                          },
+    },
+    metadata: {
+      entityValue: {
+        properties: {
+          longString: {
+            stringValue: longString,
+            excludeFromIndexes: true,
+          },
+          otherProperty: {
+            stringValue: 'value',
+          },
+          obj: {
+            entityValue: {
+              properties: {
+                longStringArray: {
+                  arrayValue: {
+                    values: [
+                      {
+                        entityValue: {
+                          properties: {
+                            longString: {
+                              stringValue: longString,
+                              excludeFromIndexes: true,
+                            },
+                            nestedLongStringArray: {
+                              arrayValue: {
+                                values: [
+                                  {
+                                    entityValue: {
+                                      properties: {
+                                        longString: {
+                                          stringValue: longString,
+                                          excludeFromIndexes: true,
+                                        },
+                                        nestedProperty: {
+                                          booleanValue: true,
                                         },
                                       },
                                     },
-                                    {
-                                      entityValue: {
-                                        properties: {
-                                          longString: {
-                                            stringValue: longString,
-                                            excludeFromIndexes: true,
-                                          },
+                                  },
+                                  {
+                                    entityValue: {
+                                      properties: {
+                                        longString: {
+                                          stringValue: longString,
+                                          excludeFromIndexes: true,
                                         },
                                       },
                                     },
-                                  ],
-                                },
+                                  },
+                                ],
                               },
                             },
                           },
                         },
-                      ],
-                    },
+                      },
+                    ],
                   },
                 },
               },
             },
-            longStringArray: {
-              arrayValue: {
-                values: [
-                  {
-                    entityValue: {
-                      properties: {
-                        longString: {
-                          stringValue: longString,
-                          excludeFromIndexes: true,
-                        },
-                        nestedLongStringArray: {
-                          arrayValue: {
-                            values: [
-                              {
-                                entityValue: {
-                                  properties: {
-                                    longString: {
-                                      stringValue: longString,
-                                      excludeFromIndexes: true,
-                                    },
-                                    nestedProperty: {
-                                      booleanValue: true,
-                                    },
+          },
+          longStringArray: {
+            arrayValue: {
+              values: [
+                {
+                  entityValue: {
+                    properties: {
+                      longString: {
+                        stringValue: longString,
+                        excludeFromIndexes: true,
+                      },
+                      nestedLongStringArray: {
+                        arrayValue: {
+                          values: [
+                            {
+                              entityValue: {
+                                properties: {
+                                  longString: {
+                                    stringValue: longString,
+                                    excludeFromIndexes: true,
+                                  },
+                                  nestedProperty: {
+                                    booleanValue: true,
                                   },
                                 },
                               },
-                              {
-                                entityValue: {
-                                  properties: {
-                                    longString: {
-                                      stringValue: longString,
-                                      excludeFromIndexes: true,
-                                    },
+                            },
+                            {
+                              entityValue: {
+                                properties: {
+                                  longString: {
+                                    stringValue: longString,
+                                    excludeFromIndexes: true,
                                   },
                                 },
                               },
-                            ],
-                          },
+                            },
+                          ],
                         },
                       },
                     },
                   },
-                ],
-              },
+                },
+              ],
             },
           },
         },
       },
-    };
-    const complexCaseEntities = {
+    },
+  };
+  const complexCaseEntities = {
+    longString,
+    notMetadata: true,
+    longStringArray: [longString],
+    metadata: {
       longString,
-      notMetadata: true,
-      longStringArray: [longString],
-      metadata: {
-        longString,
-        otherProperty: 'value',
-        obj: {
-          longStringArray: [
-            {
-              longString,
-              nestedLongStringArray: [
-                {
-                  longString,
-                  nestedProperty: true,
-                },
-                {
-                  longString,
-                },
-              ],
-            },
-          ],
-        },
+      otherProperty: 'value',
+      obj: {
         longStringArray: [
           {
             longString,
@@ -312,7 +282,144 @@ describe.only('Commit', () => {
           },
         ],
       },
-    };
+      longStringArray: [
+        {
+          longString,
+          nestedLongStringArray: [
+            {
+              longString,
+              nestedProperty: true,
+            },
+            {
+              longString,
+            },
+          ],
+        },
+      ],
+    },
+  };
+
+  describe('save should pass the right properties to the gapic layer', () => {
+    async.each(
+      [
+        {
+          name: 'should pass the right request with a bunch of large properties excluded',
+          skipped: false,
+          entities: complexCaseEntities,
+          excludeFromIndexes: [
+            'longString',
+            'longStringArray[]',
+            'metadata.longString',
+            'metadata.obj.longStringArray[].longString',
+            'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+            'metadata.longStringArray[].longString',
+            'metadata.longStringArray[].nestedLongStringArray[].longString',
+          ],
+          excludeLargeProperties: false,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: complexCaseProperties,
+                key,
+              },
+            },
+          ],
+        },
+        {
+          name: 'should pass the right properties for an object with excludeLargeProperties',
+          skipped: false,
+          entities: complexCaseEntities,
+          excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: complexCaseProperties,
+                key,
+              },
+            },
+          ],
+        },
+        {
+          name: 'should pass the right properties for an array with excludeLargeProperties',
+          skipped: true,
+          entities: [
+            {
+              name: 'arrayEntities',
+              value: complexCaseEntities,
+            },
+          ],
+          excludeFromIndexes: [],
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  arrayEntities: {
+                    entityValue: {
+                      properties: complexCaseProperties,
+                    },
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
+          name: 'should pass the right request with a nested field',
+          skipped: true,
+          entities: [
+            {
+              name: 'field_b',
+              value: {
+                nestedField: Buffer.alloc(1501, '.').toString(),
+              },
+              excludeFromIndexes: true,
+            },
+          ],
+          excludeFromIndexes: [],
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  field_b: {
+                    entityValue: {
+                      properties: {},
+                    },
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+      ],
+      (test: {
+        name: string;
+        skipped: boolean;
+        entities: Entities;
+        excludeFromIndexes: string[];
+        excludeLargeProperties: boolean;
+        expectedMutations: google.datastore.v1.IMutation[];
+      }) => {
+        it(test.name, async function () {
+          if (test.skipped) {
+            this.skip();
+          }
+          await checkSaveMutations(
+            test.entities,
+            test.excludeFromIndexes,
+            test.excludeLargeProperties,
+            test.expectedMutations
+          );
+        });
+      }
+    );
+  });
+
+  describe('should pass the right request to gapic with an object containing many long strings', () => {
     it('should pass the right request with a bunch of large properties excluded', async () => {
       // TODO: Add note about excludeFromIndexes that should match
       const excludeFromIndexes = [
