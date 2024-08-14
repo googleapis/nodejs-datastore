@@ -20,8 +20,10 @@ import type {CallOptions} from 'google-gax';
 import {Entities} from '../../src/entity';
 import {google} from '../../protos/protos';
 import IValue = google.datastore.v1.IValue;
+import {DatastoreOptions} from '../../src';
+const async = require('async');
 
-describe('Commit', () => {
+describe.only('Commit', () => {
   const longString = Buffer.alloc(1501, '.').toString();
   const clientName = 'DatastoreClient';
   const datastore = getInitializedDatastoreClient();
@@ -52,12 +54,23 @@ describe('Commit', () => {
       };
     }
   }
+
+  /**
+   * Replaces long strings in an object with <longString> so that they can
+   * be used in an assert comparison as assert has a character limit on the
+   * data that it can accept
+   *
+   * @param {google.datastore.v1.IMutation[] | null} input The input object
+   * containing the long strings that should be replaced.
+   * @returns {google.datastore.v1.IMutation[]} The input object with the long
+   * strings replaced.
+   */
   function replaceLongStrings(input?: google.datastore.v1.IMutation[] | null) {
     const stringifiedInput = JSON.stringify(input);
     const replacedInput = stringifiedInput
       .split(longString)
       .join('<longString>');
-    return JSON.parse(replacedInput);
+    return JSON.parse(replacedInput) as google.datastore.v1.IMutation[];
   }
 
   /**
@@ -118,8 +131,22 @@ describe('Commit', () => {
     },
   };
 
+  async.each(
+    [
+      {
+        namespace: `${Date.now()}`,
+      },
+      {
+        namespace: `second-db-${Date.now()}`,
+      },
+    ],
+    (clientOptions: DatastoreOptions) => {
+
+    },
+  );
+
   describe('should pass the right request to gapic with an object containing many long strings', () => {
-    const properties: {[k: string]: IValue} = {
+    const complexCaseProperties: {[k: string]: IValue} = {
       longString: {
         stringValue: longString,
         excludeFromIndexes: true,
@@ -247,7 +274,7 @@ describe('Commit', () => {
         },
       },
     };
-    const entities = {
+    const complexCaseEntities = {
       longString,
       notMetadata: true,
       longStringArray: [longString],
@@ -300,31 +327,46 @@ describe('Commit', () => {
       const expectedMutations: google.datastore.v1.IMutation[] = [
         {
           upsert: {
-            properties,
+            properties: complexCaseProperties,
             key,
           },
         },
       ];
-      await checkSaveMutations(entities, excludeFromIndexes, false, expectedMutations);
-      await checkSaveMutations(entities, excludeFromIndexes, true, expectedMutations);
+      await checkSaveMutations(
+        complexCaseEntities,
+        excludeFromIndexes,
+        false,
+        expectedMutations
+      );
+      await checkSaveMutations(
+        complexCaseEntities,
+        excludeFromIndexes,
+        true,
+        expectedMutations
+      );
     });
     describe('should pass the right request with no indexes excluded and excludeLargeProperties set', async () => {
       it('should pass the right properties for an object', async () => {
         const expectedMutations: google.datastore.v1.IMutation[] = [
           {
             upsert: {
-              properties,
+              properties: complexCaseProperties,
               key,
             },
           },
         ];
-        await checkSaveMutations(entities, [], true, expectedMutations);
+        await checkSaveMutations(
+          complexCaseEntities,
+          [],
+          true,
+          expectedMutations
+        );
       });
       it.skip('should pass the right properties for an array', async () => {
         const arrayEntities = [
           {
             name: 'arrayEntities',
-            value: entities,
+            value: complexCaseEntities,
           },
         ];
         const expectedMutations: google.datastore.v1.IMutation[] = [
@@ -333,7 +375,7 @@ describe('Commit', () => {
               properties: {
                 arrayEntities: {
                   entityValue: {
-                    properties,
+                    properties: complexCaseProperties,
                   },
                 },
               },
