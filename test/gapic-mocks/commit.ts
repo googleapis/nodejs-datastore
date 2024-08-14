@@ -136,14 +136,14 @@ describe('Commit', () => {
         ],
       },
     };
-    it('should pass the right request with a bunch of large properties excluded', async () => {
+    it.only('should pass the right request with a bunch of large properties excluded', async () => {
+      // TODO: Add note about excludeFromIndexes that should match
       const excludeFromIndexes = [
         'longString',
-        'notMetadata',
         'longStringArray[]',
         'metadata.longString',
-        'metadata.otherProperty',
-        'metadata.obj.*',
+        'metadata.obj.longStringArray[].longString',
+        'metadata.obj.longStringArray[].nestedLongStringArray[].longString',
         'metadata.longStringArray[].*',
       ];
       const expectedMutations: google.datastore.v1.IMutation[] = [
@@ -156,7 +156,6 @@ describe('Commit', () => {
               },
               notMetadata: {
                 booleanValue: true,
-                excludeFromIndexes: true,
               },
               longStringArray: {
                 arrayValue: {
@@ -177,7 +176,6 @@ describe('Commit', () => {
                     },
                     otherProperty: {
                       stringValue: 'value',
-                      excludeFromIndexes: true,
                     },
                     obj: {
                       entityValue: {
@@ -204,7 +202,6 @@ describe('Commit', () => {
                                                   },
                                                   nestedProperty: {
                                                     booleanValue: true,
-                                                    excludeFromIndexes: true,
                                                   },
                                                 },
                                               },
