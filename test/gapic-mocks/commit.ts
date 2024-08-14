@@ -237,7 +237,7 @@ describe.only('Commit', () => {
     async.each(
       [
         {
-          // TODO: Add note about excludeFromIndexes that should match
+          // This test is from a modified version of https://github.com/googleapis/nodejs-datastore/blob/bf3dafd8267c447a52f7764505042a60b1a9fd28/test/index.ts#L1773
           name: 'should pass the right request with a bunch of large properties excluded',
           skipped: false,
           entities: complexCaseEntities,
