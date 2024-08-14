@@ -97,6 +97,134 @@ describe('Commit', () => {
         excludeLargeProperties,
       });
     }
+    const properties: {[k: string]: IValue} = {
+      longString: {
+        stringValue: longString,
+        excludeFromIndexes: true,
+      },
+      notMetadata: {
+        booleanValue: true,
+      },
+      longStringArray: {
+        arrayValue: {
+          values: [
+            {
+              stringValue: longString,
+              excludeFromIndexes: true,
+            },
+          ],
+        },
+      },
+      metadata: {
+        entityValue: {
+          properties: {
+            longString: {
+              stringValue: longString,
+              excludeFromIndexes: true,
+            },
+            otherProperty: {
+              stringValue: 'value',
+            },
+            obj: {
+              entityValue: {
+                properties: {
+                  longStringArray: {
+                    arrayValue: {
+                      values: [
+                        {
+                          entityValue: {
+                            properties: {
+                              longString: {
+                                stringValue: longString,
+                                excludeFromIndexes: true,
+                              },
+                              nestedLongStringArray: {
+                                arrayValue: {
+                                  values: [
+                                    {
+                                      entityValue: {
+                                        properties: {
+                                          longString: {
+                                            stringValue: longString,
+                                            excludeFromIndexes: true,
+                                          },
+                                          nestedProperty: {
+                                            booleanValue: true,
+                                          },
+                                        },
+                                      },
+                                    },
+                                    {
+                                      entityValue: {
+                                        properties: {
+                                          longString: {
+                                            stringValue: longString,
+                                            excludeFromIndexes: true,
+                                          },
+                                        },
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+            longStringArray: {
+              arrayValue: {
+                values: [
+                  {
+                    entityValue: {
+                      properties: {
+                        longString: {
+                          stringValue: longString,
+                          excludeFromIndexes: true,
+                        },
+                        nestedLongStringArray: {
+                          arrayValue: {
+                            values: [
+                              {
+                                entityValue: {
+                                  properties: {
+                                    longString: {
+                                      stringValue: longString,
+                                      excludeFromIndexes: true,
+                                    },
+                                    nestedProperty: {
+                                      booleanValue: true,
+                                    },
+                                  },
+                                },
+                              },
+                              {
+                                entityValue: {
+                                  properties: {
+                                    longString: {
+                                      stringValue: longString,
+                                      excludeFromIndexes: true,
+                                    },
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    };
     const entities = {
       longString,
       notMetadata: true,
@@ -136,7 +264,7 @@ describe('Commit', () => {
         ],
       },
     };
-    it.only('should pass the right request with a bunch of large properties excluded', async () => {
+    it('should pass the right request with a bunch of large properties excluded', async () => {
       // TODO: Add note about excludeFromIndexes that should match
       const excludeFromIndexes = [
         'longString',
@@ -150,134 +278,7 @@ describe('Commit', () => {
       const expectedMutations: google.datastore.v1.IMutation[] = [
         {
           upsert: {
-            properties: {
-              longString: {
-                stringValue: longString,
-                excludeFromIndexes: true,
-              },
-              notMetadata: {
-                booleanValue: true,
-              },
-              longStringArray: {
-                arrayValue: {
-                  values: [
-                    {
-                      stringValue: longString,
-                      excludeFromIndexes: true,
-                    },
-                  ],
-                },
-              },
-              metadata: {
-                entityValue: {
-                  properties: {
-                    longString: {
-                      stringValue: longString,
-                      excludeFromIndexes: true,
-                    },
-                    otherProperty: {
-                      stringValue: 'value',
-                    },
-                    obj: {
-                      entityValue: {
-                        properties: {
-                          longStringArray: {
-                            arrayValue: {
-                              values: [
-                                {
-                                  entityValue: {
-                                    properties: {
-                                      longString: {
-                                        stringValue: longString,
-                                        excludeFromIndexes: true,
-                                      },
-                                      nestedLongStringArray: {
-                                        arrayValue: {
-                                          values: [
-                                            {
-                                              entityValue: {
-                                                properties: {
-                                                  longString: {
-                                                    stringValue: longString,
-                                                    excludeFromIndexes: true,
-                                                  },
-                                                  nestedProperty: {
-                                                    booleanValue: true,
-                                                  },
-                                                },
-                                              },
-                                            },
-                                            {
-                                              entityValue: {
-                                                properties: {
-                                                  longString: {
-                                                    stringValue: longString,
-                                                    excludeFromIndexes: true,
-                                                  },
-                                                },
-                                              },
-                                            },
-                                          ],
-                                        },
-                                      },
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    },
-                    longStringArray: {
-                      arrayValue: {
-                        values: [
-                          {
-                            entityValue: {
-                              properties: {
-                                longString: {
-                                  stringValue: longString,
-                                  excludeFromIndexes: true,
-                                },
-                                nestedLongStringArray: {
-                                  arrayValue: {
-                                    values: [
-                                      {
-                                        entityValue: {
-                                          properties: {
-                                            longString: {
-                                              stringValue: longString,
-                                              excludeFromIndexes: true,
-                                            },
-                                            nestedProperty: {
-                                              booleanValue: true,
-                                            },
-                                          },
-                                        },
-                                      },
-                                      {
-                                        entityValue: {
-                                          properties: {
-                                            longString: {
-                                              stringValue: longString,
-                                              excludeFromIndexes: true,
-                                            },
-                                          },
-                                        },
-                                      },
-                                    ],
-                                  },
-                                },
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-              },
-            },
+            properties,
             key,
           },
         },
@@ -286,134 +287,6 @@ describe('Commit', () => {
       await runTest(entities, excludeFromIndexes, true, expectedMutations);
     });
     describe('should pass the right request with no indexes excluded and excludeLargeProperties set', async () => {
-      const properties: {[k: string]: IValue} = {
-        longString: {
-          stringValue: longString,
-          excludeFromIndexes: true,
-        },
-        notMetadata: {
-          booleanValue: true,
-        },
-        longStringArray: {
-          arrayValue: {
-            values: [
-              {
-                stringValue: longString,
-                excludeFromIndexes: true,
-              },
-            ],
-          },
-        },
-        metadata: {
-          entityValue: {
-            properties: {
-              longString: {
-                stringValue: longString,
-                excludeFromIndexes: true,
-              },
-              otherProperty: {
-                stringValue: 'value',
-              },
-              obj: {
-                entityValue: {
-                  properties: {
-                    longStringArray: {
-                      arrayValue: {
-                        values: [
-                          {
-                            entityValue: {
-                              properties: {
-                                longString: {
-                                  stringValue: longString,
-                                  excludeFromIndexes: true,
-                                },
-                                nestedLongStringArray: {
-                                  arrayValue: {
-                                    values: [
-                                      {
-                                        entityValue: {
-                                          properties: {
-                                            longString: {
-                                              stringValue: longString,
-                                              excludeFromIndexes: true,
-                                            },
-                                            nestedProperty: {
-                                              booleanValue: true,
-                                            },
-                                          },
-                                        },
-                                      },
-                                      {
-                                        entityValue: {
-                                          properties: {
-                                            longString: {
-                                              stringValue: longString,
-                                              excludeFromIndexes: true,
-                                            },
-                                          },
-                                        },
-                                      },
-                                    ],
-                                  },
-                                },
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-              },
-              longStringArray: {
-                arrayValue: {
-                  values: [
-                    {
-                      entityValue: {
-                        properties: {
-                          longString: {
-                            stringValue: longString,
-                            excludeFromIndexes: true,
-                          },
-                          nestedLongStringArray: {
-                            arrayValue: {
-                              values: [
-                                {
-                                  entityValue: {
-                                    properties: {
-                                      longString: {
-                                        stringValue: longString,
-                                        excludeFromIndexes: true,
-                                      },
-                                      nestedProperty: {
-                                        booleanValue: true,
-                                      },
-                                    },
-                                  },
-                                },
-                                {
-                                  entityValue: {
-                                    properties: {
-                                      longString: {
-                                        stringValue: longString,
-                                        excludeFromIndexes: true,
-                                      },
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      };
       it('should pass the right properties for an object', async () => {
         const expectedMutations: google.datastore.v1.IMutation[] = [
           {
