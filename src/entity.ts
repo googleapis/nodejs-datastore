@@ -778,6 +778,7 @@ export namespace entity {
    */
   export function entityToEntityProto(entityObject: EntityObject): EntityProto {
     const properties = entityObject.data;
+    const excludeFromIndexes = entityObject.excludeFromIndexes;
 
     const entityProto: EntityProto = {
       key: null,
@@ -792,16 +793,6 @@ export namespace entity {
       ),
     };
 
-    addExcludeFromIndexes(entityObject, entityProto);
-
-    return entityProto;
-  }
-
-  export function addExcludeFromIndexes(
-    entityObject: EntityObject,
-    entityProto: EntityProto
-  ): EntityProto {
-    const excludeFromIndexes = entityObject.excludeFromIndexes;
     if (excludeFromIndexes && excludeFromIndexes.length > 0) {
       excludeFromIndexes.forEach((excludePath: string) => {
         excludePathFromEntity(entityProto, excludePath);

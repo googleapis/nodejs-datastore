@@ -288,7 +288,7 @@ describe('Commit', () => {
       await runTest(entities, excludeFromIndexes, false, expectedMutations);
       await runTest(entities, excludeFromIndexes, true, expectedMutations);
     });
-    describe('should pass the right request with no indexes excluded and excludeLargeProperties set', async () => {
+    describe.only('should pass the right request with no indexes excluded and excludeLargeProperties set', async () => {
       const properties: {[k: string]: IValue} = {
         longString: {
           stringValue: longString,
@@ -428,7 +428,7 @@ describe('Commit', () => {
         ];
         await runTest(entities, [], true, expectedMutations);
       });
-      it.skip('should pass the right properties for an array', async () => {
+      it('should pass the right properties for an array', async () => {
         const arrayEntities = [
           {
             name: 'arrayEntities',
