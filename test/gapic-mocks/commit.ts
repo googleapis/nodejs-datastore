@@ -65,6 +65,7 @@ describe.only('Commit', () => {
     },
   };
 
+  // complexCaseProperties are expected mutations passed to Gapic.
   const complexCaseProperties: {[k: string]: IValue} = {
     longString: {
       stringValue: longString,
@@ -193,6 +194,7 @@ describe.only('Commit', () => {
       },
     },
   };
+  // complexCaseEntities are passed into save for the complex case.
   const complexCaseEntities = {
     longString,
     notMetadata: true,
@@ -261,6 +263,7 @@ describe.only('Commit', () => {
           ],
         },
         {
+          // Just like the previous test, but no excludeFromIndexes and excludeLargeProperties is true
           name: 'should pass the right properties for an object with excludeLargeProperties',
           skipped: false,
           entities: complexCaseEntities,
@@ -276,6 +279,7 @@ describe.only('Commit', () => {
           ],
         },
         {
+          // Just like the previous test, but entities are wrapped in an array
           name: 'should pass the right properties for an array with excludeLargeProperties',
           skipped: true,
           entities: [
@@ -302,6 +306,7 @@ describe.only('Commit', () => {
           ],
         },
         {
+          // This test case reproduces https://github.com/googleapis/nodejs-datastore/issues/1242
           name: 'should pass the right request with a nested field',
           skipped: true,
           entities: [
