@@ -23,7 +23,7 @@ import IValue = google.datastore.v1.IValue;
 
 const async = require('async');
 
-describe('Commit', () => {
+describe.only('Commit', () => {
   const longString = Buffer.alloc(1501, '.').toString();
   const clientName = 'DatastoreClient';
   const datastore = getInitializedDatastoreClient();
@@ -327,6 +327,42 @@ describe('Commit', () => {
                   field_b: {
                     entityValue: {
                       properties: {},
+                    },
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
+          // "should pass the right request with a bunch of large properties excluded" test with entities wrapped in name/value
+          name: 'should pass the right request with a name/value pair, but a bunch of large properties excluded',
+          skipped: false,
+          entities: {
+            name: 'entityName',
+            value: complexCaseEntities,
+          },
+          excludeFromIndexes: [
+            'value.longString',
+            'value.longStringArray[]',
+            'value.metadata.longString',
+            'value.metadata.obj.longStringArray[].longString',
+            'value.metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+            'value.metadata.longStringArray[].longString',
+            'value.metadata.longStringArray[].nestedLongStringArray[].longString',
+          ],
+          excludeLargeProperties: false,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  name: {
+                    stringValue: 'entityName',
+                  },
+                  value: {
+                    entityValue: {
+                      properties: complexCaseProperties,
                     },
                   },
                 },
