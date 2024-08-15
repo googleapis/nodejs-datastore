@@ -279,33 +279,6 @@ describe.only('Commit', () => {
           ],
         },
         {
-          // Just like the previous test, but entities are wrapped in an array
-          name: 'should pass the right properties for an array with excludeLargeProperties',
-          skipped: true,
-          entities: [
-            {
-              name: 'arrayEntities',
-              value: complexCaseEntities,
-            },
-          ],
-          excludeFromIndexes: [],
-          excludeLargeProperties: true,
-          expectedMutations: [
-            {
-              upsert: {
-                properties: {
-                  arrayEntities: {
-                    entityValue: {
-                      properties: complexCaseProperties,
-                    },
-                  },
-                },
-                key,
-              },
-            },
-          ],
-        },
-        {
           // This test case reproduces https://github.com/googleapis/nodejs-datastore/issues/1242
           name: 'should pass the right request with a nested field',
           skipped: true,
@@ -387,6 +360,36 @@ describe.only('Commit', () => {
                 properties: {
                   name: {
                     stringValue: 'entityName',
+                  },
+                  value: {
+                    entityValue: {
+                      properties: complexCaseProperties,
+                    },
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
+          // Just like the previous test, but entities are wrapped in an array
+          name: 'should pass the right properties for an array with excludeLargeProperties',
+          skipped: true,
+          entities: [
+            {
+              name: 'arrayEntities',
+              value: complexCaseEntities,
+            },
+          ],
+          excludeFromIndexes: [],
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  name: {
+                    stringValue: 'arrayEntities',
                   },
                   value: {
                     entityValue: {
