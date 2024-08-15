@@ -239,6 +239,59 @@ describe.only('Commit', () => {
     async.each(
       [
         {
+          name: 'should pass the right properties for a simple name/value pair',
+          skipped: false,
+          entities: {
+            name: 'entityName',
+            value: 'entityValue',
+          },
+          excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  name: {
+                    stringValue: 'entityName',
+                  },
+                  value: {
+                    stringValue: 'entityValue',
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
+          // This test checks to see that when the name/value is wrapped in an array it still produces the same mutations.
+          name: 'should pass the right properties for a simple name/value pair in an array',
+          skipped: true,
+          entities: [
+            {
+              name: 'entityName',
+              value: 'entityValue',
+            },
+          ],
+          excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  name: {
+                    stringValue: 'entityName',
+                  },
+                  value: {
+                    stringValue: 'entityValue',
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
           // This test is from a modified version of https://github.com/googleapis/nodejs-datastore/blob/bf3dafd8267c447a52f7764505042a60b1a9fd28/test/index.ts#L1773
           name: 'should pass the right request with a bunch of large properties excluded',
           skipped: false,
