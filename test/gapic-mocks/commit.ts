@@ -337,7 +337,7 @@ describe.only('Commit', () => {
         },
         {
           // "should pass the right request with a bunch of large properties excluded" test with entities wrapped in name/value
-          name: 'should pass the right request with a name/value pair, but a bunch of large properties excluded',
+          name: 'should pass the right request with a name/value pair and a bunch of large properties excluded',
           skipped: false,
           entities: {
             name: 'entityName',
@@ -353,6 +353,34 @@ describe.only('Commit', () => {
             'value.metadata.longStringArray[].nestedLongStringArray[].longString',
           ],
           excludeLargeProperties: false,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  name: {
+                    stringValue: 'entityName',
+                  },
+                  value: {
+                    entityValue: {
+                      properties: complexCaseProperties,
+                    },
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
+          // "should pass the right properties for an object with excludeLargeProperties" test with entities wrapped in name/value
+          name: 'should pass the right request with a name/value pair and excludeLargeProperties set to true',
+          skipped: false,
+          entities: {
+            name: 'entityName',
+            value: complexCaseEntities,
+          },
+          excludeFromIndexes: [],
+          excludeLargeProperties: true,
           expectedMutations: [
             {
               upsert: {
