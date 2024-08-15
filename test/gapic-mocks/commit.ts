@@ -263,10 +263,26 @@ describe.only('Commit', () => {
           ],
         },
         {
-          // Just like the previous test, but no excludeFromIndexes and excludeLargeProperties is true
+          // Just like 'should pass the right request with a bunch of large properties excluded', but excludeLargeProperties is true
           name: 'should pass the right properties for an object with excludeLargeProperties',
           skipped: false,
           entities: complexCaseEntities,
+          excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: complexCaseProperties,
+                key,
+              },
+            },
+          ],
+        },
+        {
+          // Just like 'should pass the right properties for an object with excludeLargeProperties', but for an array.
+          name: 'should pass the right properties for an array with excludeLargeProperties',
+          skipped: true,
+          entities: [complexCaseEntities],
           excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
           excludeLargeProperties: true,
           expectedMutations: [
