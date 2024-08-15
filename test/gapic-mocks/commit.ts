@@ -390,7 +390,7 @@ describe.only('Commit', () => {
         },
         {
           // Just like the previous test, but entities are wrapped in an array
-          name: 'should pass the right properties for an array with excludeLargeProperties',
+          name: 'should pass the right properties for an array with name/value pairs and excludeLargeProperties',
           skipped: true,
           entities: [
             {
