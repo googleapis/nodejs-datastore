@@ -394,7 +394,7 @@ describe.only('Commit', () => {
           skipped: true,
           entities: [
             {
-              name: 'arrayEntities',
+              name: 'entityName',
               value: complexCaseEntities,
             },
           ],
@@ -405,7 +405,7 @@ describe.only('Commit', () => {
               upsert: {
                 properties: {
                   name: {
-                    stringValue: 'arrayEntities',
+                    stringValue: 'entityName',
                   },
                   value: {
                     entityValue: {
