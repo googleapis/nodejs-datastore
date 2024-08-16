@@ -264,9 +264,9 @@ describe.only('Commit', () => {
           ],
         },
         {
-          // This test checks to see that when the name/value is wrapped in an array it still produces the same mutations.
+          // This test checks to see that when the name/value is wrapped in an array it parses the input differently.
           name: 'should pass the right properties for a simple name/value pair in an array',
-          skipped: true,
+          skipped: false,
           entities: [
             {
               name: 'entityName',
@@ -279,10 +279,7 @@ describe.only('Commit', () => {
             {
               upsert: {
                 properties: {
-                  name: {
-                    stringValue: 'entityName',
-                  },
-                  value: {
+                  entityName: {
                     stringValue: 'entityValue',
                   },
                 },
@@ -320,22 +317,6 @@ describe.only('Commit', () => {
           name: 'should pass the right properties for an object with excludeLargeProperties',
           skipped: false,
           entities: complexCaseEntities,
-          excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
-          excludeLargeProperties: true,
-          expectedMutations: [
-            {
-              upsert: {
-                properties: complexCaseProperties,
-                key,
-              },
-            },
-          ],
-        },
-        {
-          // Just like 'should pass the right properties for an object with excludeLargeProperties', but for an array.
-          name: 'should pass the right properties for an array with excludeLargeProperties',
-          skipped: true,
-          entities: [complexCaseEntities],
           excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
           excludeLargeProperties: true,
           expectedMutations: [
@@ -457,10 +438,7 @@ describe.only('Commit', () => {
             {
               upsert: {
                 properties: {
-                  name: {
-                    stringValue: 'entityName',
-                  },
-                  value: {
+                  entityName: {
                     entityValue: {
                       properties: complexCaseProperties,
                     },
