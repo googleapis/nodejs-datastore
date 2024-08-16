@@ -50,6 +50,26 @@ describe.only('findLargeProperties_', () => {
   async.each(
     [
       {
+        name: 'For a simple case involving a name/value pair',
+        entities: {
+          name: 'firstElementName',
+          value: longString,
+        },
+        skipped: false,
+        expectedOutput: ['value'],
+      },
+      {
+        name: 'For a simple case involving a name/value pair in an array',
+        entities: [
+          {
+            name: 'firstElementName',
+            value: longString,
+          },
+        ],
+        skipped: false,
+        expectedOutput: ['firstElementName'],
+      },
+      {
         name: 'For a complex case involving lots of entities',
         entities: complexCaseEntities,
         skipped: false,
