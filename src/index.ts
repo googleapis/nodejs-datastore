@@ -70,6 +70,27 @@ import {AggregateQuery} from './aggregate';
 
 const {grpc} = new GrpcClient();
 
+interface SaveEntityWithKeySymbol {
+  [entity.KEY_SYMBOL]: SaveArrayData[] | SaveNonArrayData;
+}
+
+type SaveNonArrayData = google.datastore.v1.IEntity;
+
+interface SaveArrayData {
+  name: string;
+  value: google.datastore.v1.IValue;
+  excludeFromIndexes: boolean;
+}
+
+interface SaveEntityWithoutKeySymbol {
+  key: entity.Key;
+  data: SaveArrayData[] | SaveNonArrayData;
+}
+
+type SaveEntity = SaveEntityWithoutKeySymbol;
+
+type SaveEntities = SaveEntity | SaveEntity[];
+
 export type PathType = string | number | entity.Int;
 export interface BooleanObject {
   [key: string]: boolean;
@@ -1072,11 +1093,11 @@ class Datastore extends DatastoreRequest {
   ): void;
   save(entities: Entities, callback: SaveCallback): void;
   save(
-    entities: Entities,
+    entities: SaveEntities,
     gaxOptionsOrCallback?: CallOptions | SaveCallback,
     cb?: SaveCallback
   ): void | Promise<SaveResponse> {
-    entities = arrify(entities);
+    const arrayifiedEntities = arrify(entities);
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
@@ -1092,7 +1113,7 @@ class Datastore extends DatastoreRequest {
 
     // Iterate over the entity objects, build a proto from all keys and values,
     // then place in the correct mutation array (insert, update, etc).
-    entities
+    arrayifiedEntities
       .map(DatastoreRequest.prepareEntityObject_)
       .forEach((entityObject: Entity, index: number) => {
         const mutation: Mutation = {};
@@ -1184,7 +1205,7 @@ class Datastore extends DatastoreRequest {
         }
         if (insertIndexes[index]) {
           const id = entity.keyFromKeyProto(result.key).id;
-          entities[index].key.id = id;
+          arrayifiedEntities[index].key.id = id;
         }
       });
 
