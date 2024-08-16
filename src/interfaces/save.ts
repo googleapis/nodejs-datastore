@@ -22,10 +22,6 @@ type SaveNonArrayData = {
   [k: string]: Entity;
 };
 
-interface HasToString {
-  toString(): string;
-}
-
 /*
 Entity data passed into save in an array form will be of type SaveArrayData
 so will have name and value defined because they are needed in these places:
@@ -33,7 +29,9 @@ https://github.com/googleapis/nodejs-datastore/blob/bf3dafd8267c447a52f776450504
 https://github.com/googleapis/nodejs-datastore/blob/bf3dafd8267c447a52f7764505042a60b1a9fd28/src/index.ts#L1134
  */
 interface SaveArrayData {
-  name: HasToString;
+  name: {
+    toString(): string;
+  };
   value: Entity;
   excludeFromIndexes?: boolean;
 }
