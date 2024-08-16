@@ -1,11 +1,6 @@
 import {entity} from '../entity';
 import {google} from '../../protos/protos';
 
-interface SaveEntityWithKeySymbol {
-  [entity.KEY_SYMBOL]: entity.Key;
-  data: SaveArrayData[] | SaveNonArrayData;
-}
-
 type SaveNonArrayData = google.datastore.v1.IEntity;
 
 interface SaveArrayData {
@@ -14,11 +9,17 @@ interface SaveArrayData {
   excludeFromIndexes: boolean;
 }
 
+export type SaveDataValue = SaveArrayData[] | SaveNonArrayData;
+
 interface SaveEntityWithoutKeySymbol {
   key: entity.Key;
-  data: SaveArrayData[] | SaveNonArrayData;
+  data: SaveDataValue;
+  excludeFromIndexes?: string[];
+}
+
+interface SaveEntityWithKeySymbol {
+  [entity.KEY_SYMBOL]: entity.Key;
+  data: SaveDataValue;
 }
 
 export type SaveEntity = SaveEntityWithoutKeySymbol | SaveEntityWithKeySymbol;
-
-type SaveEntities = SaveEntity | SaveEntity[];

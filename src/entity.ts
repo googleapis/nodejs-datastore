@@ -1463,7 +1463,7 @@ export interface ResponseResult {
 
 export interface EntityObject {
   data: {[k: string]: Entity};
-  excludeFromIndexes: string[];
+  excludeFromIndexes?: string[];
 }
 
 export interface Json {
