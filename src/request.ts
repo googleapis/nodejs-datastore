@@ -1413,8 +1413,8 @@ export interface PrepareEntityObject {
   [key: string]: google.datastore.v1.Key | undefined;
 }
 export interface PrepareEntityObjectResponse {
-  key: entity.Key;
-  data: SaveDataValue;
+  key?: entity.Key;
+  data?: SaveDataValue;
   excludeFromIndexes?: string[];
   excludeLargeProperties?: boolean;
   method?: string;
