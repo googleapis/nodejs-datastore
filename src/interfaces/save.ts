@@ -4,7 +4,9 @@ import {Entity, entity} from '../entity';
 Entity data passed into save in non array form will be of type SaveNonArrayData
 and does not require name and value properties.
  */
-type SaveNonArrayData = Entity;
+type SaveNonArrayData = {
+  [k: string]: Entity;
+};
 
 /*
 Entity data passed into save in an array form will be of type SaveArrayData
