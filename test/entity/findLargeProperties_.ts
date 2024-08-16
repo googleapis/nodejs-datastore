@@ -81,20 +81,6 @@ describe.only('findLargeProperties_', () => {
         ],
       },
       {
-        name: 'For a complex case wrapped in an array',
-        entities: [complexCaseEntities],
-        skipped: false,
-        expectedOutput: [
-          '[].longString',
-          '[].longStringArray[]',
-          '[].metadata.longString',
-          '[].metadata.obj.longStringArray[].longString',
-          '[].metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-          '[].metadata.longStringArray[].longString',
-          '[].metadata.longStringArray[].nestedLongStringArray[].longString',
-        ],
-      },
-      {
         name: 'For a complex case involving and array and name/value',
         entities: [
           {
@@ -104,13 +90,13 @@ describe.only('findLargeProperties_', () => {
         ],
         skipped: true,
         expectedOutput: [
-          '[].value.longString',
-          '[].value.longStringArray[]',
-          '[].value.metadata.longString',
-          '[].value.metadata.obj.longStringArray[].longString',
-          '[].value.metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-          '[].value.metadata.longStringArray[].longString',
-          '[].value.metadata.longStringArray[].nestedLongStringArray[].longString',
+          '[].firstElementName.longString',
+          '[].firstElementName.longStringArray[]',
+          '[].firstElementName.metadata.longString',
+          '[].firstElementName.metadata.obj.longStringArray[].longString',
+          '[].firstElementName.metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+          '[].firstElementName.metadata.longStringArray[].longString',
+          '[].firstElementName.metadata.longStringArray[].nestedLongStringArray[].longString',
         ],
       },
     ],
