@@ -23,7 +23,7 @@ import IValue = google.datastore.v1.IValue;
 
 const async = require('async');
 
-describe.only('Commit', () => {
+describe('Commit', () => {
   const longString = Buffer.alloc(1501, '.').toString();
   const clientName = 'DatastoreClient';
   const datastore = getInitializedDatastoreClient();
