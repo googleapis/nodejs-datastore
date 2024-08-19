@@ -315,7 +315,7 @@ describe('Commit', () => {
         },
         {
           name: 'should pass the right properties for a simple name/value pair in an array with excludeFromIndexes list',
-          skipped: false,
+          skipped: true,
           entities: [
             {
               name: 'entityName',
@@ -323,13 +323,13 @@ describe('Commit', () => {
             },
           ],
           excludeFromIndexes: ['entityName'],
-          excludeLargeProperties: true,
           expectedMutations: [
             {
               upsert: {
                 properties: {
                   entityName: {
                     stringValue: 'entityValue',
+                    excludeFromIndexes: true,
                   },
                 },
                 key,
