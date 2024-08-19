@@ -792,16 +792,15 @@ export namespace entity {
       ),
     };
 
-    addExcludeFromIndexes(entityObject, entityProto);
+    addExcludeFromIndexes(entityObject.excludeFromIndexes, entityProto);
 
     return entityProto;
   }
 
   export function addExcludeFromIndexes(
-    entityObject: EntityObject,
+    excludeFromIndexes: string[],
     entityProto: EntityProto
   ): EntityProto {
-    const excludeFromIndexes = entityObject.excludeFromIndexes;
     if (excludeFromIndexes && excludeFromIndexes.length > 0) {
       excludeFromIndexes.forEach((excludePath: string) => {
         excludePathFromEntity(entityProto, excludePath);

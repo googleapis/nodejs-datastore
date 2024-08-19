@@ -1156,7 +1156,7 @@ class Datastore extends DatastoreRequest {
             },
             {}
           );
-          addExcludeFromIndexes(entityObject, entityProto);
+          addExcludeFromIndexes(entityObject.excludeFromIndexes, entityProto);
         } else {
           entityProto = entity.entityToEntityProto(entityObject);
         }
