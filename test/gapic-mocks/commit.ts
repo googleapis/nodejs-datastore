@@ -355,7 +355,7 @@ describe.only('Commit', () => {
         {
           // This test case reproduces https://github.com/googleapis/nodejs-datastore/issues/1242
           name: 'should pass the right request with a nested field',
-          skipped: true,
+          skipped: false,
           entities: [
             {
               name: 'field_b',
@@ -373,8 +373,14 @@ describe.only('Commit', () => {
                 properties: {
                   field_b: {
                     entityValue: {
-                      properties: {},
+                      properties: {
+                        nestedField: {
+                          stringValue: longString,
+                          excludeFromIndexes: true,
+                        },
+                      },
                     },
+                    excludeFromIndexes: true,
                   },
                 },
                 key,
