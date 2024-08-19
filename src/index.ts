@@ -1119,21 +1119,23 @@ class Datastore extends DatastoreRequest {
         // `excludeFromIndexes` option.
         if (Array.isArray(entityObject.data)) {
           // This code populates the excludeFromIndexes list with the right values.
-          entityObject.data.forEach(
-            (data: {
-              name: {
-                toString(): string;
-              };
-              value: Entity;
-              excludeFromIndexes?: boolean;
-            }) => {
-              entityObject.excludeFromIndexes = entity.findLargeProperties_(
-                data.value,
-                data.name.toString(),
-                entityObject.excludeFromIndexes
-              );
-            }
-          );
+          if (entityObject.excludeLargeProperties) {
+            entityObject.data.forEach(
+              (data: {
+                name: {
+                  toString(): string;
+                };
+                value: Entity;
+                excludeFromIndexes?: boolean;
+              }) => {
+                entityObject.excludeFromIndexes = entity.findLargeProperties_(
+                  data.value,
+                  data.name.toString(),
+                  entityObject.excludeFromIndexes
+                );
+              }
+            );
+          }
           // This code builds the right entityProto from the entityObject
           entityProto.properties = entityObject.data.reduce(
             (
