@@ -1128,8 +1128,8 @@ class Datastore extends DatastoreRequest {
               excludeFromIndexes?: boolean;
             }) => {
               entityObject.excludeFromIndexes = entity.findLargeProperties_(
-                entityObject.data.value,
-                data.toString(),
+                data.value,
+                data.name.toString(),
                 entityObject.excludeFromIndexes
               );
             }
