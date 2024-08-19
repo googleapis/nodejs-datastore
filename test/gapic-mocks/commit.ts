@@ -289,6 +289,55 @@ describe('Commit', () => {
           ],
         },
         {
+          name: 'should position excludeFromIndexes in the right place when provided at the top level',
+          skipped: false,
+          entities: [
+            {
+              name: 'entityName',
+              value: 'entityValue',
+              excludeFromIndexes: true,
+            },
+          ],
+          excludeFromIndexes: [],
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  entityName: {
+                    stringValue: 'entityValue',
+                    excludeFromIndexes: true,
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
+          name: 'should pass the right properties for a simple name/value pair in an array with excludeFromIndexes list',
+          skipped: false,
+          entities: [
+            {
+              name: 'entityName',
+              value: 'entityValue',
+            },
+          ],
+          excludeFromIndexes: ['entityName'],
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  entityName: {
+                    stringValue: 'entityValue',
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
           // This test is from a modified version of https://github.com/googleapis/nodejs-datastore/blob/bf3dafd8267c447a52f7764505042a60b1a9fd28/test/index.ts#L1773
           name: 'should pass the right request with a bunch of large properties excluded',
           skipped: false,
