@@ -398,8 +398,14 @@ describe('Commit', () => {
                 properties: {
                   field_b: {
                     entityValue: {
-                      properties: {},
+                      properties: {
+                        nestedField: {
+                          stringValue: longString,
+                          excludeFromIndexes: true,
+                        },
+                      },
                     },
+                    excludeFromIndexes: true,
                   },
                 },
                 key,
