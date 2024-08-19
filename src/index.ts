@@ -1110,14 +1110,6 @@ class Datastore extends DatastoreRequest {
           }
         }
 
-        if (entityObject.excludeLargeProperties) {
-          entityObject.excludeFromIndexes = entity.findLargeProperties_(
-            entityObject.data,
-            '',
-            entityObject.excludeFromIndexes
-          );
-        }
-
         if (!entity.isKeyComplete(entityObject.key)) {
           insertIndexes[index] = true;
         }
@@ -1126,6 +1118,23 @@ class Datastore extends DatastoreRequest {
         // This was replaced with a more efficient mechanism in the top-level
         // `excludeFromIndexes` option.
         if (Array.isArray(entityObject.data)) {
+          // This code populates the excludeFromIndexes list with the right values.
+          entityObject.data.forEach(
+            (data: {
+              name: {
+                toString(): string;
+              };
+              value: Entity;
+              excludeFromIndexes?: boolean;
+            }) => {
+              entityObject.excludeFromIndexes = entity.findLargeProperties_(
+                entityObject.data.value,
+                data.toString(),
+                entityObject.excludeFromIndexes
+              );
+            }
+          );
+          // This code builds the right entityProto from the entityObject
           entityProto.properties = entityObject.data.reduce(
             (
               acc: EntityProtoReduceAccumulator,
@@ -1156,8 +1165,18 @@ class Datastore extends DatastoreRequest {
             },
             {}
           );
+          // This code adds excludeFromIndexes in the right places
           addExcludeFromIndexes(entityObject.excludeFromIndexes, entityProto);
         } else {
+          // This code populates the excludeFromIndexes list with the right values.
+          if (entityObject.excludeLargeProperties) {
+            entityObject.excludeFromIndexes = entity.findLargeProperties_(
+              entityObject.data,
+              '',
+              entityObject.excludeFromIndexes
+            );
+          }
+          // This code builds the right entityProto from the entityObject
           entityProto = entity.entityToEntityProto(entityObject);
         }
 
