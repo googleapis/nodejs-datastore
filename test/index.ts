@@ -1589,7 +1589,7 @@ async.each(
           } catch (err: unknown) {
             assert(
               [
-                `Cannot read properties of null (reading 'toString')`, // Later Node versions
+                "Cannot read properties of null (reading 'toString')", // Later Node versions
                 "Cannot read property 'toString' of null", // Node 14
               ].includes((err as {message: string}).message)
             );
