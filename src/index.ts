@@ -1115,9 +1115,6 @@ class Datastore extends DatastoreRequest {
           insertIndexes[index] = true;
         }
 
-        // @TODO remove in @google-cloud/datastore@2.0.0
-        // This was replaced with a more efficient mechanism in the top-level
-        // `excludeFromIndexes` option.
         if (Array.isArray(entityObject.data)) {
           // This code populates the excludeFromIndexes list with the right values.
           if (entityObject.excludeLargeProperties) {
