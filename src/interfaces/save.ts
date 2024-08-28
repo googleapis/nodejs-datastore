@@ -24,9 +24,8 @@ type SaveNonArrayData = {
 
 /*
 Entity data passed into save in an array form will be of type SaveArrayData
-so will have name and value defined because they are needed in these places:
-https://github.com/googleapis/nodejs-datastore/blob/bf3dafd8267c447a52f7764505042a60b1a9fd28/src/index.ts#L1152
-https://github.com/googleapis/nodejs-datastore/blob/bf3dafd8267c447a52f7764505042a60b1a9fd28/src/index.ts#L1134
+so will have name and value defined because the source code of save requires a
+name and a value to be defined or else an error will be thrown.
  */
 interface SaveArrayData {
   name: {
