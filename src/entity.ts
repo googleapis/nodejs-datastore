@@ -798,7 +798,7 @@ export namespace entity {
   }
 
   export function addExcludeFromIndexes(
-    excludeFromIndexes: string[],
+    excludeFromIndexes: string[] | undefined,
     entityProto: EntityProto
   ): EntityProto {
     if (excludeFromIndexes && excludeFromIndexes.length > 0) {
@@ -1471,7 +1471,7 @@ export interface ResponseResult {
 
 export interface EntityObject {
   data: {[k: string]: Entity};
-  excludeFromIndexes: string[];
+  excludeFromIndexes?: string[];
 }
 
 export interface Json {

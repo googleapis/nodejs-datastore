@@ -67,6 +67,7 @@ import {Transaction} from './transaction';
 import {promisifyAll} from '@google-cloud/promisify';
 import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
+import {SaveEntity} from './interfaces/save';
 
 const {grpc} = new GrpcClient();
 const addExcludeFromIndexes = entity.addExcludeFromIndexes;
@@ -1077,7 +1078,7 @@ class Datastore extends DatastoreRequest {
     gaxOptionsOrCallback?: CallOptions | SaveCallback,
     cb?: SaveCallback
   ): void | Promise<SaveResponse> {
-    entities = arrify(entities);
+    entities = arrify(entities) as SaveEntity[];
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
