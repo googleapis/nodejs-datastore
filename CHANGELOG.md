@@ -4,6 +4,18 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [9.2.0](https://github.com/googleapis/nodejs-datastore/compare/v9.1.0...v9.2.0) (2024-08-28)
+
+
+### Features
+
+* Update Go Datastore import path ([#1261](https://github.com/googleapis/nodejs-datastore/issues/1261)) ([bf3dafd](https://github.com/googleapis/nodejs-datastore/commit/bf3dafd8267c447a52f7764505042a60b1a9fd28))
+
+
+### Bug Fixes
+
+* Add excludeFromIndexes in the proper places for large properties of nested fields ([#1266](https://github.com/googleapis/nodejs-datastore/issues/1266)) ([9c7730a](https://github.com/googleapis/nodejs-datastore/commit/9c7730a35699be049beeac0c4bb469239971d471))
+
 ## [9.1.0](https://github.com/googleapis/nodejs-datastore/compare/v9.0.0...v9.1.0) (2024-06-24)
 
 
