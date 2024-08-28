@@ -89,6 +89,7 @@ const fakeEntityInit: any = {
   keyToKeyProto: entity.keyToKeyProto,
   encodeValue: entity.encodeValue,
   entityToEntityProto: entity.entityToEntityProto,
+  addExcludeFromIndexes: entity.addExcludeFromIndexes,
   findLargeProperties_: entity.findLargeProperties_,
   URLSafeKey: entity.URLSafeKey,
 };

@@ -28,31 +28,6 @@ describe('Commit', () => {
   const clientName = 'DatastoreClient';
   const datastore = getInitializedDatastoreClient();
 
-  function setCommitComparison(
-    compareFn: (request: protos.google.datastore.v1.ICommitRequest) => void
-  ) {
-    const dataClient = datastore.clients_.get(clientName);
-    if (dataClient) {
-      dataClient.commit = (
-        request: protos.google.datastore.v1.ICommitRequest,
-        options: CallOptions,
-        callback: (
-          err?: unknown,
-          res?: protos.google.datastore.v1.ICommitResponse
-        ) => void
-      ) => {
-        try {
-          compareFn(request);
-        } catch (e) {
-          callback(e);
-        }
-        callback(null, {
-          mutationResults: [],
-        });
-      };
-    }
-  }
-
   const key = {
     path: [
       {
@@ -315,7 +290,7 @@ describe('Commit', () => {
         },
         {
           name: 'should pass the right properties for a simple name/value pair in an array with excludeFromIndexes list',
-          skipped: true,
+          skipped: false,
           entities: [
             {
               name: 'entityName',
@@ -380,7 +355,7 @@ describe('Commit', () => {
         {
           // This test case reproduces https://github.com/googleapis/nodejs-datastore/issues/1242
           name: 'should pass the right request with a nested field',
-          skipped: true,
+          skipped: false,
           entities: [
             {
               name: 'field_b',
@@ -480,7 +455,7 @@ describe('Commit', () => {
         {
           // Just like the previous test, but entities are wrapped in an array
           name: 'should pass the right properties for an array with name/value pairs and excludeLargeProperties',
-          skipped: true,
+          skipped: false,
           entities: [
             {
               name: 'entityName',
