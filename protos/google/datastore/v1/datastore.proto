@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,10 +23,11 @@ import "google/api/routing.proto";
 import "google/datastore/v1/aggregation_result.proto";
 import "google/datastore/v1/entity.proto";
 import "google/datastore/v1/query.proto";
+import "google/datastore/v1/query_profile.proto";
 import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Google.Cloud.Datastore.V1";
-option go_package = "google.golang.org/genproto/googleapis/datastore/v1;datastore";
+option go_package = "cloud.google.com/go/datastore/apiv1/datastorepb;datastorepb";
 option java_multiple_files = true;
 option java_outer_classname = "DatastoreProto";
 option java_package = "com.google.datastore.v1";
@@ -172,6 +173,14 @@ message LookupRequest {
 
   // Required. Keys of entities to look up.
   repeated Key keys = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // The properties to return. Defaults to returning all properties.
+  //
+  // If this field is set and an entity has a property not referenced in the
+  // mask, it will be absent from [LookupResponse.found.entity.properties][].
+  //
+  // The entity's key is always returned.
+  PropertyMask property_mask = 5;
 }
 
 // The response for [Datastore.Lookup][google.datastore.v1.Datastore.Lookup].
@@ -232,6 +241,17 @@ message RunQueryRequest {
     // The GQL query to run. This query must be a non-aggregation query.
     GqlQuery gql_query = 7;
   }
+
+  // The properties to return.
+  // This field must not be set for a projection query.
+  //
+  // See
+  // [LookupRequest.property_mask][google.datastore.v1.LookupRequest.property_mask].
+  PropertyMask property_mask = 10;
+
+  // Optional. Explain options for the query. If set, additional query
+  // statistics will be returned. If not, only query results will be returned.
+  ExplainOptions explain_options = 12 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // The response for
@@ -251,6 +271,11 @@ message RunQueryResponse {
   // was set in
   // [RunQueryRequest.read_options][google.datastore.v1.RunQueryRequest.read_options].
   bytes transaction = 5;
+
+  // Query explain metrics. This is only present when the
+  // [RunQueryRequest.explain_options][google.datastore.v1.RunQueryRequest.explain_options]
+  // is provided, and it is sent only once with the last response in the stream.
+  ExplainMetrics explain_metrics = 9;
 }
 
 // The request for
@@ -282,6 +307,10 @@ message RunAggregationQueryRequest {
     // The GQL query to run. This query must be an aggregation query.
     GqlQuery gql_query = 7;
   }
+
+  // Optional. Explain options for the query. If set, additional query
+  // statistics will be returned. If not, only query results will be returned.
+  ExplainOptions explain_options = 11 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // The response for
@@ -301,6 +330,11 @@ message RunAggregationQueryResponse {
   // was set in
   // [RunAggregationQueryRequest.read_options][google.datastore.v1.RunAggregationQueryRequest.read_options].
   bytes transaction = 5;
+
+  // Query explain metrics. This is only present when the
+  // [RunAggregationQueryRequest.explain_options][google.datastore.v1.RunAggregationQueryRequest.explain_options]
+  // is provided, and it is sent only once with the last response in the stream.
+  ExplainMetrics explain_metrics = 9;
 }
 
 // The request for
@@ -507,6 +541,16 @@ message Mutation {
     // mutation conflicts.
     google.protobuf.Timestamp update_time = 11;
   }
+
+  // The properties to write in this mutation.
+  // None of the properties in the mask may have a reserved name, except for
+  // `__key__`.
+  // This field is ignored for `delete`.
+  //
+  // If the entity already exists, only properties referenced in the mask are
+  // updated, others are left untouched.
+  // Properties referenced in the mask but not in the entity are deleted.
+  PropertyMask property_mask = 9;
 }
 
 // The result of applying a mutation.
@@ -534,6 +578,23 @@ message MutationResult {
   // Whether a conflict was detected for this mutation. Always false when a
   // conflict detection strategy field is not set in the mutation.
   bool conflict_detected = 5;
+}
+
+// The set of arbitrarily nested property paths used to restrict an operation to
+// only a subset of properties in an entity.
+message PropertyMask {
+  // The paths to the properties covered by this mask.
+  //
+  // A path is a list of property names separated by dots (`.`), for example
+  // `foo.bar` means the property `bar` inside the entity property `foo` inside
+  // the entity associated with this path.
+  //
+  // If a property name contains a dot `.` or a backslash `\`, then that
+  // name must be escaped.
+  //
+  // A path must not be empty, and may not reference a value inside an
+  // [array value][google.datastore.v1.Value.array_value].
+  repeated string paths = 1;
 }
 
 // The options shared by read requests.

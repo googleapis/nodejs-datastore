@@ -15,22 +15,44 @@
  */
 
 import {promisifyAll} from '@google-cloud/promisify';
-import arrify = require('arrify');
 import {CallOptions} from 'google-gax';
 
 import {google} from '../protos/protos';
 
 import {Datastore, TransactionOptions} from '.';
-import {entity, Entity, Entities} from './entity';
-import {Query} from './query';
+import {Entities, Entity, entity} from './entity';
+import {
+  Query,
+  RunQueryCallback,
+  RunQueryOptions,
+  RunQueryResponse,
+} from './query';
 import {
   CommitCallback,
   CommitResponse,
+  CreateReadStreamOptions,
   DatastoreRequest,
-  RequestOptions,
+  GetCallback,
+  GetResponse,
+  getTransactionRequest,
   PrepareEntityObjectResponse,
+  RequestCallback,
+  transactionExpiredError,
+  TransactionState,
 } from './request';
 import {AggregateQuery} from './aggregate';
+import {Mutex} from 'async-mutex';
+import arrify = require('arrify');
+
+/*
+ * This type matches the value returned by the promise in the
+ * #beginTransactionAsync function and subsequently passed into various other
+ * methods in this class.
+ */
+interface BeginAsyncResponse {
+  err?: Error | null;
+  resp?: google.datastore.v1.IBeginTransactionResponse;
+}
 
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
@@ -58,6 +80,7 @@ class Transaction extends DatastoreRequest {
   request: Function;
   modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
+  #mutex = new Mutex();
   constructor(datastore: Datastore, options?: TransactionOptions) {
     super();
     /**
@@ -87,6 +110,7 @@ class Transaction extends DatastoreRequest {
 
     // Queue the requests to make when we send the transactional commit.
     this.requests_ = [];
+    this.state = TransactionState.NOT_STARTED;
   }
 
   /*! Developer Documentation
@@ -145,120 +169,21 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'function'
         ? gaxOptionsOrCallback
         : typeof cb === 'function'
-        ? cb
-        : () => {};
+          ? cb
+          : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-
-    if (this.skipCommit) {
-      setImmediate(callback);
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
       return;
     }
-
-    const keys: Entities = {};
-
-    this.modifiedEntities_
-      // Reverse the order of the queue to respect the "last queued request
-      // wins" behavior.
-      .reverse()
-      // Limit the operations we're going to send through to only the most
-      // recently queued operations. E.g., if a user tries to save with the
-      // same key they just asked to be deleted, the delete request will be
-      // ignored, giving preference to the save operation.
-      .filter((modifiedEntity: Entity) => {
-        const key = modifiedEntity.entity.key;
-
-        if (!entity.isKeyComplete(key)) return true;
-
-        const stringifiedKey = JSON.stringify(modifiedEntity.entity.key);
-
-        if (!keys[stringifiedKey]) {
-          keys[stringifiedKey] = true;
-          return true;
-        }
-
-        return false;
-      })
-      // Group entities together by method: `save` mutations, then `delete`.
-      // Note: `save` mutations being first is required to maintain order when
-      // assigning IDs to incomplete keys.
-      .sort((a, b) => {
-        return a.method < b.method ? 1 : a.method > b.method ? -1 : 0;
-      })
-      // Group arguments together so that we only make one call to each
-      // method. This is important for `DatastoreRequest.save`, especially, as
-      // that method handles assigning auto-generated IDs to the original keys
-      // passed in. When we eventually execute the `save` method's API
-      // callback, having all the keys together is necessary to maintain
-      // order.
-      .reduce((acc: Entities, entityObject: Entity) => {
-        const lastEntityObject = acc[acc.length - 1];
-        const sameMethod =
-          lastEntityObject && entityObject.method === lastEntityObject.method;
-
-        if (!lastEntityObject || !sameMethod) {
-          acc.push(entityObject);
-        } else {
-          lastEntityObject.args = lastEntityObject.args.concat(
-            entityObject.args
-          );
-        }
-
-        return acc;
-      }, [])
-      // Call each of the mutational methods (DatastoreRequest[save,delete])
-      // to build up a `req` array on this instance. This will also build up a
-      // `callbacks` array, that is the same callback that would run if we
-      // were using `save` and `delete` outside of a transaction, to process
-      // the response from the API.
-      .forEach(
-        (modifiedEntity: {method: string; args: {reverse: () => void}}) => {
-          const method = modifiedEntity.method;
-          const args = modifiedEntity.args.reverse();
-          Datastore.prototype[method].call(this, args, () => {});
-        }
-      );
-
-    // Take the `req` array built previously, and merge them into one request to
-    // send as the final transactional commit.
-    const reqOpts = {
-      mutations: this.requests_
-        .map((x: {mutations: google.datastore.v1.Mutation}) => x.mutations)
-        .reduce(
-          (a: {concat: (arg0: Entity) => void}, b: Entity) => a.concat(b),
-          []
-        ),
-    };
-
-    this.request_(
-      {
-        client: 'DatastoreClient',
-        method: 'commit',
-        reqOpts,
-        gaxOpts: gaxOptions || {},
+    // This ensures that the transaction is started before calling runCommit
+    this.#withBeginTransaction(
+      gaxOptions,
+      () => {
+        this.#runCommit(gaxOptions, callback);
       },
-      (err, resp) => {
-        if (err) {
-          // Rollback automatically for the user.
-          this.rollback(() => {
-            // Provide the error & API response from the failed commit to the
-            // user. Even a failed rollback should be transparent. RE:
-            // https://github.com/GoogleCloudPlatform/google-cloud-node/pull/1369#discussion_r66833976
-            callback(err, resp);
-          });
-          return;
-        }
-
-        // The `callbacks` array was built previously. These are the callbacks
-        // that handle the API response normally when using the
-        // DatastoreRequest.save and .delete methods.
-        this.requestCallbacks_.forEach(
-          (cb: (arg0: null, arg1: Entity) => void) => {
-            cb(null, resp);
-          }
-        );
-        callback(null, resp);
-      }
+      callback
     );
   }
 
@@ -399,6 +324,43 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
+   * This function calls get on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * get call is made.
+   *
+   * @param {Key|Key[]} keys Datastore key object(s).
+   * @param {object} [options] Optional configuration.
+   * @param {function} callback The callback function.
+   *
+   */
+  get(
+    keys: entity.Key | entity.Key[],
+    options?: CreateReadStreamOptions
+  ): Promise<GetResponse>;
+  get(keys: entity.Key | entity.Key[], callback: GetCallback): void;
+  get(
+    keys: entity.Key | entity.Key[],
+    options: CreateReadStreamOptions,
+    callback: GetCallback
+  ): void;
+  get(
+    keys: entity.Key | entity.Key[],
+    optionsOrCallback?: CreateReadStreamOptions | GetCallback,
+    cb?: GetCallback
+  ): void | Promise<GetResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling get
+    this.#blockWithMutex(() => {
+      super.get(keys, options, callback);
+    });
+  }
+
+  /**
    * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `insert`.
    *
    * @param {object|object[]} entities Datastore key object(s).
@@ -468,6 +430,14 @@ class Transaction extends DatastoreRequest {
     const callback =
       typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+      return;
+    }
+    if (this.state === TransactionState.NOT_STARTED) {
+      callback(new Error('Transaction is not started'));
+      return;
+    }
     this.request_(
       {
         client: 'DatastoreClient',
@@ -476,6 +446,7 @@ class Transaction extends DatastoreRequest {
       },
       (err, resp) => {
         this.skipCommit = true;
+        this.state = TransactionState.EXPIRED;
         callback(err || null, resp);
       }
     );
@@ -544,41 +515,274 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    this.#mutex.runExclusive(async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        const runResults = await this.#beginTransactionAsync(options);
+        this.#processBeginResults(runResults, callback);
+      } else {
+        process.emitWarning(
+          'run has already been called and should not be called again.'
+        );
+        callback(null, this, {transaction: this.id});
+      }
+    });
+  }
 
+  /**
+   * This function is a pass-through for the transaction.commit method
+   * It contains the business logic used for committing a transaction
+   *
+   * @param {object} [gaxOptions] Request configuration options, outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
+   * @private
+   */
+  #runCommit(
+    gaxOptions: CallOptions,
+    callback: CommitCallback
+  ): void | Promise<CommitResponse> {
+    if (this.skipCommit) {
+      setImmediate(callback);
+      return;
+    }
+
+    const keys: Entities = {};
+
+    this.modifiedEntities_
+      // Reverse the order of the queue to respect the "last queued request
+      // wins" behavior.
+      .reverse()
+      // Limit the operations we're going to send through to only the most
+      // recently queued operations. E.g., if a user tries to save with the
+      // same key they just asked to be deleted, the delete request will be
+      // ignored, giving preference to the save operation.
+      .filter((modifiedEntity: Entity) => {
+        const key = modifiedEntity.entity.key;
+
+        if (!entity.isKeyComplete(key)) return true;
+
+        const stringifiedKey = JSON.stringify(modifiedEntity.entity.key);
+
+        if (!keys[stringifiedKey]) {
+          keys[stringifiedKey] = true;
+          return true;
+        }
+
+        return false;
+      })
+      // Group entities together by method: `save` mutations, then `delete`.
+      // Note: `save` mutations being first is required to maintain order when
+      // assigning IDs to incomplete keys.
+      .sort((a, b) => {
+        return a.method < b.method ? 1 : a.method > b.method ? -1 : 0;
+      })
+      // Group arguments together so that we only make one call to each
+      // method. This is important for `DatastoreRequest.save`, especially, as
+      // that method handles assigning auto-generated IDs to the original keys
+      // passed in. When we eventually execute the `save` method's API
+      // callback, having all the keys together is necessary to maintain
+      // order.
+      .reduce((acc: Entities, entityObject: Entity) => {
+        const lastEntityObject = acc[acc.length - 1];
+        const sameMethod =
+          lastEntityObject && entityObject.method === lastEntityObject.method;
+
+        if (!lastEntityObject || !sameMethod) {
+          acc.push(entityObject);
+        } else {
+          lastEntityObject.args = lastEntityObject.args.concat(
+            entityObject.args
+          );
+        }
+
+        return acc;
+      }, [])
+      // Call each of the mutational methods (DatastoreRequest[save,delete])
+      // to build up a `req` array on this instance. This will also build up a
+      // `callbacks` array, that is the same callback that would run if we
+      // were using `save` and `delete` outside of a transaction, to process
+      // the response from the API.
+      .forEach(
+        (modifiedEntity: {method: string; args: {reverse: () => void}}) => {
+          const method = modifiedEntity.method;
+          const args = modifiedEntity.args.reverse();
+          Datastore.prototype[method].call(this, args, () => {});
+        }
+      );
+
+    // Take the `req` array built previously, and merge them into one request to
+    // send as the final transactional commit.
     const reqOpts = {
-      transactionOptions: {},
-    } as RequestOptions;
-
-    if (options.readOnly || this.readOnly) {
-      reqOpts.transactionOptions!.readOnly = {};
-    }
-
-    if (options.transactionId || this.id) {
-      reqOpts.transactionOptions!.readWrite = {
-        previousTransaction: options.transactionId || this.id,
-      };
-    }
-
-    if (options.transactionOptions) {
-      reqOpts.transactionOptions = options.transactionOptions;
-    }
+      mutations: this.requests_
+        .map((x: {mutations: google.datastore.v1.Mutation}) => x.mutations)
+        .reduce(
+          (a: {concat: (arg0: Entity) => void}, b: Entity) => a.concat(b),
+          []
+        ),
+    };
 
     this.request_(
       {
         client: 'DatastoreClient',
-        method: 'beginTransaction',
+        method: 'commit',
         reqOpts,
-        gaxOpts: options.gaxOptions,
+        gaxOpts: gaxOptions || {},
       },
       (err, resp) => {
         if (err) {
-          callback(err, null, resp);
+          // Rollback automatically for the user.
+          this.rollback(() => {
+            // Provide the error & API response from the failed commit to the
+            // user. Even a failed rollback should be transparent. RE:
+            // https://github.com/GoogleCloudPlatform/google-cloud-node/pull/1369#discussion_r66833976
+            callback(err, resp);
+          });
           return;
         }
-        this.id = resp!.transaction;
-        callback(null, this, resp);
+
+        this.state = TransactionState.EXPIRED;
+        // The `callbacks` array was built previously. These are the callbacks
+        // that handle the API response normally when using the
+        // DatastoreRequest.save and .delete methods.
+        this.requestCallbacks_.forEach(
+          (cb: (arg0: null, arg1: Entity) => void) => {
+            cb(null, resp);
+          }
+        );
+        callback(null, resp);
       }
     );
+  }
+
+  /**
+   * This function parses results from a beginTransaction call
+   *
+   * @param {BeginAsyncResponse} [response]
+   * The response data from a call to begin a transaction.
+   * @param {RunCallback} [callback] A callback that accepts an error and a
+   * response as arguments.
+   *
+   **/
+  #processBeginResults(
+    runResults: BeginAsyncResponse,
+    callback: RunCallback
+  ): void {
+    const err = runResults.err;
+    const resp = runResults.resp;
+    if (err) {
+      callback(err, null, resp);
+    } else {
+      this.parseTransactionResponse(resp);
+      callback(null, this, resp);
+    }
+  }
+
+  /**
+   * This async function makes a beginTransaction call and returns a promise with
+   * the information returned from the call that was made.
+   *
+   * @param {RunOptions} options The options used for a beginTransaction call.
+   * @returns {Promise<RequestPromiseReturnType>}
+   *
+   *
+   **/
+  async #beginTransactionAsync(
+    options: RunOptions
+  ): Promise<BeginAsyncResponse> {
+    return new Promise((resolve: (value: BeginAsyncResponse) => void) => {
+      const reqOpts = {
+        transactionOptions: getTransactionRequest(this, options),
+      };
+      this.request_(
+        {
+          client: 'DatastoreClient',
+          method: 'beginTransaction',
+          reqOpts,
+          gaxOpts: options.gaxOptions,
+        },
+        // Always use resolve because then this function can return both the error and the response
+        (err, resp) => {
+          resolve({
+            err,
+            resp,
+          });
+        }
+      );
+    });
+  }
+
+  /**
+   *
+   * This function calls runAggregationQuery on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * runAggregationQuery call is made.
+   *
+   * @param {AggregateQuery} [query] AggregateQuery object.
+   * @param {RunQueryOptions} [options] Optional configuration
+   * @param {function} [callback] The callback function. If omitted, a promise is
+   * returned.
+   *
+   **/
+  runAggregationQuery(
+    query: AggregateQuery,
+    options?: RunQueryOptions
+  ): Promise<RunQueryResponse>;
+  runAggregationQuery(
+    query: AggregateQuery,
+    options: RunQueryOptions,
+    callback: RequestCallback
+  ): void;
+  runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
+  runAggregationQuery(
+    query: AggregateQuery,
+    optionsOrCallback?: RunQueryOptions | RequestCallback,
+    cb?: RequestCallback
+  ): void | Promise<RunQueryResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling runAggregationQuery
+    this.#blockWithMutex(() => {
+      super.runAggregationQuery(query, options, callback);
+    });
+  }
+
+  /**
+   * This function calls runQuery on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * runQuery call is made.
+   *
+   * @param {Query} query Query object.
+   * @param {object} [options] Optional configuration.
+   * @param {function} [callback] The callback function. If omitted, a readable
+   *     stream instance is returned.
+   *
+   */
+  runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
+  runQuery(
+    query: Query,
+    options: RunQueryOptions,
+    callback: RunQueryCallback
+  ): void;
+  runQuery(query: Query, callback: RunQueryCallback): void;
+  runQuery(
+    query: Query,
+    optionsOrCallback?: RunQueryOptions | RunQueryCallback,
+    cb?: RunQueryCallback
+  ): void | Promise<RunQueryResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling runQuery
+    this.#blockWithMutex(() => {
+      super.runQuery(query, options, callback);
+    });
   }
 
   /**
@@ -771,6 +975,84 @@ class Transaction extends DatastoreRequest {
 
     this.save(entities);
   }
+
+  /**
+   * Some rpc calls require that the transaction has been started (i.e, has a
+   * valid id) before they can be sent. #withBeginTransaction acts as a wrapper
+   * over those functions.
+   *
+   * If the transaction has not begun yet, `#withBeginTransaction` will first
+   * send an rpc to begin the transaction, and then execute the wrapped
+   * function. If it has begun, the wrapped function will be called directly
+   * instead. If an error is encountered during the beginTransaction call, the
+   * callback will be executed instead of the wrapped function.
+   *
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {function} [fn] A function which is run after ensuring a
+   * transaction has begun.
+   * @param {function} [callback] A callback provided by the user that expects
+   * an error in the first argument and a custom data type for the rest of the
+   * arguments.
+   * @private
+   */
+  #withBeginTransaction<T extends any[]>(
+    gaxOptions: CallOptions | undefined,
+    fn: () => void,
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+  ): void {
+    (async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        try {
+          await this.#mutex.runExclusive(async () => {
+            if (this.state === TransactionState.NOT_STARTED) {
+              // This sends an rpc call to get the transaction id
+              const runResults = await this.#beginTransactionAsync({
+                gaxOptions,
+              });
+              if (runResults.err) {
+                // The rpc getting the id was unsuccessful.
+                // Do not call the wrapped function.
+                throw runResults.err;
+              }
+              this.parseTransactionResponse(runResults.resp);
+              // The rpc saving the transaction id was successful.
+              // Now the wrapped function fn will be called.
+            }
+          });
+        } catch (err: any) {
+          // Handle an error produced by the beginTransactionAsync call
+          return callback(err);
+        }
+      }
+      return fn();
+    })();
+  }
+
+  /*
+   * Some rpc calls require that the transaction has been started (i.e, has a
+   * valid id) before they can be sent. #withBeginTransaction acts as a wrapper
+   * over those functions.
+   *
+   * If the transaction has not begun yet, `#blockWithMutex` will call the
+   * wrapped function which will begin the transaction in the rpc call it sends.
+   * If the transaction has begun, the wrapped function will be called, but it
+   * will not begin a transaction.
+   *
+   * @param {function} [fn] A function which is run after ensuring a
+   * transaction has begun.
+   */
+  #blockWithMutex(fn: () => void) {
+    (async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        await this.#mutex.runExclusive(async () => {
+          fn();
+        });
+      } else {
+        fn();
+      }
+    })();
+  }
 }
 
 export type ModifiedEntities = Array<{
@@ -810,6 +1092,7 @@ promisifyAll(Transaction, {
     'createQuery',
     'delete',
     'insert',
+    '#runAsync',
     'save',
     'update',
     'upsert',

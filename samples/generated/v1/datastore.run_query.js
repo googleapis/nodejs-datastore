@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,6 +57,18 @@ function main(projectId) {
    *  The GQL query to run. This query must be a non-aggregation query.
    */
   // const gqlQuery = {}
+  /**
+   *  The properties to return.
+   *  This field must not be set for a projection query.
+   *  See
+   *  LookupRequest.property_mask google.datastore.v1.LookupRequest.property_mask.
+   */
+  // const propertyMask = {}
+  /**
+   *  Optional. Explain options for the query. If set, additional query
+   *  statistics will be returned. If not, only query results will be returned.
+   */
+  // const explainOptions = {}
 
   // Imports the Datastore library
   const {DatastoreClient} = require('@google-cloud/datastore').v1;
