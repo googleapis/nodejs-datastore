@@ -7378,8 +7378,14 @@ export namespace google {
                 /** Mutation updateTime */
                 updateTime?: (google.protobuf.ITimestamp|null);
 
+                /** Mutation conflictResolutionStrategy */
+                conflictResolutionStrategy?: (google.datastore.v1.Mutation.ConflictResolutionStrategy|keyof typeof google.datastore.v1.Mutation.ConflictResolutionStrategy|null);
+
                 /** Mutation propertyMask */
                 propertyMask?: (google.datastore.v1.IPropertyMask|null);
+
+                /** Mutation propertyTransforms */
+                propertyTransforms?: (google.datastore.v1.IPropertyTransform[]|null);
             }
 
             /** Represents a Mutation. */
@@ -7409,8 +7415,14 @@ export namespace google {
                 /** Mutation updateTime. */
                 public updateTime?: (google.protobuf.ITimestamp|null);
 
+                /** Mutation conflictResolutionStrategy. */
+                public conflictResolutionStrategy: (google.datastore.v1.Mutation.ConflictResolutionStrategy|keyof typeof google.datastore.v1.Mutation.ConflictResolutionStrategy);
+
                 /** Mutation propertyMask. */
                 public propertyMask?: (google.datastore.v1.IPropertyMask|null);
+
+                /** Mutation propertyTransforms. */
+                public propertyTransforms: google.datastore.v1.IPropertyTransform[];
 
                 /** Mutation operation. */
                 public operation?: ("insert"|"update"|"upsert"|"delete");
@@ -7496,6 +7508,161 @@ export namespace google {
                 public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
+            namespace Mutation {
+
+                /** ConflictResolutionStrategy enum. */
+                enum ConflictResolutionStrategy {
+                    STRATEGY_UNSPECIFIED = 0,
+                    SERVER_VALUE = 1,
+                    FAIL = 3
+                }
+            }
+
+            /** Properties of a PropertyTransform. */
+            interface IPropertyTransform {
+
+                /** PropertyTransform property */
+                property?: (string|null);
+
+                /** PropertyTransform setToServerValue */
+                setToServerValue?: (google.datastore.v1.PropertyTransform.ServerValue|keyof typeof google.datastore.v1.PropertyTransform.ServerValue|null);
+
+                /** PropertyTransform increment */
+                increment?: (google.datastore.v1.IValue|null);
+
+                /** PropertyTransform maximum */
+                maximum?: (google.datastore.v1.IValue|null);
+
+                /** PropertyTransform minimum */
+                minimum?: (google.datastore.v1.IValue|null);
+
+                /** PropertyTransform appendMissingElements */
+                appendMissingElements?: (google.datastore.v1.IArrayValue|null);
+
+                /** PropertyTransform removeAllFromArray */
+                removeAllFromArray?: (google.datastore.v1.IArrayValue|null);
+            }
+
+            /** Represents a PropertyTransform. */
+            class PropertyTransform implements IPropertyTransform {
+
+                /**
+                 * Constructs a new PropertyTransform.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.datastore.v1.IPropertyTransform);
+
+                /** PropertyTransform property. */
+                public property: string;
+
+                /** PropertyTransform setToServerValue. */
+                public setToServerValue?: (google.datastore.v1.PropertyTransform.ServerValue|keyof typeof google.datastore.v1.PropertyTransform.ServerValue|null);
+
+                /** PropertyTransform increment. */
+                public increment?: (google.datastore.v1.IValue|null);
+
+                /** PropertyTransform maximum. */
+                public maximum?: (google.datastore.v1.IValue|null);
+
+                /** PropertyTransform minimum. */
+                public minimum?: (google.datastore.v1.IValue|null);
+
+                /** PropertyTransform appendMissingElements. */
+                public appendMissingElements?: (google.datastore.v1.IArrayValue|null);
+
+                /** PropertyTransform removeAllFromArray. */
+                public removeAllFromArray?: (google.datastore.v1.IArrayValue|null);
+
+                /** PropertyTransform transformType. */
+                public transformType?: ("setToServerValue"|"increment"|"maximum"|"minimum"|"appendMissingElements"|"removeAllFromArray");
+
+                /**
+                 * Creates a new PropertyTransform instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns PropertyTransform instance
+                 */
+                public static create(properties?: google.datastore.v1.IPropertyTransform): google.datastore.v1.PropertyTransform;
+
+                /**
+                 * Encodes the specified PropertyTransform message. Does not implicitly {@link google.datastore.v1.PropertyTransform.verify|verify} messages.
+                 * @param message PropertyTransform message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.datastore.v1.IPropertyTransform, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified PropertyTransform message, length delimited. Does not implicitly {@link google.datastore.v1.PropertyTransform.verify|verify} messages.
+                 * @param message PropertyTransform message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.datastore.v1.IPropertyTransform, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a PropertyTransform message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns PropertyTransform
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.datastore.v1.PropertyTransform;
+
+                /**
+                 * Decodes a PropertyTransform message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns PropertyTransform
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.datastore.v1.PropertyTransform;
+
+                /**
+                 * Verifies a PropertyTransform message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a PropertyTransform message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns PropertyTransform
+                 */
+                public static fromObject(object: { [k: string]: any }): google.datastore.v1.PropertyTransform;
+
+                /**
+                 * Creates a plain object from a PropertyTransform message. Also converts values to other types if specified.
+                 * @param message PropertyTransform
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.datastore.v1.PropertyTransform, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this PropertyTransform to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for PropertyTransform
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            namespace PropertyTransform {
+
+                /** ServerValue enum. */
+                enum ServerValue {
+                    SERVER_VALUE_UNSPECIFIED = 0,
+                    REQUEST_TIME = 1
+                }
+            }
+
             /** Properties of a MutationResult. */
             interface IMutationResult {
 
@@ -7513,6 +7680,9 @@ export namespace google {
 
                 /** MutationResult conflictDetected */
                 conflictDetected?: (boolean|null);
+
+                /** MutationResult transformResults */
+                transformResults?: (google.datastore.v1.IValue[]|null);
             }
 
             /** Represents a MutationResult. */
@@ -7538,6 +7708,9 @@ export namespace google {
 
                 /** MutationResult conflictDetected. */
                 public conflictDetected: boolean;
+
+                /** MutationResult transformResults. */
+                public transformResults: google.datastore.v1.IValue[];
 
                 /**
                  * Creates a new MutationResult instance using the specified properties.

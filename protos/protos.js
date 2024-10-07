@@ -18706,7 +18706,9 @@
                      * @property {google.datastore.v1.IKey|null} ["delete"] Mutation delete
                      * @property {number|Long|null} [baseVersion] Mutation baseVersion
                      * @property {google.protobuf.ITimestamp|null} [updateTime] Mutation updateTime
+                     * @property {google.datastore.v1.Mutation.ConflictResolutionStrategy|null} [conflictResolutionStrategy] Mutation conflictResolutionStrategy
                      * @property {google.datastore.v1.IPropertyMask|null} [propertyMask] Mutation propertyMask
+                     * @property {Array.<google.datastore.v1.IPropertyTransform>|null} [propertyTransforms] Mutation propertyTransforms
                      */
     
                     /**
@@ -18718,6 +18720,7 @@
                      * @param {google.datastore.v1.IMutation=} [properties] Properties to set
                      */
                     function Mutation(properties) {
+                        this.propertyTransforms = [];
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -18773,12 +18776,28 @@
                     Mutation.prototype.updateTime = null;
     
                     /**
+                     * Mutation conflictResolutionStrategy.
+                     * @member {google.datastore.v1.Mutation.ConflictResolutionStrategy} conflictResolutionStrategy
+                     * @memberof google.datastore.v1.Mutation
+                     * @instance
+                     */
+                    Mutation.prototype.conflictResolutionStrategy = 0;
+    
+                    /**
                      * Mutation propertyMask.
                      * @member {google.datastore.v1.IPropertyMask|null|undefined} propertyMask
                      * @memberof google.datastore.v1.Mutation
                      * @instance
                      */
                     Mutation.prototype.propertyMask = null;
+    
+                    /**
+                     * Mutation propertyTransforms.
+                     * @member {Array.<google.datastore.v1.IPropertyTransform>} propertyTransforms
+                     * @memberof google.datastore.v1.Mutation
+                     * @instance
+                     */
+                    Mutation.prototype.propertyTransforms = $util.emptyArray;
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
@@ -18841,8 +18860,13 @@
                             writer.uint32(/* id 8, wireType 0 =*/64).int64(message.baseVersion);
                         if (message.propertyMask != null && Object.hasOwnProperty.call(message, "propertyMask"))
                             $root.google.datastore.v1.PropertyMask.encode(message.propertyMask, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                        if (message.conflictResolutionStrategy != null && Object.hasOwnProperty.call(message, "conflictResolutionStrategy"))
+                            writer.uint32(/* id 10, wireType 0 =*/80).int32(message.conflictResolutionStrategy);
                         if (message.updateTime != null && Object.hasOwnProperty.call(message, "updateTime"))
                             $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                        if (message.propertyTransforms != null && message.propertyTransforms.length)
+                            for (var i = 0; i < message.propertyTransforms.length; ++i)
+                                $root.google.datastore.v1.PropertyTransform.encode(message.propertyTransforms[i], writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                         return writer;
                     };
     
@@ -18901,8 +18925,18 @@
                                     message.updateTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                     break;
                                 }
+                            case 10: {
+                                    message.conflictResolutionStrategy = reader.int32();
+                                    break;
+                                }
                             case 9: {
                                     message.propertyMask = $root.google.datastore.v1.PropertyMask.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 12: {
+                                    if (!(message.propertyTransforms && message.propertyTransforms.length))
+                                        message.propertyTransforms = [];
+                                    message.propertyTransforms.push($root.google.datastore.v1.PropertyTransform.decode(reader, reader.uint32()));
                                     break;
                                 }
                             default:
@@ -18994,10 +19028,28 @@
                                     return "updateTime." + error;
                             }
                         }
+                        if (message.conflictResolutionStrategy != null && message.hasOwnProperty("conflictResolutionStrategy"))
+                            switch (message.conflictResolutionStrategy) {
+                            default:
+                                return "conflictResolutionStrategy: enum value expected";
+                            case 0:
+                            case 1:
+                            case 3:
+                                break;
+                            }
                         if (message.propertyMask != null && message.hasOwnProperty("propertyMask")) {
                             var error = $root.google.datastore.v1.PropertyMask.verify(message.propertyMask);
                             if (error)
                                 return "propertyMask." + error;
+                        }
+                        if (message.propertyTransforms != null && message.hasOwnProperty("propertyTransforms")) {
+                            if (!Array.isArray(message.propertyTransforms))
+                                return "propertyTransforms: array expected";
+                            for (var i = 0; i < message.propertyTransforms.length; ++i) {
+                                var error = $root.google.datastore.v1.PropertyTransform.verify(message.propertyTransforms[i]);
+                                if (error)
+                                    return "propertyTransforms." + error;
+                            }
                         }
                         return null;
                     };
@@ -19048,10 +19100,40 @@
                                 throw TypeError(".google.datastore.v1.Mutation.updateTime: object expected");
                             message.updateTime = $root.google.protobuf.Timestamp.fromObject(object.updateTime);
                         }
+                        switch (object.conflictResolutionStrategy) {
+                        default:
+                            if (typeof object.conflictResolutionStrategy === "number") {
+                                message.conflictResolutionStrategy = object.conflictResolutionStrategy;
+                                break;
+                            }
+                            break;
+                        case "STRATEGY_UNSPECIFIED":
+                        case 0:
+                            message.conflictResolutionStrategy = 0;
+                            break;
+                        case "SERVER_VALUE":
+                        case 1:
+                            message.conflictResolutionStrategy = 1;
+                            break;
+                        case "FAIL":
+                        case 3:
+                            message.conflictResolutionStrategy = 3;
+                            break;
+                        }
                         if (object.propertyMask != null) {
                             if (typeof object.propertyMask !== "object")
                                 throw TypeError(".google.datastore.v1.Mutation.propertyMask: object expected");
                             message.propertyMask = $root.google.datastore.v1.PropertyMask.fromObject(object.propertyMask);
+                        }
+                        if (object.propertyTransforms) {
+                            if (!Array.isArray(object.propertyTransforms))
+                                throw TypeError(".google.datastore.v1.Mutation.propertyTransforms: array expected");
+                            message.propertyTransforms = [];
+                            for (var i = 0; i < object.propertyTransforms.length; ++i) {
+                                if (typeof object.propertyTransforms[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.Mutation.propertyTransforms: object expected");
+                                message.propertyTransforms[i] = $root.google.datastore.v1.PropertyTransform.fromObject(object.propertyTransforms[i]);
+                            }
                         }
                         return message;
                     };
@@ -19069,8 +19151,12 @@
                         if (!options)
                             options = {};
                         var object = {};
-                        if (options.defaults)
+                        if (options.arrays || options.defaults)
+                            object.propertyTransforms = [];
+                        if (options.defaults) {
                             object.propertyMask = null;
+                            object.conflictResolutionStrategy = options.enums === String ? "STRATEGY_UNSPECIFIED" : 0;
+                        }
                         if (message.insert != null && message.hasOwnProperty("insert")) {
                             object.insert = $root.google.datastore.v1.Entity.toObject(message.insert, options);
                             if (options.oneofs)
@@ -19101,10 +19187,17 @@
                         }
                         if (message.propertyMask != null && message.hasOwnProperty("propertyMask"))
                             object.propertyMask = $root.google.datastore.v1.PropertyMask.toObject(message.propertyMask, options);
+                        if (message.conflictResolutionStrategy != null && message.hasOwnProperty("conflictResolutionStrategy"))
+                            object.conflictResolutionStrategy = options.enums === String ? $root.google.datastore.v1.Mutation.ConflictResolutionStrategy[message.conflictResolutionStrategy] === undefined ? message.conflictResolutionStrategy : $root.google.datastore.v1.Mutation.ConflictResolutionStrategy[message.conflictResolutionStrategy] : message.conflictResolutionStrategy;
                         if (message.updateTime != null && message.hasOwnProperty("updateTime")) {
                             object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
                             if (options.oneofs)
                                 object.conflictDetectionStrategy = "updateTime";
+                        }
+                        if (message.propertyTransforms && message.propertyTransforms.length) {
+                            object.propertyTransforms = [];
+                            for (var j = 0; j < message.propertyTransforms.length; ++j)
+                                object.propertyTransforms[j] = $root.google.datastore.v1.PropertyTransform.toObject(message.propertyTransforms[j], options);
                         }
                         return object;
                     };
@@ -19135,7 +19228,476 @@
                         return typeUrlPrefix + "/google.datastore.v1.Mutation";
                     };
     
+                    /**
+                     * ConflictResolutionStrategy enum.
+                     * @name google.datastore.v1.Mutation.ConflictResolutionStrategy
+                     * @enum {number}
+                     * @property {number} STRATEGY_UNSPECIFIED=0 STRATEGY_UNSPECIFIED value
+                     * @property {number} SERVER_VALUE=1 SERVER_VALUE value
+                     * @property {number} FAIL=3 FAIL value
+                     */
+                    Mutation.ConflictResolutionStrategy = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "STRATEGY_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "SERVER_VALUE"] = 1;
+                        values[valuesById[3] = "FAIL"] = 3;
+                        return values;
+                    })();
+    
                     return Mutation;
+                })();
+    
+                v1.PropertyTransform = (function() {
+    
+                    /**
+                     * Properties of a PropertyTransform.
+                     * @memberof google.datastore.v1
+                     * @interface IPropertyTransform
+                     * @property {string|null} [property] PropertyTransform property
+                     * @property {google.datastore.v1.PropertyTransform.ServerValue|null} [setToServerValue] PropertyTransform setToServerValue
+                     * @property {google.datastore.v1.IValue|null} [increment] PropertyTransform increment
+                     * @property {google.datastore.v1.IValue|null} [maximum] PropertyTransform maximum
+                     * @property {google.datastore.v1.IValue|null} [minimum] PropertyTransform minimum
+                     * @property {google.datastore.v1.IArrayValue|null} [appendMissingElements] PropertyTransform appendMissingElements
+                     * @property {google.datastore.v1.IArrayValue|null} [removeAllFromArray] PropertyTransform removeAllFromArray
+                     */
+    
+                    /**
+                     * Constructs a new PropertyTransform.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a PropertyTransform.
+                     * @implements IPropertyTransform
+                     * @constructor
+                     * @param {google.datastore.v1.IPropertyTransform=} [properties] Properties to set
+                     */
+                    function PropertyTransform(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * PropertyTransform property.
+                     * @member {string} property
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.property = "";
+    
+                    /**
+                     * PropertyTransform setToServerValue.
+                     * @member {google.datastore.v1.PropertyTransform.ServerValue|null|undefined} setToServerValue
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.setToServerValue = null;
+    
+                    /**
+                     * PropertyTransform increment.
+                     * @member {google.datastore.v1.IValue|null|undefined} increment
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.increment = null;
+    
+                    /**
+                     * PropertyTransform maximum.
+                     * @member {google.datastore.v1.IValue|null|undefined} maximum
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.maximum = null;
+    
+                    /**
+                     * PropertyTransform minimum.
+                     * @member {google.datastore.v1.IValue|null|undefined} minimum
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.minimum = null;
+    
+                    /**
+                     * PropertyTransform appendMissingElements.
+                     * @member {google.datastore.v1.IArrayValue|null|undefined} appendMissingElements
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.appendMissingElements = null;
+    
+                    /**
+                     * PropertyTransform removeAllFromArray.
+                     * @member {google.datastore.v1.IArrayValue|null|undefined} removeAllFromArray
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.removeAllFromArray = null;
+    
+                    // OneOf field names bound to virtual getters and setters
+                    var $oneOfFields;
+    
+                    /**
+                     * PropertyTransform transformType.
+                     * @member {"setToServerValue"|"increment"|"maximum"|"minimum"|"appendMissingElements"|"removeAllFromArray"|undefined} transformType
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    Object.defineProperty(PropertyTransform.prototype, "transformType", {
+                        get: $util.oneOfGetter($oneOfFields = ["setToServerValue", "increment", "maximum", "minimum", "appendMissingElements", "removeAllFromArray"]),
+                        set: $util.oneOfSetter($oneOfFields)
+                    });
+    
+                    /**
+                     * Creates a new PropertyTransform instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.IPropertyTransform=} [properties] Properties to set
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform instance
+                     */
+                    PropertyTransform.create = function create(properties) {
+                        return new PropertyTransform(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified PropertyTransform message. Does not implicitly {@link google.datastore.v1.PropertyTransform.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.IPropertyTransform} message PropertyTransform message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    PropertyTransform.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.property != null && Object.hasOwnProperty.call(message, "property"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).string(message.property);
+                        if (message.setToServerValue != null && Object.hasOwnProperty.call(message, "setToServerValue"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.setToServerValue);
+                        if (message.increment != null && Object.hasOwnProperty.call(message, "increment"))
+                            $root.google.datastore.v1.Value.encode(message.increment, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.maximum != null && Object.hasOwnProperty.call(message, "maximum"))
+                            $root.google.datastore.v1.Value.encode(message.maximum, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.minimum != null && Object.hasOwnProperty.call(message, "minimum"))
+                            $root.google.datastore.v1.Value.encode(message.minimum, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                        if (message.appendMissingElements != null && Object.hasOwnProperty.call(message, "appendMissingElements"))
+                            $root.google.datastore.v1.ArrayValue.encode(message.appendMissingElements, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                        if (message.removeAllFromArray != null && Object.hasOwnProperty.call(message, "removeAllFromArray"))
+                            $root.google.datastore.v1.ArrayValue.encode(message.removeAllFromArray, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified PropertyTransform message, length delimited. Does not implicitly {@link google.datastore.v1.PropertyTransform.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.IPropertyTransform} message PropertyTransform message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    PropertyTransform.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a PropertyTransform message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    PropertyTransform.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PropertyTransform();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.property = reader.string();
+                                    break;
+                                }
+                            case 2: {
+                                    message.setToServerValue = reader.int32();
+                                    break;
+                                }
+                            case 3: {
+                                    message.increment = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 4: {
+                                    message.maximum = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 5: {
+                                    message.minimum = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 6: {
+                                    message.appendMissingElements = $root.google.datastore.v1.ArrayValue.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 7: {
+                                    message.removeAllFromArray = $root.google.datastore.v1.ArrayValue.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a PropertyTransform message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    PropertyTransform.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a PropertyTransform message.
+                     * @function verify
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    PropertyTransform.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        var properties = {};
+                        if (message.property != null && message.hasOwnProperty("property"))
+                            if (!$util.isString(message.property))
+                                return "property: string expected";
+                        if (message.setToServerValue != null && message.hasOwnProperty("setToServerValue")) {
+                            properties.transformType = 1;
+                            switch (message.setToServerValue) {
+                            default:
+                                return "setToServerValue: enum value expected";
+                            case 0:
+                            case 1:
+                                break;
+                            }
+                        }
+                        if (message.increment != null && message.hasOwnProperty("increment")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.Value.verify(message.increment);
+                                if (error)
+                                    return "increment." + error;
+                            }
+                        }
+                        if (message.maximum != null && message.hasOwnProperty("maximum")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.Value.verify(message.maximum);
+                                if (error)
+                                    return "maximum." + error;
+                            }
+                        }
+                        if (message.minimum != null && message.hasOwnProperty("minimum")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.Value.verify(message.minimum);
+                                if (error)
+                                    return "minimum." + error;
+                            }
+                        }
+                        if (message.appendMissingElements != null && message.hasOwnProperty("appendMissingElements")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.ArrayValue.verify(message.appendMissingElements);
+                                if (error)
+                                    return "appendMissingElements." + error;
+                            }
+                        }
+                        if (message.removeAllFromArray != null && message.hasOwnProperty("removeAllFromArray")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.ArrayValue.verify(message.removeAllFromArray);
+                                if (error)
+                                    return "removeAllFromArray." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a PropertyTransform message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform
+                     */
+                    PropertyTransform.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.PropertyTransform)
+                            return object;
+                        var message = new $root.google.datastore.v1.PropertyTransform();
+                        if (object.property != null)
+                            message.property = String(object.property);
+                        switch (object.setToServerValue) {
+                        default:
+                            if (typeof object.setToServerValue === "number") {
+                                message.setToServerValue = object.setToServerValue;
+                                break;
+                            }
+                            break;
+                        case "SERVER_VALUE_UNSPECIFIED":
+                        case 0:
+                            message.setToServerValue = 0;
+                            break;
+                        case "REQUEST_TIME":
+                        case 1:
+                            message.setToServerValue = 1;
+                            break;
+                        }
+                        if (object.increment != null) {
+                            if (typeof object.increment !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.increment: object expected");
+                            message.increment = $root.google.datastore.v1.Value.fromObject(object.increment);
+                        }
+                        if (object.maximum != null) {
+                            if (typeof object.maximum !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.maximum: object expected");
+                            message.maximum = $root.google.datastore.v1.Value.fromObject(object.maximum);
+                        }
+                        if (object.minimum != null) {
+                            if (typeof object.minimum !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.minimum: object expected");
+                            message.minimum = $root.google.datastore.v1.Value.fromObject(object.minimum);
+                        }
+                        if (object.appendMissingElements != null) {
+                            if (typeof object.appendMissingElements !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.appendMissingElements: object expected");
+                            message.appendMissingElements = $root.google.datastore.v1.ArrayValue.fromObject(object.appendMissingElements);
+                        }
+                        if (object.removeAllFromArray != null) {
+                            if (typeof object.removeAllFromArray !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.removeAllFromArray: object expected");
+                            message.removeAllFromArray = $root.google.datastore.v1.ArrayValue.fromObject(object.removeAllFromArray);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a PropertyTransform message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.PropertyTransform} message PropertyTransform
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    PropertyTransform.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.property = "";
+                        if (message.property != null && message.hasOwnProperty("property"))
+                            object.property = message.property;
+                        if (message.setToServerValue != null && message.hasOwnProperty("setToServerValue")) {
+                            object.setToServerValue = options.enums === String ? $root.google.datastore.v1.PropertyTransform.ServerValue[message.setToServerValue] === undefined ? message.setToServerValue : $root.google.datastore.v1.PropertyTransform.ServerValue[message.setToServerValue] : message.setToServerValue;
+                            if (options.oneofs)
+                                object.transformType = "setToServerValue";
+                        }
+                        if (message.increment != null && message.hasOwnProperty("increment")) {
+                            object.increment = $root.google.datastore.v1.Value.toObject(message.increment, options);
+                            if (options.oneofs)
+                                object.transformType = "increment";
+                        }
+                        if (message.maximum != null && message.hasOwnProperty("maximum")) {
+                            object.maximum = $root.google.datastore.v1.Value.toObject(message.maximum, options);
+                            if (options.oneofs)
+                                object.transformType = "maximum";
+                        }
+                        if (message.minimum != null && message.hasOwnProperty("minimum")) {
+                            object.minimum = $root.google.datastore.v1.Value.toObject(message.minimum, options);
+                            if (options.oneofs)
+                                object.transformType = "minimum";
+                        }
+                        if (message.appendMissingElements != null && message.hasOwnProperty("appendMissingElements")) {
+                            object.appendMissingElements = $root.google.datastore.v1.ArrayValue.toObject(message.appendMissingElements, options);
+                            if (options.oneofs)
+                                object.transformType = "appendMissingElements";
+                        }
+                        if (message.removeAllFromArray != null && message.hasOwnProperty("removeAllFromArray")) {
+                            object.removeAllFromArray = $root.google.datastore.v1.ArrayValue.toObject(message.removeAllFromArray, options);
+                            if (options.oneofs)
+                                object.transformType = "removeAllFromArray";
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this PropertyTransform to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    PropertyTransform.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for PropertyTransform
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    PropertyTransform.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.PropertyTransform";
+                    };
+    
+                    /**
+                     * ServerValue enum.
+                     * @name google.datastore.v1.PropertyTransform.ServerValue
+                     * @enum {number}
+                     * @property {number} SERVER_VALUE_UNSPECIFIED=0 SERVER_VALUE_UNSPECIFIED value
+                     * @property {number} REQUEST_TIME=1 REQUEST_TIME value
+                     */
+                    PropertyTransform.ServerValue = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "SERVER_VALUE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "REQUEST_TIME"] = 1;
+                        return values;
+                    })();
+    
+                    return PropertyTransform;
                 })();
     
                 v1.MutationResult = (function() {
@@ -19149,6 +19711,7 @@
                      * @property {google.protobuf.ITimestamp|null} [createTime] MutationResult createTime
                      * @property {google.protobuf.ITimestamp|null} [updateTime] MutationResult updateTime
                      * @property {boolean|null} [conflictDetected] MutationResult conflictDetected
+                     * @property {Array.<google.datastore.v1.IValue>|null} [transformResults] MutationResult transformResults
                      */
     
                     /**
@@ -19160,6 +19723,7 @@
                      * @param {google.datastore.v1.IMutationResult=} [properties] Properties to set
                      */
                     function MutationResult(properties) {
+                        this.transformResults = [];
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -19207,6 +19771,14 @@
                     MutationResult.prototype.conflictDetected = false;
     
                     /**
+                     * MutationResult transformResults.
+                     * @member {Array.<google.datastore.v1.IValue>} transformResults
+                     * @memberof google.datastore.v1.MutationResult
+                     * @instance
+                     */
+                    MutationResult.prototype.transformResults = $util.emptyArray;
+    
+                    /**
                      * Creates a new MutationResult instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.MutationResult
@@ -19240,6 +19812,9 @@
                             $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
                         if (message.createTime != null && Object.hasOwnProperty.call(message, "createTime"))
                             $root.google.protobuf.Timestamp.encode(message.createTime, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                        if (message.transformResults != null && message.transformResults.length)
+                            for (var i = 0; i < message.transformResults.length; ++i)
+                                $root.google.datastore.v1.Value.encode(message.transformResults[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                         return writer;
                     };
     
@@ -19292,6 +19867,12 @@
                                 }
                             case 5: {
                                     message.conflictDetected = reader.bool();
+                                    break;
+                                }
+                            case 8: {
+                                    if (!(message.transformResults && message.transformResults.length))
+                                        message.transformResults = [];
+                                    message.transformResults.push($root.google.datastore.v1.Value.decode(reader, reader.uint32()));
                                     break;
                                 }
                             default:
@@ -19350,6 +19931,15 @@
                         if (message.conflictDetected != null && message.hasOwnProperty("conflictDetected"))
                             if (typeof message.conflictDetected !== "boolean")
                                 return "conflictDetected: boolean expected";
+                        if (message.transformResults != null && message.hasOwnProperty("transformResults")) {
+                            if (!Array.isArray(message.transformResults))
+                                return "transformResults: array expected";
+                            for (var i = 0; i < message.transformResults.length; ++i) {
+                                var error = $root.google.datastore.v1.Value.verify(message.transformResults[i]);
+                                if (error)
+                                    return "transformResults." + error;
+                            }
+                        }
                         return null;
                     };
     
@@ -19391,6 +19981,16 @@
                         }
                         if (object.conflictDetected != null)
                             message.conflictDetected = Boolean(object.conflictDetected);
+                        if (object.transformResults) {
+                            if (!Array.isArray(object.transformResults))
+                                throw TypeError(".google.datastore.v1.MutationResult.transformResults: array expected");
+                            message.transformResults = [];
+                            for (var i = 0; i < object.transformResults.length; ++i) {
+                                if (typeof object.transformResults[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.MutationResult.transformResults: object expected");
+                                message.transformResults[i] = $root.google.datastore.v1.Value.fromObject(object.transformResults[i]);
+                            }
+                        }
                         return message;
                     };
     
@@ -19407,6 +20007,8 @@
                         if (!options)
                             options = {};
                         var object = {};
+                        if (options.arrays || options.defaults)
+                            object.transformResults = [];
                         if (options.defaults) {
                             object.key = null;
                             if ($util.Long) {
@@ -19431,6 +20033,11 @@
                             object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
                         if (message.createTime != null && message.hasOwnProperty("createTime"))
                             object.createTime = $root.google.protobuf.Timestamp.toObject(message.createTime, options);
+                        if (message.transformResults && message.transformResults.length) {
+                            object.transformResults = [];
+                            for (var j = 0; j < message.transformResults.length; ++j)
+                                object.transformResults[j] = $root.google.datastore.v1.Value.toObject(message.transformResults[j], options);
+                        }
                         return object;
                     };
     
