@@ -9153,6 +9153,7 @@
                      * @property {Uint8Array|null} [endCursor] Query endCursor
                      * @property {number|null} [offset] Query offset
                      * @property {google.protobuf.IInt32Value|null} [limit] Query limit
+                     * @property {google.datastore.v1.IFindNearest|null} [findNearest] Query findNearest
                      */
     
                     /**
@@ -9247,6 +9248,14 @@
                     Query.prototype.limit = null;
     
                     /**
+                     * Query findNearest.
+                     * @member {google.datastore.v1.IFindNearest|null|undefined} findNearest
+                     * @memberof google.datastore.v1.Query
+                     * @instance
+                     */
+                    Query.prototype.findNearest = null;
+    
+                    /**
                      * Creates a new Query instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.Query
@@ -9292,6 +9301,8 @@
                             writer.uint32(/* id 10, wireType 0 =*/80).int32(message.offset);
                         if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
                             $root.google.protobuf.Int32Value.encode(message.limit, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                        if (message.findNearest != null && Object.hasOwnProperty.call(message, "findNearest"))
+                            $root.google.datastore.v1.FindNearest.encode(message.findNearest, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
                         return writer;
                     };
     
@@ -9368,6 +9379,10 @@
                                 }
                             case 12: {
                                     message.limit = $root.google.protobuf.Int32Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 13: {
+                                    message.findNearest = $root.google.datastore.v1.FindNearest.decode(reader, reader.uint32());
                                     break;
                                 }
                             default:
@@ -9460,6 +9475,11 @@
                             if (error)
                                 return "limit." + error;
                         }
+                        if (message.findNearest != null && message.hasOwnProperty("findNearest")) {
+                            var error = $root.google.datastore.v1.FindNearest.verify(message.findNearest);
+                            if (error)
+                                return "findNearest." + error;
+                        }
                         return null;
                     };
     
@@ -9537,6 +9557,11 @@
                                 throw TypeError(".google.datastore.v1.Query.limit: object expected");
                             message.limit = $root.google.protobuf.Int32Value.fromObject(object.limit);
                         }
+                        if (object.findNearest != null) {
+                            if (typeof object.findNearest !== "object")
+                                throw TypeError(".google.datastore.v1.Query.findNearest: object expected");
+                            message.findNearest = $root.google.datastore.v1.FindNearest.fromObject(object.findNearest);
+                        }
                         return message;
                     };
     
@@ -9577,6 +9602,7 @@
                             }
                             object.offset = 0;
                             object.limit = null;
+                            object.findNearest = null;
                         }
                         if (message.projection && message.projection.length) {
                             object.projection = [];
@@ -9608,6 +9634,8 @@
                             object.offset = message.offset;
                         if (message.limit != null && message.hasOwnProperty("limit"))
                             object.limit = $root.google.protobuf.Int32Value.toObject(message.limit, options);
+                        if (message.findNearest != null && message.hasOwnProperty("findNearest"))
+                            object.findNearest = $root.google.datastore.v1.FindNearest.toObject(message.findNearest, options);
                         return object;
                     };
     
@@ -12640,6 +12668,392 @@
                     })();
     
                     return PropertyFilter;
+                })();
+    
+                v1.FindNearest = (function() {
+    
+                    /**
+                     * Properties of a FindNearest.
+                     * @memberof google.datastore.v1
+                     * @interface IFindNearest
+                     * @property {google.datastore.v1.IPropertyReference|null} [vectorProperty] FindNearest vectorProperty
+                     * @property {google.datastore.v1.IValue|null} [queryVector] FindNearest queryVector
+                     * @property {google.datastore.v1.FindNearest.DistanceMeasure|null} [distanceMeasure] FindNearest distanceMeasure
+                     * @property {google.protobuf.IInt32Value|null} [limit] FindNearest limit
+                     * @property {string|null} [distanceResultProperty] FindNearest distanceResultProperty
+                     * @property {google.protobuf.IDoubleValue|null} [distanceThreshold] FindNearest distanceThreshold
+                     */
+    
+                    /**
+                     * Constructs a new FindNearest.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a FindNearest.
+                     * @implements IFindNearest
+                     * @constructor
+                     * @param {google.datastore.v1.IFindNearest=} [properties] Properties to set
+                     */
+                    function FindNearest(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * FindNearest vectorProperty.
+                     * @member {google.datastore.v1.IPropertyReference|null|undefined} vectorProperty
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.vectorProperty = null;
+    
+                    /**
+                     * FindNearest queryVector.
+                     * @member {google.datastore.v1.IValue|null|undefined} queryVector
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.queryVector = null;
+    
+                    /**
+                     * FindNearest distanceMeasure.
+                     * @member {google.datastore.v1.FindNearest.DistanceMeasure} distanceMeasure
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.distanceMeasure = 0;
+    
+                    /**
+                     * FindNearest limit.
+                     * @member {google.protobuf.IInt32Value|null|undefined} limit
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.limit = null;
+    
+                    /**
+                     * FindNearest distanceResultProperty.
+                     * @member {string} distanceResultProperty
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.distanceResultProperty = "";
+    
+                    /**
+                     * FindNearest distanceThreshold.
+                     * @member {google.protobuf.IDoubleValue|null|undefined} distanceThreshold
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.distanceThreshold = null;
+    
+                    /**
+                     * Creates a new FindNearest instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.IFindNearest=} [properties] Properties to set
+                     * @returns {google.datastore.v1.FindNearest} FindNearest instance
+                     */
+                    FindNearest.create = function create(properties) {
+                        return new FindNearest(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified FindNearest message. Does not implicitly {@link google.datastore.v1.FindNearest.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.IFindNearest} message FindNearest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FindNearest.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.vectorProperty != null && Object.hasOwnProperty.call(message, "vectorProperty"))
+                            $root.google.datastore.v1.PropertyReference.encode(message.vectorProperty, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.queryVector != null && Object.hasOwnProperty.call(message, "queryVector"))
+                            $root.google.datastore.v1.Value.encode(message.queryVector, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.distanceMeasure != null && Object.hasOwnProperty.call(message, "distanceMeasure"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.distanceMeasure);
+                        if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
+                            $root.google.protobuf.Int32Value.encode(message.limit, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.distanceResultProperty != null && Object.hasOwnProperty.call(message, "distanceResultProperty"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.distanceResultProperty);
+                        if (message.distanceThreshold != null && Object.hasOwnProperty.call(message, "distanceThreshold"))
+                            $root.google.protobuf.DoubleValue.encode(message.distanceThreshold, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified FindNearest message, length delimited. Does not implicitly {@link google.datastore.v1.FindNearest.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.IFindNearest} message FindNearest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FindNearest.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a FindNearest message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.FindNearest} FindNearest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FindNearest.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.FindNearest();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.vectorProperty = $root.google.datastore.v1.PropertyReference.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.queryVector = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 3: {
+                                    message.distanceMeasure = reader.int32();
+                                    break;
+                                }
+                            case 4: {
+                                    message.limit = $root.google.protobuf.Int32Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 5: {
+                                    message.distanceResultProperty = reader.string();
+                                    break;
+                                }
+                            case 6: {
+                                    message.distanceThreshold = $root.google.protobuf.DoubleValue.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a FindNearest message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.FindNearest} FindNearest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FindNearest.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a FindNearest message.
+                     * @function verify
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    FindNearest.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.vectorProperty != null && message.hasOwnProperty("vectorProperty")) {
+                            var error = $root.google.datastore.v1.PropertyReference.verify(message.vectorProperty);
+                            if (error)
+                                return "vectorProperty." + error;
+                        }
+                        if (message.queryVector != null && message.hasOwnProperty("queryVector")) {
+                            var error = $root.google.datastore.v1.Value.verify(message.queryVector);
+                            if (error)
+                                return "queryVector." + error;
+                        }
+                        if (message.distanceMeasure != null && message.hasOwnProperty("distanceMeasure"))
+                            switch (message.distanceMeasure) {
+                            default:
+                                return "distanceMeasure: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                                break;
+                            }
+                        if (message.limit != null && message.hasOwnProperty("limit")) {
+                            var error = $root.google.protobuf.Int32Value.verify(message.limit);
+                            if (error)
+                                return "limit." + error;
+                        }
+                        if (message.distanceResultProperty != null && message.hasOwnProperty("distanceResultProperty"))
+                            if (!$util.isString(message.distanceResultProperty))
+                                return "distanceResultProperty: string expected";
+                        if (message.distanceThreshold != null && message.hasOwnProperty("distanceThreshold")) {
+                            var error = $root.google.protobuf.DoubleValue.verify(message.distanceThreshold);
+                            if (error)
+                                return "distanceThreshold." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a FindNearest message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.FindNearest} FindNearest
+                     */
+                    FindNearest.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.FindNearest)
+                            return object;
+                        var message = new $root.google.datastore.v1.FindNearest();
+                        if (object.vectorProperty != null) {
+                            if (typeof object.vectorProperty !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.vectorProperty: object expected");
+                            message.vectorProperty = $root.google.datastore.v1.PropertyReference.fromObject(object.vectorProperty);
+                        }
+                        if (object.queryVector != null) {
+                            if (typeof object.queryVector !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.queryVector: object expected");
+                            message.queryVector = $root.google.datastore.v1.Value.fromObject(object.queryVector);
+                        }
+                        switch (object.distanceMeasure) {
+                        default:
+                            if (typeof object.distanceMeasure === "number") {
+                                message.distanceMeasure = object.distanceMeasure;
+                                break;
+                            }
+                            break;
+                        case "DISTANCE_MEASURE_UNSPECIFIED":
+                        case 0:
+                            message.distanceMeasure = 0;
+                            break;
+                        case "EUCLIDEAN":
+                        case 1:
+                            message.distanceMeasure = 1;
+                            break;
+                        case "COSINE":
+                        case 2:
+                            message.distanceMeasure = 2;
+                            break;
+                        case "DOT_PRODUCT":
+                        case 3:
+                            message.distanceMeasure = 3;
+                            break;
+                        }
+                        if (object.limit != null) {
+                            if (typeof object.limit !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.limit: object expected");
+                            message.limit = $root.google.protobuf.Int32Value.fromObject(object.limit);
+                        }
+                        if (object.distanceResultProperty != null)
+                            message.distanceResultProperty = String(object.distanceResultProperty);
+                        if (object.distanceThreshold != null) {
+                            if (typeof object.distanceThreshold !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.distanceThreshold: object expected");
+                            message.distanceThreshold = $root.google.protobuf.DoubleValue.fromObject(object.distanceThreshold);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a FindNearest message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.FindNearest} message FindNearest
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    FindNearest.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.vectorProperty = null;
+                            object.queryVector = null;
+                            object.distanceMeasure = options.enums === String ? "DISTANCE_MEASURE_UNSPECIFIED" : 0;
+                            object.limit = null;
+                            object.distanceResultProperty = "";
+                            object.distanceThreshold = null;
+                        }
+                        if (message.vectorProperty != null && message.hasOwnProperty("vectorProperty"))
+                            object.vectorProperty = $root.google.datastore.v1.PropertyReference.toObject(message.vectorProperty, options);
+                        if (message.queryVector != null && message.hasOwnProperty("queryVector"))
+                            object.queryVector = $root.google.datastore.v1.Value.toObject(message.queryVector, options);
+                        if (message.distanceMeasure != null && message.hasOwnProperty("distanceMeasure"))
+                            object.distanceMeasure = options.enums === String ? $root.google.datastore.v1.FindNearest.DistanceMeasure[message.distanceMeasure] === undefined ? message.distanceMeasure : $root.google.datastore.v1.FindNearest.DistanceMeasure[message.distanceMeasure] : message.distanceMeasure;
+                        if (message.limit != null && message.hasOwnProperty("limit"))
+                            object.limit = $root.google.protobuf.Int32Value.toObject(message.limit, options);
+                        if (message.distanceResultProperty != null && message.hasOwnProperty("distanceResultProperty"))
+                            object.distanceResultProperty = message.distanceResultProperty;
+                        if (message.distanceThreshold != null && message.hasOwnProperty("distanceThreshold"))
+                            object.distanceThreshold = $root.google.protobuf.DoubleValue.toObject(message.distanceThreshold, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this FindNearest to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    FindNearest.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for FindNearest
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    FindNearest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.FindNearest";
+                    };
+    
+                    /**
+                     * DistanceMeasure enum.
+                     * @name google.datastore.v1.FindNearest.DistanceMeasure
+                     * @enum {number}
+                     * @property {number} DISTANCE_MEASURE_UNSPECIFIED=0 DISTANCE_MEASURE_UNSPECIFIED value
+                     * @property {number} EUCLIDEAN=1 EUCLIDEAN value
+                     * @property {number} COSINE=2 COSINE value
+                     * @property {number} DOT_PRODUCT=3 DOT_PRODUCT value
+                     */
+                    FindNearest.DistanceMeasure = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "DISTANCE_MEASURE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "EUCLIDEAN"] = 1;
+                        values[valuesById[2] = "COSINE"] = 2;
+                        values[valuesById[3] = "DOT_PRODUCT"] = 3;
+                        return values;
+                    })();
+    
+                    return FindNearest;
                 })();
     
                 v1.GqlQuery = (function() {

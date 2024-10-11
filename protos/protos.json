@@ -873,6 +873,13 @@
                     "limit": {
                       "type": "google.protobuf.Int32Value",
                       "id": 12
+                    },
+                    "findNearest": {
+                      "type": "FindNearest",
+                      "id": 13,
+                      "options": {
+                        "(google.api.field_behavior)": "OPTIONAL"
+                      }
                     }
                   }
                 },
@@ -1077,6 +1084,62 @@
                         "NOT_EQUAL": 9,
                         "HAS_ANCESTOR": 11,
                         "NOT_IN": 13
+                      }
+                    }
+                  }
+                },
+                "FindNearest": {
+                  "fields": {
+                    "vectorProperty": {
+                      "type": "PropertyReference",
+                      "id": 1,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "queryVector": {
+                      "type": "Value",
+                      "id": 2,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "distanceMeasure": {
+                      "type": "DistanceMeasure",
+                      "id": 3,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "limit": {
+                      "type": "google.protobuf.Int32Value",
+                      "id": 4,
+                      "options": {
+                        "(google.api.field_behavior)": "REQUIRED"
+                      }
+                    },
+                    "distanceResultProperty": {
+                      "type": "string",
+                      "id": 5,
+                      "options": {
+                        "(google.api.field_behavior)": "OPTIONAL"
+                      }
+                    },
+                    "distanceThreshold": {
+                      "type": "google.protobuf.DoubleValue",
+                      "id": 6,
+                      "options": {
+                        "(google.api.field_behavior)": "OPTIONAL"
+                      }
+                    }
+                  },
+                  "nested": {
+                    "DistanceMeasure": {
+                      "values": {
+                        "DISTANCE_MEASURE_UNSPECIFIED": 0,
+                        "EUCLIDEAN": 1,
+                        "COSINE": 2,
+                        "DOT_PRODUCT": 3
                       }
                     }
                   }
