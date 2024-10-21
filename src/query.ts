@@ -24,6 +24,7 @@ import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
 import {google} from '../protos/protos';
+import { VectorQuery, VectorQueryOptions, VectorValue } from './vector';
 
 export type Operator =
   | '='
@@ -255,6 +256,55 @@ class Query {
     }
     return this;
   }
+
+  /**
+   * Returns a query that can perform vector distance (similarity) search with given parameters.
+   *
+   * The returned query, when executed, performs a distance (similarity) search on the specified
+   * `vectorField` against the given `queryVector` and returns the top documents that are closest
+   * to the `queryVector`.
+   *
+   * Only documents whose `vectorField` field is a {@link VectorValue} of the same dimension as `queryVector`
+   * participate in the query, all other documents are ignored.
+   *
+   * @example
+   * ```
+   * // Returns the closest 10 documents whose Euclidean distance from their 'embedding' fields are closed to [41, 42].
+   * const vectorQuery = col.findNearest('embedding', [41, 42], {limit: 10, distanceMeasure: 'EUCLIDEAN'});
+   *
+   * const querySnapshot = await aggregateQuery.get();
+   * querySnapshot.forEach(...);
+   * ```
+   *
+   * @param vectorField - A string specifying the vector field to search on.
+   * @param queryVector - The {@link VectorValue} used to measure the distance from `vectorField` values in the documents.
+   * @param options - Options control the vector query. `limit` specifies the upper bound of documents to return, must
+   * be a positive integer with a maximum value of 1000. `distanceMeasure` specifies what type of distance is calculated
+   * when performing the query.
+   *
+   * @deprecated Use the new {@link findNearest} implementation
+   * accepting a single `options` param.
+   */
+  findNearest(
+    vectorField: string,
+    queryVector: VectorValue | Array<number>,
+    options: VectorQueryOptions,
+  ): VectorQuery {
+    if (options.limit <= 0) {
+      throw new Error('limit should be a positive limit number');
+    }
+
+    if (
+      (Array.isArray(options.queryVector)
+        ? options.queryVector.length
+        : options.queryVector.toArray().length) === 0
+    ) {
+      throw new Error('vector size must be larger than 0');
+    }    
+
+    return new VectorQuery(this, options);
+  };
+
 
   /**
    * Filter a query by ancestors.
