@@ -52,6 +52,8 @@ export interface Filter {
   op: Operator;
 }
 
+// Some comment
+
 /**
  * Build a Query object.
  *
