@@ -13,5 +13,5 @@
 // limitations under the License.
 
 module.exports = {
-  ...require('./.prettierrc.json')
+  ...require('gts/.prettierrc.json')
 }
