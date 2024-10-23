@@ -264,6 +264,31 @@ describe('Commit', () => {
           ],
         },
         {
+          name: 'should pass the right properties for a name/value pair in an array with a long string',
+          skipped: false,
+          entities: [
+            {
+              name: 'entityName',
+              value: longString,
+            },
+          ],
+          excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  entityName: {
+                    stringValue: longString,
+                    excludeFromIndexes: true,
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
           name: 'should position excludeFromIndexes in the right place when provided at the top level',
           skipped: false,
           entities: [
@@ -475,6 +500,48 @@ describe('Commit', () => {
                   },
                 },
                 key,
+              },
+            },
+          ],
+        },
+        {
+          name: 'should set the right properties for a nested name/value pair',
+          skipped: false,
+          entities: {
+            metadata: [
+              {
+                name: longString,
+                value: 'some-value',
+              },
+            ],
+          },
+          excludeFromIndexes: [],
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                key,
+                properties: {
+                  metadata: {
+                    arrayValue: {
+                      values: [
+                        {
+                          entityValue: {
+                            properties: {
+                              name: {
+                                stringValue: longString,
+                                excludeFromIndexes: true,
+                              },
+                              value: {
+                                stringValue: 'some-value',
+                              },
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
               },
             },
           ],
