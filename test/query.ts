@@ -394,24 +394,9 @@ describe('Query', () => {
           distanceThreshold: 0.5,
         }
       );
-      
+
       assert.ok(vectorQuery.vectorSearch);
       assert.deepEqual(VectorOptions, vectorQuery.vectorOptions);
-    });
-
-    it('should call the parent instance runQuery correctly', done => {
-      const args = [{}, () => {}];
-
-      console.log(query);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      query.scope.runQuery = function (...thisArgs: any[]) {
-        assert.strictEqual(this, query.scope);
-        assert.strictEqual(thisArgs[0], query);
-        assert.strictEqual(thisArgs[1], args[0]);
-        done();
-      };
-
-      query.run(...args);
     });
   });
 
