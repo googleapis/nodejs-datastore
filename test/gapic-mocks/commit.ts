@@ -23,7 +23,7 @@ import IValue = google.datastore.v1.IValue;
 
 const async = require('async');
 
-describe('Commit', () => {
+describe.only('Commit', () => {
   const longString = Buffer.alloc(1501, '.').toString();
   const clientName = 'DatastoreClient';
   const datastore = getInitializedDatastoreClient();
@@ -475,6 +475,48 @@ describe('Commit', () => {
                   },
                 },
                 key,
+              },
+            },
+          ],
+        },
+        {
+          name: 'should set the right properties for a nested name/value pair',
+          skipped: false,
+          entities: {
+            metadata: [
+              {
+                name: longString,
+                value: 'some-value',
+              },
+            ],
+          },
+          excludeFromIndexes: [],
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                key,
+                properties: {
+                  metadata: {
+                    arrayValue: {
+                      values: [
+                        {
+                          entityValue: {
+                            properties: {
+                              name: {
+                                stringValue: longString,
+                                excludeFromIndexes: true,
+                              },
+                              value: {
+                                stringValue: 'some-value',
+                              },
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
               },
             },
           ],
