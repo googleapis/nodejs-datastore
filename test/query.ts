@@ -19,9 +19,10 @@ const {Query} = require('../src/query');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import {Datastore} from '../src';
 import {AggregateField, AggregateQuery} from '../src/aggregate';
-import {PropertyFilter, EntityFilter, or} from '../src/filter';
+import {PropertyFilter, or} from '../src/filter';
 import {entity} from '../src/entity';
 import {SECOND_DATABASE_ID} from './index';
+import {google} from '../protos/protos';
 
 describe('Query', () => {
   const SCOPE = {} as Datastore;
@@ -327,6 +328,7 @@ describe('Query', () => {
       done();
     });
   });
+
   describe('filter with Filter class', () => {
     it('should support filter with Filter', () => {
       const now = new Date();
@@ -368,6 +370,48 @@ describe('Query', () => {
         new Query(['kind1']).filter('status', '=', null).filters.pop()?.val,
         null
       );
+    });
+  });
+
+  describe.only('findNearest', () => {
+    it('should successfully build a vector search query', () => {
+      const VectorOptions = {
+        vectorField: "embedding",
+        queryVector: [1.0, 2.0, 3.0],
+        limit: 2,
+        distanceMeasure: google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
+        distanceResultField: "distance",
+        distanceThreshold: 0.5,
+      };
+      
+      const vectorQuery = new Query(['kind1']).findNearest(
+        {
+          vectorField: "embedding",
+          queryVector: [1.0, 2.0, 3.0],
+          limit: 2,
+          distanceMeasure: google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
+          distanceResultField: "distance",
+          distanceThreshold: 0.5,
+        }
+      );
+      
+      assert.ok(vectorQuery.vectorSearch);
+      assert.deepEqual(VectorOptions, vectorQuery.vectorOptions);
+    });
+
+    it('should call the parent instance runQuery correctly', done => {
+      const args = [{}, () => {}];
+
+      console.log(query);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      query.scope.runQuery = function (...thisArgs: any[]) {
+        assert.strictEqual(this, query.scope);
+        assert.strictEqual(thisArgs[0], query);
+        assert.strictEqual(thisArgs[1], args[0]);
+        done();
+      };
+
+      query.run(...args);
     });
   });
 

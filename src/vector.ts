@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
+import {google} from '../protos/protos';
 import { Query } from "./query";
-
-enum DistanceMeasure {
-  EUCLIDEAN = 1,
-  COSINE = 2,
-  DOT_PRODUCT = 3,
-}
 
 const VECTOR_VALUE = 31
 
@@ -64,7 +59,7 @@ export class Vector {
     return `Vector<${this.value.join(', ')}>`;
   }
 
-  _to_dict(): VectorDict {
+  _toDict(): VectorDict {
     return {
       array_value: {
         values: this.value.map(v => ({ double_value: v })),
@@ -85,7 +80,7 @@ export interface VectorQueryOptions {
   vectorField: string;
 
   /**
-   * The {@link VectorValue} used to measure the distance from `vectorField` values in the documents.
+   * The value used to measure the distance from `vectorField` values in the documents.
    */
   queryVector: Vector | Array<number>;
 
@@ -97,7 +92,7 @@ export interface VectorQueryOptions {
   /**
    * Specifies what type of distance is calculated when performing the query.
    */
-  distanceMeasure: DistanceMeasure;
+  distanceMeasure: google.datastore.v1.FindNearest.DistanceMeasure;
 
   /**
    * Optionally specifies the name of a field that will be set on each returned DocumentSnapshot,
