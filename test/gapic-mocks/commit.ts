@@ -23,7 +23,7 @@ import IValue = google.datastore.v1.IValue;
 
 const async = require('async');
 
-describe('Commit', () => {
+describe.only('Commit', () => {
   const longString = Buffer.alloc(1501, '.').toString();
   const clientName = 'DatastoreClient';
   const datastore = getInitializedDatastoreClient();
@@ -256,6 +256,31 @@ describe('Commit', () => {
                 properties: {
                   entityName: {
                     stringValue: 'entityValue',
+                  },
+                },
+                key,
+              },
+            },
+          ],
+        },
+        {
+          name: 'should pass the right properties for a name/value pair in an array with a long string',
+          skipped: false,
+          entities: [
+            {
+              name: 'entityName',
+              value: longString,
+            },
+          ],
+          excludeFromIndexes: [], // Empty because excludeLargeProperties populates the list.
+          excludeLargeProperties: true,
+          expectedMutations: [
+            {
+              upsert: {
+                properties: {
+                  entityName: {
+                    stringValue: longString,
+                    excludeFromIndexes: true,
                   },
                 },
                 key,
