@@ -348,6 +348,23 @@ async.each(
           await datastore.delete(postKey);
         });
 
+        it('should save a nested name/value pair', async () => {
+          const longString = Buffer.alloc(1501, '.').toString();
+          const postKey = datastore.key(['Post', 'post1']);
+          await datastore.save({
+            key: postKey,
+            data: {
+              metadata: [
+                {
+                  name: longString,
+                  value: 'some-value',
+                },
+              ],
+            },
+            excludeLargeProperties: true,
+          });
+        });
+
         describe('multi-db support for read and write operations', () => {
           const namespace = `${Date.now()}`;
           const keyHierarchy = ['Post', 'post1'];
