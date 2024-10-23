@@ -348,7 +348,7 @@ async.each(
           await datastore.delete(postKey);
         });
 
-        it('should save a nested name/value pair', async () => {
+        it('should save a nested name/value pair with name as a long string', async () => {
           const longString = Buffer.alloc(1501, '.').toString();
           const postKey = datastore.key(['Post', 'post1']);
           await datastore.save({
@@ -361,6 +361,20 @@ async.each(
                 },
               ],
             },
+            excludeLargeProperties: true,
+          });
+        });
+        it('should save a nested name/value pair with value as a long string', async () => {
+          const longString = Buffer.alloc(1501, '.').toString();
+          const postKey = datastore.key(['Post', 'post1']);
+          await datastore.save({
+            key: postKey,
+            data: [
+              {
+                name: 'some-name',
+                value: longString,
+              },
+            ],
             excludeLargeProperties: true,
           });
         });
