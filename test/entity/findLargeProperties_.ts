@@ -5,7 +5,8 @@ import findLargeProperties_ = entity.findLargeProperties_;
 
 const async = require('async');
 
-describe.only('findLargeProperties_', () => {
+describe('findLargeProperties_', () => {
+  // TODO: Make a test case that has name/value downstream.
   const longString = Buffer.alloc(1501, '.').toString();
   // complexCaseEntities are passed into save for the complex case.
   const complexCaseEntities = {
@@ -67,7 +68,7 @@ describe.only('findLargeProperties_', () => {
           },
         ],
         skipped: false,
-        expectedOutput: ['firstElementName'],
+        expectedOutput: ['[].value'],
       },
       {
         name: 'For a complex case involving lots of entities',
@@ -108,16 +109,29 @@ describe.only('findLargeProperties_', () => {
             value: complexCaseEntities,
           },
         ],
-        skipped: true,
+        skipped: false,
         expectedOutput: [
-          '[].firstElementName.longString',
-          '[].firstElementName.longStringArray[]',
-          '[].firstElementName.metadata.longString',
-          '[].firstElementName.metadata.obj.longStringArray[].longString',
-          '[].firstElementName.metadata.obj.longStringArray[].nestedLongStringArray[].longString',
-          '[].firstElementName.metadata.longStringArray[].longString',
-          '[].firstElementName.metadata.longStringArray[].nestedLongStringArray[].longString',
+          '[].value.longString',
+          '[].value.longStringArray[]',
+          '[].value.metadata.longString',
+          '[].value.metadata.obj.longStringArray[].longString',
+          '[].value.metadata.obj.longStringArray[].nestedLongStringArray[].longString',
+          '[].value.metadata.longStringArray[].longString',
+          '[].value.metadata.longStringArray[].nestedLongStringArray[].longString',
         ],
+      },
+      {
+        name: 'For some nested properties that happen to be called value and name',
+        entities: {
+          metadata: [
+            {
+              name: longString,
+              value: 'some-value',
+            },
+          ],
+        },
+        skipped: false,
+        expectedOutput: ['metadata[].name'],
       },
     ],
     (test: {
