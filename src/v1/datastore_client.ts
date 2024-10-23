@@ -410,16 +410,6 @@ export class DatastoreClient {
   // -------------------
   // -- Service calls --
   // -------------------
-  /**  */
-  findNearest(
-    request: protos.google.datastore.v1.FindNearest,
-    callback: Callback<
-      protos.google.datastore.v1.ILookupResponse,
-      protos.google.datastore.v1.ILookupRequest | null | undefined,
-      {} | null | undefined
-    >
-  ): Promise;
-
   /**
    * Looks up entities by key.
    *
