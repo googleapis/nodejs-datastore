@@ -15,25 +15,24 @@
  */
 
 import {google} from '../protos/protos';
-import { Query } from "./query";
 
-const VECTOR_VALUE = 31
+const VECTOR_VALUE = 31;
 
 interface VectorDict {
-  array_value: { values: { double_value: number }[] };
+  array_value: {values: {double_value: number}[]};
   meaning: number;
   exclude_from_indexes: boolean;
-};
+}
 
 /*A class to represent a Vector for use in query.findNearest.
-*Underlying object will be converted to a map representation in Firestore API.
-*/
+ *Underlying object will be converted to a map representation in Firestore API.
+ */
 export class Vector {
   value: number[];
 
   constructor(value: number[]) {
     this.value = value.map(v => parseFloat(v.toString()));
-  };
+  }
 
   get(index: number): number {
     return this.value[index];
@@ -49,10 +48,12 @@ export class Vector {
 
   equals(other: Vector): boolean {
     if (!(other instanceof Vector)) {
-      throw new Error("Cannot compare Vector to a non-Vector object.");
+      throw new Error('Cannot compare Vector to a non-Vector object.');
     }
-    return this.value.length === other.value.length &&
-           this.value.every((v, i) => v === other.value[i]);
+    return (
+      this.value.length === other.value.length &&
+      this.value.every((v, i) => v === other.value[i])
+    );
   }
 
   toString(): string {
@@ -62,7 +63,7 @@ export class Vector {
   _toDict(): VectorDict {
     return {
       array_value: {
-        values: this.value.map(v => ({ double_value: v })),
+        values: this.value.map(v => ({double_value: v})),
       },
       meaning: VECTOR_VALUE,
       exclude_from_indexes: true,
