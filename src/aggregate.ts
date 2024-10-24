@@ -43,7 +43,8 @@ class AggregateQuery {
   /**
    * Add a `count` aggregate query to the list of aggregations.
    *
-   * @param {string} alias
+   * @param {string} alias The label used in the results to describe this
+   * aggregate field when a query is run.
    * @returns {AggregateQuery}
    */
   count(alias?: string): AggregateQuery {
@@ -55,7 +56,8 @@ class AggregateQuery {
    * Add a `sum` aggregate query to the list of aggregations.
    *
    * @param {string} property
-   * @param {string} alias
+   * @param {string} alias The label used in the results to describe this
+   * aggregate field when a query is run.
    * @returns {AggregateQuery}
    */
   sum(property: string, alias?: string): AggregateQuery {
@@ -67,7 +69,8 @@ class AggregateQuery {
    * Add a `average` aggregate query to the list of aggregations.
    *
    * @param {string} property
-   * @param {string} alias
+   * @param {string} alias The label used in the results to describe this
+   * aggregate field when a query is run.
    * @returns {AggregateQuery}
    */
   average(property: string, alias?: string): AggregateQuery {
