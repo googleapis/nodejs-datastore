@@ -88,7 +88,7 @@ class Query {
   endVal: string | Buffer | null;
   limitVal: number;
   offsetVal: number;
-  vectorSearch: boolean = false;
+  vectorSearch = false;
 
   constructor(scope?: Datastore | Transaction, kinds?: string[] | null);
   constructor(
