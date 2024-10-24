@@ -1509,7 +1509,7 @@ class Datastore extends DatastoreRequest {
    * @see {@link Query}
    *
    * @param {string} [namespace] Namespace.
-   * @param {string} kind  The kind to query.
+   * @param {string} kind The kind to query.
    * @returns {Query}
    *
    * @example
