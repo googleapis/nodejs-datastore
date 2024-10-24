@@ -24,6 +24,7 @@ import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
 import {google} from '../protos/protos';
+import {VectorQueryOptions} from './vector';
 
 export type Operator =
   | '='
@@ -76,6 +77,7 @@ export interface Filter {
 class Query {
   scope?: Datastore | Transaction;
   namespace?: string | null;
+  vectorOptions?: VectorQueryOptions;
   kinds: string[];
   filters: Filter[];
   entityFilters: EntityFilter[];
@@ -86,6 +88,7 @@ class Query {
   endVal: string | Buffer | null;
   limitVal: number;
   offsetVal: number;
+  vectorSearch = false;
 
   constructor(scope?: Datastore | Transaction, kinds?: string[] | null);
   constructor(
@@ -253,6 +256,40 @@ class Query {
         });
       }
     }
+    return this;
+  }
+
+  /**
+   * Returns a query that can perform vector distance (similarity) search with given parameters.
+   *
+   * The returned query, when executed, performs a distance (similarity) search on the specified
+   * `vectorField` against the given `queryVector` and returns the top documents that are closest
+   * to the `queryVector`.
+   *
+   * @example
+   * ```
+   * // Returns the closest 10 documents whose Euclidean distance from their 'embedding' fields are closed to [41, 42].
+   * const vectorQuery = query.findNearest({vectorfield: 'embedding', queryVector: [41, 42], limit: 10, distanceMeasure: 'EUCLIDEAN'});
+   *
+   * const querySnapshot = await vectorQuery.get();
+   * ```
+   *
+   * @param {VectorQueryOptions} options - Options control the vector query. `limit` specifies the upper bound of documents to return, must
+   * be a positive integer with a maximum value of 1000. `distanceMeasure` specifies what type of distance is calculated
+   * when performing the query.
+   *
+   */
+  findNearest(options: VectorQueryOptions): Query {
+    if (options.limit <= 0) {
+      throw new Error('limit should be a positive limit number');
+    }
+
+    if (options.queryVector.length === 0) {
+      throw new Error('vector size must be larger than 0');
+    }
+
+    this.vectorOptions = options;
+    this.vectorSearch = true;
     return this;
   }
 
@@ -584,6 +621,7 @@ export interface QueryProto {
   limit?: {};
   offset?: number;
   filter?: {};
+  findNearest?: {};
 }
 
 /**

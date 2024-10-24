@@ -1269,6 +1269,10 @@ export namespace entity {
       queryProto.filter = and(allFilters).toProto();
     }
 
+    if (query.vectorSearch && query.vectorOptions) {
+      queryProto.findNearest = query.vectorOptions;
+    }
+
     return queryProto;
   }
 
