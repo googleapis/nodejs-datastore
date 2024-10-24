@@ -81,7 +81,8 @@ class AggregateQuery {
   /**
    * Add a custom aggregation to the list of aggregations.
    *
-   * @param {AggregateField} aggregation
+   * @param {AggregateField} aggregation The aggregate field to perform the
+   * aggregation query over.
    * @returns {AggregateQuery}
    */
   addAggregation(aggregation: AggregateField): AggregateQuery {
@@ -92,7 +93,8 @@ class AggregateQuery {
   /**
    * Add a list of custom aggregations to the list of aggregations.
    *
-   * @param {AggregateField[]} aggregation
+   * @param {AggregateField[]} aggregations The aggregate fields to perform the
+   * aggregation query over.
    * @returns {AggregateQuery}
    */
   addAggregations(aggregations: AggregateField[]): AggregateQuery {
