@@ -152,6 +152,7 @@ abstract class AggregateField {
   /**
    * Gets a copy of the Sum aggregate field.
    *
+   * @param {string} property The property to use for the average calculation.
    * @returns {Sum}
    */
   static sum(property: string): Sum {
@@ -161,6 +162,7 @@ abstract class AggregateField {
   /**
    * Gets a copy of the Average aggregate field.
    *
+   * @param {string} property The property to use for the average calculation.
    * @returns {Average}
    */
   static average(property: string): Average {
