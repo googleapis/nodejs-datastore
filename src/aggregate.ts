@@ -33,7 +33,7 @@ class AggregateQuery {
   /**
    * Build an AggregateQuery object.
    *
-   * @param {Query} query
+   * @param {Query} query A Query object
    */
   constructor(query: Query) {
     this.query = query;
