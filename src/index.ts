@@ -134,7 +134,7 @@ const urlSafeKey = new entity.URLSafeKey();
  *
  * <h4>The Datastore Emulator</h4>
  *
- * Make sure you have the <a href="https://cloud.google.com/sdk/downloads">
+ * Make sure you have the <a href="https://cloud.google.com/sdk/docs/install">
  * gcloud SDK installed</a>, then run:
  *
  * <pre>
