@@ -24,7 +24,7 @@ import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
 import {google} from '../protos/protos';
-import {Vector, VectorQueryOptions} from './vector';
+import {VectorQueryOptions} from './vector';
 
 export type Operator =
   | '='
@@ -279,9 +279,7 @@ class Query {
    * when performing the query.
    *
    */
-  findNearest(
-    options: VectorQueryOptions,
-  ): Query {
+  findNearest(options: VectorQueryOptions): Query {
     if (options.limit <= 0) {
       throw new Error('limit should be a positive limit number');
     }
@@ -293,8 +291,7 @@ class Query {
     this.vectorOptions = options;
     this.vectorSearch = true;
     return this;
-  };
-
+  }
 
   /**
    * Filter a query by ancestors.
