@@ -1333,10 +1333,23 @@ class DatastoreRequest {
   }
 }
 
+/**
+ * Check to see if a request is a Transaction
+ *
+ * @param {DatastoreRequest} request The Datastore request object
+ *
+ */
 function isTransaction(request: DatastoreRequest): request is Transaction {
   return request instanceof Transaction;
 }
 
+/**
+ * Throw an error if read options are not properly specified.
+ *
+ * @param {DatastoreRequest} request The Datastore request object
+ * @param {SharedQueryOptions} options The Query options
+ *
+ */
 function throwOnTransactionErrors(
   request: DatastoreRequest,
   options: SharedQueryOptions
@@ -1359,8 +1372,8 @@ function throwOnTransactionErrors(
  * This function gets transaction request options used for defining a
  * request to create a new transaction on the server.
  *
- * @param transaction The transaction for which the request will be made.
- * @param options Custom options that will be used to create the request.
+ * @param {Transaction} transaction The transaction for which the request will be made.
+ * @param {RunOptions} options Custom options that will be used to create the request.
  */
 export function getTransactionRequest(
   transaction: Transaction,
