@@ -1200,6 +1200,11 @@ class DatastoreRequest {
   }
 
   /**
+   * Builds a request and sends it to the Gapic Layer.
+   *
+   * @param {object} config Configuration object.
+   * @param {function} callback The callback function.
+   *
    * @private
    */
   prepareGaxRequest_(config: RequestConfig, callback: Function): void {
