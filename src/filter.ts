@@ -33,10 +33,20 @@ enum CompositeOperator {
   OR = 'OR',
 }
 
+/**
+ * Returns an AND composite filter.
+ *
+ * @param {EntityFilter[]} filters The filters that make up the AND filter.
+ */
 export function and(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.AND);
 }
 
+/**
+ * Returns an OR composite filter.
+ *
+ * @param {EntityFilter[]} filters The filters that make up the OR filter.
+ */
 export function or(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.OR);
 }
