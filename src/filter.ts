@@ -85,9 +85,9 @@ export class PropertyFilter<T extends string>
   /**
    * Build a Property Filter object.
    *
-   * @param {string} Property
-   * @param {Operator} operator
-   * @param {any} val
+   * @param {string} Property The property name that the filter will be applied to.
+   * @param {Operator} operator The comparison operator that the filter applies.
+   * @param {any} val The value that the filter compares the property to.
    */
   constructor(
     public name: T,
