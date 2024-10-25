@@ -692,7 +692,7 @@ class DatastoreRequest {
   /**
    * This function saves results from a successful beginTransaction call.
    *
-   * @param {BeginAsyncResponse} [response] The response from a call to
+   * @param {object} [response] The response from a call to
    * begin a transaction that completed successfully.
    *
    **/
@@ -1078,6 +1078,11 @@ class DatastoreRequest {
     return stream;
   }
 
+  /**
+   * Gets request options from a RunQueryStream options configuration
+   *
+   * @param {RunQueryStreamOptions} [options] The RunQueryStream options configuration
+   */
   private getRequestOptions(
     options: RunQueryStreamOptions
   ): SharedQueryOptions {
@@ -1114,6 +1119,12 @@ class DatastoreRequest {
     return sharedQueryOpts;
   }
 
+  /**
+   * Gets request options from a RunQueryStream options configuration
+   *
+   * @param {Query} [query] A Query object
+   * @param {RunQueryStreamOptions} [options] The RunQueryStream options configuration
+   */
   private getQueryOptions(
     query: Query,
     options: RunQueryStreamOptions = {}
