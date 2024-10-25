@@ -120,7 +120,7 @@ class CompositeFilter extends EntityFilter {
   /**
    * Build a Composite Filter object.
    *
-   * @param {EntityFilter[]} filters
+   * @param {EntityFilter[]} filters The filters that make up the composite filter.
    */
   constructor(filters: EntityFilter[], op: CompositeOperator) {
     super();
