@@ -1416,7 +1416,7 @@ export namespace entity {
      * Convert buffer to base64 encoding.
      *
      * @private
-     * @param {Buffer} buffer
+     * @param {Buffer} buffer The buffer to convert
      * @returns {string} Base64 encoded string.
      */
     convertToBase64_(buffer: Buffer): string {
