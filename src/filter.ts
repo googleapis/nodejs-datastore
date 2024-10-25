@@ -33,6 +33,14 @@ enum CompositeOperator {
   OR = 'OR',
 }
 
+/**
+ * And filters are composed of many other filters and when they are applied
+ * then query results are only returned when they pass through all these other
+ * filters.
+ *
+ * @param {EntityFilter[]} filters The list of filters that make up the and filter.
+ * @returns {CompositeFilter} A composite AND filter.
+ */
 export function and(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.AND);
 }
