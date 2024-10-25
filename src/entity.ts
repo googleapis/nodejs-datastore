@@ -584,6 +584,7 @@ export namespace entity {
    *
    * @private
    * @param {*} value Native value.
+   * @param {string} property The property to use for the average calculation.
    * @returns {object}
    *
    * @example
@@ -797,6 +798,14 @@ export namespace entity {
     return entityProto;
   }
 
+  /**
+   *
+   * @param {string[] | undefined} [entities.excludeFromIndexes] Exclude properties from
+   *     indexing using a simple JSON path notation. See the examples in
+   *     {@link Datastore#save} to see how to target properties at different
+   *     levels of nesting within your entity.
+   * @param {object} entityProto The protocol entity object to convert.
+   */
   export function addExcludeFromIndexes(
     excludeFromIndexes: string[] | undefined,
     entityProto: EntityProto
