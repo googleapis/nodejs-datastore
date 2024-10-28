@@ -83,7 +83,7 @@ export namespace entity {
    * Check if something is a Datastore Double object.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is a datastore double.
    * @returns {boolean}
    */
   export function isDsDouble(value?: {}): value is entity.Double {
@@ -94,7 +94,7 @@ export namespace entity {
    * Check if a value is a Datastore Double object converted from JSON.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is datastore double like.
    * @returns {boolean}
    */
   export function isDsDoubleLike(value: unknown) {
@@ -204,7 +204,7 @@ export namespace entity {
    * Check if something is a Datastore Int object.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is a Datastore Int
    * @returns {boolean}
    */
   export function isDsInt(value?: {}): value is entity.Int {
@@ -215,7 +215,7 @@ export namespace entity {
    * Check if a value is a Datastore Int object converted from JSON.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is Datastore IntLike
    * @returns {boolean}
    */
   export function isDsIntLike(value: unknown) {
@@ -273,7 +273,7 @@ export namespace entity {
    * Check if something is a Datastore Geo Point object.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is a Geo point.
    * @returns {boolean}
    */
   export function isDsGeoPoint(value?: {}): value is entity.GeoPoint {
@@ -584,6 +584,7 @@ export namespace entity {
    *
    * @private
    * @param {*} value Native value.
+   * @param {string} property The property to use for the average calculation.
    * @returns {object}
    *
    * @example
@@ -797,6 +798,14 @@ export namespace entity {
     return entityProto;
   }
 
+  /**
+   *
+   * @param {string[] | undefined} [entities.excludeFromIndexes] Exclude properties from
+   *     indexing using a simple JSON path notation. See the examples in
+   *     {@link Datastore#save} to see how to target properties at different
+   *     levels of nesting within your entity.
+   * @param {object} entityProto The protocol entity object to convert.
+   */
   export function addExcludeFromIndexes(
     excludeFromIndexes: string[] | undefined,
     entityProto: EntityProto
@@ -1411,7 +1420,7 @@ export namespace entity {
      * Convert buffer to base64 encoding.
      *
      * @private
-     * @param {Buffer} buffer
+     * @param {Buffer} buffer The buffer to convert
      * @returns {string} Base64 encoded string.
      */
     convertToBase64_(buffer: Buffer): string {
