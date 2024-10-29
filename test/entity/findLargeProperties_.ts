@@ -20,7 +20,6 @@ import findLargeProperties_ = entity.findLargeProperties_;
 const async = require('async');
 
 describe('findLargeProperties_', () => {
-  // TODO: Make a test case that has name/value downstream.
   const longString = Buffer.alloc(1501, '.').toString();
   // complexCaseEntities are passed into save for the complex case.
   const complexCaseEntities = {
