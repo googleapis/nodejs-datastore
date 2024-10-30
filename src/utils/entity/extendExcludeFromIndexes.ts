@@ -5,6 +5,7 @@ import {entity, Entity} from '../../entity';
  * large properties in the entity object. The extended excludeFromIndexes
  * list is then used when building the entity proto.
  */
+// TODO: Add params
 export function extendExcludeFromIndexes(entityObject: Entity) {
   if (entityObject.excludeLargeProperties) {
     if (Array.isArray(entityObject.data)) {
