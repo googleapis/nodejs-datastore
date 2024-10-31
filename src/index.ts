@@ -69,9 +69,9 @@ import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
 import {SaveEntity} from './interfaces/save';
 import {extendExcludeFromIndexes} from './utils/entity/extendExcludeFromIndexes';
+import entityToEntityProto = entity.entityToEntityProto;
 
 const {grpc} = new GrpcClient();
-const addExcludeFromIndexes = entity.addExcludeFromIndexes;
 
 export type PathType = string | number | entity.Int;
 export interface BooleanObject {
@@ -1099,7 +1099,6 @@ class Datastore extends DatastoreRequest {
       .map(DatastoreRequest.prepareEntityObject_)
       .forEach((entityObject: Entity, index: number) => {
         const mutation: Mutation = {};
-        let entityProto: EntityProto = {};
         let method = 'upsert';
 
         if (entityObject.method) {
@@ -1117,44 +1116,7 @@ class Datastore extends DatastoreRequest {
         }
 
         extendExcludeFromIndexes(entityObject);
-        if (Array.isArray(entityObject.data)) {
-          // This code builds the right entityProto from the entityObject
-          entityProto.properties = entityObject.data.reduce(
-            (
-              acc: EntityProtoReduceAccumulator,
-              data: EntityProtoReduceData
-            ) => {
-              const value = entity.encodeValue(
-                data.value,
-                data.name.toString()
-              );
-
-              if (typeof data.excludeFromIndexes === 'boolean') {
-                const excluded = data.excludeFromIndexes;
-                let values = value.arrayValue && value.arrayValue.values;
-
-                if (values) {
-                  values = values.map((x: ValueProto) => {
-                    x.excludeFromIndexes = excluded;
-                    return x;
-                  });
-                } else {
-                  value.excludeFromIndexes = data.excludeFromIndexes;
-                }
-              }
-
-              acc[data.name] = value;
-
-              return acc;
-            },
-            {}
-          );
-          // This code adds excludeFromIndexes in the right places
-          addExcludeFromIndexes(entityObject.excludeFromIndexes, entityProto);
-        } else {
-          // This code builds the right entityProto from the entityObject
-          entityProto = entity.entityToEntityProto(entityObject);
-        }
+        const entityProto = entityToEntityProto(entityObject);
 
         entityProto.key = entity.keyToKeyProto(entityObject.key);
 
