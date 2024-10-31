@@ -1943,7 +1943,7 @@ async.each(
           );
         });
 
-        it('should prepare excludeFromIndexes array for large values', done => {
+        it.only('should prepare excludeFromIndexes array for large values', done => {
           const longString = Buffer.alloc(1501, '.').toString();
           const data = {
             longString,

@@ -69,7 +69,7 @@ import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
 import {SaveEntity} from './interfaces/save';
 import {extendExcludeFromIndexes} from './utils/entity/extendExcludeFromIndexes';
-import entityToEntityProto = entity.entityToEntityProto;
+import {buildEntityProto} from './utils/entity/entityToEntityProto';
 
 const {grpc} = new GrpcClient();
 
@@ -1116,7 +1116,7 @@ class Datastore extends DatastoreRequest {
         }
 
         extendExcludeFromIndexes(entityObject);
-        const entityProto = entityToEntityProto(entityObject);
+        const entityProto = buildEntityProto(entityObject);
 
         entityProto.key = entity.keyToKeyProto(entityObject.key);
 

@@ -9,7 +9,7 @@ import addExcludeFromIndexes = entity.addExcludeFromIndexes;
  * designed to be used for non-array entities.
  *
  */
-export function entityToEntityProto(entityObject: Entity) {
+export function buildEntityProto(entityObject: Entity) {
   let entityProto: EntityProto = {};
   if (Array.isArray(entityObject.data)) {
     // This code builds the right entityProto from the entityObject
