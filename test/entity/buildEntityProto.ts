@@ -22,7 +22,9 @@ describe.only('buildEntityProto', () => {
         expectedProto: {
           key: null,
           properties: {
-            name: 'Stephen',
+            name: {
+              stringValue: 'Stephen',
+            },
           },
         },
         skipped: false,

@@ -20,7 +20,10 @@ import {Datastore} from '../src';
 import {Entity, entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
 import {PropertyFilter, EntityFilter, and} from '../src/filter';
-import {entityObject, expectedEntityProto} from './fixtures/entityObjectAndProto';
+import {
+  entityObject,
+  expectedEntityProto,
+} from './fixtures/entityObjectAndProto';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
