@@ -9,7 +9,7 @@ import {
 
 const async = require('async');
 
-describe.only('buildEntityProto', () => {
+describe('buildEntityProto', () => {
   async.each(
     [
       {
@@ -24,6 +24,25 @@ describe.only('buildEntityProto', () => {
           properties: {
             name: {
               stringValue: 'Stephen',
+            },
+          },
+        },
+        skipped: false,
+      },
+      {
+        name: 'should format an entity array',
+        entityObject: {
+          data: [
+            {
+              name: 'Stephen',
+              value: 'Stephen value',
+            },
+          ],
+        },
+        expectedProto: {
+          properties: {
+            Stephen: {
+              stringValue: 'Stephen value',
             },
           },
         },
