@@ -69,7 +69,7 @@ import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
 import {SaveEntity} from './interfaces/save';
 import {extendExcludeFromIndexes} from './utils/entity/extendExcludeFromIndexes';
-import {buildEntityProto} from './utils/entity/entityToEntityProto';
+import {buildEntityProto} from './utils/entity/buildEntityProto';
 
 const {grpc} = new GrpcClient();
 

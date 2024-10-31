@@ -1,4 +1,3 @@
-
 import {entity, Entity, EntityProto, ValueProto} from '../../entity';
 import {EntityProtoReduceAccumulator, EntityProtoReduceData} from '../../index';
 import addExcludeFromIndexes = entity.addExcludeFromIndexes;
