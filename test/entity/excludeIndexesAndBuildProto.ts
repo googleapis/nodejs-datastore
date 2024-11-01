@@ -172,7 +172,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
   async.each(
     [
       {
-        name: 'Should encode a simple object',
+        name: 'Should encode a simple object properly',
         skipped: false,
         entities: {
           name: 'firstElementName',
@@ -182,9 +182,10 @@ describe.only('excludeIndexesAndBuildProto', () => {
     ],
     (test: {name: string; entities: Entities; skipped: boolean}) => {
       it(test.name, function () {
-        // For each test in this block, the test ensures that excludeFromIndexes: true
-        // only appears in the entity proto in every place that corresponds to a large
-        // value.
+        // This test ensures that excludeFromIndexes: true only appears in the
+        // entity proto in every place that corresponds to a large value. It
+        // does this using the checkEntityProto function which does a
+        // recursive check on the proto.
         if (test.skipped) {
           this.skip();
         }
@@ -195,8 +196,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
         };
         extendExcludeFromIndexes(entityObject);
         const entityProto = buildEntityProto(entityObject);
-
-        // TODO: Replace any
+        checkEntityProto(entityProto, '');
       });
     }
   );
