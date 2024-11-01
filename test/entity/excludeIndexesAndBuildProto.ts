@@ -5,6 +5,8 @@ import {buildEntityProto} from '../../src/utils/entity/buildEntityProto';
 import * as is from 'is';
 import * as assert from 'assert';
 import {ServiceError} from 'google-gax';
+import {entityObject} from '../fixtures/entityObjectAndProto';
+import {complexCaseEntities} from '../fixtures/complexCaseLargeStrings';
 const async = require('async');
 
 describe.only('excludeIndexesAndBuildProto', () => {
@@ -177,6 +179,40 @@ describe.only('excludeIndexesAndBuildProto', () => {
         entities: {
           name: 'firstElementName',
           value: longString,
+        },
+      },
+      {
+        name: 'Should encode a complex set of entities without large values',
+        skipped: false,
+        entities: entityObject.data,
+      },
+      {
+        name: 'Should encode a complex set of entities with large values',
+        skipped: false,
+        entities: complexCaseEntities,
+      },
+      {
+        name: 'Should encode a long string in a nested field',
+        skipped: false,
+        entities: [
+          {
+            name: 'field_b',
+            value: {
+              nestedField: Buffer.alloc(1501, '.').toString(),
+            },
+          },
+        ],
+      },
+      {
+        name: 'Should exclude large properties in a nested array',
+        skipped: false,
+        entities: {
+          metadata: [
+            {
+              name: longString,
+              value: longString,
+            },
+          ],
         },
       },
     ],
