@@ -20,6 +20,7 @@ import type {CallOptions} from 'google-gax';
 import {Entities} from '../../src/entity';
 import {google} from '../../protos/protos';
 import IValue = google.datastore.v1.IValue;
+import {complexCaseEntities} from '../fixtures/complexCaseLargeStrings';
 
 const async = require('async');
 
@@ -167,46 +168,6 @@ describe('Commit', () => {
           },
         },
       },
-    },
-  };
-  // complexCaseEntities are passed into save for the complex case.
-  const complexCaseEntities = {
-    longString,
-    notMetadata: true,
-    longStringArray: [longString],
-    metadata: {
-      longString,
-      otherProperty: 'value',
-      obj: {
-        longStringArray: [
-          {
-            longString,
-            nestedLongStringArray: [
-              {
-                longString,
-                nestedProperty: true,
-              },
-              {
-                longString,
-              },
-            ],
-          },
-        ],
-      },
-      longStringArray: [
-        {
-          longString,
-          nestedLongStringArray: [
-            {
-              longString,
-              nestedProperty: true,
-            },
-            {
-              longString,
-            },
-          ],
-        },
-      ],
     },
   };
 
