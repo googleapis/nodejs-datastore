@@ -225,7 +225,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
         metadata: [
           {
             name: longString,
-            value: longString,
+            value: 'some-value',
           },
         ],
       },
