@@ -49,7 +49,10 @@ describe.only('excludeIndexesAndBuildProto', () => {
 
   /**
    * This describe block makes sure that the recursive checkEntityProto
-   * function works the way that it should.
+   * function works as intended. It ensures that checkEntityProto throws an
+   * error for `excludeFromIndexes: true` entries that are missing or out of
+   * place and it also ensures checkEntityProto doesn't throw an error when
+   * proper entity protos are provided.
    *
    */
   describe('checkEntityProto', () => {
@@ -176,6 +179,12 @@ describe.only('excludeIndexesAndBuildProto', () => {
     });
   });
 
+  /**
+   * These are the basic test cases each with an entity object that will be
+   * tested. The entity object in each test case will be encoded into an entity
+   * proto and then the entity proto will be checked to ensure
+   * excludeFromIndexes: true is in the proper places.
+   */
   const testCases: {name: string; entities: Entities; skipped: boolean}[] = [
     {
       name: 'Should encode a simple object properly',
@@ -229,7 +238,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
   /**
    * This function generates a wide variety of Entity Object structures so that
    * in our tests we can ensure each one of them gets encoded into an entity
-   * proto with excludeFromIndexes: true in exactly all the right places.
+   * proto with `excludeFromIndexes: true` in exactly all the right places.
    */
   // This ensures excludeFromIndexes: true is encoded correctly :
   function getGeneratedTestComponents(
