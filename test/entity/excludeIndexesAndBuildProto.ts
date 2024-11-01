@@ -245,6 +245,9 @@ describe.only('excludeIndexesAndBuildProto', () => {
     baseElement: {},
     baseTestName: string
   ): GeneratedTestCase[] {
+    // TODO: Mention the following:
+    // Error: 3 INVALID_ARGUMENT: list_value cannot contain a Value containing another list_value.
+    // https://stackoverflow.com/questions/68351642/list-value-cannot-contain-a-value-containing-another-list-value
     const maxDepth = 3;
     const generatedTestCasesByDepth: GeneratedTestCase[][] = [
       [{entities: baseElement, name: baseTestName}],
