@@ -270,15 +270,20 @@ describe.only('excludeIndexesAndBuildProto', () => {
     return generatedTestCasesByDepth[maxDepth - 1];
   }
 
-  const generatedTestComponents = getGeneratedTestComponents(
+  /**
+   * This script adds a bunch of generated test cases with generated entity
+   * objects that will be converted into entity protos and checked for
+   * correctness.
+   *
+   */
+  getGeneratedTestComponents(
     {
       name: longString,
       value: longString,
       otherProperty: longString,
     },
     ''
-  );
-  generatedTestComponents.forEach(component => {
+  ).forEach(component => {
     testCases.push({
       skipped: false,
       name: `Should encode a generated object with path ${component.name}`,
@@ -308,10 +313,12 @@ describe.only('excludeIndexesAndBuildProto', () => {
     testCases,
     (test: {name: string; entities: Entities; skipped: boolean}) => {
       it(test.name, function () {
-        // This test ensures that excludeFromIndexes: true only appears in the
-        // entity proto in every place that corresponds to a large value. It
-        // does this using the checkEntityProto function which does a
-        // recursive check on the proto.
+        /**
+         * This test ensures that excludeFromIndexes: true only appears in the
+         * entity proto in every place that corresponds to a large value. It
+         * does this using the checkEntityProto function which does a
+         * recursive check on the proto.
+         */
         if (test.skipped) {
           this.skip();
         }
