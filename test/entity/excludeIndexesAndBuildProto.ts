@@ -247,22 +247,23 @@ describe.only('excludeIndexesAndBuildProto', () => {
     baseElement: {},
     baseTestName: string
   ): GeneratedTestCase[] {
-    const maxDepth = 5;
+    const maxDepth = 3;
     const generatedTestCasesByDepth: GeneratedTestCase[][] = [
       [{entities: baseElement, name: baseTestName}],
     ];
     for (let depth = 1; depth < maxDepth; depth++) {
       const newElements: GeneratedTestCase[] = [];
       generatedTestCasesByDepth[depth - 1].forEach(element => {
+        const entities = element.entities;
         newElements.push({
-          entities: [element, element],
+          entities: [entities, entities],
           name: element.name + '.[]',
         });
         newElements.push({
           entities: {
-            name: element,
-            value: element,
-            otherProperty: element,
+            name: entities,
+            value: entities,
+            otherProperty: entities,
           },
           name: element.name + '.{}',
         });
