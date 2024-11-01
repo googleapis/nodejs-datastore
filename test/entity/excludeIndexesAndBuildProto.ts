@@ -47,6 +47,11 @@ describe.only('excludeIndexesAndBuildProto', () => {
     }
   }
 
+  /**
+   * This describe block makes sure that the recursive checkEntityProto
+   * function works the way that it should.
+   *
+   */
   describe('checkEntityProto', () => {
     it('should not throw an assertion error on a simple check', () => {
       checkEntityProto(
@@ -171,51 +176,127 @@ describe.only('excludeIndexesAndBuildProto', () => {
     });
   });
 
-  async.each(
-    [
-      {
-        name: 'Should encode a simple object properly',
-        skipped: false,
-        entities: {
-          name: 'firstElementName',
-          value: longString,
+  const testCases: {name: string; entities: Entities; skipped: boolean}[] = [
+    {
+      name: 'Should encode a simple object properly',
+      skipped: false,
+      entities: {
+        name: 'firstElementName',
+        value: longString,
+      },
+    },
+    {
+      name: 'Should encode a complex set of entities without large values',
+      skipped: false,
+      entities: entityObject.data,
+    },
+    {
+      name: 'Should encode a complex set of entities with large values',
+      skipped: false,
+      entities: complexCaseEntities,
+    },
+    {
+      name: 'Should encode a long string in a nested field',
+      skipped: false,
+      entities: [
+        {
+          name: 'field_b',
+          value: {
+            nestedField: Buffer.alloc(1501, '.').toString(),
+          },
         },
-      },
-      {
-        name: 'Should encode a complex set of entities without large values',
-        skipped: false,
-        entities: entityObject.data,
-      },
-      {
-        name: 'Should encode a complex set of entities with large values',
-        skipped: false,
-        entities: complexCaseEntities,
-      },
-      {
-        name: 'Should encode a long string in a nested field',
-        skipped: false,
-        entities: [
+      ],
+    },
+    {
+      name: 'Should exclude large properties in a nested array',
+      skipped: false,
+      entities: {
+        metadata: [
           {
-            name: 'field_b',
-            value: {
-              nestedField: Buffer.alloc(1501, '.').toString(),
-            },
+            name: longString,
+            value: longString,
           },
         ],
       },
-      {
-        name: 'Should exclude large properties in a nested array',
-        skipped: false,
-        entities: {
-          metadata: [
-            {
-              name: longString,
-              value: longString,
-            },
-          ],
-        },
+    },
+  ];
+
+  interface GeneratedTestCase {
+    entities: any;
+    name: string;
+  }
+
+  /**
+   * This function generates a wide variety of Entity Object structures so that
+   * in our tests we can ensure each one of them gets encoded into an entity
+   * proto with excludeFromIndexes: true in exactly all the right places.
+   */
+  // This ensures excludeFromIndexes: true is encoded correctly :
+  function getGeneratedTestComponents(
+    baseElement: {},
+    baseTestName: string
+  ): GeneratedTestCase[] {
+    const maxDepth = 5;
+    const generatedTestCasesByDepth: GeneratedTestCase[][] = [
+      [{entities: baseElement, name: baseTestName}],
+    ];
+    for (let depth = 1; depth < maxDepth; depth++) {
+      const newElements: GeneratedTestCase[] = [];
+      generatedTestCasesByDepth[depth - 1].forEach(element => {
+        newElements.push({
+          entities: [element, element],
+          name: element.name + '.[]',
+        });
+        newElements.push({
+          entities: {
+            name: element,
+            value: element,
+            otherProperty: element,
+          },
+          name: element.name + '.{}',
+        });
+      });
+      generatedTestCasesByDepth.push(newElements);
+    }
+    return generatedTestCasesByDepth[maxDepth - 1];
+  }
+
+  const generatedTestComponents = getGeneratedTestComponents(
+    {
+      name: longString,
+      value: longString,
+      otherProperty: longString,
+    },
+    ''
+  );
+  generatedTestComponents.forEach(component => {
+    testCases.push({
+      skipped: false,
+      name: `Should encode a generated object with path ${component.name}`,
+      entities: {
+        name: component.entities,
+        value: component.entities,
+        otherProperty: component.entities,
       },
-    ],
+    });
+    testCases.push({
+      skipped: false,
+      name: `Should encode a generated array with path ${component.name}`,
+      entities: [
+        {
+          name: component.entities,
+          value: component.entities,
+        },
+        {
+          name: component.entities,
+          value: component.entities,
+        },
+      ],
+    });
+  });
+
+  async.each(
+    testCases,
     (test: {name: string; entities: Entities; skipped: boolean}) => {
       it(test.name, function () {
         // This test ensures that excludeFromIndexes: true only appears in the
