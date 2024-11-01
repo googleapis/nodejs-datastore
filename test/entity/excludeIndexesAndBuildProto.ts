@@ -284,7 +284,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
         value: longString,
         otherProperty: longString,
       },
-      ''
+      'with long string properties and path '
     ),
     getGeneratedTestComponents(
       {
@@ -292,14 +292,14 @@ describe.only('excludeIndexesAndBuildProto', () => {
         value: 'short value',
         otherProperty: longString,
       },
-      ''
+      'with long name property and path '
     ),
   ]
     .flat()
     .forEach(component => {
       testCases.push({
         skipped: false,
-        name: `Should encode a generated object with path ${component.name}`,
+        name: `Should encode a generated object ${component.name}`,
         entities: {
           name: component.entities,
           value: component.entities,
@@ -308,7 +308,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
       });
       testCases.push({
         skipped: false,
-        name: `Should encode a generated array with path ${component.name}`,
+        name: `Should encode a generated array ${component.name}`,
         entities: [
           {
             name: 'some-name',
