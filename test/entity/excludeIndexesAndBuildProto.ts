@@ -233,6 +233,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
   interface GeneratedTestCase {
     entities: any;
     name: string;
+    isArray: boolean;
   }
 
   /**
@@ -245,21 +246,29 @@ describe.only('excludeIndexesAndBuildProto', () => {
     baseElement: {},
     baseTestName: string
   ): GeneratedTestCase[] {
-    // TODO: Mention the following:
-    // Error: 3 INVALID_ARGUMENT: list_value cannot contain a Value containing another list_value.
-    // https://stackoverflow.com/questions/68351642/list-value-cannot-contain-a-value-containing-another-list-value
     const maxDepth = 3;
     const generatedTestCasesByDepth: GeneratedTestCase[][] = [
-      [{entities: baseElement, name: baseTestName}],
+      [{entities: baseElement, name: baseTestName, isArray: false}],
     ];
     for (let depth = 1; depth < maxDepth; depth++) {
       const newElements: GeneratedTestCase[] = [];
       generatedTestCasesByDepth[depth - 1].forEach(element => {
         const entities = element.entities;
-        newElements.push({
-          entities: [entities, entities],
-          name: element.name + '.[]',
-        });
+        if (!element.isArray) {
+          /**
+           * Note that if the proto contains an array of an array then the
+           * server will return the following error:
+           * Error: 3 INVALID_ARGUMENT: list_value cannot contain a Value containing another list_value.
+           *
+           * Therefore, arrays of arrays are not supported so this if statement
+           * is here so that we don't generate tests for those cases.
+           */
+          newElements.push({
+            entities: [entities, entities],
+            name: element.name + '.[]',
+            isArray: true,
+          });
+        }
         newElements.push({
           entities: {
             name: entities,
@@ -267,6 +276,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
             otherProperty: entities,
           },
           name: element.name + '.{}',
+          isArray: false,
         });
       });
       generatedTestCasesByDepth.push(newElements);
