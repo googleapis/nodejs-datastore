@@ -246,7 +246,7 @@ describe.only('excludeIndexesAndBuildProto', () => {
     baseElement: {},
     baseTestName: string
   ): GeneratedTestCase[] {
-    const maxDepth = 3;
+    const maxDepth = 5;
     const generatedTestCasesByDepth: GeneratedTestCase[][] = [
       [{entities: baseElement, name: baseTestName, isArray: false}],
     ];
