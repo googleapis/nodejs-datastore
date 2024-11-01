@@ -159,6 +159,15 @@ class Transaction extends DatastoreRequest {
    * ```
    */
   commit(gaxOptions?: CallOptions): Promise<CommitResponse>;
+  /**
+   * @param {object} [gaxOptions] Request configuration options, outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
+   * @param {?error} callback.err An error returned while making this request.
+   *   If the commit fails, we automatically try to rollback the transaction
+   * (see {module:datastore/transaction#rollback}).
+   * @param {object} callback.apiResponse The full API response.
+   */
   commit(callback: CommitCallback): void;
   commit(gaxOptions: CallOptions, callback: CommitCallback): void;
   commit(
@@ -755,7 +764,7 @@ class Transaction extends DatastoreRequest {
    * has not been started yet then the transaction is started before the
    * runQuery call is made.
    *
-   * @param {Query} query Query object.
+   * @param {Query} query A Query object
    * @param {object} [options] Optional configuration.
    * @param {function} [callback] The callback function. If omitted, a readable
    *     stream instance is returned.
