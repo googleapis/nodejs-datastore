@@ -29,12 +29,14 @@ describe.only('excludeIndexesAndBuildProto', () => {
       if (is.object(entityProtoSubset)) {
         if (entityProtoSubset.stringValue === longString) {
           if (entityProtoSubset.excludeFromIndexes !== true) {
+            console.log('Assertion fail');
             assert.fail(
               `The entity proto at ${path} should excludeFromIndexes`
             );
           }
         } else {
           if (entityProtoSubset.excludeFromIndexes === true) {
+            console.log('Assertion fail');
             assert.fail(
               `The entity proto at ${path} should not excludeFromIndexes`
             );
@@ -276,38 +278,50 @@ describe.only('excludeIndexesAndBuildProto', () => {
    * correctness.
    *
    */
-  getGeneratedTestComponents(
-    {
-      name: longString,
-      value: longString,
-      otherProperty: longString,
-    },
-    ''
-  ).forEach(component => {
-    testCases.push({
-      skipped: false,
-      name: `Should encode a generated object with path ${component.name}`,
-      entities: {
-        name: component.entities,
-        value: component.entities,
-        otherProperty: component.entities,
+  [
+    getGeneratedTestComponents(
+      {
+        name: longString,
+        value: longString,
+        otherProperty: longString,
       },
-    });
-    testCases.push({
-      skipped: false,
-      name: `Should encode a generated array with path ${component.name}`,
-      entities: [
-        {
+      ''
+    ),
+    getGeneratedTestComponents(
+      {
+        name: longString,
+        value: 'short value',
+        otherProperty: longString,
+      },
+      ''
+    ),
+  ]
+    .flat()
+    .forEach(component => {
+      testCases.push({
+        skipped: false,
+        name: `Should encode a generated object with path ${component.name}`,
+        entities: {
           name: component.entities,
           value: component.entities,
+          otherProperty: component.entities,
         },
-        {
-          name: component.entities,
-          value: component.entities,
-        },
-      ],
+      });
+      testCases.push({
+        skipped: false,
+        name: `Should encode a generated array with path ${component.name}`,
+        entities: [
+          {
+            name: 'some-name',
+            value: component.entities,
+          },
+          {
+            name: 'some-name',
+            value: component.entities,
+          },
+        ],
+      });
     });
-  });
 
   async.each(
     testCases,
