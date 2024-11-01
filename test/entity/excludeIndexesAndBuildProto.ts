@@ -29,14 +29,12 @@ describe.only('excludeIndexesAndBuildProto', () => {
       if (is.object(entityProtoSubset)) {
         if (entityProtoSubset.stringValue === longString) {
           if (entityProtoSubset.excludeFromIndexes !== true) {
-            console.log('Assertion fail');
             assert.fail(
               `The entity proto at ${path} should excludeFromIndexes`
             );
           }
         } else {
           if (entityProtoSubset.excludeFromIndexes === true) {
-            console.log('Assertion fail');
             assert.fail(
               `The entity proto at ${path} should not excludeFromIndexes`
             );
