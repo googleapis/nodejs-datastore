@@ -31,8 +31,8 @@ describe.only('excludeIndexesAndBuildProto', () => {
    * an excludeFromIndexes: true value next to large values in the
    * entityProtoSubset and throws an assertion error if there is not.
    *
-   * @param entityProtoSubset
-   * @param path
+   * @param entityProtoSubset The entityProtoSubset to search.
+   * @param path The path to the entityProtoSubset being searched.
    */
   function checkEntityProto(entityProtoSubset: any, path: string) {
     if (Array.isArray(entityProtoSubset)) {
