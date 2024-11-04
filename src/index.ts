@@ -488,14 +488,16 @@ class Datastore extends DatastoreRequest {
 
     options.projectId = options.projectId || process.env.DATASTORE_PROJECT_ID;
 
-    this.defaultBaseUrl_ = 'datastore.googleapis.com';
+    // prod: datastore.googleapis.com
+    // nightly: nightly-datastore.sandbox.googleapis.com
+    this.defaultBaseUrl_ = 'nightly-datastore.sandbox.googleapis.com';
     this.determineBaseUrl_(options.apiEndpoint);
 
     const scopes: string[] = Array.from(
       new Set([
         ...gapic.v1.DatastoreClient.scopes,
         ...gapic.v1.DatastoreAdminClient.scopes,
-      ])
+      ]),
     );
 
     this.options = Object.assign(
@@ -506,7 +508,7 @@ class Datastore extends DatastoreRequest {
         servicePath: this.baseUrl_,
         port: typeof this.port_ === 'number' ? this.port_ : 443,
       },
-      options
+      options,
     );
     const isUsingLocalhost =
       this.baseUrl_ &&
