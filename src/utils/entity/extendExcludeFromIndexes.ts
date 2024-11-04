@@ -26,23 +26,21 @@ export function extendExcludeFromIndexes(entityObject: Entity) {
   if (entityObject.excludeLargeProperties) {
     if (Array.isArray(entityObject.data)) {
       // This code populates the excludeFromIndexes list with the right values.
-      if (entityObject.excludeLargeProperties) {
-        entityObject.data.forEach(
-          (data: {
-            name: {
-              toString(): string;
-            };
-            value: Entity;
-            excludeFromIndexes?: boolean;
-          }) => {
-            entityObject.excludeFromIndexes = entity.findLargeProperties_(
-              data.value,
-              data.name.toString(),
-              entityObject.excludeFromIndexes
-            );
-          }
-        );
-      }
+      entityObject.data.forEach(
+        (data: {
+          name: {
+            toString(): string;
+          };
+          value: Entity;
+          excludeFromIndexes?: boolean;
+        }) => {
+          entityObject.excludeFromIndexes = entity.findLargeProperties_(
+            data.value,
+            data.name.toString(),
+            entityObject.excludeFromIndexes
+          );
+        }
+      );
     } else {
       entityObject.excludeFromIndexes = entity.findLargeProperties_(
         entityObject.data,
