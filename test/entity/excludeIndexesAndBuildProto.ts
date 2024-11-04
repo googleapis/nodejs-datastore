@@ -23,7 +23,7 @@ import {entityObject} from '../fixtures/entityObjectAndProto';
 import {complexCaseEntities} from '../fixtures/complexCaseLargeStrings';
 const async = require('async');
 
-describe.only('excludeIndexesAndBuildProto', () => {
+describe('excludeIndexesAndBuildProto', () => {
   const longString = Buffer.alloc(1501, '.').toString();
 
   /**
@@ -31,8 +31,8 @@ describe.only('excludeIndexesAndBuildProto', () => {
    * an excludeFromIndexes: true value next to large values in the
    * entityProtoSubset and throws an assertion error if there is not.
    *
-   * @param entityProtoSubset The entityProtoSubset to search.
-   * @param path The path to the entityProtoSubset being searched.
+   * @param {any} entityProtoSubset The entityProtoSubset to search.
+   * @param {string} path The path to the entityProtoSubset being searched.
    */
   function checkEntityProto(entityProtoSubset: any, path: string) {
     if (Array.isArray(entityProtoSubset)) {
@@ -254,8 +254,12 @@ describe.only('excludeIndexesAndBuildProto', () => {
    * This function generates a wide variety of Entity Object structures so that
    * in our tests we can ensure each one of them gets encoded into an entity
    * proto with `excludeFromIndexes: true` in exactly all the right places.
+   *
+   * @param {object} baseElement The element that will appear at all leaf nodes
+   * of the entity proto.
+   * @param {string} baseTestName The name of the test that the generated
+   * components will correspond to.
    */
-  // This ensures excludeFromIndexes: true is encoded correctly :
   function getGeneratedTestComponents(
     baseElement: {},
     baseTestName: string
