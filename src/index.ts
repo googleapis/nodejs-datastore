@@ -68,6 +68,7 @@ import {promisifyAll} from '@google-cloud/promisify';
 import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
 import {SaveEntity} from './interfaces/save';
+import {extendExcludeFromIndexes} from './utils/entity/extendExcludeFromIndexes';
 
 const {grpc} = new GrpcClient();
 const addExcludeFromIndexes = entity.addExcludeFromIndexes;
@@ -1115,25 +1116,8 @@ class Datastore extends DatastoreRequest {
           insertIndexes[index] = true;
         }
 
+        extendExcludeFromIndexes(entityObject);
         if (Array.isArray(entityObject.data)) {
-          // This code populates the excludeFromIndexes list with the right values.
-          if (entityObject.excludeLargeProperties) {
-            entityObject.data.forEach(
-              (data: {
-                name: {
-                  toString(): string;
-                };
-                value: Entity;
-                excludeFromIndexes?: boolean;
-              }) => {
-                entityObject.excludeFromIndexes = entity.findLargeProperties_(
-                  data.value,
-                  data.name.toString(),
-                  entityObject.excludeFromIndexes
-                );
-              }
-            );
-          }
           // This code builds the right entityProto from the entityObject
           entityProto.properties = entityObject.data.reduce(
             (
@@ -1168,14 +1152,6 @@ class Datastore extends DatastoreRequest {
           // This code adds excludeFromIndexes in the right places
           addExcludeFromIndexes(entityObject.excludeFromIndexes, entityProto);
         } else {
-          // This code populates the excludeFromIndexes list with the right values.
-          if (entityObject.excludeLargeProperties) {
-            entityObject.excludeFromIndexes = entity.findLargeProperties_(
-              entityObject.data,
-              '',
-              entityObject.excludeFromIndexes
-            );
-          }
           // This code builds the right entityProto from the entityObject
           entityProto = entity.entityToEntityProto(entityObject);
         }
