@@ -22,7 +22,6 @@ import {entity, Entity} from '../../entity';
  * @param {Entity} entityObject The entity object to parse for properties to
  * add to the excludeFromIndexes list.
  */
-
 export function extendExcludeFromIndexes(entityObject: Entity) {
   if (entityObject.excludeLargeProperties) {
     if (Array.isArray(entityObject.data)) {
