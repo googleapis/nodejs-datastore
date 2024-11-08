@@ -490,7 +490,7 @@ class Datastore extends DatastoreRequest {
 
     // prod: datastore.googleapis.com
     // nightly: nightly-datastore.sandbox.googleapis.com
-    this.defaultBaseUrl_ = 'nightly-datastore.sandbox.googleapis.com';
+    this.defaultBaseUrl_ = 'datastore.googleapis.com';
     this.determineBaseUrl_(options.apiEndpoint);
 
     const scopes: string[] = Array.from(

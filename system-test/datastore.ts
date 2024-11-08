@@ -3265,5 +3265,16 @@ async.each(
         });
       });
     });
+
+    describe.only('vector search query', () => {
+      it('should complete a request successfully with vector search options', () => {
+        const customDatastore = new Datastore({
+          namespace: `${Date.now()}`,
+          apiEndpoint: "nightly-datastore.sandbox.googleapis.com",
+        });
+
+        console.log('result');
+      });
+    });
   }
 );
