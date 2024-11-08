@@ -4,6 +4,28 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [9.2.1](https://github.com/googleapis/nodejs-datastore/compare/v9.2.0...v9.2.1) (2024-11-06)
+
+
+### Bug Fixes
+
+* Address edge cases for excluding large properties when using save ([#1356](https://github.com/googleapis/nodejs-datastore/issues/1356)) ([ceaff7e](https://github.com/googleapis/nodejs-datastore/commit/ceaff7ef468413ff10e03e0b3ed923b4b5a37a08))
+* Create a release ([#1353](https://github.com/googleapis/nodejs-datastore/issues/1353)) ([536873e](https://github.com/googleapis/nodejs-datastore/commit/536873e24bacc9477f1a9c4c5403ed08d5c8cc93))
+
+## [9.2.0](https://github.com/googleapis/nodejs-datastore/compare/v9.1.0...v9.2.0) (2024-10-30)
+
+
+### Features
+
+* Add FindNearest API to the stable branch ([#1333](https://github.com/googleapis/nodejs-datastore/issues/1333)) ([1d56433](https://github.com/googleapis/nodejs-datastore/commit/1d5643369226c5fc220779f4c90fa804d8f876af))
+* Update Go Datastore import path ([#1261](https://github.com/googleapis/nodejs-datastore/issues/1261)) ([bf3dafd](https://github.com/googleapis/nodejs-datastore/commit/bf3dafd8267c447a52f7764505042a60b1a9fd28))
+
+
+### Bug Fixes
+
+* Add excludeFromIndexes in the proper places for large properties of nested fields ([#1266](https://github.com/googleapis/nodejs-datastore/issues/1266)) ([9c7730a](https://github.com/googleapis/nodejs-datastore/commit/9c7730a35699be049beeac0c4bb469239971d471))
+* Query object description ([#1340](https://github.com/googleapis/nodejs-datastore/issues/1340)) ([ad2c6c0](https://github.com/googleapis/nodejs-datastore/commit/ad2c6c01b83f0ae42a3dc4268feb5f4b45890f7c))
+
 ## [9.1.0](https://github.com/googleapis/nodejs-datastore/compare/v9.0.0...v9.1.0) (2024-06-24)
 
 
