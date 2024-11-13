@@ -39,7 +39,7 @@ import {
 import * as is from 'is';
 import {Transform, pipeline} from 'stream';
 
-import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
+import {entity, Entities, Entity, ValueProto} from './entity';
 import {AggregateField} from './aggregate';
 import Key = entity.Key;
 export {Entity, Key, AggregateField};
@@ -498,7 +498,7 @@ class Datastore extends DatastoreRequest {
       new Set([
         ...gapic.v1.DatastoreClient.scopes,
         ...gapic.v1.DatastoreAdminClient.scopes,
-      ]),
+      ])
     );
 
     this.options = Object.assign(
@@ -509,7 +509,7 @@ class Datastore extends DatastoreRequest {
         servicePath: this.baseUrl_,
         port: typeof this.port_ === 'number' ? this.port_ : 443,
       },
-      options,
+      options
     );
     const isUsingLocalhost =
       this.baseUrl_ &&

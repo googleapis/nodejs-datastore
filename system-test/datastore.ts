@@ -3298,13 +3298,25 @@ async.each(
     });
 
     describe.only('vector search query', () => {
-      it('should complete a request successfully with vector search options', () => {
+      it('should complete a request successfully with vector search options', async () => {
         const customDatastore = new Datastore({
           namespace: `${Date.now()}`,
-          apiEndpoint: "nightly-datastore.sandbox.googleapis.com",
+          apiEndpoint: 'nightly-datastore.sandbox.googleapis.com',
         });
 
-        console.log('result');
+        const query = customDatastore.createQuery('Kind').findNearest({
+          vectorField: 'embedding',
+          queryVector: [1.0, 2.0, 3.0],
+          limit: 2,
+          distanceMeasure:
+            google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
+          distanceResultField: 'distance',
+          distanceThreshold: 0.5,
+        });
+
+        const [entities] = await customDatastore.runQuery(query);
+
+        console.log(entities);
       });
     });
   }
