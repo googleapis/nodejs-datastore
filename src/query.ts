@@ -280,11 +280,11 @@ class Query {
    *
    */
   findNearest(options: VectorQueryOptions): Query {
-    if (options.limit <= 0) {
+    if (options.limit?.value && options.limit?.value <= 0) {
       throw new Error('limit should be a positive limit number');
     }
 
-    if (options.queryVector.length === 0) {
+    if (options.queryVector && options.queryVector.length === 0) {
       throw new Error('vector size must be larger than 0');
     }
 

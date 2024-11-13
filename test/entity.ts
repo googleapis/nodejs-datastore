@@ -1519,7 +1519,7 @@ describe('entity', () => {
       const vectorOptions = {
         vectorField: 'embedding_field',
         queryVector: [1.0, 2.0, 3.0],
-        limit: 3,
+        limit: {value: 3},
         distanceMeasure:
           google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
         distanceResultField: 'vector_distance',
@@ -1609,7 +1609,7 @@ describe('entity', () => {
       const vectorOptions = {
         vectorField: 'embedding_field',
         queryVector: [1.0, 2.0, 3.0],
-        limit: 3,
+        limit: {value: 3},
         distanceMeasure:
           google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
         distanceResultField: 'vector_distance',

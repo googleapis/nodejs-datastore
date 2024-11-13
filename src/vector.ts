@@ -78,28 +78,28 @@ export interface VectorQueryOptions {
   /**
    * A string specifying the vector field to search on.
    */
-  vectorField: string;
+  vectorField?: string;
 
   /**
    * The value used to measure the distance from `vectorField` values in the documents.
    */
-  queryVector: Vector | Array<number>;
-
-  /**
-   * Specifies the upper bound of documents to return, must be a positive integer with a maximum value of 1000.
-   */
-  limit: number;
+  queryVector?: Vector | Array<number>;
 
   /**
    * Specifies what type of distance is calculated when performing the query.
    */
   distanceMeasure: google.datastore.v1.FindNearest.DistanceMeasure;
+  
+  /**
+   * Specifies the upper bound of documents to return, must be a positive integer with a maximum value of 1000.
+   */
+  limit?: google.protobuf.IInt32Value;
 
   /**
    * Optionally specifies the name of a field that will be set on each returned DocumentSnapshot,
    * which will contain the computed distance for the document.
    */
-  distanceResultField?: string;
+  distanceResultField: string;
 
   /**
    * Specifies a threshold for which no less similar documents will be returned. The behavior
@@ -112,5 +112,5 @@ export interface VectorQueryOptions {
    *  - For `distanceMeasure: "DOT_PRODUCT"`, the meaning of `distanceThreshold` is:
    *     SELECT docs WHERE dot_product_distance >= distanceThreshold
    */
-  distanceThreshold?: number;
+  distanceThreshold?: google.protobuf.IDoubleValue;
 }

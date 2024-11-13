@@ -388,7 +388,9 @@ describe('Query', () => {
       const vectorQuery = new Query(['kind1']).findNearest({
         vectorField: 'embedding',
         queryVector: [1.0, 2.0, 3.0],
-        limit: 2,
+        limit: {
+          value: 2,
+        },
         distanceMeasure:
           google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
         distanceResultField: 'distance',

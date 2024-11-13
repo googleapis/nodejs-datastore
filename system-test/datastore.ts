@@ -26,6 +26,7 @@ import {Entities, entity, Entity} from '../src/entity';
 import {Query, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 import {transactionExpiredError} from '../src/request';
+import { Vector, VectorQueryOptions } from '../src/vector';
 
 const async = require('async');
 
@@ -3297,26 +3298,31 @@ async.each(
       });
     });
 
-    describe.only('vector search query', () => {
-      it('should complete a request successfully with vector search options', async () => {
+    describe('vector search query', () => {
+      it.only('should complete a request successfully with vector search options', async () => {
         const customDatastore = new Datastore({
           namespace: `${Date.now()}`,
           apiEndpoint: 'nightly-datastore.sandbox.googleapis.com',
         });
 
-        const query = customDatastore.createQuery('Kind').findNearest({
+        const vectorOptions: VectorQueryOptions = {
           vectorField: 'embedding',
           queryVector: [1.0, 2.0, 3.0],
-          limit: 2,
+          limit: {value: 2},
           distanceMeasure:
             google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
           distanceResultField: 'distance',
-          distanceThreshold: 0.5,
-        });
+          distanceThreshold: {value: 0.5},
+        };
+
+        const query = customDatastore
+          .createQuery('Kind')
+          .findNearest(vectorOptions);
 
         const [entities] = await customDatastore.runQuery(query);
 
         console.log(entities);
+        assert.deepEqual(entities, new Vector([1.0, 2.0, 3.0]));
       });
     });
   }
