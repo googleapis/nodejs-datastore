@@ -701,6 +701,7 @@ class DatastoreRequest {
   }): void {
     if (resp && resp.transaction && Buffer.byteLength(resp.transaction) > 0) {
       this.id = resp!.transaction;
+      console.log(`saving id: ${this.id.toString()}`);
       this.state = TransactionState.IN_PROGRESS;
     }
   }

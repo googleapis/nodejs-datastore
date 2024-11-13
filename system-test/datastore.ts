@@ -95,6 +95,16 @@ async.each(
         await Promise.all(testKinds.map(kind => deleteEntities(kind)));
       });
 
+      it.only('transaction run call completes before saving id', async () => {
+        const transaction = new Transaction(datastore);
+        console.log('before hook');
+        transaction.request_ = (config: any, callback: any) => {
+          callback(null, {transaction: Buffer.from('test-transaction-id')});
+        };
+        await transaction.run();
+        console.log('after run');
+      });
+
       it('should allocate IDs', async () => {
         const keys = await datastore.allocateIds(datastore.key('Kind'), 10);
         assert.ok(keys);
