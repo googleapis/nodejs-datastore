@@ -3,7 +3,9 @@ const {dirname, resolve} = require('node:path');
 const PROTO_PATH = __dirname + '/../protos/google/datastore/v1/datastore.proto';
 const DATASTORE_PROTOS = __dirname + '/../protos';
 const GAX_PROTOS_DIR = resolve(
-  // eslint-disable-next-line node/no-extraneous-require
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // eslint-disable-next-line n/no-extraneous-require
   dirname(require.resolve('google-gax')),
   '../protos'
 );
