@@ -8,9 +8,8 @@ The steps to follow for using the mock server is:
 2. In the system test you want to debug, change `it` to `it.only`.
 3. In this test, surround the code with `startServer(async () => {`
 4. Ensure `apiEndpoint: 'localhost:50051'` is passed into the datastore client that is used for this test.
-5. If the system test hits an endpoint other than `runQuery` then in `datastore-server.ts`, change `.addService(service, {runQuery: runQuery})` to `.addService(service, {<<OtherGrpcEndpoint>>: <<OtherGrpcEndpoint>>})`
-6. If the system test hits an endpoint other than `runQuery` then in `datastore-server.ts`, uncomment the code containing `function <<OtherGrpcEndpoint>>` and replace `<<OtherGrpcEndpoint>>` with the endpoint used in the previous step
-7. Set a breakpoint on the line that says `SET A BREAKPOINT HERE` in `datastore-server`
-8. Debug with system tests (Enter `npm run system-test -- --inspect` in terminal)
+5. If the system test hits an endpoint other than `runQuery` then in `datastore-server.ts`, change `.addService(service, {runQuery: grpcEndpoint})` to `.addService(service, {<<OtherGrpcEndpoint>>: grpcEndpoint})`
+6. Set a breakpoint on the line that says `SET A BREAKPOINT HERE` in `datastore-server`
+7. Debug with system tests (Enter `npm run system-test -- --inspect` in terminal)
 
 

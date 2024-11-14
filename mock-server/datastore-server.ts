@@ -24,19 +24,10 @@ const descriptor = grpc.loadPackageDefinition(packageDefinition);
 /**
  * Implements the runQuery RPC method.
  */
-function runQuery(call: any, callback: any) {
+function grpcEndpoint(call: any, callback: any) {
   // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
   callback(null, {message: 'Hello ' + call.request.name});
 }
-
-/*
-Uncomment this code and change `<<OtherGrpcEndpoint>>` to a grpc endpoint you want to investigate
-For example, <<OtherGrpcEndpoint>> could be `runQuery` or `commit`.
-function <<OtherGrpcEndpoint>>(call: any, callback: any) {
-  // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  callback(null, {message: 'Hello ' + call.request.name});
-}
-*/
 
 /**
  * Starts an RPC server that receives requests for datastore
@@ -45,7 +36,7 @@ export function startServer(cb: any) {
   const server = new grpc.Server();
   const service = descriptor.google.datastore.v1.Datastore.service;
   // On the next line, change runQuery to the grpc method you want to investigate
-  server.addService(service, {runQuery: runQuery});
+  server.addService(service, {runQuery: grpcEndpoint});
   server.bindAsync(
     '0.0.0.0:50051',
     grpc.ServerCredentials.createInsecure(),
