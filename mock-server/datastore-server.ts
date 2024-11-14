@@ -26,15 +26,18 @@ const descriptor = grpc.loadPackageDefinition(packageDefinition);
 /**
  * Implements the runQuery RPC method.
  */
-function grpcEndpoint(call: any, callback: any) {
+function grpcEndpoint(
+  call: {},
+  callback: (arg1: string | null, arg2: {}) => {}
+) {
   // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  callback(null, {message: 'Hello ' + call.request.name});
+  callback(null, {message: 'Hello'});
 }
 
 /**
  * Starts an RPC server that receives requests for datastore
  */
-export function startServer(cb: any) {
+export function startServer(cb: () => void) {
   const server = new grpc.Server();
   const service = descriptor.google.datastore.v1.Datastore.service;
   // On the next line, change runQuery to the grpc method you want to investigate
