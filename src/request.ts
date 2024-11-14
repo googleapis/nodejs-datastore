@@ -27,9 +27,15 @@ import {Duplex, PassThrough, Transform} from 'stream';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const streamEvents = require('stream-events');
+export const transactionExpiredError = 'This transaction has already expired.';
 
 export interface AbortableDuplex extends Duplex {
   abort(): void;
+}
+
+interface TransactionRequestOptions {
+  readOnly?: {};
+  readWrite?: {previousTransaction?: string | Uint8Array | null};
 }
 
 // Import the clients for each version supported by this package.
@@ -44,9 +50,10 @@ import {
   KeyProto,
   ResponseResult,
   Entities,
-  ValueProto,
 } from './entity';
 import {
+  ExplainMetrics,
+  ExplainOptions,
   Query,
   QueryProto,
   RunQueryInfo,
@@ -54,9 +61,115 @@ import {
   RunQueryResponse,
   RunQueryCallback,
 } from './query';
-import {Datastore} from '.';
+import {Datastore, Transaction} from '.';
 import ITimestamp = google.protobuf.ITimestamp;
 import {AggregateQuery} from './aggregate';
+import {RunOptions} from './transaction';
+import * as protos from '../protos/protos';
+import {serializer} from 'google-gax';
+import * as gax from 'google-gax';
+import {SaveDataValue} from './interfaces/save';
+type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | {
+      [key: string]: JSONValue;
+    };
+
+const root = gax.protobuf.loadSync('google/protobuf/struct.proto');
+const Struct = root.lookupType('Struct');
+
+// This function decodes Struct proto values
+function decodeStruct(structValue: google.protobuf.IStruct): JSONValue {
+  return serializer.toProto3JSON(Struct.fromObject(structValue));
+}
+
+// This function gets a RunQueryInfo object that contains explain metrics that
+// were returned from the server.
+function getInfoFromStats(
+  resp:
+    | protos.google.datastore.v1.IRunQueryResponse
+    | protos.google.datastore.v1.IRunAggregationQueryResponse
+): RunQueryInfo {
+  // Decode struct values stored in planSummary and executionStats
+  const explainMetrics: ExplainMetrics = {};
+  if (
+    resp &&
+    resp.explainMetrics &&
+    resp.explainMetrics.planSummary &&
+    resp.explainMetrics.planSummary.indexesUsed
+  ) {
+    Object.assign(explainMetrics, {
+      planSummary: {
+        indexesUsed: resp.explainMetrics.planSummary.indexesUsed.map(
+          (index: google.protobuf.IStruct) => decodeStruct(index)
+        ),
+      },
+    });
+  }
+  if (resp && resp.explainMetrics && resp.explainMetrics.executionStats) {
+    const executionStats = {};
+    {
+      const resultsReturned =
+        resp.explainMetrics.executionStats.resultsReturned;
+      if (resultsReturned) {
+        Object.assign(executionStats, {
+          resultsReturned:
+            typeof resultsReturned === 'string'
+              ? parseInt(resultsReturned)
+              : resultsReturned,
+        });
+      }
+    }
+    {
+      const executionDuration =
+        resp.explainMetrics.executionStats.executionDuration;
+      if (executionDuration) {
+        Object.assign(executionStats, {
+          executionDuration:
+            typeof executionDuration === 'string'
+              ? parseInt(executionDuration)
+              : executionDuration,
+        });
+      }
+    }
+    {
+      const readOperations = resp.explainMetrics.executionStats.readOperations;
+      if (readOperations) {
+        Object.assign(executionStats, {
+          readOperations:
+            typeof readOperations === 'string'
+              ? parseInt(readOperations)
+              : readOperations,
+        });
+      }
+    }
+    {
+      const debugStats = resp.explainMetrics.executionStats.debugStats;
+      if (debugStats) {
+        Object.assign(executionStats, {debugStats: decodeStruct(debugStats)});
+      }
+    }
+    Object.assign(explainMetrics, {executionStats});
+  }
+  if (explainMetrics.planSummary || explainMetrics.executionStats) {
+    return {explainMetrics};
+  }
+  return {};
+}
+
+const readTimeAndConsistencyError =
+  'Read time and read consistency cannot both be specified.';
+
+// Write function to check for readTime and readConsistency.
+function throwOnReadTimeAndConsistency(options: RunQueryStreamOptions) {
+  if (options.readTime && options.consistency) {
+    throw new Error(readTimeAndConsistencyError);
+  }
+}
 
 /**
  * A map of read consistency values to proto codes.
@@ -70,8 +183,20 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
 };
 
 /**
- * Handle logic for Datastore API operations. Handles request logic for
- * Datastore.
+ * By default a DatastoreRequest is in the NOT_TRANSACTION state. If the
+ * DatastoreRequest is a Transaction object, then initially it will be in
+ * the NOT_STARTED state, but then the state will become IN_PROGRESS after the
+ * transaction has started.
+ */
+export enum TransactionState {
+  NOT_TRANSACTION,
+  NOT_STARTED,
+  IN_PROGRESS,
+  EXPIRED,
+}
+
+/**
+ * Handles request logic for Datastore API operations.
  *
  * Creates requests to the Datastore endpoint. Designed to be inherited by
  * the {@link Datastore} and {@link Transaction} classes.
@@ -79,7 +204,7 @@ const CONSISTENCY_PROTO_CODE: ConsistencyProtoCode = {
  * @class
  */
 class DatastoreRequest {
-  id: string | undefined;
+  id: string | undefined | Uint8Array | null;
   requests_:
     | Entity
     | {
@@ -89,6 +214,7 @@ class DatastoreRequest {
     | Array<(err: Error | null, resp: Entity | null) => void>
     | Entity;
   datastore!: Datastore;
+  protected state: TransactionState = TransactionState.NOT_TRANSACTION;
   [key: string]: Entity;
 
   /**
@@ -240,10 +366,20 @@ class DatastoreRequest {
     );
   }
 
+  /* This throws an error if the transaction has already expired.
+   *
+   */
+  protected checkExpired() {
+    if (this.state === TransactionState.EXPIRED) {
+      throw Error(transactionExpiredError);
+    }
+  }
+
   /**
    * Retrieve the entities as a readable object stream.
    *
    * @throws {Error} If at least one Key object is not provided.
+   * @throws {Error} If read time and read consistency cannot both be specified.
    *
    * @param {Key|Key[]} keys Datastore key object(s).
    * @param {object} [options] Optional configuration. See {@link Datastore#get}
@@ -274,9 +410,11 @@ class DatastoreRequest {
     if (keys.length === 0) {
       throw new Error('At least one Key object is required.');
     }
-
+    this.checkExpired();
+    throwOnReadTimeAndConsistency(options);
+    const reqOpts = this.getRequestOptions(options);
+    throwOnTransactionErrors(this, reqOpts);
     const makeRequest = (keys: entity.Key[] | KeyProto[]) => {
-      const reqOpts = this.getRequestOptions(options);
       Object.assign(reqOpts, {keys});
       this.request_(
         {
@@ -286,6 +424,7 @@ class DatastoreRequest {
           gaxOpts: options.gaxOptions,
         },
         (err, resp) => {
+          this.parseTransactionResponse(resp);
           if (err) {
             stream.destroy(err);
             return;
@@ -536,16 +675,51 @@ class DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
-    this.createReadStream(keys, options)
-      .on('error', callback)
-      .pipe(
-        concat((results: Entity[]) => {
-          const isSingleLookup = !Array.isArray(keys);
-          callback(null, isSingleLookup ? results[0] : results);
-        })
-      );
+    try {
+      this.createReadStream(keys, options)
+        .on('error', callback)
+        .pipe(
+          concat((results: Entity[]) => {
+            const isSingleLookup = !Array.isArray(keys);
+            callback(null, isSingleLookup ? results[0] : results);
+          })
+        );
+    } catch (err: any) {
+      callback(err);
+    }
   }
 
+  /**
+   * This function saves results from a successful beginTransaction call.
+   *
+   * @param {object} [response] The response from a call to
+   * begin a transaction that completed successfully.
+   *
+   **/
+  protected parseTransactionResponse(resp?: {
+    transaction?: Uint8Array | string | undefined | null;
+  }): void {
+    if (resp && resp.transaction && Buffer.byteLength(resp.transaction) > 0) {
+      this.id = resp!.transaction;
+      this.state = TransactionState.IN_PROGRESS;
+    }
+  }
+
+  /**
+   * Datastore allows you to run aggregate queries by supplying aggregate fields
+   * which will determine the type of aggregation that is performed.
+   *
+   * The query is run, and the results are returned in the second argument of
+   * the callback provided.
+   *
+   * @param {AggregateQuery} query AggregateQuery object.
+   * @param {RunQueryOptions} options Optional configuration
+   * @param {function} [callback] The callback function. If omitted, a promise is
+   * returned.
+   *
+   * @throws {Error} If read time and read consistency cannot both be specified.
+   *
+   **/
   runAggregationQuery(
     query: AggregateQuery,
     options?: RunQueryOptions
@@ -553,12 +727,15 @@ class DatastoreRequest {
   runAggregationQuery(
     query: AggregateQuery,
     options: RunQueryOptions,
-    callback: RequestCallback
+    callback: RunAggregationQueryCallback
   ): void;
-  runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
   runAggregationQuery(
     query: AggregateQuery,
-    optionsOrCallback?: RunQueryOptions | RequestCallback,
+    callback: RunAggregationQueryCallback
+  ): void;
+  runAggregationQuery(
+    query: AggregateQuery,
+    optionsOrCallback?: RunQueryOptions | RunAggregationQueryCallback,
     cb?: RequestCallback
   ): void | Promise<RunQueryResponse> {
     const options =
@@ -566,6 +743,14 @@ class DatastoreRequest {
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
 
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+      return;
+    }
+    if (options.readTime && options.consistency) {
+      callback(new Error(readTimeAndConsistencyError));
+      return;
+    }
     query.query = extend(true, new Query(), query.query);
     let queryProto: QueryProto;
     try {
@@ -576,7 +761,14 @@ class DatastoreRequest {
       setImmediate(callback, e as Error);
       return;
     }
-    const sharedQueryOpts = this.getQueryOptions(query.query, options);
+    let sharedQueryOpts;
+    try {
+      sharedQueryOpts = this.getQueryOptions(query.query, options);
+      throwOnTransactionErrors(this, sharedQueryOpts);
+    } catch (error: any) {
+      callback(error);
+      return;
+    }
     const aggregationQueryOptions: AggregationQueryOptions = {
       nestedQuery: queryProto,
       aggregations: query.toProto(),
@@ -592,6 +784,8 @@ class DatastoreRequest {
         gaxOpts: options.gaxOptions,
       },
       (err, res) => {
+        const info = getInfoFromStats(res);
+        this.parseTransactionResponse(res);
         if (res && res.batch) {
           const results = res.batch.aggregationResults;
           const finalResults = results
@@ -608,9 +802,9 @@ class DatastoreRequest {
                 )
               )
             );
-          callback(err, finalResults);
+          callback(err, finalResults, info);
         } else {
-          callback(err, res);
+          callback(err, [], info);
         }
       }
     );
@@ -626,7 +820,7 @@ class DatastoreRequest {
    * that uses the end cursor from the previous query as the starting cursor for
    * the next query. You can pass that object back to this method to see if more
    * results exist.
-   * @param {Query} query Query object.
+   * @param {Query} query A Query object
    * @param {object} [options] Optional configuration.
    * @param {string} [options.consistency] Specify either `strong` or `eventual`.
    *     If not specified, default values are chosen by Datastore for the
@@ -734,16 +928,20 @@ class DatastoreRequest {
 
     let info: RunQueryInfo;
 
-    this.runQueryStream(query, options)
-      .on('error', callback)
-      .on('info', info_ => {
-        info = info_;
-      })
-      .pipe(
-        concat((results: Entity[]) => {
-          callback(null, results, info);
+    try {
+      this.runQueryStream(query, options)
+        .on('error', callback)
+        .on('info', info_ => {
+          info = info_;
         })
-      );
+        .pipe(
+          concat((results: Entity[]) => {
+            callback(null, results, info);
+          })
+        );
+    } catch (err: any) {
+      callback(err);
+    }
   }
 
   /**
@@ -751,10 +949,12 @@ class DatastoreRequest {
    *
    * See {@link Datastore#runQuery} for a list of all available options.
    *
-   * @param {Query} query Query object.
+   * @param {Query} query A Query object
    * @param {object} [options] Optional configuration.
    * @param {object} [options.gaxOptions] Request configuration options, outlined
    *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   *
+   * @throws {Error} If read time and read consistency cannot both be specified.
    *
    * @example
    * ```
@@ -780,7 +980,11 @@ class DatastoreRequest {
    * ```
    */
   runQueryStream(query: Query, options: RunQueryStreamOptions = {}): Transform {
+    this.checkExpired();
+    throwOnReadTimeAndConsistency(options);
     query = extend(true, new Query(), query);
+    const sharedQueryOpts = this.getQueryOptions(query, options);
+    throwOnTransactionErrors(this, sharedQueryOpts);
     const makeRequest = (query: Query) => {
       let queryProto: QueryProto;
       try {
@@ -791,7 +995,6 @@ class DatastoreRequest {
         setImmediate(onResultSet, e as Error);
         return;
       }
-      const sharedQueryOpts = this.getQueryOptions(query, options);
 
       const reqOpts: RequestOptions = sharedQueryOpts;
       reqOpts.query = queryProto;
@@ -806,15 +1009,23 @@ class DatastoreRequest {
       );
     };
 
-    function onResultSet(err?: Error | null, resp?: Entity) {
+    const onResultSet = (err?: Error | null, resp?: Entity) => {
+      this.parseTransactionResponse(resp);
       if (err) {
         stream.destroy(err);
         return;
       }
 
-      const info: RunQueryInfo = {
+      if (!resp.batch) {
+        // If there are no results then send any stats back and end the stream.
+        stream.emit('info', getInfoFromStats(resp));
+        stream.push(null);
+        return;
+      }
+
+      const info = Object.assign(getInfoFromStats(resp), {
         moreResults: resp.batch.moreResults,
-      };
+      });
 
       if (resp.batch.endCursor) {
         info.endCursor = resp.batch.endCursor.toString('base64');
@@ -858,7 +1069,7 @@ class DatastoreRequest {
 
         makeRequest(query);
       });
-    }
+    };
 
     const stream = streamEvents(new Transform({objectMode: true}));
     stream.once('reading', () => {
@@ -867,15 +1078,33 @@ class DatastoreRequest {
     return stream;
   }
 
+  /**
+   * Gets request options from a RunQueryStream options configuration
+   *
+   * @param {RunQueryStreamOptions} [options] The RunQueryStream options configuration
+   */
   private getRequestOptions(
     options: RunQueryStreamOptions
   ): SharedQueryOptions {
     const sharedQueryOpts = {} as SharedQueryOptions;
+    if (isTransaction(this)) {
+      if (this.state === TransactionState.NOT_STARTED) {
+        if (sharedQueryOpts.readOptions === undefined) {
+          sharedQueryOpts.readOptions = {};
+        }
+        sharedQueryOpts.readOptions.newTransaction = getTransactionRequest(
+          this,
+          {}
+        );
+        sharedQueryOpts.readOptions.consistencyType = 'newTransaction';
+      }
+    }
     if (options.consistency) {
       const code = CONSISTENCY_PROTO_CODE[options.consistency.toLowerCase()];
-      sharedQueryOpts.readOptions = {
-        readConsistency: code,
-      };
+      if (sharedQueryOpts.readOptions === undefined) {
+        sharedQueryOpts.readOptions = {};
+      }
+      sharedQueryOpts.readOptions.readConsistency = code;
     }
     if (options.readTime) {
       if (sharedQueryOpts.readOptions === undefined) {
@@ -890,11 +1119,20 @@ class DatastoreRequest {
     return sharedQueryOpts;
   }
 
+  /**
+   * Gets request options from a RunQueryStream options configuration
+   *
+   * @param {Query} [query] A Query object
+   * @param {RunQueryStreamOptions} [options] The RunQueryStream options configuration
+   */
   private getQueryOptions(
     query: Query,
     options: RunQueryStreamOptions = {}
   ): SharedQueryOptions {
     const sharedQueryOpts = this.getRequestOptions(options);
+    if (options.explainOptions) {
+      sharedQueryOpts.explainOptions = options.explainOptions;
+    }
     if (query.namespace) {
       sharedQueryOpts.partitionId = {
         namespaceId: query.namespace,
@@ -973,6 +1211,11 @@ class DatastoreRequest {
   }
 
   /**
+   * Builds a request and sends it to the Gapic Layer.
+   *
+   * @param {object} config Configuration object.
+   * @param {function} callback The callback function.
+   *
    * @private
    */
   prepareGaxRequest_(config: RequestConfig, callback: Function): void {
@@ -999,22 +1242,20 @@ class DatastoreRequest {
     if (method === 'rollback') {
       reqOpts.transaction = this.id;
     }
-
+    throwOnTransactionErrors(this, reqOpts);
     if (
       isTransaction &&
       (method === 'lookup' ||
         method === 'runQuery' ||
         method === 'runAggregationQuery')
     ) {
-      if (reqOpts.readOptions && reqOpts.readOptions.readConsistency) {
-        throw new Error(
-          'Read consistency cannot be specified in a transaction.'
-        );
+      if (reqOpts.readOptions) {
+        Object.assign(reqOpts.readOptions, {transaction: this.id});
+      } else {
+        reqOpts.readOptions = {
+          transaction: this.id,
+        };
       }
-
-      reqOpts.readOptions = {
-        transaction: this.id,
-      };
     }
 
     datastore.auth.getProjectId((err, projectId) => {
@@ -1103,6 +1344,73 @@ class DatastoreRequest {
   }
 }
 
+/**
+ * Check to see if a request is a Transaction
+ *
+ * @param {DatastoreRequest} request The Datastore request object
+ *
+ */
+function isTransaction(request: DatastoreRequest): request is Transaction {
+  return request instanceof Transaction;
+}
+
+/**
+ * Throw an error if read options are not properly specified.
+ *
+ * @param {DatastoreRequest} request The Datastore request object
+ * @param {SharedQueryOptions} options The Query options
+ *
+ */
+function throwOnTransactionErrors(
+  request: DatastoreRequest,
+  options: SharedQueryOptions
+) {
+  const isTransaction = request.id ? true : false;
+  if (
+    isTransaction ||
+    (options.readOptions && options.readOptions.newTransaction)
+  ) {
+    if (options.readOptions && options.readOptions.readConsistency) {
+      throw new Error('Read consistency cannot be specified in a transaction.');
+    }
+    if (options.readOptions && options.readOptions.readTime) {
+      throw new Error('Read time cannot be specified in a transaction.');
+    }
+  }
+}
+
+/**
+ * This function gets transaction request options used for defining a
+ * request to create a new transaction on the server.
+ *
+ * @param {Transaction} transaction The transaction for which the request will be made.
+ * @param {RunOptions} options Custom options that will be used to create the request.
+ */
+export function getTransactionRequest(
+  transaction: Transaction,
+  options: RunOptions
+): TransactionRequestOptions {
+  // If transactionOptions are provide then they will be used.
+  // Otherwise, options passed into this function are used and when absent
+  // options that exist on Transaction are used.
+  return options.transactionOptions // If transactionOptions is specified:
+    ? options.transactionOptions.readOnly // Use readOnly on transactionOptions
+      ? {readOnly: {}}
+      : options.transactionOptions.id // Use retry transaction if specified:
+        ? {readWrite: {previousTransaction: options.transactionOptions.id}}
+        : {}
+    : options.readOnly || transaction.readOnly // If transactionOptions not set:
+      ? {readOnly: {}} // Create a readOnly transaction if readOnly option set
+      : options.transactionId || transaction.id
+        ? {
+            // Create readWrite transaction with a retry transaction set
+            readWrite: {
+              previousTransaction: options.transactionId || transaction.id,
+            },
+          }
+        : {}; // Request will be readWrite with no retry transaction set;
+}
+
 export interface ConsistencyProtoCode {
   [key: string]: number;
 }
@@ -1133,8 +1441,10 @@ export interface PrepareEntityObject {
   [key: string]: google.datastore.v1.Key | undefined;
 }
 export interface PrepareEntityObjectResponse {
-  key?: google.datastore.v1.Key;
-  data?: google.datastore.v1.Entity;
+  key?: entity.Key;
+  data?: SaveDataValue;
+  excludeFromIndexes?: string[];
+  excludeLargeProperties?: boolean;
   method?: string;
 }
 export interface RequestCallback {
@@ -1142,6 +1452,14 @@ export interface RequestCallback {
     a?: Error | null,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     b?: any
+  ): void;
+}
+export interface RunAggregationQueryCallback {
+  (
+    a?: Error | null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    b?: any,
+    c?: RunQueryInfo
   ): void;
 }
 export interface RequestConfig {
@@ -1153,22 +1471,26 @@ export interface RequestConfig {
 }
 export interface SharedQueryOptions {
   databaseId?: string;
+  explainOptions?: ExplainOptions;
   projectId?: string;
   partitionId?: google.datastore.v1.IPartitionId | null;
   readOptions?: {
     readConsistency?: number;
-    transaction?: string;
+    transaction?: string | Uint8Array | null;
     readTime?: ITimestamp;
+    newTransaction?: TransactionRequestOptions;
+    consistencyType?:
+      | 'readConsistency'
+      | 'transaction'
+      | 'newTransaction'
+      | 'readTime';
   };
 }
 export interface RequestOptions extends SharedQueryOptions {
   mutations?: google.datastore.v1.IMutation[];
   keys?: Entity;
-  transactionOptions?: {
-    readOnly?: {};
-    readWrite?: {previousTransaction?: string};
-  } | null;
-  transaction?: string | null;
+  transactionOptions?: TransactionRequestOptions | null;
+  transaction?: string | null | Uint8Array;
   mode?: string;
   query?: QueryProto;
   filter?: string;
@@ -1198,7 +1520,7 @@ export type DeleteResponse = CommitResponse;
  * that a callback is omitted.
  */
 promisifyAll(DatastoreRequest, {
-  exclude: ['getQueryOptions', 'getRequestOptions'],
+  exclude: ['checkExpired', 'getQueryOptions', 'getRequestOptions'],
 });
 
 /**

@@ -16,15 +16,15 @@
 
 'use strict';
 
-const path = require('path');
 const {assert} = require('chai');
-const {describe, it, after, before} = require('mocha');
+const {describe, it} = require('mocha');
 const sinon = require('sinon');
-const {Datastore} = require('@google-cloud/datastore');
-const datastore = new Datastore();
+// TODO: delete unused imports
 
-const {queryFilterOr} = require('../queryFilterOr');
-let taskKey1, taskKey2;
+const cp = require('child_process');
+const sort = require('./helpers/sorting');
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('Creating a union query', () => {
   const stubConsole = function () {
@@ -40,34 +40,9 @@ describe('Creating a union query', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  before(async () => {
-    taskKey1 = datastore.key('Task');
-    const entity1 = {
-      key: taskKey1,
-      data: {
-        description: 'Buy milk',
-      },
-    };
-
-    taskKey2 = datastore.key('Task');
-    const entity2 = {
-      key: taskKey2,
-      data: {
-        description: 'Feed cats',
-      },
-    };
-
-    await datastore.upsert(entity1);
-    await datastore.upsert(entity2);
-  });
-
-  after(async () => {
-    await datastore.delete(taskKey1);
-    await datastore.delete(taskKey2);
-  });
+  require('./helpers/populate-data');
 
   it('should get a combination of items from the Datastore', async () => {
-    await queryFilterOr();
-    assert.include(console.log.firstCall.args[0], 'Entity');
+    assert.strictEqual(sort(execSync(`node ./queryFilterOr.js`)), '\nEntity found: Buy milk\nEntity found: Feed cats');
   });
 });

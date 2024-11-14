@@ -23,6 +23,7 @@ import {Transaction} from './transaction';
 import {CallOptions} from 'google-gax';
 import {RunQueryStreamOptions} from '../src/request';
 import * as gaxInstance from 'google-gax';
+import {google} from '../protos/protos';
 
 export type Operator =
   | '='
@@ -52,10 +53,10 @@ export interface Filter {
 }
 
 /**
- * Build a Query object.
+ * A Query object is used to build and execute queries for entities stored in Datastore.
  *
- * **Queries are built with {module:datastore#createQuery} and
- * {@link Transaction#createQuery}.**
+ * Create a Query object with {@link Datastore#createQuery} or
+ * {@link Transaction#createQuery}.
  *
  * @see {@link http://goo.gl/Cag0r6| Datastore Queries}
  *
@@ -333,7 +334,7 @@ class Query {
    *
    * Queries that select a subset of properties are called Projection Queries.
    *
-   * @see {@link https://cloud.google.com/datastore/docs/concepts/projectionqueries| Projection Queries}
+   * @see {@link https://cloud.google.com/datastore/docs/samples/datastore-projection-query| Projection Queries}
    *
    * @param {string|string[]} fieldNames Properties to return from the matched
    *     entities.
@@ -597,10 +598,15 @@ export interface IntegerTypeCastOptions {
   properties?: string | string[];
 }
 
+export interface ExplainOptions {
+  analyze?: boolean;
+}
+
 export interface RunQueryOptions {
   consistency?: 'strong' | 'eventual';
   readTime?: number;
   gaxOptions?: CallOptions;
+  explainOptions?: ExplainOptions;
   wrapNumbers?: boolean | IntegerTypeCastOptions;
 }
 
@@ -620,4 +626,24 @@ export interface RunQueryInfo {
     | 'MORE_RESULTS_AFTER_LIMIT'
     | 'MORE_RESULTS_AFTER_CURSOR'
     | 'NO_MORE_RESULTS';
+  explainMetrics?: ExplainMetrics;
+}
+
+export interface ExplainMetrics {
+  planSummary?: PlanSummary;
+  executionStats?: ExecutionStats;
+}
+export interface ExecutionStats {
+  resultsReturned?: number;
+  executionDuration?: google.protobuf.IDuration;
+  readOperations?: number;
+  debugStats?: {
+    [key: string]: any;
+  };
+}
+
+export interface PlanSummary {
+  indexesUsed: {
+    [key: string]: any;
+  }[];
 }

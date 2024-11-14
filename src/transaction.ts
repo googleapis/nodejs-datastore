@@ -15,22 +15,44 @@
  */
 
 import {promisifyAll} from '@google-cloud/promisify';
-import arrify = require('arrify');
 import {CallOptions} from 'google-gax';
 
 import {google} from '../protos/protos';
 
 import {Datastore, TransactionOptions} from '.';
-import {entity, Entity, Entities} from './entity';
-import {Query} from './query';
+import {Entities, Entity, entity} from './entity';
+import {
+  Query,
+  RunQueryCallback,
+  RunQueryOptions,
+  RunQueryResponse,
+} from './query';
 import {
   CommitCallback,
   CommitResponse,
+  CreateReadStreamOptions,
   DatastoreRequest,
-  RequestOptions,
+  GetCallback,
+  GetResponse,
+  getTransactionRequest,
   PrepareEntityObjectResponse,
+  RequestCallback,
+  transactionExpiredError,
+  TransactionState,
 } from './request';
 import {AggregateQuery} from './aggregate';
+import {Mutex} from 'async-mutex';
+import arrify = require('arrify');
+
+/*
+ * This type matches the value returned by the promise in the
+ * #beginTransactionAsync function and subsequently passed into various other
+ * methods in this class.
+ */
+interface BeginAsyncResponse {
+  err?: Error | null;
+  resp?: google.datastore.v1.IBeginTransactionResponse;
+}
 
 /**
  * A transaction is a set of Datastore operations on one or more entities. Each
@@ -58,6 +80,7 @@ class Transaction extends DatastoreRequest {
   request: Function;
   modifiedEntities_: ModifiedEntities;
   skipCommit?: boolean;
+  #mutex = new Mutex();
   constructor(datastore: Datastore, options?: TransactionOptions) {
     super();
     /**
@@ -87,6 +110,7 @@ class Transaction extends DatastoreRequest {
 
     // Queue the requests to make when we send the transactional commit.
     this.requests_ = [];
+    this.state = TransactionState.NOT_STARTED;
   }
 
   /*! Developer Documentation
@@ -106,8 +130,7 @@ class Transaction extends DatastoreRequest {
    * If the commit request fails, we will automatically rollback the
    * transaction.
    *
-   * @param {object} [gaxOptions] Request configuration options, outlined here:
-   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {CallOptions | https://googleapis.github.io/gax-nodejs/global.html#CallOptions} [gaxOptions] Request configuration options.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request.
    *   If the commit fails, we automatically try to rollback the transaction
@@ -135,6 +158,15 @@ class Transaction extends DatastoreRequest {
    * ```
    */
   commit(gaxOptions?: CallOptions): Promise<CommitResponse>;
+  /**
+   * @param {object} [gaxOptions] Request configuration options, outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
+   * @param {?error} callback.err An error returned while making this request.
+   *   If the commit fails, we automatically try to rollback the transaction
+   * (see {module:datastore/transaction#rollback}).
+   * @param {object} callback.apiResponse The full API response.
+   */
   commit(callback: CommitCallback): void;
   commit(gaxOptions: CallOptions, callback: CommitCallback): void;
   commit(
@@ -145,11 +177,379 @@ class Transaction extends DatastoreRequest {
       typeof gaxOptionsOrCallback === 'function'
         ? gaxOptionsOrCallback
         : typeof cb === 'function'
-        ? cb
-        : () => {};
+          ? cb
+          : () => {};
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+      return;
+    }
+    // This ensures that the transaction is started before calling runCommit
+    this.#withBeginTransaction(
+      gaxOptions,
+      () => {
+        this.#runCommit(gaxOptions, callback);
+      },
+      callback
+    );
+  }
 
+  /**
+   * Create a query for the specified kind. See {module:datastore/query} for all
+   * of the available methods.
+   *
+   * @see {@link https://cloud.google.com/datastore/docs/concepts/queries| Datastore Queries}
+   *
+   * @see {@link Query}
+   *
+   * @param {string} [namespace] Namespace.
+   * @param {string} kind The kind to query.
+   * @returns {Query}
+   *
+   * @example
+   * ```
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const transaction = datastore.transaction();
+   *
+   * // Run the query inside the transaction.
+   * transaction.run((err) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *   const ancestorKey = datastore.key(['ParentCompany', 'Alphabet']);
+   *
+   *   const query = transaction.createQuery('Company')
+   *       .hasAncestor(ancestorKey);
+   *
+   *   query.run((err, entities) => {
+   *     if (err) {
+   *       // Error handling omitted.
+   *     }
+   *
+   *     transaction.commit((err) => {
+   *       if (!err) {
+   *         // Transaction committed successfully.
+   *       }
+   *     });
+   *   });
+   * });
+   *
+   * // Run the query inside the transaction.with namespace
+   * transaction.run((err) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *   const ancestorKey = datastore.key(['ParentCompany', 'Alphabet']);
+   *
+   *   const query = transaction.createQuery('CompanyNamespace', 'Company')
+   *       .hasAncestor(ancestorKey);
+   *
+   *   query.run((err, entities) => {
+   *     if (err) {
+   *       // Error handling omitted.
+   *     }
+   *
+   *     transaction.commit((err) => {
+   *       if (!err) {
+   *         // Transaction committed successfully.
+   *       }
+   *     });
+   *   });
+   * });
+   * ```
+   */
+  createQuery(kind?: string): Query;
+  createQuery(kind?: string[]): Query;
+  createQuery(namespace: string, kind: string): Query;
+  createQuery(namespace: string, kind: string[]): Query;
+  createQuery(
+    namespaceOrKind?: string | string[],
+    kind?: string | string[]
+  ): Query {
+    return this.datastore.createQuery.call(
+      this,
+      namespaceOrKind as string,
+      kind as string[]
+    );
+  }
+
+  /**
+   * Create an aggregation query from the query specified. See {module:datastore/query} for all
+   * of the available methods.
+   *
+   * @param {Query} query A Query object
+   */
+  createAggregationQuery(query: Query): AggregateQuery {
+    return this.datastore.createAggregationQuery.call(this, query);
+  }
+
+  /**
+   * Delete all entities identified with the specified key(s) in the current
+   * transaction.
+   *
+   * @param {Key|Key[]} key Datastore key object(s).
+   *
+   * @example
+   * ```
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const transaction = datastore.transaction();
+   *
+   * transaction.run((err) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *
+   *   // Delete a single entity.
+   *   transaction.delete(datastore.key(['Company', 123]));
+   *
+   *   // Delete multiple entities at once.
+   *   transaction.delete([
+   *     datastore.key(['Company', 123]),
+   *     datastore.key(['Product', 'Computer'])
+   *   ]);
+   *
+   *   transaction.commit((err) => {
+   *     if (!err) {
+   *       // Transaction committed successfully.
+   *     }
+   *   });
+   * });
+   * ```
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  delete(entities?: Entities): any {
+    arrify(entities).forEach((ent: Entity) => {
+      this.modifiedEntities_.push({
+        entity: {
+          key: ent,
+        },
+        method: 'delete',
+        args: [ent],
+      });
+    });
+  }
+
+  /**
+   * This function calls get on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * get call is made.
+   *
+   * @param {Key|Key[]} keys Datastore key object(s).
+   * @param {object} [options] Optional configuration.
+   * @param {function} callback The callback function.
+   *
+   */
+  get(
+    keys: entity.Key | entity.Key[],
+    options?: CreateReadStreamOptions
+  ): Promise<GetResponse>;
+  get(keys: entity.Key | entity.Key[], callback: GetCallback): void;
+  get(
+    keys: entity.Key | entity.Key[],
+    options: CreateReadStreamOptions,
+    callback: GetCallback
+  ): void;
+  get(
+    keys: entity.Key | entity.Key[],
+    optionsOrCallback?: CreateReadStreamOptions | GetCallback,
+    cb?: GetCallback
+  ): void | Promise<GetResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling get
+    this.#blockWithMutex(() => {
+      super.get(keys, options, callback);
+    });
+  }
+
+  /**
+   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `insert`.
+   *
+   * @param {object|object[]} entities Datastore key object(s).
+   * @param {Key} entities.key Datastore key object.
+   * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
+   *     indexing using a simple JSON path notation. See the examples in
+   *     {@link Datastore#save} to see how to target properties at different
+   *     levels of nesting within your entity.
+   * @param {object} entities.data Data to save with the provided key.
+   */
+  insert(entities: Entities): void {
+    entities = arrify(entities)
+      .map(DatastoreRequest.prepareEntityObject_)
+      .map((x: PrepareEntityObjectResponse) => {
+        x.method = 'insert';
+        return x;
+      });
+
+    this.save(entities);
+  }
+
+  /**
+   * Reverse a transaction remotely and finalize the current transaction
+   * instance.
+   *
+   * @param {object} [gaxOptions] Request configuration options, outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
+   * @param {?error} callback.err An error returned while making this request.
+   * @param {object} callback.apiResponse The full API response.
+   *
+   * @example
+   * ```
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const transaction = datastore.transaction();
+   *
+   * transaction.run((err) => {
+   *   if (err) {
+   *     // Error handling omitted.
+   *   }
+   *
+   *   transaction.rollback((err) => {
+   *     if (!err) {
+   *       // Transaction rolled back successfully.
+   *     }
+   *   });
+   * });
+   *
+   * //-
+   * // If the callback is omitted, we'll return a Promise.
+   * //-
+   * transaction.rollback().then((data) => {
+   *   const apiResponse = data[0];
+   * });
+   * ```
+   */
+  rollback(callback: RollbackCallback): void;
+  rollback(gaxOptions?: CallOptions): Promise<RollbackResponse>;
+  rollback(gaxOptions: CallOptions, callback: RollbackCallback): void;
+  rollback(
+    gaxOptionsOrCallback?: CallOptions | RollbackCallback,
+    cb?: RollbackCallback
+  ): void | Promise<RollbackResponse> {
+    const gaxOptions =
+      typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
+    const callback =
+      typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
+
+    if (this.state === TransactionState.EXPIRED) {
+      callback(new Error(transactionExpiredError));
+      return;
+    }
+    if (this.state === TransactionState.NOT_STARTED) {
+      callback(new Error('Transaction is not started'));
+      return;
+    }
+    this.request_(
+      {
+        client: 'DatastoreClient',
+        method: 'rollback',
+        gaxOpts: gaxOptions || {},
+      },
+      (err, resp) => {
+        this.skipCommit = true;
+        this.state = TransactionState.EXPIRED;
+        callback(err || null, resp);
+      }
+    );
+  }
+
+  /**
+   * Begin a remote transaction. In the callback provided, run your
+   * transactional commands.
+   *
+   * @param {object} [options] Configuration object.
+   * @param {object} [options.gaxOptions] Request configuration options, outlined
+   *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {boolean} [options.readOnly=false] A read-only transaction cannot
+   *     modify entities.
+   * @param {string} [options.transactionId] The ID of a previous transaction.
+   * @param {function} callback The function to execute within the context of
+   *     a transaction.
+   * @param {?error} callback.err An error returned while making this request.
+   * @param {Transaction} callback.transaction This transaction
+   *     instance.
+   * @param {object} callback.apiResponse The full API response.
+   *
+   * @example
+   * ```
+   * const {Datastore} = require('@google-cloud/datastore');
+   * const datastore = new Datastore();
+   * const transaction = datastore.transaction();
+   *
+   * transaction.run((err, transaction) => {
+   *   // Perform Datastore transactional operations.
+   *   const key = datastore.key(['Company', 123]);
+   *
+   *   transaction.get(key, (err, entity) => {
+   *     entity.name = 'Google';
+   *
+   *     transaction.save({
+   *       key: key,
+   *       data: entity
+   *     });
+   *
+   *     transaction.commit((err) => {
+   *       if (!err) {
+   *         // Data saved successfully.
+   *       }
+   *     });
+   *   });
+   * });
+   *
+   * //-
+   * // If the callback is omitted, we'll return a Promise.
+   * //-
+   * transaction.run().then((data) => {
+   *   const transaction = data[0];
+   *   const apiResponse = data[1];
+   * });
+   * ```
+   */
+  run(options?: RunOptions): Promise<RunResponse>;
+  run(callback: RunCallback): void;
+  run(options: RunOptions, callback: RunCallback): void;
+  run(
+    optionsOrCallback?: RunOptions | RunCallback,
+    cb?: RunCallback
+  ): void | Promise<RunResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    this.#mutex.runExclusive(async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        const runResults = await this.#beginTransactionAsync(options);
+        this.#processBeginResults(runResults, callback);
+      } else {
+        process.emitWarning(
+          'run has already been called and should not be called again.'
+        );
+        callback(null, this, {transaction: this.id});
+      }
+    });
+  }
+
+  /**
+   * This function is a pass-through for the transaction.commit method
+   * It contains the business logic used for committing a transaction
+   *
+   * @param {object} [gaxOptions] Request configuration options, outlined here:
+   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {function} callback The callback function.
+   * @private
+   */
+  #runCommit(
+    gaxOptions: CallOptions,
+    callback: CommitCallback
+  ): void | Promise<CommitResponse> {
     if (this.skipCommit) {
       setImmediate(callback);
       return;
@@ -249,6 +649,7 @@ class Transaction extends DatastoreRequest {
           return;
         }
 
+        this.state = TransactionState.EXPIRED;
         // The `callbacks` array was built previously. These are the callbacks
         // that handle the API response normally when using the
         // DatastoreRequest.save and .delete methods.
@@ -263,322 +664,134 @@ class Transaction extends DatastoreRequest {
   }
 
   /**
-   * Create a query for the specified kind. See {module:datastore/query} for all
-   * of the available methods.
+   * This function parses results from a beginTransaction call
    *
-   * @see {@link https://cloud.google.com/datastore/docs/concepts/queries| Datastore Queries}
+   * @param {BeginAsyncResponse} [response]
+   * The response data from a call to begin a transaction.
+   * @param {RunCallback} [callback] A callback that accepts an error and a
+   * response as arguments.
    *
-   * @see {@link Query}
-   *
-   * @param {string} [namespace] Namespace.
-   * @param {string} kind The kind to query.
-   * @returns {Query}
-   *
-   * @example
-   * ```
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const transaction = datastore.transaction();
-   *
-   * // Run the query inside the transaction.
-   * transaction.run((err) => {
-   *   if (err) {
-   *     // Error handling omitted.
-   *   }
-   *   const ancestorKey = datastore.key(['ParentCompany', 'Alphabet']);
-   *
-   *   const query = transaction.createQuery('Company')
-   *       .hasAncestor(ancestorKey);
-   *
-   *   query.run((err, entities) => {
-   *     if (err) {
-   *       // Error handling omitted.
-   *     }
-   *
-   *     transaction.commit((err) => {
-   *       if (!err) {
-   *         // Transaction committed successfully.
-   *       }
-   *     });
-   *   });
-   * });
-   *
-   * // Run the query inside the transaction.with namespace
-   * transaction.run((err) => {
-   *   if (err) {
-   *     // Error handling omitted.
-   *   }
-   *   const ancestorKey = datastore.key(['ParentCompany', 'Alphabet']);
-   *
-   *   const query = transaction.createQuery('CompanyNamespace', 'Company')
-   *       .hasAncestor(ancestorKey);
-   *
-   *   query.run((err, entities) => {
-   *     if (err) {
-   *       // Error handling omitted.
-   *     }
-   *
-   *     transaction.commit((err) => {
-   *       if (!err) {
-   *         // Transaction committed successfully.
-   *       }
-   *     });
-   *   });
-   * });
-   * ```
-   */
-  createQuery(kind?: string): Query;
-  createQuery(kind?: string[]): Query;
-  createQuery(namespace: string, kind: string): Query;
-  createQuery(namespace: string, kind: string[]): Query;
-  createQuery(
-    namespaceOrKind?: string | string[],
-    kind?: string | string[]
-  ): Query {
-    return this.datastore.createQuery.call(
-      this,
-      namespaceOrKind as string,
-      kind as string[]
-    );
+   **/
+  #processBeginResults(
+    runResults: BeginAsyncResponse,
+    callback: RunCallback
+  ): void {
+    const err = runResults.err;
+    const resp = runResults.resp;
+    if (err) {
+      callback(err, null, resp);
+    } else {
+      this.parseTransactionResponse(resp);
+      callback(null, this, resp);
+    }
   }
 
   /**
-   * Create an aggregation query from the query specified. See {module:datastore/query} for all
-   * of the available methods.
+   * This async function makes a beginTransaction call and returns a promise with
+   * the information returned from the call that was made.
    *
-   */
-  createAggregationQuery(query: Query): AggregateQuery {
-    return this.datastore.createAggregationQuery.call(this, query);
-  }
-
-  /**
-   * Delete all entities identified with the specified key(s) in the current
-   * transaction.
+   * @param {RunOptions} options The options used for a beginTransaction call.
+   * @returns {Promise<RequestPromiseReturnType>}
    *
-   * @param {Key|Key[]} key Datastore key object(s).
    *
-   * @example
-   * ```
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const transaction = datastore.transaction();
-   *
-   * transaction.run((err) => {
-   *   if (err) {
-   *     // Error handling omitted.
-   *   }
-   *
-   *   // Delete a single entity.
-   *   transaction.delete(datastore.key(['Company', 123]));
-   *
-   *   // Delete multiple entities at once.
-   *   transaction.delete([
-   *     datastore.key(['Company', 123]),
-   *     datastore.key(['Product', 'Computer'])
-   *   ]);
-   *
-   *   transaction.commit((err) => {
-   *     if (!err) {
-   *       // Transaction committed successfully.
-   *     }
-   *   });
-   * });
-   * ```
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  delete(entities?: Entities): any {
-    arrify(entities).forEach((ent: Entity) => {
-      this.modifiedEntities_.push({
-        entity: {
-          key: ent,
+   **/
+  async #beginTransactionAsync(
+    options: RunOptions
+  ): Promise<BeginAsyncResponse> {
+    return new Promise((resolve: (value: BeginAsyncResponse) => void) => {
+      const reqOpts = {
+        transactionOptions: getTransactionRequest(this, options),
+      };
+      this.request_(
+        {
+          client: 'DatastoreClient',
+          method: 'beginTransaction',
+          reqOpts,
+          gaxOpts: options.gaxOptions,
         },
-        method: 'delete',
-        args: [ent],
-      });
+        // Always use resolve because then this function can return both the error and the response
+        (err, resp) => {
+          resolve({
+            err,
+            resp,
+          });
+        }
+      );
     });
   }
 
   /**
-   * Maps to {@link https://cloud.google.com/nodejs/docs/reference/datastore/latest/datastore/transaction#_google_cloud_datastore_Transaction_save_member_1_|Datastore#save}, forcing the method to be `insert`.
    *
-   * @param {object|object[]} entities Datastore key object(s).
-   * @param {Key} entities.key Datastore key object.
-   * @param {string[]} [entities.excludeFromIndexes] Exclude properties from
-   *     indexing using a simple JSON path notation. See the examples in
-   *     {@link Datastore#save} to see how to target properties at different
-   *     levels of nesting within your entity.
-   * @param {object} entities.data Data to save with the provided key.
-   */
-  insert(entities: Entities): void {
-    entities = arrify(entities)
-      .map(DatastoreRequest.prepareEntityObject_)
-      .map((x: PrepareEntityObjectResponse) => {
-        x.method = 'insert';
-        return x;
-      });
-
-    this.save(entities);
-  }
-
-  /**
-   * Reverse a transaction remotely and finalize the current transaction
-   * instance.
+   * This function calls runAggregationQuery on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * runAggregationQuery call is made.
    *
-   * @param {object} [gaxOptions] Request configuration options, outlined here:
-   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {function} callback The callback function.
-   * @param {?error} callback.err An error returned while making this request.
-   * @param {object} callback.apiResponse The full API response.
+   * @param {AggregateQuery} [query] AggregateQuery object.
+   * @param {RunQueryOptions} [options] Optional configuration
+   * @param {function} [callback] The callback function. If omitted, a promise is
+   * returned.
    *
-   * @example
-   * ```
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const transaction = datastore.transaction();
-   *
-   * transaction.run((err) => {
-   *   if (err) {
-   *     // Error handling omitted.
-   *   }
-   *
-   *   transaction.rollback((err) => {
-   *     if (!err) {
-   *       // Transaction rolled back successfully.
-   *     }
-   *   });
-   * });
-   *
-   * //-
-   * // If the callback is omitted, we'll return a Promise.
-   * //-
-   * transaction.rollback().then((data) => {
-   *   const apiResponse = data[0];
-   * });
-   * ```
-   */
-  rollback(callback: RollbackCallback): void;
-  rollback(gaxOptions?: CallOptions): Promise<RollbackResponse>;
-  rollback(gaxOptions: CallOptions, callback: RollbackCallback): void;
-  rollback(
-    gaxOptionsOrCallback?: CallOptions | RollbackCallback,
-    cb?: RollbackCallback
-  ): void | Promise<RollbackResponse> {
-    const gaxOptions =
-      typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
-    const callback =
-      typeof gaxOptionsOrCallback === 'function' ? gaxOptionsOrCallback : cb!;
-
-    this.request_(
-      {
-        client: 'DatastoreClient',
-        method: 'rollback',
-        gaxOpts: gaxOptions || {},
-      },
-      (err, resp) => {
-        this.skipCommit = true;
-        callback(err || null, resp);
-      }
-    );
-  }
-
-  /**
-   * Begin a remote transaction. In the callback provided, run your
-   * transactional commands.
-   *
-   * @param {object} [options] Configuration object.
-   * @param {object} [options.gaxOptions] Request configuration options, outlined
-   *     here: https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
-   * @param {boolean} [options.readOnly=false] A read-only transaction cannot
-   *     modify entities.
-   * @param {string} [options.transactionId] The ID of a previous transaction.
-   * @param {function} callback The function to execute within the context of
-   *     a transaction.
-   * @param {?error} callback.err An error returned while making this request.
-   * @param {Transaction} callback.transaction This transaction
-   *     instance.
-   * @param {object} callback.apiResponse The full API response.
-   *
-   * @example
-   * ```
-   * const {Datastore} = require('@google-cloud/datastore');
-   * const datastore = new Datastore();
-   * const transaction = datastore.transaction();
-   *
-   * transaction.run((err, transaction) => {
-   *   // Perform Datastore transactional operations.
-   *   const key = datastore.key(['Company', 123]);
-   *
-   *   transaction.get(key, (err, entity) => {
-   *     entity.name = 'Google';
-   *
-   *     transaction.save({
-   *       key: key,
-   *       data: entity
-   *     });
-   *
-   *     transaction.commit((err) => {
-   *       if (!err) {
-   *         // Data saved successfully.
-   *       }
-   *     });
-   *   });
-   * });
-   *
-   * //-
-   * // If the callback is omitted, we'll return a Promise.
-   * //-
-   * transaction.run().then((data) => {
-   *   const transaction = data[0];
-   *   const apiResponse = data[1];
-   * });
-   * ```
-   */
-  run(options?: RunOptions): Promise<RunResponse>;
-  run(callback: RunCallback): void;
-  run(options: RunOptions, callback: RunCallback): void;
-  run(
-    optionsOrCallback?: RunOptions | RunCallback,
-    cb?: RunCallback
-  ): void | Promise<RunResponse> {
+   **/
+  runAggregationQuery(
+    query: AggregateQuery,
+    options?: RunQueryOptions
+  ): Promise<RunQueryResponse>;
+  runAggregationQuery(
+    query: AggregateQuery,
+    options: RunQueryOptions,
+    callback: RequestCallback
+  ): void;
+  runAggregationQuery(query: AggregateQuery, callback: RequestCallback): void;
+  runAggregationQuery(
+    query: AggregateQuery,
+    optionsOrCallback?: RunQueryOptions | RequestCallback,
+    cb?: RequestCallback
+  ): void | Promise<RunQueryResponse> {
     const options =
-      typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling runAggregationQuery
+    this.#blockWithMutex(() => {
+      super.runAggregationQuery(query, options, callback);
+    });
+  }
 
-    const reqOpts = {
-      transactionOptions: {},
-    } as RequestOptions;
-
-    if (options.readOnly || this.readOnly) {
-      reqOpts.transactionOptions!.readOnly = {};
-    }
-
-    if (options.transactionId || this.id) {
-      reqOpts.transactionOptions!.readWrite = {
-        previousTransaction: options.transactionId || this.id,
-      };
-    }
-
-    if (options.transactionOptions) {
-      reqOpts.transactionOptions = options.transactionOptions;
-    }
-
-    this.request_(
-      {
-        client: 'DatastoreClient',
-        method: 'beginTransaction',
-        reqOpts,
-        gaxOpts: options.gaxOptions,
-      },
-      (err, resp) => {
-        if (err) {
-          callback(err, null, resp);
-          return;
-        }
-        this.id = resp!.transaction;
-        callback(null, this, resp);
-      }
-    );
+  /**
+   * This function calls runQuery on the super class. If the transaction
+   * has not been started yet then the transaction is started before the
+   * runQuery call is made.
+   *
+   * @param {Query} query A Query object
+   * @param {object} [options] Optional configuration.
+   * @param {function} [callback] The callback function. If omitted, a readable
+   *     stream instance is returned.
+   *
+   */
+  runQuery(query: Query, options?: RunQueryOptions): Promise<RunQueryResponse>;
+  runQuery(
+    query: Query,
+    options: RunQueryOptions,
+    callback: RunQueryCallback
+  ): void;
+  runQuery(query: Query, callback: RunQueryCallback): void;
+  runQuery(
+    query: Query,
+    optionsOrCallback?: RunQueryOptions | RunQueryCallback,
+    cb?: RunQueryCallback
+  ): void | Promise<RunQueryResponse> {
+    const options =
+      typeof optionsOrCallback === 'object' && optionsOrCallback
+        ? optionsOrCallback
+        : {};
+    const callback =
+      typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
+    // This ensures that the transaction is started before calling runQuery
+    this.#blockWithMutex(() => {
+      super.runQuery(query, options, callback);
+    });
   }
 
   /**
@@ -771,6 +984,84 @@ class Transaction extends DatastoreRequest {
 
     this.save(entities);
   }
+
+  /**
+   * Some rpc calls require that the transaction has been started (i.e, has a
+   * valid id) before they can be sent. #withBeginTransaction acts as a wrapper
+   * over those functions.
+   *
+   * If the transaction has not begun yet, `#withBeginTransaction` will first
+   * send an rpc to begin the transaction, and then execute the wrapped
+   * function. If it has begun, the wrapped function will be called directly
+   * instead. If an error is encountered during the beginTransaction call, the
+   * callback will be executed instead of the wrapped function.
+   *
+   * @param {CallOptions | undefined} [gaxOptions] Gax options provided by the
+   * user that are used for the beginTransaction grpc call.
+   * @param {function} [fn] A function which is run after ensuring a
+   * transaction has begun.
+   * @param {function} [callback] A callback provided by the user that expects
+   * an error in the first argument and a custom data type for the rest of the
+   * arguments.
+   * @private
+   */
+  #withBeginTransaction<T extends any[]>(
+    gaxOptions: CallOptions | undefined,
+    fn: () => void,
+    callback: (...args: [Error | null, ...T] | [Error | null]) => void
+  ): void {
+    (async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        try {
+          await this.#mutex.runExclusive(async () => {
+            if (this.state === TransactionState.NOT_STARTED) {
+              // This sends an rpc call to get the transaction id
+              const runResults = await this.#beginTransactionAsync({
+                gaxOptions,
+              });
+              if (runResults.err) {
+                // The rpc getting the id was unsuccessful.
+                // Do not call the wrapped function.
+                throw runResults.err;
+              }
+              this.parseTransactionResponse(runResults.resp);
+              // The rpc saving the transaction id was successful.
+              // Now the wrapped function fn will be called.
+            }
+          });
+        } catch (err: any) {
+          // Handle an error produced by the beginTransactionAsync call
+          return callback(err);
+        }
+      }
+      return fn();
+    })();
+  }
+
+  /*
+   * Some rpc calls require that the transaction has been started (i.e, has a
+   * valid id) before they can be sent. #withBeginTransaction acts as a wrapper
+   * over those functions.
+   *
+   * If the transaction has not begun yet, `#blockWithMutex` will call the
+   * wrapped function which will begin the transaction in the rpc call it sends.
+   * If the transaction has begun, the wrapped function will be called, but it
+   * will not begin a transaction.
+   *
+   * @param {function} [fn] A function which is run after ensuring a
+   * transaction has begun.
+   */
+  #blockWithMutex(fn: () => void) {
+    (async () => {
+      if (this.state === TransactionState.NOT_STARTED) {
+        await this.#mutex.runExclusive(async () => {
+          fn();
+        });
+      } else {
+        fn();
+      }
+    })();
+  }
 }
 
 export type ModifiedEntities = Array<{
@@ -810,6 +1101,7 @@ promisifyAll(Transaction, {
     'createQuery',
     'delete',
     'insert',
+    '#runAsync',
     'save',
     'update',
     'upsert',
