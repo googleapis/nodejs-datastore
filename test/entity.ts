@@ -19,12 +19,12 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity, entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
-import {google} from '../protos/protos';
-import {PropertyFilter, EntityFilter, and} from '../src/filter';
+import {PropertyFilter, and} from '../src/filter';
 import {
   entityObject,
   expectedEntityProto,
 } from './fixtures/entityObjectAndProto';
+import {DistanceMeasure} from '../src/vector';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
@@ -1519,9 +1519,8 @@ describe('entity', () => {
       const vectorOptions = {
         vectorField: 'embedding_field',
         queryVector: [1.0, 2.0, 3.0],
-        limit: {value: 3},
-        distanceMeasure:
-          google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
+        limit: 3,
+        distanceMeasure: DistanceMeasure.EUCLIDEAN,
         distanceResultField: 'vector_distance',
       };
 
@@ -1609,9 +1608,8 @@ describe('entity', () => {
       const vectorOptions = {
         vectorField: 'embedding_field',
         queryVector: [1.0, 2.0, 3.0],
-        limit: {value: 3},
-        distanceMeasure:
-          google.datastore.v1.FindNearest.DistanceMeasure.EUCLIDEAN,
+        limit: 3,
+        distanceMeasure: DistanceMeasure.EUCLIDEAN,
         distanceResultField: 'vector_distance',
       };
 

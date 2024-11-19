@@ -22,6 +22,7 @@ import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
 import {and, PropertyFilter} from './filter';
+import {Vector} from './vector';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
@@ -1269,7 +1270,27 @@ export namespace entity {
     }
 
     if (query.vectorSearch && query.vectorOptions) {
-      queryProto.findNearest = query.vectorOptions;
+      function queryVectorToArray(
+        queryVector: Vector | Array<number> | undefined
+      ): google.datastore.v1.IValue | undefined {
+        if (queryVector instanceof Vector) {
+          return queryVector.value as google.datastore.v1.IValue;
+        } else {
+          return queryVector as google.datastore.v1.IValue;
+        }
+      }
+
+      const vectorProto: google.datastore.v1.FindNearest = {
+        vectorProperty: {name: query.vectorOptions.vectorProperty},
+        queryVector: queryVectorToArray(query.vectorOptions.queryVector),
+        distanceMeasure: query.vectorOptions
+          .distanceMeasure as google.datastore.v1.FindNearest.DistanceMeasure,
+        limit: {value: query.vectorOptions.limit},
+        distanceResultProperty: query.vectorOptions.distanceResultProperty,
+        distanceThreshold: {value: query.vectorOptions.distanceThreshold},
+      };
+
+      queryProto.findNearest = vectorProto;
     }
 
     return queryProto;

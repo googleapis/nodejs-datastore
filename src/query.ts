@@ -280,7 +280,7 @@ class Query {
    *
    */
   findNearest(options: VectorQueryOptions): Query {
-    if (options.limit?.value && options.limit?.value <= 0) {
+    if (options.limit && options.limit <= 0) {
       throw new Error('limit should be a positive limit number');
     }
 
