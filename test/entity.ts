@@ -1517,11 +1517,11 @@ describe('entity', () => {
         path: ['Kind2', 'somename'],
       });
       const vectorOptions = {
-        vectorField: 'embedding_field',
+        vectorProperty: 'embedding_property',
         queryVector: [1.0, 2.0, 3.0],
         limit: 3,
         distanceMeasure: DistanceMeasure.EUCLIDEAN,
-        distanceResultField: 'vector_distance',
+        distanceResultProperty: 'vector_distance',
       };
 
       const ds = new Datastore({projectId: 'project-id'});
@@ -1606,11 +1606,11 @@ describe('entity', () => {
         path: ['Kind2', 'somename'],
       });
       const vectorOptions = {
-        vectorField: 'embedding_field',
+        vectorProperty: 'embedding_property',
         queryVector: [1.0, 2.0, 3.0],
         limit: 3,
         distanceMeasure: DistanceMeasure.EUCLIDEAN,
-        distanceResultField: 'vector_distance',
+        distanceResultProperty: 'vector_distance',
       };
 
       const ds = new Datastore({projectId: 'project-id'});
