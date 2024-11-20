@@ -39,7 +39,7 @@ import {
 import * as is from 'is';
 import {Transform, pipeline} from 'stream';
 
-import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
+import {entity, Entities, Entity, ValueProto} from './entity';
 import {AggregateField} from './aggregate';
 import Key = entity.Key;
 export {Entity, Key, AggregateField};
@@ -489,6 +489,8 @@ class Datastore extends DatastoreRequest {
 
     options.projectId = options.projectId || process.env.DATASTORE_PROJECT_ID;
 
+    // prod: datastore.googleapis.com
+    // nightly: nightly-datastore.sandbox.googleapis.com
     this.defaultBaseUrl_ = 'datastore.googleapis.com';
     this.determineBaseUrl_(options.apiEndpoint);
 
