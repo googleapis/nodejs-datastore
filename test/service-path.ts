@@ -151,6 +151,7 @@ describe.only('Service Path', () => {
     };
     try {
       // This is necessary to initialize the bigtable instance admin client.
+      console.log('getIndexes');
       await datastore.getIndexes({gaxOptions: {timeout: 1000}});
     } catch (e) {
       assert.strictEqual(

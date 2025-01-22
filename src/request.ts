@@ -1258,7 +1258,9 @@ class DatastoreRequest {
       }
     }
 
+    console.log('load project from auth');
     datastore.auth.getProjectId((err, projectId) => {
+      console.log('loaded project from auth');
       if (err) {
         callback!(err);
         return;

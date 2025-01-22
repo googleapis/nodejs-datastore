@@ -676,6 +676,7 @@ class Datastore extends DatastoreRequest {
       gaxOpts.autoPaginate = options.autoPaginate;
     }
 
+    console.log('request_');
     this.request_(
       {
         client: 'DatastoreAdminClient',
