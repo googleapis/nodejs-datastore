@@ -173,6 +173,8 @@ describe.only('Service Path', () => {
       // datastore client.
       await datastore.save([], {timeout: 1000});
     } catch (e) {
+      console.log('CATCHING ERROR');
+      console.log((e as any).message);
       assert.strictEqual(
         (e as ServiceError).message,
         '14 UNAVAILABLE: Name resolution failed for target dns:datastore.someUniverseDomain:443'
