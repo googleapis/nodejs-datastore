@@ -18,7 +18,7 @@ import {ServiceError} from 'google-gax';
 import {Datastore} from '../src';
 import {DatastoreClient, DatastoreAdminClient} from '../src/v1';
 
-describe.only('Service Path', () => {
+describe('Service Path', () => {
   it('Setting universe domain should set the service path', async () => {
     // Set the environment variable
     process.env.GOOGLE_CLOUD_UNIVERSE_DOMAIN = 'otherDomain';
