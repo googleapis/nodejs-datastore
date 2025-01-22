@@ -28,6 +28,7 @@ import arrify = require('arrify');
 import extend = require('extend');
 import {
   GrpcClient,
+  ClientOptions,
   ClientStub,
   ChannelCredentials,
   GoogleAuth,
@@ -124,6 +125,26 @@ const gapic = Object.freeze({
 });
 
 const urlSafeKey = new entity.URLSafeKey();
+
+/**
+ * Retrieves the domain to be used for the service path.
+ *
+ * This function retrieves the domain from gax.ClientOptions passed in or via an environment variable.
+ * It defaults to 'googleapis.com' if none has been set.
+ * @param {string} [prefix] The prefix for the domain.
+ * @param {gax.ClientOptions} [opts] The gax client options
+ * @returns {string} The universe domain.
+ */
+function getDomain(prefix: string, suffix: string, opts?: DatastoreOptions) {
+  // From https://github.com/googleapis/nodejs-bigtable/blob/589540475b0b2a055018a1cb6e475800fdd46a37/src/v2/bigtable_client.ts#L120-L128.
+  // This code for universe domain was taken from the Gapic Layer.
+  // It is reused here to build the service path.
+  const universeDomainEnvVar =
+    typeof process === 'object' && typeof process.env === 'object'
+      ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+      : undefined;
+  return `${prefix}.${opts?.universeDomain ?? universeDomainEnvVar ?? suffix}`;
+}
 
 /**
  * Idiomatic class for interacting with Cloud Datastore. Uses the lower-level
@@ -489,7 +510,9 @@ class Datastore extends DatastoreRequest {
 
     options.projectId = options.projectId || process.env.DATASTORE_PROJECT_ID;
 
-    this.defaultBaseUrl_ = 'datastore.googleapis.com';
+    const prefixDefault = 'datastore';
+    const suffixDefault = 'googleapis.com';
+    this.defaultBaseUrl_ = `${prefixDefault}.${suffixDefault}`;
     this.determineBaseUrl_(options.apiEndpoint);
 
     const scopes: string[] = Array.from(
@@ -504,7 +527,9 @@ class Datastore extends DatastoreRequest {
         libName: 'gccl',
         libVersion: require('../../package.json').version,
         scopes,
-        servicePath: this.baseUrl_,
+        servicePath: this.customEndpoint_
+          ? this.baseUrl_
+          : getDomain(prefixDefault, suffixDefault, options),
         port: typeof this.port_ === 'number' ? this.port_ : 443,
       },
       options
