@@ -172,6 +172,7 @@ describe.only('Service Path', () => {
       // This will fail in unit tests, but is necessary to initialize the
       // datastore client.
       await datastore.save([], {timeout: 1000});
+      console.log('After save');
     } catch (e) {
       console.log('CATCHING ERROR');
       console.log((e as any).message);
