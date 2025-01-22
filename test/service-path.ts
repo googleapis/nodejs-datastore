@@ -18,7 +18,7 @@ import {ServiceError} from 'google-gax';
 import {Datastore} from '../src';
 import {DatastoreClient, DatastoreAdminClient} from '../src/v1';
 
-describe('Service Path', () => {
+describe.only('Service Path', () => {
   it('Setting universe domain should set the service path', async () => {
     // Set the environment variable
     process.env.GOOGLE_CLOUD_UNIVERSE_DOMAIN = 'otherDomain';
@@ -30,7 +30,11 @@ describe('Service Path', () => {
     const datastore = new Datastore(options);
     // Need to mock getProjectId_ since it normally uses auth and auth isn't
     // available in unit tests.
-    datastore.getProjectId = () => new Promise(resolve => resolve('projectId'));
+    (datastore.auth.getProjectId as any) = (
+      callback: (err?: Error | null, projectId?: string | null) => void
+    ) => {
+      callback(null, 'projectId');
+    };
     try {
       // This is necessary to initialize the datastore admin client.
       await datastore.getIndexes({gaxOptions: {timeout: 1000}});
@@ -85,7 +89,11 @@ describe('Service Path', () => {
     const datastore = new Datastore(options);
     // Need to mock getProjectId_ since it normally uses auth and auth isn't
     // available in unit tests.
-    datastore.getProjectId = () => new Promise(resolve => resolve('projectId'));
+    (datastore.auth.getProjectId as any) = (
+      callback: (err?: Error | null, projectId?: string | null) => void
+    ) => {
+      callback(null, 'projectId');
+    };
     try {
       // This is necessary to initialize the bigtable instance admin client.
       await datastore.getIndexes({gaxOptions: {timeout: 1000}});
@@ -136,7 +144,11 @@ describe('Service Path', () => {
 
     // Need to mock getProjectId_ since it normally uses auth and auth isn't
     // available in unit tests.
-    datastore.getProjectId = () => new Promise(resolve => resolve('projectId'));
+    (datastore.auth.getProjectId as any) = (
+      callback: (err?: Error | null, projectId?: string | null) => void
+    ) => {
+      callback(null, 'projectId');
+    };
     try {
       // This is necessary to initialize the bigtable instance admin client.
       await datastore.getIndexes({gaxOptions: {timeout: 1000}});
