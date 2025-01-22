@@ -28,7 +28,6 @@ import arrify = require('arrify');
 import extend = require('extend');
 import {
   GrpcClient,
-  ClientOptions,
   ClientStub,
   ChannelCredentials,
   GoogleAuth,
@@ -40,7 +39,7 @@ import {
 import * as is from 'is';
 import {Transform, pipeline} from 'stream';
 
-import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
+import {entity, Entities, Entity, ValueProto} from './entity';
 import {AggregateField} from './aggregate';
 import Key = entity.Key;
 export {Entity, Key, AggregateField};
