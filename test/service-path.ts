@@ -37,7 +37,7 @@ describe('Service Path', () => {
     } catch (e) {
       assert.strictEqual(
         (e as ServiceError).message,
-        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds before any response was received.'
+        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds retrying error Error: 14 UNAVAILABLE: Name resolution failed for target dns:datastore.someUniverseDomain:443  before any response was received.'
       );
     } finally {
       assert.strictEqual(
@@ -92,7 +92,7 @@ describe('Service Path', () => {
     } catch (e) {
       assert.strictEqual(
         (e as ServiceError).message,
-        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds before any response was received.'
+        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds retrying error Error: 14 UNAVAILABLE: Name resolution failed for target dns:someApiEndpoint:443  before any response was received.'
       );
     } finally {
       assert.strictEqual(
@@ -143,7 +143,7 @@ describe('Service Path', () => {
     } catch (e) {
       assert.strictEqual(
         (e as ServiceError).message,
-        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds before any response was received.'
+        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds retrying error Error: 14 UNAVAILABLE: Name resolution failed for target dns:datastore.someUniverseDomain:443  before any response was received.'
       );
     } finally {
       assert.strictEqual(
