@@ -131,7 +131,8 @@ const urlSafeKey = new entity.URLSafeKey();
  * This function retrieves the domain from gax.ClientOptions passed in or via an environment variable.
  * It defaults to 'googleapis.com' if none has been set.
  * @param {string} [prefix] The prefix for the domain.
- * @param {gax.ClientOptions} [opts] The gax client options
+ * @param {string} [suffix] The suffix for the domain.
+ * @param {DatastoreOptions} [opts] The gax client options
  * @returns {string} The universe domain.
  */
 function getDomain(prefix: string, suffix: string, opts?: DatastoreOptions) {
