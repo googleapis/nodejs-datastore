@@ -14,11 +14,10 @@
 
 import {describe, it} from 'mocha';
 import * as assert from 'assert';
-import {ServiceError} from 'google-gax';
-import {Datastore} from '../src';
 import {DatastoreClient, DatastoreAdminClient} from '../src/v1';
+import {getInitializedDatastoreClient} from './gapic-mocks/get-initialized-datastore-client';
 
-describe.only('Service Path', () => {
+describe('Service Path', () => {
   it('Setting universe domain should set the service path', async () => {
     // Set the environment variable
     process.env.GOOGLE_CLOUD_UNIVERSE_DOMAIN = 'otherDomain';
@@ -27,51 +26,21 @@ describe.only('Service Path', () => {
     const options = {
       universeDomain,
     };
-    const datastore = new Datastore(options);
-    // Need to mock getProjectId_ since it normally uses auth and auth isn't
-    // available in unit tests.
-    (datastore.auth.getProjectId as any) = (
-      callback: (err?: Error | null, projectId?: string | null) => void
-    ) => {
-      callback(null, 'projectId');
-    };
-    try {
-      // This is necessary to initialize the datastore admin client.
-      await datastore.getIndexes({gaxOptions: {timeout: 1000}});
-    } catch (e) {
-      assert.strictEqual(
-        (e as ServiceError).message,
-        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds retrying error Error: 14 UNAVAILABLE: Name resolution failed for target dns:datastore.someUniverseDomain:443  before any response was received.'
-      );
-    } finally {
-      assert.strictEqual(
-        (
-          datastore.clients_.get(
-            'DatastoreAdminClient'
-          ) as unknown as DatastoreAdminClient
-        )['_opts'].servicePath,
-        `datastore.${universeDomain}`
-      );
-    }
-    try {
-      // This will fail in unit tests, but is necessary to initialize the
-      // datastore client.
-      await datastore.save([], {timeout: 1000});
-    } catch (e) {
-      assert.strictEqual(
-        (e as ServiceError).message,
-        '14 UNAVAILABLE: Name resolution failed for target dns:datastore.someUniverseDomain:443'
-      );
-    } finally {
-      assert.strictEqual(
-        (
-          datastore.clients_.get(
-            'DatastoreClient'
-          ) as unknown as DatastoreClient
-        )['_opts'].servicePath,
-        `datastore.${universeDomain}`
-      );
-    }
+    const datastore = getInitializedDatastoreClient(options);
+    assert.strictEqual(
+      (
+        datastore.clients_.get(
+          'DatastoreAdminClient'
+        ) as unknown as DatastoreAdminClient
+      )['_opts'].servicePath,
+      `datastore.${universeDomain}`
+    );
+    assert.strictEqual(
+      (datastore.clients_.get('DatastoreClient') as unknown as DatastoreClient)[
+        '_opts'
+      ].servicePath,
+      `datastore.${universeDomain}`
+    );
 
     // Clean up the environment variable after the test
     delete process.env.GOOGLE_CLOUD_UNIVERSE_DOMAIN;
@@ -86,51 +55,21 @@ describe.only('Service Path', () => {
       universeDomain,
       apiEndpoint,
     };
-    const datastore = new Datastore(options);
-    // Need to mock getProjectId_ since it normally uses auth and auth isn't
-    // available in unit tests.
-    (datastore.auth.getProjectId as any) = (
-      callback: (err?: Error | null, projectId?: string | null) => void
-    ) => {
-      callback(null, 'projectId');
-    };
-    try {
-      // This is necessary to initialize the bigtable instance admin client.
-      await datastore.getIndexes({gaxOptions: {timeout: 1000}});
-    } catch (e) {
-      assert.strictEqual(
-        (e as ServiceError).message,
-        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds retrying error Error: 14 UNAVAILABLE: Name resolution failed for target dns:someApiEndpoint:443  before any response was received.'
-      );
-    } finally {
-      assert.strictEqual(
-        (
-          datastore.clients_.get(
-            'DatastoreAdminClient'
-          ) as unknown as DatastoreAdminClient
-        )['_opts'].servicePath,
-        'someApiEndpoint'
-      );
-    }
-    try {
-      // This will fail in unit tests, but is necessary to initialize the
-      // datastore client.
-      await datastore.save([], {timeout: 1000});
-    } catch (e) {
-      assert.strictEqual(
-        (e as ServiceError).message,
-        '14 UNAVAILABLE: Name resolution failed for target dns:someApiEndpoint:443'
-      );
-    } finally {
-      assert.strictEqual(
-        (
-          datastore.clients_.get(
-            'DatastoreClient'
-          ) as unknown as DatastoreClient
-        )['_opts'].servicePath,
-        'someApiEndpoint'
-      );
-    }
+    const datastore = getInitializedDatastoreClient(options);
+    assert.strictEqual(
+      (
+        datastore.clients_.get(
+          'DatastoreAdminClient'
+        ) as unknown as DatastoreAdminClient
+      )['_opts'].servicePath,
+      'someApiEndpoint'
+    );
+    assert.strictEqual(
+      (datastore.clients_.get('DatastoreClient') as unknown as DatastoreClient)[
+        '_opts'
+      ].servicePath,
+      'someApiEndpoint'
+    );
 
     // Clean up the environment variable after the test
     delete process.env.GOOGLE_CLOUD_UNIVERSE_DOMAIN;
@@ -140,56 +79,22 @@ describe.only('Service Path', () => {
 
     // Set the environment variable
     process.env.GOOGLE_CLOUD_UNIVERSE_DOMAIN = universeDomain;
-    const datastore = new Datastore(); // No options needed, it will pick up the env var
+    const datastore = getInitializedDatastoreClient(); // No options needed, it will pick up the env var
 
-    // Need to mock getProjectId_ since it normally uses auth and auth isn't
-    // available in unit tests.
-    (datastore.auth.getProjectId as any) = (
-      callback: (err?: Error | null, projectId?: string | null) => void
-    ) => {
-      callback(null, 'projectId');
-    };
-    try {
-      // This is necessary to initialize the bigtable instance admin client.
-      console.log('getIndexes');
-      await datastore.getIndexes({gaxOptions: {timeout: 1000}});
-    } catch (e) {
-      assert.strictEqual(
-        (e as ServiceError).message,
-        'Total timeout of API google.datastore.admin.v1.DatastoreAdmin exceeded 1000 milliseconds retrying error Error: 14 UNAVAILABLE: Name resolution failed for target dns:datastore.someUniverseDomain:443  before any response was received.'
-      );
-    } finally {
-      assert.strictEqual(
-        (
-          datastore.clients_.get(
-            'DatastoreAdminClient'
-          ) as unknown as DatastoreAdminClient
-        )['_opts'].servicePath,
-        `datastore.${universeDomain}`
-      );
-    }
-    try {
-      // This will fail in unit tests, but is necessary to initialize the
-      // datastore client.
-      await datastore.save([], {timeout: 1000});
-      console.log('After save');
-    } catch (e) {
-      console.log('CATCHING ERROR');
-      console.log((e as any).message);
-      assert.strictEqual(
-        (e as ServiceError).message,
-        '14 UNAVAILABLE: Name resolution failed for target dns:datastore.someUniverseDomain:443'
-      );
-    } finally {
-      assert.strictEqual(
-        (
-          datastore.clients_.get(
-            'DatastoreClient'
-          ) as unknown as DatastoreClient
-        )['_opts'].servicePath,
-        `datastore.${universeDomain}`
-      );
-    }
+    assert.strictEqual(
+      (
+        datastore.clients_.get(
+          'DatastoreAdminClient'
+        ) as unknown as DatastoreAdminClient
+      )['_opts'].servicePath,
+      `datastore.${universeDomain}`
+    );
+    assert.strictEqual(
+      (datastore.clients_.get('DatastoreClient') as unknown as DatastoreClient)[
+        '_opts'
+      ].servicePath,
+      `datastore.${universeDomain}`
+    );
 
     // Clean up the environment variable after the test
     delete process.env.GOOGLE_CLOUD_UNIVERSE_DOMAIN;
