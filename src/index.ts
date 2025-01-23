@@ -39,7 +39,7 @@ import {
 import * as is from 'is';
 import {Transform, pipeline} from 'stream';
 
-import {entity, Entities, Entity, EntityProto, ValueProto} from './entity';
+import {entity, Entities, Entity, ValueProto} from './entity';
 import {AggregateField} from './aggregate';
 import Key = entity.Key;
 export {Entity, Key, AggregateField};
@@ -124,6 +124,27 @@ const gapic = Object.freeze({
 });
 
 const urlSafeKey = new entity.URLSafeKey();
+
+/**
+ * Retrieves the domain to be used for the service path.
+ *
+ * This function retrieves the domain from DatastoreOptions passed in or via an
+ * environment variable.
+ * @param {string} [prefix] The prefix for the domain.
+ * @param {string} [suffix] The suffix for the domain.
+ * @param {DatastoreOptions} [opts] The gax client options
+ * @returns {string} The universe domain.
+ */
+function getDomain(prefix: string, suffix: string, opts?: DatastoreOptions) {
+  // From https://github.com/googleapis/nodejs-datastore/blob/5c0ddbca91c41e056443eb0b60449f3cdddd6e69/src/v1/datastore_client.ts#L127-L138
+  // This code for universe domain was taken from the Gapic Layer.
+  // It is reused here to build the service path.
+  const universeDomainEnvVar =
+    typeof process === 'object' && typeof process.env === 'object'
+      ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+      : undefined;
+  return `${prefix}.${opts?.universeDomain ?? universeDomainEnvVar ?? suffix}`;
+}
 
 /**
  * Idiomatic class for interacting with Cloud Datastore. Uses the lower-level
@@ -489,7 +510,9 @@ class Datastore extends DatastoreRequest {
 
     options.projectId = options.projectId || process.env.DATASTORE_PROJECT_ID;
 
-    this.defaultBaseUrl_ = 'datastore.googleapis.com';
+    const prefixDefault = 'datastore';
+    const suffixDefault = 'googleapis.com';
+    this.defaultBaseUrl_ = `${prefixDefault}.${suffixDefault}`;
     this.determineBaseUrl_(options.apiEndpoint);
 
     const scopes: string[] = Array.from(
@@ -504,7 +527,9 @@ class Datastore extends DatastoreRequest {
         libName: 'gccl',
         libVersion: require('../../package.json').version,
         scopes,
-        servicePath: this.baseUrl_,
+        servicePath: this.customEndpoint_
+          ? this.baseUrl_
+          : getDomain(prefixDefault, suffixDefault, options),
         port: typeof this.port_ === 'number' ? this.port_ : 443,
       },
       options

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Datastore} from '../../src';
+import {Datastore, DatastoreOptions} from '../../src';
 
 /**
  * This function gets a datastore client that has already been initialized
@@ -22,15 +22,18 @@ import {Datastore} from '../../src';
  * evaluate data that reaches the handwritten layer thereby testing the
  * handwritten layer in isolation.
  */
-export function getInitializedDatastoreClient(): Datastore {
+export function getInitializedDatastoreClient(
+  opts?: DatastoreOptions
+): Datastore {
   const clientName = 'DatastoreClient';
+  const adminClientName = 'DatastoreAdminClient';
   const PROJECT_ID = 'project-id';
   const NAMESPACE = 'namespace';
   const options = {
     projectId: PROJECT_ID,
     namespace: NAMESPACE,
   };
-  const datastore = new Datastore(options);
+  const datastore = new Datastore(opts ? opts : options);
   // By default, datastore.clients_ is an empty map.
   // To mock out commit we need the map to contain the Gapic data client.
   // Normally a call to the data client through the datastore object would initialize it.
@@ -39,6 +42,13 @@ export function getInitializedDatastoreClient(): Datastore {
   const gapic = Object.freeze({
     v1: require('../../src/v1'),
   });
-  datastore.clients_.set(clientName, new gapic.v1[clientName](options));
+  datastore.clients_.set(
+    clientName,
+    new gapic.v1[clientName](datastore.options)
+  );
+  datastore.clients_.set(
+    adminClientName,
+    new gapic.v1[adminClientName](datastore.options)
+  );
   return datastore;
 }
