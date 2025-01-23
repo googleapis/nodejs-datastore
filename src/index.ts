@@ -129,8 +129,7 @@ const urlSafeKey = new entity.URLSafeKey();
  * Retrieves the domain to be used for the service path.
  *
  * This function retrieves the domain from DatastoreOptions passed in or via an
- * environment variable. It defaults to 'datastore.googleapis.com' if none has
- * been set.
+ * environment variable.
  * @param {string} [prefix] The prefix for the domain.
  * @param {string} [suffix] The suffix for the domain.
  * @param {DatastoreOptions} [opts] The gax client options
