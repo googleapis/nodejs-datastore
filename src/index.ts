@@ -136,7 +136,7 @@ const urlSafeKey = new entity.URLSafeKey();
  * @returns {string} The universe domain.
  */
 function getDomain(prefix: string, suffix: string, opts?: DatastoreOptions) {
-  // From https://github.com/googleapis/nodejs-bigtable/blob/589540475b0b2a055018a1cb6e475800fdd46a37/src/v2/bigtable_client.ts#L120-L128.
+  // From https://github.com/googleapis/nodejs-datastore/blob/5c0ddbca91c41e056443eb0b60449f3cdddd6e69/src/v1/datastore_client.ts#L127-L138
   // This code for universe domain was taken from the Gapic Layer.
   // It is reused here to build the service path.
   const universeDomainEnvVar =
