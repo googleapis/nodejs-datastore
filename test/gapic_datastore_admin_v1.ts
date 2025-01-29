@@ -357,7 +357,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['indexId']
       );
       request.indexId = defaultValue2;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}&index_id=${defaultValue2 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.admin.v1.Index()
       );
@@ -393,7 +393,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['indexId']
       );
       request.indexId = defaultValue2;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}&index_id=${defaultValue2 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.datastore.admin.v1.Index()
       );
@@ -445,7 +445,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['indexId']
       );
       request.indexId = defaultValue2;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}&index_id=${defaultValue2 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.getIndex = stubSimpleCall(undefined, expectedError);
       await assert.rejects(client.getIndex(request), expectedError);
@@ -499,7 +499,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -532,7 +532,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -586,7 +586,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.exportEntities = stubLongRunningCall(
         undefined,
@@ -617,7 +617,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.exportEntities = stubLongRunningCall(
         undefined,
@@ -693,7 +693,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -726,7 +726,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -780,7 +780,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.importEntities = stubLongRunningCall(
         undefined,
@@ -811,7 +811,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.importEntities = stubLongRunningCall(
         undefined,
@@ -887,7 +887,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -919,7 +919,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -973,7 +973,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.createIndex = stubLongRunningCall(
         undefined,
@@ -1004,7 +1004,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.createIndex = stubLongRunningCall(
         undefined,
@@ -1082,7 +1082,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['indexId']
       );
       request.indexId = defaultValue2;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}&index_id=${defaultValue2 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -1119,7 +1119,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['indexId']
       );
       request.indexId = defaultValue2;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}&index_id=${defaultValue2 ?? ''}`;
       const expectedResponse = generateSampleMessage(
         new protos.google.longrunning.Operation()
       );
@@ -1178,7 +1178,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['indexId']
       );
       request.indexId = defaultValue2;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}&index_id=${defaultValue2 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.deleteIndex = stubLongRunningCall(
         undefined,
@@ -1214,7 +1214,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['indexId']
       );
       request.indexId = defaultValue2;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}&index_id=${defaultValue2}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}&index_id=${defaultValue2 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.deleteIndex = stubLongRunningCall(
         undefined,
@@ -1287,7 +1287,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1320,7 +1320,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1369,7 +1369,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.innerApiCalls.listIndexes = stubSimpleCall(
         undefined,
@@ -1400,7 +1400,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1454,7 +1454,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.descriptors.page.listIndexes.createStream = stubPageStreamingCall(
         undefined,
@@ -1505,7 +1505,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedResponse = [
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
         generateSampleMessage(new protos.google.datastore.admin.v1.Index()),
@@ -1548,7 +1548,7 @@ describe('v1.DatastoreAdminClient', () => {
         ['projectId']
       );
       request.projectId = defaultValue1;
-      const expectedHeaderRequestParams = `project_id=${defaultValue1}`;
+      const expectedHeaderRequestParams = `project_id=${defaultValue1 ?? ''}`;
       const expectedError = new Error('expected');
       client.descriptors.page.listIndexes.asyncIterate = stubAsyncIterationCall(
         undefined,
