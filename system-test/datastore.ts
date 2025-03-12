@@ -3249,7 +3249,7 @@ async.each(
         it('should export, then import entities', async function () {
           setupForDelay();
           this.retries(3);
-          delay(this);
+          await delay(this);
           const [exportOperation] = await datastore.export({bucket});
           await exportOperation.promise();
 

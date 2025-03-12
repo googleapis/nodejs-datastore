@@ -1462,7 +1462,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   await transaction.get(key);
@@ -1523,7 +1523,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   await transaction.run();
@@ -1591,7 +1591,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   const query =
@@ -1662,7 +1662,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   await transaction.run();
@@ -1735,7 +1735,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   const query =
@@ -1812,7 +1812,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   await transaction.run();
@@ -1877,7 +1877,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   transaction.save({key, data: ''});
@@ -1938,7 +1938,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   await transaction.run();
@@ -1994,7 +1994,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   transaction.save({key, data: ''});
@@ -2053,7 +2053,7 @@ async.each(
                   done(err);
                 }
               };
-              (async () => {
+              void (async () => {
                 try {
                   transaction = transactionWrapper.transaction;
                   await transaction.run();
@@ -2208,7 +2208,7 @@ async.each(
               done();
             });
           };
-          transaction.run();
+          void transaction.run();
         });
 
         afterEach(() => {
@@ -2222,7 +2222,7 @@ async.each(
             assert.deepStrictEqual(config.gaxOpts, {});
             done();
           };
-          transaction.commit();
+          void transaction.commit();
         });
 
         it('should accept gaxOptions', done => {
@@ -2233,7 +2233,7 @@ async.each(
             done();
           };
 
-          transaction.commit(gaxOptions);
+          void transaction.commit(gaxOptions);
         });
 
         it('should skip the commit', done => {
@@ -2311,7 +2311,7 @@ async.each(
 
           transaction.request_ = () => {};
 
-          transaction.commit();
+          void transaction.commit();
 
           assert.strictEqual(deleteStub.calledOnce, true);
           assert.strictEqual(saveStub.calledOnce, true);
@@ -2339,7 +2339,7 @@ async.each(
 
           transaction.request_ = () => {};
 
-          transaction.commit();
+          void transaction.commit();
           assert.strictEqual(deleteSpy.notCalled, true);
           assert.strictEqual(saveStub.calledOnce, true);
         });
@@ -2357,7 +2357,7 @@ async.each(
 
           transaction.request_ = () => {};
 
-          transaction.commit();
+          void transaction.commit();
         });
 
         it('should send the built request object', done => {
@@ -2377,7 +2377,7 @@ async.each(
             done();
           };
 
-          transaction.commit();
+          void transaction.commit();
         });
 
         it('should execute the queued callbacks', () => {
@@ -2397,7 +2397,7 @@ async.each(
             cb();
           };
 
-          transaction.commit();
+          void transaction.commit();
 
           assert(cb1Called);
           assert(cb2Called);
@@ -2512,7 +2512,7 @@ async.each(
             assert.deepStrictEqual(config.gaxOpts, {});
             done();
           };
-          transaction.rollback();
+          void transaction.rollback();
         });
 
         it('should allow setting gaxOptions', done => {
@@ -2523,7 +2523,7 @@ async.each(
             done();
           };
 
-          transaction.rollback(gaxOptions);
+          void transaction.rollback(gaxOptions);
         });
 
         it('should pass error to callback', done => {
@@ -2591,7 +2591,7 @@ async.each(
             done();
           };
 
-          transaction.run({gaxOptions});
+          void transaction.run({gaxOptions});
         });
 
         describe('options.readOnly', () => {
