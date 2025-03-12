@@ -1886,7 +1886,7 @@ describe('Request', () => {
   });
 
   describe('requestStream_', () => {
-    let GAX_STREAM: gax.CancellableStream;
+    let GAX_STREAM = new PassThrough();
     const CONFIG = {};
 
     beforeEach(() => {
@@ -1898,7 +1898,7 @@ describe('Request', () => {
     });
 
     it('should expose an abort function', done => {
-      GAX_STREAM.cancel = done;
+      (GAX_STREAM as unknown as gax.CancellableStream).cancel = done;
 
       const requestStream = request.requestStream_(CONFIG);
       requestStream.emit('reading');
