@@ -28,7 +28,7 @@ import {protobuf, operationsProtos} from 'google-gax';
 // Dynamically loaded proto JSON is needed to get the type information
 // to fill in default values for request objects
 const root = protobuf.Root.fromJSON(
-  require('../protos/protos.json')
+  require('../protos/protos.json'),
 ).resolveAll();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,7 +45,7 @@ function generateSampleMessage<T extends object>(instance: T) {
     instance.constructor as typeof protobuf.Message
   ).toObject(instance as protobuf.Message<T>, {defaults: true});
   return (instance.constructor as typeof protobuf.Message).fromObject(
-    filledObject
+    filledObject,
   ) as T;
 }
 
@@ -57,7 +57,7 @@ function stubSimpleCall<ResponseType>(response?: ResponseType, error?: Error) {
 
 function stubSimpleCallWithCallback<ResponseType>(
   response?: ResponseType,
-  error?: Error
+  error?: Error,
 ) {
   return error
     ? sinon.stub().callsArgWith(2, error)
@@ -66,7 +66,7 @@ function stubSimpleCallWithCallback<ResponseType>(
 
 function stubAsyncIterationCall<ResponseType>(
   responses?: ResponseType[],
-  error?: Error
+  error?: Error,
 ) {
   let counter = 0;
   const asyncIterable = {
@@ -273,19 +273,19 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.LookupRequest()
+        new protos.google.datastore.v1.LookupRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.LookupResponse()
+        new protos.google.datastore.v1.LookupResponse(),
       );
       client.innerApiCalls.lookup = stubSimpleCall(expectedResponse);
       const [response] = await client.lookup(request);
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (client.innerApiCalls.lookup as SinonStub).getCall(
-        0
+        0,
       ).args[0];
       assert.deepStrictEqual(actualRequest, request);
       const actualHeaderRequestParams = (
@@ -301,13 +301,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.LookupRequest()
+        new protos.google.datastore.v1.LookupRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.LookupResponse()
+        new protos.google.datastore.v1.LookupResponse(),
       );
       client.innerApiCalls.lookup =
         stubSimpleCallWithCallback(expectedResponse);
@@ -316,20 +316,20 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.ILookupResponse | null
+            result?: protos.google.datastore.v1.ILookupResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (client.innerApiCalls.lookup as SinonStub).getCall(
-        0
+        0,
       ).args[0];
       assert.deepStrictEqual(actualRequest, request);
       const actualHeaderRequestParams = (
@@ -345,7 +345,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.LookupRequest()
+        new protos.google.datastore.v1.LookupRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -354,7 +354,7 @@ describe('v1.DatastoreClient', () => {
       client.innerApiCalls.lookup = stubSimpleCall(undefined, expectedError);
       await assert.rejects(client.lookup(request), expectedError);
       const actualRequest = (client.innerApiCalls.lookup as SinonStub).getCall(
-        0
+        0,
       ).args[0];
       assert.deepStrictEqual(actualRequest, request);
       const actualHeaderRequestParams = (
@@ -370,7 +370,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.LookupRequest()
+        new protos.google.datastore.v1.LookupRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -388,13 +388,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunQueryRequest()
+        new protos.google.datastore.v1.RunQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.RunQueryResponse()
+        new protos.google.datastore.v1.RunQueryResponse(),
       );
       client.innerApiCalls.runQuery = stubSimpleCall(expectedResponse);
       const [response] = await client.runQuery(request);
@@ -416,13 +416,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunQueryRequest()
+        new protos.google.datastore.v1.RunQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.RunQueryResponse()
+        new protos.google.datastore.v1.RunQueryResponse(),
       );
       client.innerApiCalls.runQuery =
         stubSimpleCallWithCallback(expectedResponse);
@@ -431,14 +431,14 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.IRunQueryResponse | null
+            result?: protos.google.datastore.v1.IRunQueryResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -460,7 +460,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunQueryRequest()
+        new protos.google.datastore.v1.RunQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -485,7 +485,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunQueryRequest()
+        new protos.google.datastore.v1.RunQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -503,13 +503,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunAggregationQueryRequest()
+        new protos.google.datastore.v1.RunAggregationQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.RunAggregationQueryResponse()
+        new protos.google.datastore.v1.RunAggregationQueryResponse(),
       );
       client.innerApiCalls.runAggregationQuery =
         stubSimpleCall(expectedResponse);
@@ -532,13 +532,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunAggregationQueryRequest()
+        new protos.google.datastore.v1.RunAggregationQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.RunAggregationQueryResponse()
+        new protos.google.datastore.v1.RunAggregationQueryResponse(),
       );
       client.innerApiCalls.runAggregationQuery =
         stubSimpleCallWithCallback(expectedResponse);
@@ -547,14 +547,14 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.IRunAggregationQueryResponse | null
+            result?: protos.google.datastore.v1.IRunAggregationQueryResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -576,7 +576,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunAggregationQueryRequest()
+        new protos.google.datastore.v1.RunAggregationQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -584,7 +584,7 @@ describe('v1.DatastoreClient', () => {
       const expectedError = new Error('expected');
       client.innerApiCalls.runAggregationQuery = stubSimpleCall(
         undefined,
-        expectedError
+        expectedError,
       );
       await assert.rejects(client.runAggregationQuery(request), expectedError);
       const actualRequest = (
@@ -604,7 +604,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RunAggregationQueryRequest()
+        new protos.google.datastore.v1.RunAggregationQueryRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -622,13 +622,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.BeginTransactionRequest()
+        new protos.google.datastore.v1.BeginTransactionRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.BeginTransactionResponse()
+        new protos.google.datastore.v1.BeginTransactionResponse(),
       );
       client.innerApiCalls.beginTransaction = stubSimpleCall(expectedResponse);
       const [response] = await client.beginTransaction(request);
@@ -650,13 +650,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.BeginTransactionRequest()
+        new protos.google.datastore.v1.BeginTransactionRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.BeginTransactionResponse()
+        new protos.google.datastore.v1.BeginTransactionResponse(),
       );
       client.innerApiCalls.beginTransaction =
         stubSimpleCallWithCallback(expectedResponse);
@@ -665,14 +665,14 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.IBeginTransactionResponse | null
+            result?: protos.google.datastore.v1.IBeginTransactionResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -694,7 +694,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.BeginTransactionRequest()
+        new protos.google.datastore.v1.BeginTransactionRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -702,7 +702,7 @@ describe('v1.DatastoreClient', () => {
       const expectedError = new Error('expected');
       client.innerApiCalls.beginTransaction = stubSimpleCall(
         undefined,
-        expectedError
+        expectedError,
       );
       await assert.rejects(client.beginTransaction(request), expectedError);
       const actualRequest = (
@@ -722,7 +722,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.BeginTransactionRequest()
+        new protos.google.datastore.v1.BeginTransactionRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -740,19 +740,19 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.CommitRequest()
+        new protos.google.datastore.v1.CommitRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.CommitResponse()
+        new protos.google.datastore.v1.CommitResponse(),
       );
       client.innerApiCalls.commit = stubSimpleCall(expectedResponse);
       const [response] = await client.commit(request);
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (client.innerApiCalls.commit as SinonStub).getCall(
-        0
+        0,
       ).args[0];
       assert.deepStrictEqual(actualRequest, request);
       const actualHeaderRequestParams = (
@@ -768,13 +768,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.CommitRequest()
+        new protos.google.datastore.v1.CommitRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.CommitResponse()
+        new protos.google.datastore.v1.CommitResponse(),
       );
       client.innerApiCalls.commit =
         stubSimpleCallWithCallback(expectedResponse);
@@ -783,20 +783,20 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.ICommitResponse | null
+            result?: protos.google.datastore.v1.ICommitResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (client.innerApiCalls.commit as SinonStub).getCall(
-        0
+        0,
       ).args[0];
       assert.deepStrictEqual(actualRequest, request);
       const actualHeaderRequestParams = (
@@ -812,7 +812,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.CommitRequest()
+        new protos.google.datastore.v1.CommitRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -821,7 +821,7 @@ describe('v1.DatastoreClient', () => {
       client.innerApiCalls.commit = stubSimpleCall(undefined, expectedError);
       await assert.rejects(client.commit(request), expectedError);
       const actualRequest = (client.innerApiCalls.commit as SinonStub).getCall(
-        0
+        0,
       ).args[0];
       assert.deepStrictEqual(actualRequest, request);
       const actualHeaderRequestParams = (
@@ -837,7 +837,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.CommitRequest()
+        new protos.google.datastore.v1.CommitRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -855,13 +855,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RollbackRequest()
+        new protos.google.datastore.v1.RollbackRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.RollbackResponse()
+        new protos.google.datastore.v1.RollbackResponse(),
       );
       client.innerApiCalls.rollback = stubSimpleCall(expectedResponse);
       const [response] = await client.rollback(request);
@@ -883,13 +883,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RollbackRequest()
+        new protos.google.datastore.v1.RollbackRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.RollbackResponse()
+        new protos.google.datastore.v1.RollbackResponse(),
       );
       client.innerApiCalls.rollback =
         stubSimpleCallWithCallback(expectedResponse);
@@ -898,14 +898,14 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.IRollbackResponse | null
+            result?: protos.google.datastore.v1.IRollbackResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -927,7 +927,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RollbackRequest()
+        new protos.google.datastore.v1.RollbackRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -952,7 +952,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.RollbackRequest()
+        new protos.google.datastore.v1.RollbackRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -970,13 +970,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.AllocateIdsRequest()
+        new protos.google.datastore.v1.AllocateIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.AllocateIdsResponse()
+        new protos.google.datastore.v1.AllocateIdsResponse(),
       );
       client.innerApiCalls.allocateIds = stubSimpleCall(expectedResponse);
       const [response] = await client.allocateIds(request);
@@ -998,13 +998,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.AllocateIdsRequest()
+        new protos.google.datastore.v1.AllocateIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.AllocateIdsResponse()
+        new protos.google.datastore.v1.AllocateIdsResponse(),
       );
       client.innerApiCalls.allocateIds =
         stubSimpleCallWithCallback(expectedResponse);
@@ -1013,14 +1013,14 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.IAllocateIdsResponse | null
+            result?: protos.google.datastore.v1.IAllocateIdsResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -1042,7 +1042,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.AllocateIdsRequest()
+        new protos.google.datastore.v1.AllocateIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -1050,7 +1050,7 @@ describe('v1.DatastoreClient', () => {
       const expectedError = new Error('expected');
       client.innerApiCalls.allocateIds = stubSimpleCall(
         undefined,
-        expectedError
+        expectedError,
       );
       await assert.rejects(client.allocateIds(request), expectedError);
       const actualRequest = (
@@ -1070,7 +1070,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.AllocateIdsRequest()
+        new protos.google.datastore.v1.AllocateIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -1088,13 +1088,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.ReserveIdsRequest()
+        new protos.google.datastore.v1.ReserveIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.ReserveIdsResponse()
+        new protos.google.datastore.v1.ReserveIdsResponse(),
       );
       client.innerApiCalls.reserveIds = stubSimpleCall(expectedResponse);
       const [response] = await client.reserveIds(request);
@@ -1116,13 +1116,13 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.ReserveIdsRequest()
+        new protos.google.datastore.v1.ReserveIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
       const expectedHeaderRequestParams = 'database_id=value';
       const expectedResponse = generateSampleMessage(
-        new protos.google.datastore.v1.ReserveIdsResponse()
+        new protos.google.datastore.v1.ReserveIdsResponse(),
       );
       client.innerApiCalls.reserveIds =
         stubSimpleCallWithCallback(expectedResponse);
@@ -1131,14 +1131,14 @@ describe('v1.DatastoreClient', () => {
           request,
           (
             err?: Error | null,
-            result?: protos.google.datastore.v1.IReserveIdsResponse | null
+            result?: protos.google.datastore.v1.IReserveIdsResponse | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -1160,7 +1160,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.ReserveIdsRequest()
+        new protos.google.datastore.v1.ReserveIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -1168,7 +1168,7 @@ describe('v1.DatastoreClient', () => {
       const expectedError = new Error('expected');
       client.innerApiCalls.reserveIds = stubSimpleCall(
         undefined,
-        expectedError
+        expectedError,
       );
       await assert.rejects(client.reserveIds(request), expectedError);
       const actualRequest = (
@@ -1188,7 +1188,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new protos.google.datastore.v1.ReserveIdsRequest()
+        new protos.google.datastore.v1.ReserveIdsRequest(),
       );
       // path template is empty
       request.databaseId = 'value';
@@ -1205,10 +1205,10 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.GetOperationRequest()
+        new operationsProtos.google.longrunning.GetOperationRequest(),
       );
       const expectedResponse = generateSampleMessage(
-        new operationsProtos.google.longrunning.Operation()
+        new operationsProtos.google.longrunning.Operation(),
       );
       client.operationsClient.getOperation = stubSimpleCall(expectedResponse);
       const response = await client.getOperation(request);
@@ -1216,7 +1216,7 @@ describe('v1.DatastoreClient', () => {
       assert(
         (client.operationsClient.getOperation as SinonStub)
           .getCall(0)
-          .calledWith(request)
+          .calledWith(request),
       );
     });
     it('invokes getOperation without error using callback', async () => {
@@ -1225,10 +1225,10 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.GetOperationRequest()
+        new operationsProtos.google.longrunning.GetOperationRequest(),
       );
       const expectedResponse = generateSampleMessage(
-        new operationsProtos.google.longrunning.Operation()
+        new operationsProtos.google.longrunning.Operation(),
       );
       client.operationsClient.getOperation = sinon
         .stub()
@@ -1239,14 +1239,14 @@ describe('v1.DatastoreClient', () => {
           undefined,
           (
             err?: Error | null,
-            result?: operationsProtos.google.longrunning.Operation | null
+            result?: operationsProtos.google.longrunning.Operation | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -1259,12 +1259,12 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.GetOperationRequest()
+        new operationsProtos.google.longrunning.GetOperationRequest(),
       );
       const expectedError = new Error('expected');
       client.operationsClient.getOperation = stubSimpleCall(
         undefined,
-        expectedError
+        expectedError,
       );
       await assert.rejects(async () => {
         await client.getOperation(request);
@@ -1272,7 +1272,7 @@ describe('v1.DatastoreClient', () => {
       assert(
         (client.operationsClient.getOperation as SinonStub)
           .getCall(0)
-          .calledWith(request)
+          .calledWith(request),
       );
     });
   });
@@ -1284,10 +1284,10 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.CancelOperationRequest()
+        new operationsProtos.google.longrunning.CancelOperationRequest(),
       );
       const expectedResponse = generateSampleMessage(
-        new protos.google.protobuf.Empty()
+        new protos.google.protobuf.Empty(),
       );
       client.operationsClient.cancelOperation =
         stubSimpleCall(expectedResponse);
@@ -1296,7 +1296,7 @@ describe('v1.DatastoreClient', () => {
       assert(
         (client.operationsClient.cancelOperation as SinonStub)
           .getCall(0)
-          .calledWith(request)
+          .calledWith(request),
       );
     });
     it('invokes cancelOperation without error using callback', async () => {
@@ -1305,10 +1305,10 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.CancelOperationRequest()
+        new operationsProtos.google.longrunning.CancelOperationRequest(),
       );
       const expectedResponse = generateSampleMessage(
-        new protos.google.protobuf.Empty()
+        new protos.google.protobuf.Empty(),
       );
       client.operationsClient.cancelOperation = sinon
         .stub()
@@ -1319,14 +1319,14 @@ describe('v1.DatastoreClient', () => {
           undefined,
           (
             err?: Error | null,
-            result?: protos.google.protobuf.Empty | null
+            result?: protos.google.protobuf.Empty | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -1339,12 +1339,12 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.CancelOperationRequest()
+        new operationsProtos.google.longrunning.CancelOperationRequest(),
       );
       const expectedError = new Error('expected');
       client.operationsClient.cancelOperation = stubSimpleCall(
         undefined,
-        expectedError
+        expectedError,
       );
       await assert.rejects(async () => {
         await client.cancelOperation(request);
@@ -1352,7 +1352,7 @@ describe('v1.DatastoreClient', () => {
       assert(
         (client.operationsClient.cancelOperation as SinonStub)
           .getCall(0)
-          .calledWith(request)
+          .calledWith(request),
       );
     });
   });
@@ -1364,10 +1364,10 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.DeleteOperationRequest()
+        new operationsProtos.google.longrunning.DeleteOperationRequest(),
       );
       const expectedResponse = generateSampleMessage(
-        new protos.google.protobuf.Empty()
+        new protos.google.protobuf.Empty(),
       );
       client.operationsClient.deleteOperation =
         stubSimpleCall(expectedResponse);
@@ -1376,7 +1376,7 @@ describe('v1.DatastoreClient', () => {
       assert(
         (client.operationsClient.deleteOperation as SinonStub)
           .getCall(0)
-          .calledWith(request)
+          .calledWith(request),
       );
     });
     it('invokes deleteOperation without error using callback', async () => {
@@ -1385,10 +1385,10 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.DeleteOperationRequest()
+        new operationsProtos.google.longrunning.DeleteOperationRequest(),
       );
       const expectedResponse = generateSampleMessage(
-        new protos.google.protobuf.Empty()
+        new protos.google.protobuf.Empty(),
       );
       client.operationsClient.deleteOperation = sinon
         .stub()
@@ -1399,14 +1399,14 @@ describe('v1.DatastoreClient', () => {
           undefined,
           (
             err?: Error | null,
-            result?: protos.google.protobuf.Empty | null
+            result?: protos.google.protobuf.Empty | null,
           ) => {
             if (err) {
               reject(err);
             } else {
               resolve(result);
             }
-          }
+          },
         );
       });
       const response = await promise;
@@ -1419,12 +1419,12 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.DeleteOperationRequest()
+        new operationsProtos.google.longrunning.DeleteOperationRequest(),
       );
       const expectedError = new Error('expected');
       client.operationsClient.deleteOperation = stubSimpleCall(
         undefined,
-        expectedError
+        expectedError,
       );
       await assert.rejects(async () => {
         await client.deleteOperation(request);
@@ -1432,7 +1432,7 @@ describe('v1.DatastoreClient', () => {
       assert(
         (client.operationsClient.deleteOperation as SinonStub)
           .getCall(0)
-          .calledWith(request)
+          .calledWith(request),
       );
     });
   });
@@ -1443,17 +1443,17 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.ListOperationsRequest()
+        new operationsProtos.google.longrunning.ListOperationsRequest(),
       );
       const expectedResponse = [
         generateSampleMessage(
-          new operationsProtos.google.longrunning.ListOperationsResponse()
+          new operationsProtos.google.longrunning.ListOperationsResponse(),
         ),
         generateSampleMessage(
-          new operationsProtos.google.longrunning.ListOperationsResponse()
+          new operationsProtos.google.longrunning.ListOperationsResponse(),
         ),
         generateSampleMessage(
-          new operationsProtos.google.longrunning.ListOperationsResponse()
+          new operationsProtos.google.longrunning.ListOperationsResponse(),
         ),
       ];
       client.operationsClient.descriptor.listOperations.asyncIterate =
@@ -1469,7 +1469,7 @@ describe('v1.DatastoreClient', () => {
           client.operationsClient.descriptor.listOperations
             .asyncIterate as SinonStub
         ).getCall(0).args[1],
-        request
+        request,
       );
     });
     it('uses async iteration with listOperations with error', async () => {
@@ -1479,7 +1479,7 @@ describe('v1.DatastoreClient', () => {
       });
       await client.initialize();
       const request = generateSampleMessage(
-        new operationsProtos.google.longrunning.ListOperationsRequest()
+        new operationsProtos.google.longrunning.ListOperationsRequest(),
       );
       const expectedError = new Error('expected');
       client.operationsClient.descriptor.listOperations.asyncIterate =
@@ -1496,7 +1496,7 @@ describe('v1.DatastoreClient', () => {
           client.operationsClient.descriptor.listOperations
             .asyncIterate as SinonStub
         ).getCall(0).args[1],
-        request
+        request,
       );
     });
   });
