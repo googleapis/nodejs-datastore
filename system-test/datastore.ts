@@ -3303,8 +3303,99 @@ async.each(
             data: {
               name: 'test',
               blob: Buffer.from([]),
+              p1: 3,
+              p2: 4,
+              p3: 5,
+              a1: [3, 4, 5],
             },
+            transforms: [
+              {
+                property: 'p1',
+                setToServerValue: true,
+              },
+              {
+                property: 'p2',
+                increment: 4,
+              },
+              {
+                property: 'p3',
+                maximum: 9,
+              },
+              {
+                property: 'p2',
+                minimum: 6,
+              },
+              {
+                property: 'a1',
+                appendMissingElements: [5, 6],
+              },
+              {
+                property: 'a1',
+                removeAllFromArray: [3],
+              },
+            ],
           });
+          // Clean the data from the server first before updating:
+          result.forEach(serverResult => {
+            serverResult.mutationResults?.forEach(mutationResult => {
+              delete mutationResult['updateTime'];
+              delete mutationResult['createTime'];
+              delete mutationResult['version'];
+              mutationResult.transformResults?.forEach(transformResult => {
+                delete transformResult['timestampValue'];
+              });
+            });
+          });
+          assert.deepStrictEqual(result, [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      valueType: 'timestampValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '8',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '9',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '14',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              indexUpdates: 17,
+              commitTime: null,
+            },
+          ]);
+          console.log(result);
         });
       });
     });
