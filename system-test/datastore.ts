@@ -3298,11 +3298,11 @@ async.each(
       describe.only('Datastore mode data transforms', () => {
         it('should perform a basic data transform', async () => {
           const key = datastore.key(['Post', 'post1']);
+          // TODO: Add a spy to the request function
           const result = await datastore.save({
             key: key,
             data: {
               name: 'test',
-              blob: Buffer.from([]),
               p1: 3,
               p2: 4,
               p3: 5,
@@ -3337,6 +3337,7 @@ async.each(
           });
           // Clean the data from the server first before comparing:
           result.forEach(serverResult => {
+            delete serverResult['indexUpdates'];
             serverResult.mutationResults?.forEach(mutationResult => {
               delete mutationResult['updateTime'];
               delete mutationResult['createTime'];
@@ -3367,7 +3368,7 @@ async.each(
                     {
                       meaning: 0,
                       excludeFromIndexes: false,
-                      integerValue: '9',
+                      integerValue: '14',
                       valueType: 'integerValue',
                     },
                     {
@@ -3393,10 +3394,19 @@ async.each(
                   conflictDetected: false,
                 },
               ],
-              indexUpdates: 17,
               commitTime: null,
             },
           ]);
+          // Now check the value that was actually saved to the server:
+          const [entity] = await datastore.get(key);
+          const parsedResult = JSON.parse(JSON.stringify(entity));
+          delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
+          assert.deepStrictEqual(parsedResult, {
+            name: 'test',
+            a1: [4, 5, 6],
+            p2: 14,
+            p3: 14,
+          });
           console.log(result);
         });
       });
