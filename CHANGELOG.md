@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [9.2.2](https://github.com/googleapis/nodejs-datastore/compare/v9.2.1...v9.2.2) (2025-03-18)
+
+
+### Bug Fixes
+
+* Not check sub-property existence for `null` values ([#1330](https://github.com/googleapis/nodejs-datastore/issues/1330)) ([5c0ddbc](https://github.com/googleapis/nodejs-datastore/commit/5c0ddbca91c41e056443eb0b60449f3cdddd6e69))
+
 ## [9.2.1](https://github.com/googleapis/nodejs-datastore/compare/v9.2.0...v9.2.1) (2024-11-06)
 
 
