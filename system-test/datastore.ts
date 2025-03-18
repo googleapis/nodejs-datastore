@@ -3335,7 +3335,7 @@ async.each(
               },
             ],
           });
-          // Clean the data from the server first before updating:
+          // Clean the data from the server first before comparing:
           result.forEach(serverResult => {
             serverResult.mutationResults?.forEach(mutationResult => {
               delete mutationResult['updateTime'];
@@ -3346,6 +3346,8 @@ async.each(
               });
             });
           });
+          // Now the data should have fixed values.
+          // Do a comparison against the expected result.
           assert.deepStrictEqual(result, [
             {
               mutationResults: [
