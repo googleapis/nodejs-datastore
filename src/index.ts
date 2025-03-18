@@ -80,6 +80,7 @@ import {buildEntityProto} from './utils/entity/buildEntityProto';
 import IValue = google.datastore.v1.IValue;
 import IEntity = google.datastore.v1.IEntity;
 import ServerValue = google.datastore.v1.PropertyTransform.ServerValue;
+import {buildPropertyTransforms} from './utils/entity/buildPropertyTransforms';
 
 const {grpc} = new GrpcClient();
 
@@ -1136,46 +1137,10 @@ class Datastore extends DatastoreRequest {
 
         // We built the entityProto, now we should add the data transforms:
         if (entityObject.transforms) {
-          mutation.propertyTransforms = [];
-          if (mutation.propertyTransforms) {
-            entityObject.transforms.forEach((transform: PropertyTransform) => {
-              if (transform.setToServerValue) {
-                mutation.propertyTransforms?.push({
-                  property: transform.property,
-                  setToServerValue: ServerValue.REQUEST_TIME,
-                });
-              }
-              if (transform.increment) {
-                mutation.propertyTransforms?.push({
-                  property: transform.property,
-                  increment: entity.encodeValue(
-                    transform.increment,
-                    transform.property
-                  ) as IValue,
-                });
-              }
-              if (transform.maximum) {
-                mutation.propertyTransforms?.push({
-                  property: transform.property,
-                  maximum: entity.encodeValue(
-                    transform.maximum,
-                    transform.property
-                  ) as IValue,
-                });
-              }
-              if (transform.increment) {
-                mutation.propertyTransforms?.push({
-                  property: transform.property,
-                  increment: entity.encodeValue(
-                    transform.maximum,
-                    transform.property
-                  ) as IValue,
-                });
-              }
-            });
-          }
+          mutation.propertyTransforms = buildPropertyTransforms(
+            entityObject.transforms
+          );
         }
-
         mutations.push(mutation);
       });
 
