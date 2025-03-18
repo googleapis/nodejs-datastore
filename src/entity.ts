@@ -1453,9 +1453,7 @@ export interface EntityProto {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Entity = {
-  [k: string]: any;
-};
+export type Entity = any;
 export type Entities = Entity | Entity[];
 
 interface KeyProtoPathElement extends google.datastore.v1.Key.IPathElement {
