@@ -3295,6 +3295,18 @@ async.each(
           assert.strictEqual(entity, undefined);
         });
       });
+      describe.only('Datastore mode data transforms', () => {
+        it('should perform a basic data transform', async () => {
+          const key = datastore.key(['Post', 'post1']);
+          const result = await datastore.save({
+            key: key,
+            data: {
+              name: 'test',
+              blob: Buffer.from([]),
+            },
+          });
+        });
+      });
     });
   }
 );

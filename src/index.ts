@@ -1099,6 +1099,7 @@ class Datastore extends DatastoreRequest {
       .map(DatastoreRequest.prepareEntityObject_)
       .forEach((entityObject: Entity, index: number) => {
         const mutation: Mutation = {};
+
         let method = 'upsert';
 
         if (entityObject.method) {
@@ -1121,6 +1122,10 @@ class Datastore extends DatastoreRequest {
         entityProto.key = entity.keyToKeyProto(entityObject.key);
 
         mutation[method] = entityProto;
+
+        // We built the entityProto, now we should add the data transforms:
+
+
         mutations.push(mutation);
       });
 
