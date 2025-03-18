@@ -26,6 +26,7 @@ import {Entities, entity, Entity} from '../src/entity';
 import {Query, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 import {transactionExpiredError} from '../src/request';
+const sinon = require('sinon');
 
 const async = require('async');
 
@@ -3299,6 +3300,8 @@ async.each(
         it('should perform a basic data transform', async () => {
           const key = datastore.key(['Post', 'post1']);
           // TODO: Add a spy to the request function
+          const requestSpy = sinon.spy(datastore.request_);
+          datastore.request_ = requestSpy;
           const result = await datastore.save({
             key: key,
             data: {
@@ -3407,7 +3410,6 @@ async.each(
             p2: 14,
             p3: 14,
           });
-          console.log(result);
         });
       });
     });
