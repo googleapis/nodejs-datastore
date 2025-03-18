@@ -13,24 +13,18 @@ export function buildPropertyTransforms(transforms: PropertyTransform[]) {
         setToServerValue: ServerValue.REQUEST_TIME,
       });
     }
-    if (transform.increment) {
-      propertyTransforms.push({
-        property,
-        increment: entity.encodeValue(transform.increment, property) as IValue,
-      });
-    }
-    if (transform.maximum) {
-      propertyTransforms.push({
-        property,
-        maximum: entity.encodeValue(transform.maximum, property) as IValue,
-      });
-    }
-    if (transform.minimum) {
-      propertyTransforms.push({
-        property,
-        increment: entity.encodeValue(transform.minimum, property) as IValue,
-      });
-    }
+    ['increment', 'maximum', 'minimum'].forEach(type => {
+      const castedType = type as 'increment' | 'maximum' | 'minimum';
+      if (transform[castedType]) {
+        propertyTransforms.push({
+          property,
+          increment: entity.encodeValue(
+            transform[castedType],
+            property
+          ) as IValue,
+        });
+      }
+    });
     if (transform.appendMissingElements) {
       propertyTransforms.push({
         property,
