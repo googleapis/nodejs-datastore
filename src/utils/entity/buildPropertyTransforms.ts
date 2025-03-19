@@ -27,14 +27,16 @@ export function buildPropertyTransforms(transforms: PropertyTransform[]) {
     });
     ['appendMissingElements', 'removeAllFromArray'].forEach(type => {
       const castedType = type as 'appendMissingElements' | 'removeAllFromArray';
-      propertyTransforms.push({
-        property,
-        [castedType]: {
-          values: transform[castedType].map(element => {
-            return entity.encodeValue(element, property) as IValue;
-          }),
-        },
-      });
+      if (transform[castedType]) {
+        propertyTransforms.push({
+          property,
+          [castedType]: {
+            values: transform[castedType].map(element => {
+              return entity.encodeValue(element, property) as IValue;
+            }),
+          },
+        });
+      }
     });
   });
   return propertyTransforms;
