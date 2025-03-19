@@ -18,7 +18,7 @@ export function buildPropertyTransforms(transforms: PropertyTransform[]) {
       if (transform[castedType]) {
         propertyTransforms.push({
           property,
-          increment: entity.encodeValue(
+          [castedType]: entity.encodeValue(
             transform[castedType],
             property
           ) as IValue,
