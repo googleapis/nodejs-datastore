@@ -595,7 +595,9 @@ export class DatastoreAdminClient {
         project_id: request.projectId ?? '',
         index_id: request.indexId ?? '',
       });
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('getIndex request %j', request);
     const wrappedCallback:
       | Callback<
@@ -752,7 +754,9 @@ export class DatastoreAdminClient {
       this._gaxModule.routingHeader.fromParams({
         project_id: request.projectId ?? '',
       });
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     const wrappedCallback:
       | Callback<
           LROperation<
@@ -945,7 +949,9 @@ export class DatastoreAdminClient {
       this._gaxModule.routingHeader.fromParams({
         project_id: request.projectId ?? '',
       });
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     const wrappedCallback:
       | Callback<
           LROperation<
@@ -1128,7 +1134,9 @@ export class DatastoreAdminClient {
       this._gaxModule.routingHeader.fromParams({
         project_id: request.projectId ?? '',
       });
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     const wrappedCallback:
       | Callback<
           LROperation<
@@ -1308,7 +1316,9 @@ export class DatastoreAdminClient {
         project_id: request.projectId ?? '',
         index_id: request.indexId ?? '',
       });
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     const wrappedCallback:
       | Callback<
           LROperation<
@@ -1468,7 +1478,9 @@ export class DatastoreAdminClient {
       this._gaxModule.routingHeader.fromParams({
         project_id: request.projectId ?? '',
       });
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     const wrappedCallback:
       | PaginationCallback<
           protos.google.datastore.admin.v1.IListIndexesRequest,
@@ -1535,7 +1547,9 @@ export class DatastoreAdminClient {
       });
     const defaultCallSettings = this._defaults['listIndexes'];
     const callSettings = defaultCallSettings.merge(options);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('listIndexes stream %j', request);
     return this.descriptors.page.listIndexes.createStream(
       this.innerApiCalls.listIndexes as GaxCall,
@@ -1584,7 +1598,9 @@ export class DatastoreAdminClient {
       });
     const defaultCallSettings = this._defaults['listIndexes'];
     const callSettings = defaultCallSettings.merge(options);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('listIndexes iterate %j', request);
     return this.descriptors.page.listIndexes.asyncIterate(
       this.innerApiCalls['listIndexes'] as GaxCall,
@@ -1686,7 +1702,7 @@ export class DatastoreAdminClient {
   listOperationsAsync(
     request: protos.google.longrunning.ListOperationsRequest,
     options?: gax.CallOptions
-  ): AsyncIterable<protos.google.longrunning.ListOperationsResponse> {
+  ): AsyncIterable<protos.google.longrunning.IOperation> {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};

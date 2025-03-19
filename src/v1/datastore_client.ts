@@ -527,7 +527,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('lookup request %j', request);
     const wrappedCallback:
       | Callback<
@@ -677,7 +679,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('runQuery request %j', request);
     const wrappedCallback:
       | Callback<
@@ -823,7 +827,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('runAggregationQuery request %j', request);
     const wrappedCallback:
       | Callback<
@@ -959,7 +965,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('beginTransaction request %j', request);
     const wrappedCallback:
       | Callback<
@@ -1117,7 +1125,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('commit request %j', request);
     const wrappedCallback:
       | Callback<
@@ -1250,7 +1260,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('rollback request %j', request);
     const wrappedCallback:
       | Callback<
@@ -1384,7 +1396,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('allocateIds request %j', request);
     const wrappedCallback:
       | Callback<
@@ -1518,7 +1532,9 @@ export class DatastoreClient {
     }
     options.otherArgs.headers['x-goog-request-params'] =
       this._gaxModule.routingHeader.fromParams(routingParameter);
-    this.initialize();
+    this.initialize().catch(err => {
+      throw err;
+    });
     this._log.info('reserveIds request %j', request);
     const wrappedCallback:
       | Callback<
@@ -1640,7 +1656,7 @@ export class DatastoreClient {
   listOperationsAsync(
     request: protos.google.longrunning.ListOperationsRequest,
     options?: gax.CallOptions
-  ): AsyncIterable<protos.google.longrunning.ListOperationsResponse> {
+  ): AsyncIterable<protos.google.longrunning.IOperation> {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
