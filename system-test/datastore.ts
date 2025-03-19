@@ -3371,13 +3371,13 @@ async.each(
                     {
                       meaning: 0,
                       excludeFromIndexes: false,
-                      integerValue: '14',
+                      integerValue: '9',
                       valueType: 'integerValue',
                     },
                     {
                       meaning: 0,
                       excludeFromIndexes: false,
-                      integerValue: '14',
+                      integerValue: '6',
                       valueType: 'integerValue',
                     },
                     {
@@ -3407,8 +3407,108 @@ async.each(
           assert.deepStrictEqual(parsedResult, {
             name: 'test',
             a1: [4, 5, 6],
-            p2: 14,
-            p3: 14,
+            p2: 6,
+            p3: 9,
+          });
+          delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
+            .partitionId['namespaceId'];
+          assert.deepStrictEqual(requestSpy.args[0][0], {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      p1: {
+                        integerValue: '3',
+                      },
+                      p2: {
+                        integerValue: '4',
+                      },
+                      p3: {
+                        integerValue: '5',
+                      },
+                      a1: {
+                        arrayValue: {
+                          values: [
+                            {
+                              integerValue: '3',
+                            },
+                            {
+                              integerValue: '4',
+                            },
+                            {
+                              integerValue: '5',
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'p1',
+                      setToServerValue: 1,
+                    },
+                    {
+                      property: 'p2',
+                      increment: {
+                        integerValue: '4',
+                      },
+                    },
+                    {
+                      property: 'p3',
+                      maximum: {
+                        integerValue: '9',
+                      },
+                    },
+                    {
+                      property: 'p2',
+                      minimum: {
+                        integerValue: '6',
+                      },
+                    },
+                    {
+                      property: 'a1',
+                      appendMissingElements: {
+                        values: [
+                          {
+                            integerValue: '5',
+                          },
+                          {
+                            integerValue: '6',
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      property: 'a1',
+                      removeAllFromArray: {
+                        values: [
+                          {
+                            integerValue: '3',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
           });
         });
       });
