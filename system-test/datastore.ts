@@ -3296,7 +3296,7 @@ async.each(
           assert.strictEqual(entity, undefined);
         });
       });
-      describe.only('Datastore mode data transforms', () => {
+      describe('Datastore mode data transforms', () => {
         it('should perform a basic data transform', async () => {
           const key = datastore.key(['Post', 'post1']);
           // TODO: Add a spy to the request function
