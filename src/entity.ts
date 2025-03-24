@@ -1452,7 +1452,6 @@ export interface EntityProto {
   excludeFromIndexes?: boolean;
 }
 
-// TODO: In practice only one of these types would be allowed:
 /*
  * This is the interface the user would provide transform operations in before
  * they are converted to the google.datastore.v1.IPropertyTransform
