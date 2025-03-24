@@ -3299,7 +3299,6 @@ async.each(
       describe('Datastore mode data transforms', () => {
         it('should perform a basic data transform', async () => {
           const key = datastore.key(['Post', 'post1']);
-          // TODO: Add a spy to the request function
           const requestSpy = sinon.spy(datastore.request_);
           datastore.request_ = requestSpy;
           const result = await datastore.save({
