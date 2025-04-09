@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [9.2.2](https://github.com/googleapis/nodejs-datastore/compare/v9.2.1...v9.2.2) (2025-04-09)
+
+
+### Bug Fixes
+
+* **doc:** Fix param descriptions for filters ([#1346](https://github.com/googleapis/nodejs-datastore/issues/1346)) ([a18c169](https://github.com/googleapis/nodejs-datastore/commit/a18c169e3b67e4e46f8b6bb9eb7cb250a88e40b7))
+* Not check sub-property existence for `null` values ([#1330](https://github.com/googleapis/nodejs-datastore/issues/1330)) ([5c0ddbc](https://github.com/googleapis/nodejs-datastore/commit/5c0ddbca91c41e056443eb0b60449f3cdddd6e69))
+
 ## [9.2.1](https://github.com/googleapis/nodejs-datastore/compare/v9.2.0...v9.2.1) (2024-11-06)
 
 
