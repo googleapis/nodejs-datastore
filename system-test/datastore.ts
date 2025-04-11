@@ -26,6 +26,8 @@ import {Entities, entity, Entity} from '../src/entity';
 import {Query, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 import {transactionExpiredError} from '../src/request';
+import {DistanceMeasure, Vector, VectorQueryOptions} from '../src/vector';
+import {startServer} from '../mock-server/datastore-server';
 
 const async = require('async');
 
@@ -3293,6 +3295,35 @@ async.each(
           const postKey = datastore.key(['Post', 'post1']);
           const [entity] = await customDatastore.get(postKey);
           assert.strictEqual(entity, undefined);
+        });
+      });
+    });
+
+    describe('vector search query', () => {
+      it.only('should complete a request successfully with vector search options', async () => {
+        startServer(async () => {
+          const customDatastore = new Datastore({
+            namespace: `${Date.now()}`,
+            apiEndpoint: 'localhost:50051',
+          });
+
+          const vectorOptions: VectorQueryOptions = {
+            vectorProperty: 'embedding',
+            queryVector: [1.0, 2.0, 3.0],
+            limit: 2,
+            distanceMeasure: DistanceMeasure.EUCLIDEAN,
+            distanceResultProperty: 'distance',
+            distanceThreshold: 0.5,
+          };
+
+          const query = customDatastore
+            .createQuery('Kind')
+            .findNearest(vectorOptions);
+
+          const [entities] = await customDatastore.runQuery(query);
+
+          console.log(entities);
+          assert.deepEqual(entities, new Vector([1.0, 2.0, 3.0]));
         });
       });
     });

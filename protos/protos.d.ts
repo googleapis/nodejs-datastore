@@ -5105,7 +5105,7 @@ export namespace google {
                  * Converts this FindNearest to JSON.
                  * @returns JSON object
                  */
-                public toJSON(): { [k: string]: any };
+                public static toJSON(): { [k: string]: any };
 
                 /**
                  * Gets the default type url for FindNearest

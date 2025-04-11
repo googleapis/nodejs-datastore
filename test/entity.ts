@@ -19,11 +19,12 @@ import * as sinon from 'sinon';
 import {Datastore} from '../src';
 import {Entity, entity} from '../src/entity';
 import {IntegerTypeCastOptions} from '../src/query';
-import {PropertyFilter, EntityFilter, and} from '../src/filter';
+import {PropertyFilter, and} from '../src/filter';
 import {
   entityObject,
   expectedEntityProto,
 } from './fixtures/entityObjectAndProto';
+import {DistanceMeasure} from '../src/vector';
 
 export function outOfBoundsError(opts: {
   propertyName?: string;
@@ -1544,12 +1545,26 @@ describe('entity', () => {
           op: 'AND',
         },
       },
+      findNearest: {
+        distanceMeasure: 1,
+        distanceResultField: 'vector_distance',
+        limit: 3,
+        queryVector: [1, 2, 3],
+        vectorField: 'embedding_field',
+      },
     };
 
     it('should support all configurations of a query', () => {
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
       });
+      const vectorOptions = {
+        vectorProperty: 'embedding_property',
+        queryVector: [1.0, 2.0, 3.0],
+        limit: 3,
+        distanceMeasure: DistanceMeasure.EUCLIDEAN,
+        distanceResultProperty: 'vector_distance',
+      };
 
       const ds = new Datastore({projectId: 'project-id'});
 
@@ -1563,7 +1578,8 @@ describe('entity', () => {
         .select('name')
         .limit(1)
         .offset(1)
-        .hasAncestor(ancestorKey);
+        .hasAncestor(ancestorKey)
+        .findNearest(vectorOptions);
 
       assert.deepStrictEqual(testEntity.queryToQueryProto(query), queryProto);
     });
@@ -1631,6 +1647,13 @@ describe('entity', () => {
       const ancestorKey = new entity.Key({
         path: ['Kind2', 'somename'],
       });
+      const vectorOptions = {
+        vectorProperty: 'embedding_property',
+        queryVector: [1.0, 2.0, 3.0],
+        limit: 3,
+        distanceMeasure: DistanceMeasure.EUCLIDEAN,
+        distanceResultProperty: 'vector_distance',
+      };
 
       const ds = new Datastore({projectId: 'project-id'});
 
@@ -1644,7 +1667,8 @@ describe('entity', () => {
         .select('name')
         .limit(1)
         .offset(1)
-        .hasAncestor(ancestorKey);
+        .hasAncestor(ancestorKey)
+        .findNearest(vectorOptions);
       assert.deepStrictEqual(testEntity.queryToQueryProto(query), queryProto);
     });
 
