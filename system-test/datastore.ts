@@ -3295,6 +3295,59 @@ async.each(
           assert.strictEqual(entity, undefined);
         });
       });
+      describe('datastore outages repro', () => {
+        it.only('test', async () => {
+          async function write(
+            docKey: string
+            // docToWrite: any // sync.ISyncDocument | undefined
+          ) {
+            const key = datastore.key(['sync_document', docKey]);
+
+            const transaction = datastore.transaction();
+
+            try {
+              await transaction.run();
+
+              const [datastoreDoc] = await transaction.get(key, {});
+
+              // const toWrite = mergeDocs(datastoreDoc, docToWrite);
+              //
+              //
+              //
+              // if (!toWrite) {
+              //
+              //   await transaction.rollback();
+              //
+              //   return undefined;
+              //
+              // }
+
+              transaction.save({
+                key,
+                data: {
+                  metadata: [
+                    {
+                      name: 'some-string',
+                      value: 'some-value',
+                    },
+                  ],
+                },
+
+                excludeFromIndexes: ['instance', 'instance.*'],
+              });
+
+              await transaction.commit();
+
+              // return toWrite;
+            } catch (e) {
+              await transaction.rollback();
+
+              throw e;
+            }
+          }
+          await write('key');
+        });
+      });
     });
   }
 );
