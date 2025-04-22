@@ -284,7 +284,7 @@ describe('v1.DatastoreAdminClient', () => {
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
-      client.initialize().catch(err => {
+      client.initialize().catch((err: any) => {
         throw err;
       });
       assert(client.datastoreAdminStub);
