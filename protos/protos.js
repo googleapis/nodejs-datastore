@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -430,12 +430,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        CommonMetadata.decode = function decode(reader, length) {
+                        CommonMetadata.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.CommonMetadata(), key, value;
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.startTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
@@ -846,12 +848,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        Progress.decode = function decode(reader, length) {
+                        Progress.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.Progress();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.workCompleted = reader.int64();
@@ -1125,12 +1129,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ExportEntitiesRequest.decode = function decode(reader, length) {
+                        ExportEntitiesRequest.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.ExportEntitiesRequest(), key, value;
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.projectId = reader.string();
@@ -1439,12 +1445,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ImportEntitiesRequest.decode = function decode(reader, length) {
+                        ImportEntitiesRequest.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.ImportEntitiesRequest(), key, value;
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.projectId = reader.string();
@@ -1718,12 +1726,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ExportEntitiesResponse.decode = function decode(reader, length) {
+                        ExportEntitiesResponse.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.ExportEntitiesResponse();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.outputUrl = reader.string();
@@ -1965,12 +1975,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ExportEntitiesMetadata.decode = function decode(reader, length) {
+                        ExportEntitiesMetadata.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.ExportEntitiesMetadata();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.common = $root.google.datastore.admin.v1.CommonMetadata.decode(reader, reader.uint32());
@@ -2281,12 +2293,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ImportEntitiesMetadata.decode = function decode(reader, length) {
+                        ImportEntitiesMetadata.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.ImportEntitiesMetadata();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.common = $root.google.datastore.admin.v1.CommonMetadata.decode(reader, reader.uint32());
@@ -2568,12 +2582,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        EntityFilter.decode = function decode(reader, length) {
+                        EntityFilter.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.EntityFilter();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         if (!(message.kinds && message.kinds.length))
@@ -2823,12 +2839,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        CreateIndexRequest.decode = function decode(reader, length) {
+                        CreateIndexRequest.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.CreateIndexRequest();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.projectId = reader.string();
@@ -3055,12 +3073,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        DeleteIndexRequest.decode = function decode(reader, length) {
+                        DeleteIndexRequest.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.DeleteIndexRequest();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.projectId = reader.string();
@@ -3282,12 +3302,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        GetIndexRequest.decode = function decode(reader, length) {
+                        GetIndexRequest.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.GetIndexRequest();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.projectId = reader.string();
@@ -3531,12 +3553,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ListIndexesRequest.decode = function decode(reader, length) {
+                        ListIndexesRequest.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.ListIndexesRequest();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.projectId = reader.string();
@@ -3784,12 +3808,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ListIndexesResponse.decode = function decode(reader, length) {
+                        ListIndexesResponse.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.ListIndexesResponse();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         if (!(message.indexes && message.indexes.length))
@@ -4041,12 +4067,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        IndexOperationMetadata.decode = function decode(reader, length) {
+                        IndexOperationMetadata.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.IndexOperationMetadata();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.common = $root.google.datastore.admin.v1.CommonMetadata.decode(reader, reader.uint32());
@@ -4290,12 +4318,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        DatastoreFirestoreMigrationMetadata.decode = function decode(reader, length) {
+                        DatastoreFirestoreMigrationMetadata.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.DatastoreFirestoreMigrationMetadata();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.migrationState = reader.int32();
@@ -4661,12 +4691,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        Index.decode = function decode(reader, length) {
+                        Index.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.Index();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.projectId = reader.string();
@@ -5043,12 +5075,14 @@
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            IndexedProperty.decode = function decode(reader, length) {
+                            IndexedProperty.decode = function decode(reader, length, error) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
                                 var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.Index.IndexedProperty();
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
                                     switch (tag >>> 3) {
                                     case 1: {
                                             message.name = reader.string();
@@ -5306,12 +5340,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        MigrationStateEvent.decode = function decode(reader, length) {
+                        MigrationStateEvent.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationStateEvent();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.state = reader.int32();
@@ -5574,12 +5610,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        MigrationProgressEvent.decode = function decode(reader, length) {
+                        MigrationProgressEvent.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationProgressEvent();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.step = reader.int32();
@@ -5888,12 +5926,14 @@
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            PrepareStepDetails.decode = function decode(reader, length) {
+                            PrepareStepDetails.decode = function decode(reader, length, error) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
                                 var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationProgressEvent.PrepareStepDetails();
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
                                     switch (tag >>> 3) {
                                     case 1: {
                                             message.concurrencyMode = reader.int32();
@@ -6120,12 +6160,14 @@
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            RedirectWritesStepDetails.decode = function decode(reader, length) {
+                            RedirectWritesStepDetails.decode = function decode(reader, length, error) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
                                 var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.admin.v1.MigrationProgressEvent.RedirectWritesStepDetails();
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
                                     switch (tag >>> 3) {
                                     case 1: {
                                             message.concurrencyMode = reader.int32();
@@ -6418,12 +6460,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    AggregationResult.decode = function decode(reader, length) {
+                    AggregationResult.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AggregationResult(), key, value;
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 2: {
                                     if (message.aggregateProperties === $util.emptyObject)
@@ -6683,12 +6727,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    AggregationResultBatch.decode = function decode(reader, length) {
+                    AggregationResultBatch.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AggregationResultBatch();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.aggregationResults && message.aggregationResults.length))
@@ -6992,12 +7038,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    PartitionId.decode = function decode(reader, length) {
+                    PartitionId.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PartitionId();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 2: {
                                     message.projectId = reader.string();
@@ -7233,12 +7281,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Key.decode = function decode(reader, length) {
+                    Key.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Key();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.partitionId = $root.google.datastore.v1.PartitionId.decode(reader, reader.uint32());
@@ -7506,12 +7556,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        PathElement.decode = function decode(reader, length) {
+                        PathElement.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Key.PathElement();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.kind = reader.string();
@@ -7759,12 +7811,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ArrayValue.decode = function decode(reader, length) {
+                    ArrayValue.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.ArrayValue();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.values && message.values.length))
@@ -8127,12 +8181,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Value.decode = function decode(reader, length) {
+                    Value.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Value();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 11: {
                                     message.nullValue = reader.int32();
@@ -8612,12 +8668,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Entity.decode = function decode(reader, length) {
+                    Entity.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Entity(), key, value;
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.key = $root.google.datastore.v1.Key.decode(reader, reader.uint32());
@@ -8915,12 +8973,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    EntityResult.decode = function decode(reader, length) {
+                    EntityResult.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.EntityResult();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.entity = $root.google.datastore.v1.Entity.decode(reader, reader.uint32());
@@ -9153,6 +9213,7 @@
                      * @property {Uint8Array|null} [endCursor] Query endCursor
                      * @property {number|null} [offset] Query offset
                      * @property {google.protobuf.IInt32Value|null} [limit] Query limit
+                     * @property {google.datastore.v1.IFindNearest|null} [findNearest] Query findNearest
                      */
     
                     /**
@@ -9247,6 +9308,14 @@
                     Query.prototype.limit = null;
     
                     /**
+                     * Query findNearest.
+                     * @member {google.datastore.v1.IFindNearest|null|undefined} findNearest
+                     * @memberof google.datastore.v1.Query
+                     * @instance
+                     */
+                    Query.prototype.findNearest = null;
+    
+                    /**
                      * Creates a new Query instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.Query
@@ -9292,6 +9361,8 @@
                             writer.uint32(/* id 10, wireType 0 =*/80).int32(message.offset);
                         if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
                             $root.google.protobuf.Int32Value.encode(message.limit, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                        if (message.findNearest != null && Object.hasOwnProperty.call(message, "findNearest"))
+                            $root.google.datastore.v1.FindNearest.encode(message.findNearest, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
                         return writer;
                     };
     
@@ -9319,12 +9390,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Query.decode = function decode(reader, length) {
+                    Query.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Query();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 2: {
                                     if (!(message.projection && message.projection.length))
@@ -9368,6 +9441,10 @@
                                 }
                             case 12: {
                                     message.limit = $root.google.protobuf.Int32Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 13: {
+                                    message.findNearest = $root.google.datastore.v1.FindNearest.decode(reader, reader.uint32());
                                     break;
                                 }
                             default:
@@ -9460,6 +9537,11 @@
                             if (error)
                                 return "limit." + error;
                         }
+                        if (message.findNearest != null && message.hasOwnProperty("findNearest")) {
+                            var error = $root.google.datastore.v1.FindNearest.verify(message.findNearest);
+                            if (error)
+                                return "findNearest." + error;
+                        }
                         return null;
                     };
     
@@ -9537,6 +9619,11 @@
                                 throw TypeError(".google.datastore.v1.Query.limit: object expected");
                             message.limit = $root.google.protobuf.Int32Value.fromObject(object.limit);
                         }
+                        if (object.findNearest != null) {
+                            if (typeof object.findNearest !== "object")
+                                throw TypeError(".google.datastore.v1.Query.findNearest: object expected");
+                            message.findNearest = $root.google.datastore.v1.FindNearest.fromObject(object.findNearest);
+                        }
                         return message;
                     };
     
@@ -9577,6 +9664,7 @@
                             }
                             object.offset = 0;
                             object.limit = null;
+                            object.findNearest = null;
                         }
                         if (message.projection && message.projection.length) {
                             object.projection = [];
@@ -9608,6 +9696,8 @@
                             object.offset = message.offset;
                         if (message.limit != null && message.hasOwnProperty("limit"))
                             object.limit = $root.google.protobuf.Int32Value.toObject(message.limit, options);
+                        if (message.findNearest != null && message.hasOwnProperty("findNearest"))
+                            object.findNearest = $root.google.datastore.v1.FindNearest.toObject(message.findNearest, options);
                         return object;
                     };
     
@@ -9752,12 +9842,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    AggregationQuery.decode = function decode(reader, length) {
+                    AggregationQuery.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AggregationQuery();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.nestedQuery = $root.google.datastore.v1.Query.decode(reader, reader.uint32());
@@ -10041,12 +10133,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        Aggregation.decode = function decode(reader, length) {
+                        Aggregation.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AggregationQuery.Aggregation();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.count = $root.google.datastore.v1.AggregationQuery.Aggregation.Count.decode(reader, reader.uint32());
@@ -10312,12 +10406,14 @@
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            Count.decode = function decode(reader, length) {
+                            Count.decode = function decode(reader, length, error) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
                                 var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AggregationQuery.Aggregation.Count();
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
                                     switch (tag >>> 3) {
                                     case 1: {
                                             message.upTo = $root.google.protobuf.Int64Value.decode(reader, reader.uint32());
@@ -10520,12 +10616,14 @@
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            Sum.decode = function decode(reader, length) {
+                            Sum.decode = function decode(reader, length, error) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
                                 var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AggregationQuery.Aggregation.Sum();
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
                                     switch (tag >>> 3) {
                                     case 1: {
                                             message.property = $root.google.datastore.v1.PropertyReference.decode(reader, reader.uint32());
@@ -10728,12 +10826,14 @@
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            Avg.decode = function decode(reader, length) {
+                            Avg.decode = function decode(reader, length, error) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
                                 var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AggregationQuery.Aggregation.Avg();
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
                                     switch (tag >>> 3) {
                                     case 1: {
                                             message.property = $root.google.datastore.v1.PropertyReference.decode(reader, reader.uint32());
@@ -10942,12 +11042,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    KindExpression.decode = function decode(reader, length) {
+                    KindExpression.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.KindExpression();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.name = reader.string();
@@ -11145,12 +11247,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    PropertyReference.decode = function decode(reader, length) {
+                    PropertyReference.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PropertyReference();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 2: {
                                     message.name = reader.string();
@@ -11348,12 +11452,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Projection.decode = function decode(reader, length) {
+                    Projection.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Projection();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.property = $root.google.datastore.v1.PropertyReference.decode(reader, reader.uint32());
@@ -11567,12 +11673,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    PropertyOrder.decode = function decode(reader, length) {
+                    PropertyOrder.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PropertyOrder();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.property = $root.google.datastore.v1.PropertyReference.decode(reader, reader.uint32());
@@ -11853,12 +11961,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Filter.decode = function decode(reader, length) {
+                    Filter.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Filter();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.compositeFilter = $root.google.datastore.v1.CompositeFilter.decode(reader, reader.uint32());
@@ -12103,12 +12213,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    CompositeFilter.decode = function decode(reader, length) {
+                    CompositeFilter.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.CompositeFilter();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.op = reader.int32();
@@ -12400,12 +12512,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    PropertyFilter.decode = function decode(reader, length) {
+                    PropertyFilter.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PropertyFilter();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.property = $root.google.datastore.v1.PropertyReference.decode(reader, reader.uint32());
@@ -12642,6 +12756,394 @@
                     return PropertyFilter;
                 })();
     
+                v1.FindNearest = (function() {
+    
+                    /**
+                     * Properties of a FindNearest.
+                     * @memberof google.datastore.v1
+                     * @interface IFindNearest
+                     * @property {google.datastore.v1.IPropertyReference|null} [vectorProperty] FindNearest vectorProperty
+                     * @property {google.datastore.v1.IValue|null} [queryVector] FindNearest queryVector
+                     * @property {google.datastore.v1.FindNearest.DistanceMeasure|null} [distanceMeasure] FindNearest distanceMeasure
+                     * @property {google.protobuf.IInt32Value|null} [limit] FindNearest limit
+                     * @property {string|null} [distanceResultProperty] FindNearest distanceResultProperty
+                     * @property {google.protobuf.IDoubleValue|null} [distanceThreshold] FindNearest distanceThreshold
+                     */
+    
+                    /**
+                     * Constructs a new FindNearest.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a FindNearest.
+                     * @implements IFindNearest
+                     * @constructor
+                     * @param {google.datastore.v1.IFindNearest=} [properties] Properties to set
+                     */
+                    function FindNearest(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * FindNearest vectorProperty.
+                     * @member {google.datastore.v1.IPropertyReference|null|undefined} vectorProperty
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.vectorProperty = null;
+    
+                    /**
+                     * FindNearest queryVector.
+                     * @member {google.datastore.v1.IValue|null|undefined} queryVector
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.queryVector = null;
+    
+                    /**
+                     * FindNearest distanceMeasure.
+                     * @member {google.datastore.v1.FindNearest.DistanceMeasure} distanceMeasure
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.distanceMeasure = 0;
+    
+                    /**
+                     * FindNearest limit.
+                     * @member {google.protobuf.IInt32Value|null|undefined} limit
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.limit = null;
+    
+                    /**
+                     * FindNearest distanceResultProperty.
+                     * @member {string} distanceResultProperty
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.distanceResultProperty = "";
+    
+                    /**
+                     * FindNearest distanceThreshold.
+                     * @member {google.protobuf.IDoubleValue|null|undefined} distanceThreshold
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     */
+                    FindNearest.prototype.distanceThreshold = null;
+    
+                    /**
+                     * Creates a new FindNearest instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.IFindNearest=} [properties] Properties to set
+                     * @returns {google.datastore.v1.FindNearest} FindNearest instance
+                     */
+                    FindNearest.create = function create(properties) {
+                        return new FindNearest(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified FindNearest message. Does not implicitly {@link google.datastore.v1.FindNearest.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.IFindNearest} message FindNearest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FindNearest.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.vectorProperty != null && Object.hasOwnProperty.call(message, "vectorProperty"))
+                            $root.google.datastore.v1.PropertyReference.encode(message.vectorProperty, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.queryVector != null && Object.hasOwnProperty.call(message, "queryVector"))
+                            $root.google.datastore.v1.Value.encode(message.queryVector, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.distanceMeasure != null && Object.hasOwnProperty.call(message, "distanceMeasure"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.distanceMeasure);
+                        if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
+                            $root.google.protobuf.Int32Value.encode(message.limit, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.distanceResultProperty != null && Object.hasOwnProperty.call(message, "distanceResultProperty"))
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.distanceResultProperty);
+                        if (message.distanceThreshold != null && Object.hasOwnProperty.call(message, "distanceThreshold"))
+                            $root.google.protobuf.DoubleValue.encode(message.distanceThreshold, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified FindNearest message, length delimited. Does not implicitly {@link google.datastore.v1.FindNearest.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.IFindNearest} message FindNearest message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FindNearest.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a FindNearest message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.FindNearest} FindNearest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FindNearest.decode = function decode(reader, length, error) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.FindNearest();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            if (tag === error)
+                                break;
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.vectorProperty = $root.google.datastore.v1.PropertyReference.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.queryVector = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 3: {
+                                    message.distanceMeasure = reader.int32();
+                                    break;
+                                }
+                            case 4: {
+                                    message.limit = $root.google.protobuf.Int32Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 5: {
+                                    message.distanceResultProperty = reader.string();
+                                    break;
+                                }
+                            case 6: {
+                                    message.distanceThreshold = $root.google.protobuf.DoubleValue.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a FindNearest message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.FindNearest} FindNearest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FindNearest.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a FindNearest message.
+                     * @function verify
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    FindNearest.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.vectorProperty != null && message.hasOwnProperty("vectorProperty")) {
+                            var error = $root.google.datastore.v1.PropertyReference.verify(message.vectorProperty);
+                            if (error)
+                                return "vectorProperty." + error;
+                        }
+                        if (message.queryVector != null && message.hasOwnProperty("queryVector")) {
+                            var error = $root.google.datastore.v1.Value.verify(message.queryVector);
+                            if (error)
+                                return "queryVector." + error;
+                        }
+                        if (message.distanceMeasure != null && message.hasOwnProperty("distanceMeasure"))
+                            switch (message.distanceMeasure) {
+                            default:
+                                return "distanceMeasure: enum value expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                                break;
+                            }
+                        if (message.limit != null && message.hasOwnProperty("limit")) {
+                            var error = $root.google.protobuf.Int32Value.verify(message.limit);
+                            if (error)
+                                return "limit." + error;
+                        }
+                        if (message.distanceResultProperty != null && message.hasOwnProperty("distanceResultProperty"))
+                            if (!$util.isString(message.distanceResultProperty))
+                                return "distanceResultProperty: string expected";
+                        if (message.distanceThreshold != null && message.hasOwnProperty("distanceThreshold")) {
+                            var error = $root.google.protobuf.DoubleValue.verify(message.distanceThreshold);
+                            if (error)
+                                return "distanceThreshold." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a FindNearest message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.FindNearest} FindNearest
+                     */
+                    FindNearest.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.FindNearest)
+                            return object;
+                        var message = new $root.google.datastore.v1.FindNearest();
+                        if (object.vectorProperty != null) {
+                            if (typeof object.vectorProperty !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.vectorProperty: object expected");
+                            message.vectorProperty = $root.google.datastore.v1.PropertyReference.fromObject(object.vectorProperty);
+                        }
+                        if (object.queryVector != null) {
+                            if (typeof object.queryVector !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.queryVector: object expected");
+                            message.queryVector = $root.google.datastore.v1.Value.fromObject(object.queryVector);
+                        }
+                        switch (object.distanceMeasure) {
+                        default:
+                            if (typeof object.distanceMeasure === "number") {
+                                message.distanceMeasure = object.distanceMeasure;
+                                break;
+                            }
+                            break;
+                        case "DISTANCE_MEASURE_UNSPECIFIED":
+                        case 0:
+                            message.distanceMeasure = 0;
+                            break;
+                        case "EUCLIDEAN":
+                        case 1:
+                            message.distanceMeasure = 1;
+                            break;
+                        case "COSINE":
+                        case 2:
+                            message.distanceMeasure = 2;
+                            break;
+                        case "DOT_PRODUCT":
+                        case 3:
+                            message.distanceMeasure = 3;
+                            break;
+                        }
+                        if (object.limit != null) {
+                            if (typeof object.limit !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.limit: object expected");
+                            message.limit = $root.google.protobuf.Int32Value.fromObject(object.limit);
+                        }
+                        if (object.distanceResultProperty != null)
+                            message.distanceResultProperty = String(object.distanceResultProperty);
+                        if (object.distanceThreshold != null) {
+                            if (typeof object.distanceThreshold !== "object")
+                                throw TypeError(".google.datastore.v1.FindNearest.distanceThreshold: object expected");
+                            message.distanceThreshold = $root.google.protobuf.DoubleValue.fromObject(object.distanceThreshold);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a FindNearest message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {google.datastore.v1.FindNearest} message FindNearest
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    FindNearest.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.vectorProperty = null;
+                            object.queryVector = null;
+                            object.distanceMeasure = options.enums === String ? "DISTANCE_MEASURE_UNSPECIFIED" : 0;
+                            object.limit = null;
+                            object.distanceResultProperty = "";
+                            object.distanceThreshold = null;
+                        }
+                        if (message.vectorProperty != null && message.hasOwnProperty("vectorProperty"))
+                            object.vectorProperty = $root.google.datastore.v1.PropertyReference.toObject(message.vectorProperty, options);
+                        if (message.queryVector != null && message.hasOwnProperty("queryVector"))
+                            object.queryVector = $root.google.datastore.v1.Value.toObject(message.queryVector, options);
+                        if (message.distanceMeasure != null && message.hasOwnProperty("distanceMeasure"))
+                            object.distanceMeasure = options.enums === String ? $root.google.datastore.v1.FindNearest.DistanceMeasure[message.distanceMeasure] === undefined ? message.distanceMeasure : $root.google.datastore.v1.FindNearest.DistanceMeasure[message.distanceMeasure] : message.distanceMeasure;
+                        if (message.limit != null && message.hasOwnProperty("limit"))
+                            object.limit = $root.google.protobuf.Int32Value.toObject(message.limit, options);
+                        if (message.distanceResultProperty != null && message.hasOwnProperty("distanceResultProperty"))
+                            object.distanceResultProperty = message.distanceResultProperty;
+                        if (message.distanceThreshold != null && message.hasOwnProperty("distanceThreshold"))
+                            object.distanceThreshold = $root.google.protobuf.DoubleValue.toObject(message.distanceThreshold, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this FindNearest to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.FindNearest
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    FindNearest.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for FindNearest
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.FindNearest
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    FindNearest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.FindNearest";
+                    };
+    
+                    /**
+                     * DistanceMeasure enum.
+                     * @name google.datastore.v1.FindNearest.DistanceMeasure
+                     * @enum {number}
+                     * @property {number} DISTANCE_MEASURE_UNSPECIFIED=0 DISTANCE_MEASURE_UNSPECIFIED value
+                     * @property {number} EUCLIDEAN=1 EUCLIDEAN value
+                     * @property {number} COSINE=2 COSINE value
+                     * @property {number} DOT_PRODUCT=3 DOT_PRODUCT value
+                     */
+                    FindNearest.DistanceMeasure = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "DISTANCE_MEASURE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "EUCLIDEAN"] = 1;
+                        values[valuesById[2] = "COSINE"] = 2;
+                        values[valuesById[3] = "DOT_PRODUCT"] = 3;
+                        return values;
+                    })();
+    
+                    return FindNearest;
+                })();
+    
                 v1.GqlQuery = (function() {
     
                     /**
@@ -12766,12 +13268,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    GqlQuery.decode = function decode(reader, length) {
+                    GqlQuery.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.GqlQuery(), key, value;
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.queryString = reader.string();
@@ -13090,12 +13594,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    GqlQueryParameter.decode = function decode(reader, length) {
+                    GqlQueryParameter.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.GqlQueryParameter();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 2: {
                                     message.value = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
@@ -13403,12 +13909,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    QueryResultBatch.decode = function decode(reader, length) {
+                    QueryResultBatch.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.QueryResultBatch();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 6: {
                                     message.skippedResults = reader.int32();
@@ -14176,12 +14684,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    LookupRequest.decode = function decode(reader, length) {
+                    LookupRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.LookupRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -14508,12 +15018,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    LookupResponse.decode = function decode(reader, length) {
+                    LookupResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.LookupResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.found && message.found.length))
@@ -14924,12 +15436,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    RunQueryRequest.decode = function decode(reader, length) {
+                    RunQueryRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RunQueryRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -15288,12 +15802,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    RunQueryResponse.decode = function decode(reader, length) {
+                    RunQueryResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RunQueryResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.batch = $root.google.datastore.v1.QueryResultBatch.decode(reader, reader.uint32());
@@ -15632,12 +16148,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    RunAggregationQueryRequest.decode = function decode(reader, length) {
+                    RunAggregationQueryRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RunAggregationQueryRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -15979,12 +16497,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    RunAggregationQueryResponse.decode = function decode(reader, length) {
+                    RunAggregationQueryResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RunAggregationQueryResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.batch = $root.google.datastore.v1.AggregationResultBatch.decode(reader, reader.uint32());
@@ -16265,12 +16785,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    BeginTransactionRequest.decode = function decode(reader, length) {
+                    BeginTransactionRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.BeginTransactionRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -16498,12 +17020,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    BeginTransactionResponse.decode = function decode(reader, length) {
+                    BeginTransactionResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.BeginTransactionResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.transaction = reader.bytes();
@@ -16732,12 +17256,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    RollbackRequest.decode = function decode(reader, length) {
+                    RollbackRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RollbackRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -16958,12 +17484,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    RollbackResponse.decode = function decode(reader, length) {
+                    RollbackResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.RollbackResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             default:
                                 reader.skipType(tag & 7);
@@ -17215,12 +17743,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    CommitRequest.decode = function decode(reader, length) {
+                    CommitRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.CommitRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -17583,12 +18113,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    CommitResponse.decode = function decode(reader, length) {
+                    CommitResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.CommitResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 3: {
                                     if (!(message.mutationResults && message.mutationResults.length))
@@ -17860,12 +18392,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    AllocateIdsRequest.decode = function decode(reader, length) {
+                    AllocateIdsRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AllocateIdsRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -18110,12 +18644,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    AllocateIdsResponse.decode = function decode(reader, length) {
+                    AllocateIdsResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.AllocateIdsResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.keys && message.keys.length))
@@ -18356,12 +18892,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ReserveIdsRequest.decode = function decode(reader, length) {
+                    ReserveIdsRequest.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.ReserveIdsRequest();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 8: {
                                     message.projectId = reader.string();
@@ -18593,12 +19131,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ReserveIdsResponse.decode = function decode(reader, length) {
+                    ReserveIdsResponse.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.ReserveIdsResponse();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             default:
                                 reader.skipType(tag & 7);
@@ -18706,7 +19246,9 @@
                      * @property {google.datastore.v1.IKey|null} ["delete"] Mutation delete
                      * @property {number|Long|null} [baseVersion] Mutation baseVersion
                      * @property {google.protobuf.ITimestamp|null} [updateTime] Mutation updateTime
+                     * @property {google.datastore.v1.Mutation.ConflictResolutionStrategy|null} [conflictResolutionStrategy] Mutation conflictResolutionStrategy
                      * @property {google.datastore.v1.IPropertyMask|null} [propertyMask] Mutation propertyMask
+                     * @property {Array.<google.datastore.v1.IPropertyTransform>|null} [propertyTransforms] Mutation propertyTransforms
                      */
     
                     /**
@@ -18718,6 +19260,7 @@
                      * @param {google.datastore.v1.IMutation=} [properties] Properties to set
                      */
                     function Mutation(properties) {
+                        this.propertyTransforms = [];
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -18773,12 +19316,28 @@
                     Mutation.prototype.updateTime = null;
     
                     /**
+                     * Mutation conflictResolutionStrategy.
+                     * @member {google.datastore.v1.Mutation.ConflictResolutionStrategy} conflictResolutionStrategy
+                     * @memberof google.datastore.v1.Mutation
+                     * @instance
+                     */
+                    Mutation.prototype.conflictResolutionStrategy = 0;
+    
+                    /**
                      * Mutation propertyMask.
                      * @member {google.datastore.v1.IPropertyMask|null|undefined} propertyMask
                      * @memberof google.datastore.v1.Mutation
                      * @instance
                      */
                     Mutation.prototype.propertyMask = null;
+    
+                    /**
+                     * Mutation propertyTransforms.
+                     * @member {Array.<google.datastore.v1.IPropertyTransform>} propertyTransforms
+                     * @memberof google.datastore.v1.Mutation
+                     * @instance
+                     */
+                    Mutation.prototype.propertyTransforms = $util.emptyArray;
     
                     // OneOf field names bound to virtual getters and setters
                     var $oneOfFields;
@@ -18841,8 +19400,13 @@
                             writer.uint32(/* id 8, wireType 0 =*/64).int64(message.baseVersion);
                         if (message.propertyMask != null && Object.hasOwnProperty.call(message, "propertyMask"))
                             $root.google.datastore.v1.PropertyMask.encode(message.propertyMask, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                        if (message.conflictResolutionStrategy != null && Object.hasOwnProperty.call(message, "conflictResolutionStrategy"))
+                            writer.uint32(/* id 10, wireType 0 =*/80).int32(message.conflictResolutionStrategy);
                         if (message.updateTime != null && Object.hasOwnProperty.call(message, "updateTime"))
                             $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                        if (message.propertyTransforms != null && message.propertyTransforms.length)
+                            for (var i = 0; i < message.propertyTransforms.length; ++i)
+                                $root.google.datastore.v1.PropertyTransform.encode(message.propertyTransforms[i], writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                         return writer;
                     };
     
@@ -18870,12 +19434,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Mutation.decode = function decode(reader, length) {
+                    Mutation.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.Mutation();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 4: {
                                     message.insert = $root.google.datastore.v1.Entity.decode(reader, reader.uint32());
@@ -18901,8 +19467,18 @@
                                     message.updateTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                     break;
                                 }
+                            case 10: {
+                                    message.conflictResolutionStrategy = reader.int32();
+                                    break;
+                                }
                             case 9: {
                                     message.propertyMask = $root.google.datastore.v1.PropertyMask.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 12: {
+                                    if (!(message.propertyTransforms && message.propertyTransforms.length))
+                                        message.propertyTransforms = [];
+                                    message.propertyTransforms.push($root.google.datastore.v1.PropertyTransform.decode(reader, reader.uint32()));
                                     break;
                                 }
                             default:
@@ -18994,10 +19570,28 @@
                                     return "updateTime." + error;
                             }
                         }
+                        if (message.conflictResolutionStrategy != null && message.hasOwnProperty("conflictResolutionStrategy"))
+                            switch (message.conflictResolutionStrategy) {
+                            default:
+                                return "conflictResolutionStrategy: enum value expected";
+                            case 0:
+                            case 1:
+                            case 3:
+                                break;
+                            }
                         if (message.propertyMask != null && message.hasOwnProperty("propertyMask")) {
                             var error = $root.google.datastore.v1.PropertyMask.verify(message.propertyMask);
                             if (error)
                                 return "propertyMask." + error;
+                        }
+                        if (message.propertyTransforms != null && message.hasOwnProperty("propertyTransforms")) {
+                            if (!Array.isArray(message.propertyTransforms))
+                                return "propertyTransforms: array expected";
+                            for (var i = 0; i < message.propertyTransforms.length; ++i) {
+                                var error = $root.google.datastore.v1.PropertyTransform.verify(message.propertyTransforms[i]);
+                                if (error)
+                                    return "propertyTransforms." + error;
+                            }
                         }
                         return null;
                     };
@@ -19048,10 +19642,40 @@
                                 throw TypeError(".google.datastore.v1.Mutation.updateTime: object expected");
                             message.updateTime = $root.google.protobuf.Timestamp.fromObject(object.updateTime);
                         }
+                        switch (object.conflictResolutionStrategy) {
+                        default:
+                            if (typeof object.conflictResolutionStrategy === "number") {
+                                message.conflictResolutionStrategy = object.conflictResolutionStrategy;
+                                break;
+                            }
+                            break;
+                        case "STRATEGY_UNSPECIFIED":
+                        case 0:
+                            message.conflictResolutionStrategy = 0;
+                            break;
+                        case "SERVER_VALUE":
+                        case 1:
+                            message.conflictResolutionStrategy = 1;
+                            break;
+                        case "FAIL":
+                        case 3:
+                            message.conflictResolutionStrategy = 3;
+                            break;
+                        }
                         if (object.propertyMask != null) {
                             if (typeof object.propertyMask !== "object")
                                 throw TypeError(".google.datastore.v1.Mutation.propertyMask: object expected");
                             message.propertyMask = $root.google.datastore.v1.PropertyMask.fromObject(object.propertyMask);
+                        }
+                        if (object.propertyTransforms) {
+                            if (!Array.isArray(object.propertyTransforms))
+                                throw TypeError(".google.datastore.v1.Mutation.propertyTransforms: array expected");
+                            message.propertyTransforms = [];
+                            for (var i = 0; i < object.propertyTransforms.length; ++i) {
+                                if (typeof object.propertyTransforms[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.Mutation.propertyTransforms: object expected");
+                                message.propertyTransforms[i] = $root.google.datastore.v1.PropertyTransform.fromObject(object.propertyTransforms[i]);
+                            }
                         }
                         return message;
                     };
@@ -19069,8 +19693,12 @@
                         if (!options)
                             options = {};
                         var object = {};
-                        if (options.defaults)
+                        if (options.arrays || options.defaults)
+                            object.propertyTransforms = [];
+                        if (options.defaults) {
                             object.propertyMask = null;
+                            object.conflictResolutionStrategy = options.enums === String ? "STRATEGY_UNSPECIFIED" : 0;
+                        }
                         if (message.insert != null && message.hasOwnProperty("insert")) {
                             object.insert = $root.google.datastore.v1.Entity.toObject(message.insert, options);
                             if (options.oneofs)
@@ -19101,10 +19729,17 @@
                         }
                         if (message.propertyMask != null && message.hasOwnProperty("propertyMask"))
                             object.propertyMask = $root.google.datastore.v1.PropertyMask.toObject(message.propertyMask, options);
+                        if (message.conflictResolutionStrategy != null && message.hasOwnProperty("conflictResolutionStrategy"))
+                            object.conflictResolutionStrategy = options.enums === String ? $root.google.datastore.v1.Mutation.ConflictResolutionStrategy[message.conflictResolutionStrategy] === undefined ? message.conflictResolutionStrategy : $root.google.datastore.v1.Mutation.ConflictResolutionStrategy[message.conflictResolutionStrategy] : message.conflictResolutionStrategy;
                         if (message.updateTime != null && message.hasOwnProperty("updateTime")) {
                             object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
                             if (options.oneofs)
                                 object.conflictDetectionStrategy = "updateTime";
+                        }
+                        if (message.propertyTransforms && message.propertyTransforms.length) {
+                            object.propertyTransforms = [];
+                            for (var j = 0; j < message.propertyTransforms.length; ++j)
+                                object.propertyTransforms[j] = $root.google.datastore.v1.PropertyTransform.toObject(message.propertyTransforms[j], options);
                         }
                         return object;
                     };
@@ -19135,7 +19770,478 @@
                         return typeUrlPrefix + "/google.datastore.v1.Mutation";
                     };
     
+                    /**
+                     * ConflictResolutionStrategy enum.
+                     * @name google.datastore.v1.Mutation.ConflictResolutionStrategy
+                     * @enum {number}
+                     * @property {number} STRATEGY_UNSPECIFIED=0 STRATEGY_UNSPECIFIED value
+                     * @property {number} SERVER_VALUE=1 SERVER_VALUE value
+                     * @property {number} FAIL=3 FAIL value
+                     */
+                    Mutation.ConflictResolutionStrategy = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "STRATEGY_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "SERVER_VALUE"] = 1;
+                        values[valuesById[3] = "FAIL"] = 3;
+                        return values;
+                    })();
+    
                     return Mutation;
+                })();
+    
+                v1.PropertyTransform = (function() {
+    
+                    /**
+                     * Properties of a PropertyTransform.
+                     * @memberof google.datastore.v1
+                     * @interface IPropertyTransform
+                     * @property {string|null} [property] PropertyTransform property
+                     * @property {google.datastore.v1.PropertyTransform.ServerValue|null} [setToServerValue] PropertyTransform setToServerValue
+                     * @property {google.datastore.v1.IValue|null} [increment] PropertyTransform increment
+                     * @property {google.datastore.v1.IValue|null} [maximum] PropertyTransform maximum
+                     * @property {google.datastore.v1.IValue|null} [minimum] PropertyTransform minimum
+                     * @property {google.datastore.v1.IArrayValue|null} [appendMissingElements] PropertyTransform appendMissingElements
+                     * @property {google.datastore.v1.IArrayValue|null} [removeAllFromArray] PropertyTransform removeAllFromArray
+                     */
+    
+                    /**
+                     * Constructs a new PropertyTransform.
+                     * @memberof google.datastore.v1
+                     * @classdesc Represents a PropertyTransform.
+                     * @implements IPropertyTransform
+                     * @constructor
+                     * @param {google.datastore.v1.IPropertyTransform=} [properties] Properties to set
+                     */
+                    function PropertyTransform(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * PropertyTransform property.
+                     * @member {string} property
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.property = "";
+    
+                    /**
+                     * PropertyTransform setToServerValue.
+                     * @member {google.datastore.v1.PropertyTransform.ServerValue|null|undefined} setToServerValue
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.setToServerValue = null;
+    
+                    /**
+                     * PropertyTransform increment.
+                     * @member {google.datastore.v1.IValue|null|undefined} increment
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.increment = null;
+    
+                    /**
+                     * PropertyTransform maximum.
+                     * @member {google.datastore.v1.IValue|null|undefined} maximum
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.maximum = null;
+    
+                    /**
+                     * PropertyTransform minimum.
+                     * @member {google.datastore.v1.IValue|null|undefined} minimum
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.minimum = null;
+    
+                    /**
+                     * PropertyTransform appendMissingElements.
+                     * @member {google.datastore.v1.IArrayValue|null|undefined} appendMissingElements
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.appendMissingElements = null;
+    
+                    /**
+                     * PropertyTransform removeAllFromArray.
+                     * @member {google.datastore.v1.IArrayValue|null|undefined} removeAllFromArray
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    PropertyTransform.prototype.removeAllFromArray = null;
+    
+                    // OneOf field names bound to virtual getters and setters
+                    var $oneOfFields;
+    
+                    /**
+                     * PropertyTransform transformType.
+                     * @member {"setToServerValue"|"increment"|"maximum"|"minimum"|"appendMissingElements"|"removeAllFromArray"|undefined} transformType
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     */
+                    Object.defineProperty(PropertyTransform.prototype, "transformType", {
+                        get: $util.oneOfGetter($oneOfFields = ["setToServerValue", "increment", "maximum", "minimum", "appendMissingElements", "removeAllFromArray"]),
+                        set: $util.oneOfSetter($oneOfFields)
+                    });
+    
+                    /**
+                     * Creates a new PropertyTransform instance using the specified properties.
+                     * @function create
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.IPropertyTransform=} [properties] Properties to set
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform instance
+                     */
+                    PropertyTransform.create = function create(properties) {
+                        return new PropertyTransform(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified PropertyTransform message. Does not implicitly {@link google.datastore.v1.PropertyTransform.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.IPropertyTransform} message PropertyTransform message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    PropertyTransform.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.property != null && Object.hasOwnProperty.call(message, "property"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).string(message.property);
+                        if (message.setToServerValue != null && Object.hasOwnProperty.call(message, "setToServerValue"))
+                            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.setToServerValue);
+                        if (message.increment != null && Object.hasOwnProperty.call(message, "increment"))
+                            $root.google.datastore.v1.Value.encode(message.increment, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.maximum != null && Object.hasOwnProperty.call(message, "maximum"))
+                            $root.google.datastore.v1.Value.encode(message.maximum, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        if (message.minimum != null && Object.hasOwnProperty.call(message, "minimum"))
+                            $root.google.datastore.v1.Value.encode(message.minimum, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                        if (message.appendMissingElements != null && Object.hasOwnProperty.call(message, "appendMissingElements"))
+                            $root.google.datastore.v1.ArrayValue.encode(message.appendMissingElements, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                        if (message.removeAllFromArray != null && Object.hasOwnProperty.call(message, "removeAllFromArray"))
+                            $root.google.datastore.v1.ArrayValue.encode(message.removeAllFromArray, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified PropertyTransform message, length delimited. Does not implicitly {@link google.datastore.v1.PropertyTransform.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.IPropertyTransform} message PropertyTransform message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    PropertyTransform.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a PropertyTransform message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    PropertyTransform.decode = function decode(reader, length, error) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PropertyTransform();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            if (tag === error)
+                                break;
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.property = reader.string();
+                                    break;
+                                }
+                            case 2: {
+                                    message.setToServerValue = reader.int32();
+                                    break;
+                                }
+                            case 3: {
+                                    message.increment = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 4: {
+                                    message.maximum = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 5: {
+                                    message.minimum = $root.google.datastore.v1.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 6: {
+                                    message.appendMissingElements = $root.google.datastore.v1.ArrayValue.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 7: {
+                                    message.removeAllFromArray = $root.google.datastore.v1.ArrayValue.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a PropertyTransform message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    PropertyTransform.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a PropertyTransform message.
+                     * @function verify
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    PropertyTransform.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        var properties = {};
+                        if (message.property != null && message.hasOwnProperty("property"))
+                            if (!$util.isString(message.property))
+                                return "property: string expected";
+                        if (message.setToServerValue != null && message.hasOwnProperty("setToServerValue")) {
+                            properties.transformType = 1;
+                            switch (message.setToServerValue) {
+                            default:
+                                return "setToServerValue: enum value expected";
+                            case 0:
+                            case 1:
+                                break;
+                            }
+                        }
+                        if (message.increment != null && message.hasOwnProperty("increment")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.Value.verify(message.increment);
+                                if (error)
+                                    return "increment." + error;
+                            }
+                        }
+                        if (message.maximum != null && message.hasOwnProperty("maximum")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.Value.verify(message.maximum);
+                                if (error)
+                                    return "maximum." + error;
+                            }
+                        }
+                        if (message.minimum != null && message.hasOwnProperty("minimum")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.Value.verify(message.minimum);
+                                if (error)
+                                    return "minimum." + error;
+                            }
+                        }
+                        if (message.appendMissingElements != null && message.hasOwnProperty("appendMissingElements")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.ArrayValue.verify(message.appendMissingElements);
+                                if (error)
+                                    return "appendMissingElements." + error;
+                            }
+                        }
+                        if (message.removeAllFromArray != null && message.hasOwnProperty("removeAllFromArray")) {
+                            if (properties.transformType === 1)
+                                return "transformType: multiple values";
+                            properties.transformType = 1;
+                            {
+                                var error = $root.google.datastore.v1.ArrayValue.verify(message.removeAllFromArray);
+                                if (error)
+                                    return "removeAllFromArray." + error;
+                            }
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a PropertyTransform message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.datastore.v1.PropertyTransform} PropertyTransform
+                     */
+                    PropertyTransform.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.datastore.v1.PropertyTransform)
+                            return object;
+                        var message = new $root.google.datastore.v1.PropertyTransform();
+                        if (object.property != null)
+                            message.property = String(object.property);
+                        switch (object.setToServerValue) {
+                        default:
+                            if (typeof object.setToServerValue === "number") {
+                                message.setToServerValue = object.setToServerValue;
+                                break;
+                            }
+                            break;
+                        case "SERVER_VALUE_UNSPECIFIED":
+                        case 0:
+                            message.setToServerValue = 0;
+                            break;
+                        case "REQUEST_TIME":
+                        case 1:
+                            message.setToServerValue = 1;
+                            break;
+                        }
+                        if (object.increment != null) {
+                            if (typeof object.increment !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.increment: object expected");
+                            message.increment = $root.google.datastore.v1.Value.fromObject(object.increment);
+                        }
+                        if (object.maximum != null) {
+                            if (typeof object.maximum !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.maximum: object expected");
+                            message.maximum = $root.google.datastore.v1.Value.fromObject(object.maximum);
+                        }
+                        if (object.minimum != null) {
+                            if (typeof object.minimum !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.minimum: object expected");
+                            message.minimum = $root.google.datastore.v1.Value.fromObject(object.minimum);
+                        }
+                        if (object.appendMissingElements != null) {
+                            if (typeof object.appendMissingElements !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.appendMissingElements: object expected");
+                            message.appendMissingElements = $root.google.datastore.v1.ArrayValue.fromObject(object.appendMissingElements);
+                        }
+                        if (object.removeAllFromArray != null) {
+                            if (typeof object.removeAllFromArray !== "object")
+                                throw TypeError(".google.datastore.v1.PropertyTransform.removeAllFromArray: object expected");
+                            message.removeAllFromArray = $root.google.datastore.v1.ArrayValue.fromObject(object.removeAllFromArray);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a PropertyTransform message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {google.datastore.v1.PropertyTransform} message PropertyTransform
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    PropertyTransform.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults)
+                            object.property = "";
+                        if (message.property != null && message.hasOwnProperty("property"))
+                            object.property = message.property;
+                        if (message.setToServerValue != null && message.hasOwnProperty("setToServerValue")) {
+                            object.setToServerValue = options.enums === String ? $root.google.datastore.v1.PropertyTransform.ServerValue[message.setToServerValue] === undefined ? message.setToServerValue : $root.google.datastore.v1.PropertyTransform.ServerValue[message.setToServerValue] : message.setToServerValue;
+                            if (options.oneofs)
+                                object.transformType = "setToServerValue";
+                        }
+                        if (message.increment != null && message.hasOwnProperty("increment")) {
+                            object.increment = $root.google.datastore.v1.Value.toObject(message.increment, options);
+                            if (options.oneofs)
+                                object.transformType = "increment";
+                        }
+                        if (message.maximum != null && message.hasOwnProperty("maximum")) {
+                            object.maximum = $root.google.datastore.v1.Value.toObject(message.maximum, options);
+                            if (options.oneofs)
+                                object.transformType = "maximum";
+                        }
+                        if (message.minimum != null && message.hasOwnProperty("minimum")) {
+                            object.minimum = $root.google.datastore.v1.Value.toObject(message.minimum, options);
+                            if (options.oneofs)
+                                object.transformType = "minimum";
+                        }
+                        if (message.appendMissingElements != null && message.hasOwnProperty("appendMissingElements")) {
+                            object.appendMissingElements = $root.google.datastore.v1.ArrayValue.toObject(message.appendMissingElements, options);
+                            if (options.oneofs)
+                                object.transformType = "appendMissingElements";
+                        }
+                        if (message.removeAllFromArray != null && message.hasOwnProperty("removeAllFromArray")) {
+                            object.removeAllFromArray = $root.google.datastore.v1.ArrayValue.toObject(message.removeAllFromArray, options);
+                            if (options.oneofs)
+                                object.transformType = "removeAllFromArray";
+                        }
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this PropertyTransform to JSON.
+                     * @function toJSON
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    PropertyTransform.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for PropertyTransform
+                     * @function getTypeUrl
+                     * @memberof google.datastore.v1.PropertyTransform
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    PropertyTransform.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.datastore.v1.PropertyTransform";
+                    };
+    
+                    /**
+                     * ServerValue enum.
+                     * @name google.datastore.v1.PropertyTransform.ServerValue
+                     * @enum {number}
+                     * @property {number} SERVER_VALUE_UNSPECIFIED=0 SERVER_VALUE_UNSPECIFIED value
+                     * @property {number} REQUEST_TIME=1 REQUEST_TIME value
+                     */
+                    PropertyTransform.ServerValue = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "SERVER_VALUE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "REQUEST_TIME"] = 1;
+                        return values;
+                    })();
+    
+                    return PropertyTransform;
                 })();
     
                 v1.MutationResult = (function() {
@@ -19149,6 +20255,7 @@
                      * @property {google.protobuf.ITimestamp|null} [createTime] MutationResult createTime
                      * @property {google.protobuf.ITimestamp|null} [updateTime] MutationResult updateTime
                      * @property {boolean|null} [conflictDetected] MutationResult conflictDetected
+                     * @property {Array.<google.datastore.v1.IValue>|null} [transformResults] MutationResult transformResults
                      */
     
                     /**
@@ -19160,6 +20267,7 @@
                      * @param {google.datastore.v1.IMutationResult=} [properties] Properties to set
                      */
                     function MutationResult(properties) {
+                        this.transformResults = [];
                         if (properties)
                             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                 if (properties[keys[i]] != null)
@@ -19207,6 +20315,14 @@
                     MutationResult.prototype.conflictDetected = false;
     
                     /**
+                     * MutationResult transformResults.
+                     * @member {Array.<google.datastore.v1.IValue>} transformResults
+                     * @memberof google.datastore.v1.MutationResult
+                     * @instance
+                     */
+                    MutationResult.prototype.transformResults = $util.emptyArray;
+    
+                    /**
                      * Creates a new MutationResult instance using the specified properties.
                      * @function create
                      * @memberof google.datastore.v1.MutationResult
@@ -19240,6 +20356,9 @@
                             $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
                         if (message.createTime != null && Object.hasOwnProperty.call(message, "createTime"))
                             $root.google.protobuf.Timestamp.encode(message.createTime, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                        if (message.transformResults != null && message.transformResults.length)
+                            for (var i = 0; i < message.transformResults.length; ++i)
+                                $root.google.datastore.v1.Value.encode(message.transformResults[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                         return writer;
                     };
     
@@ -19267,12 +20386,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    MutationResult.decode = function decode(reader, length) {
+                    MutationResult.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.MutationResult();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 3: {
                                     message.key = $root.google.datastore.v1.Key.decode(reader, reader.uint32());
@@ -19292,6 +20413,12 @@
                                 }
                             case 5: {
                                     message.conflictDetected = reader.bool();
+                                    break;
+                                }
+                            case 8: {
+                                    if (!(message.transformResults && message.transformResults.length))
+                                        message.transformResults = [];
+                                    message.transformResults.push($root.google.datastore.v1.Value.decode(reader, reader.uint32()));
                                     break;
                                 }
                             default:
@@ -19350,6 +20477,15 @@
                         if (message.conflictDetected != null && message.hasOwnProperty("conflictDetected"))
                             if (typeof message.conflictDetected !== "boolean")
                                 return "conflictDetected: boolean expected";
+                        if (message.transformResults != null && message.hasOwnProperty("transformResults")) {
+                            if (!Array.isArray(message.transformResults))
+                                return "transformResults: array expected";
+                            for (var i = 0; i < message.transformResults.length; ++i) {
+                                var error = $root.google.datastore.v1.Value.verify(message.transformResults[i]);
+                                if (error)
+                                    return "transformResults." + error;
+                            }
+                        }
                         return null;
                     };
     
@@ -19391,6 +20527,16 @@
                         }
                         if (object.conflictDetected != null)
                             message.conflictDetected = Boolean(object.conflictDetected);
+                        if (object.transformResults) {
+                            if (!Array.isArray(object.transformResults))
+                                throw TypeError(".google.datastore.v1.MutationResult.transformResults: array expected");
+                            message.transformResults = [];
+                            for (var i = 0; i < object.transformResults.length; ++i) {
+                                if (typeof object.transformResults[i] !== "object")
+                                    throw TypeError(".google.datastore.v1.MutationResult.transformResults: object expected");
+                                message.transformResults[i] = $root.google.datastore.v1.Value.fromObject(object.transformResults[i]);
+                            }
+                        }
                         return message;
                     };
     
@@ -19407,6 +20553,8 @@
                         if (!options)
                             options = {};
                         var object = {};
+                        if (options.arrays || options.defaults)
+                            object.transformResults = [];
                         if (options.defaults) {
                             object.key = null;
                             if ($util.Long) {
@@ -19431,6 +20579,11 @@
                             object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
                         if (message.createTime != null && message.hasOwnProperty("createTime"))
                             object.createTime = $root.google.protobuf.Timestamp.toObject(message.createTime, options);
+                        if (message.transformResults && message.transformResults.length) {
+                            object.transformResults = [];
+                            for (var j = 0; j < message.transformResults.length; ++j)
+                                object.transformResults[j] = $root.google.datastore.v1.Value.toObject(message.transformResults[j], options);
+                        }
                         return object;
                     };
     
@@ -19550,12 +20703,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    PropertyMask.decode = function decode(reader, length) {
+                    PropertyMask.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PropertyMask();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.paths && message.paths.length))
@@ -19814,12 +20969,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ReadOptions.decode = function decode(reader, length) {
+                    ReadOptions.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.ReadOptions();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.readConsistency = reader.int32();
@@ -20155,12 +21312,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    TransactionOptions.decode = function decode(reader, length) {
+                    TransactionOptions.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.TransactionOptions();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.readWrite = $root.google.datastore.v1.TransactionOptions.ReadWrite.decode(reader, reader.uint32());
@@ -20389,12 +21548,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ReadWrite.decode = function decode(reader, length) {
+                        ReadWrite.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.TransactionOptions.ReadWrite();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.previousTransaction = reader.bytes();
@@ -20601,12 +21762,14 @@
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        ReadOnly.decode = function decode(reader, length) {
+                        ReadOnly.decode = function decode(reader, length, error) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
                             var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.TransactionOptions.ReadOnly();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
                                 switch (tag >>> 3) {
                                 case 1: {
                                         message.readTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
@@ -20812,12 +21975,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ExplainOptions.decode = function decode(reader, length) {
+                    ExplainOptions.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.ExplainOptions();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.analyze = reader.bool();
@@ -21026,12 +22191,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ExplainMetrics.decode = function decode(reader, length) {
+                    ExplainMetrics.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.ExplainMetrics();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.planSummary = $root.google.datastore.v1.PlanSummary.decode(reader, reader.uint32());
@@ -21254,12 +22421,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    PlanSummary.decode = function decode(reader, length) {
+                    PlanSummary.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.PlanSummary();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.indexesUsed && message.indexesUsed.length))
@@ -21509,12 +22678,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ExecutionStats.decode = function decode(reader, length) {
+                    ExecutionStats.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.datastore.v1.ExecutionStats();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.resultsReturned = reader.int64();
@@ -21815,12 +22986,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Http.decode = function decode(reader, length) {
+                Http.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.Http();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (!(message.rules && message.rules.length))
@@ -22165,12 +23338,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                HttpRule.decode = function decode(reader, length) {
+                HttpRule.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.HttpRule();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.selector = reader.string();
@@ -22549,12 +23724,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                CustomHttpPattern.decode = function decode(reader, length) {
+                CustomHttpPattern.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CustomHttpPattern();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.kind = reader.string();
@@ -22781,12 +23958,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                CommonLanguageSettings.decode = function decode(reader, length) {
+                CommonLanguageSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CommonLanguageSettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.referenceDocsUri = reader.string();
@@ -23150,12 +24329,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                ClientLibrarySettings.decode = function decode(reader, length) {
+                ClientLibrarySettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.ClientLibrarySettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.version = reader.string();
@@ -23679,12 +24860,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Publishing.decode = function decode(reader, length) {
+                Publishing.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.Publishing();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 2: {
                                 if (!(message.methodSettings && message.methodSettings.length))
@@ -24130,12 +25313,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                JavaSettings.decode = function decode(reader, length) {
+                JavaSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.JavaSettings(), key, value;
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.libraryPackage = reader.string();
@@ -24397,12 +25582,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                CppSettings.decode = function decode(reader, length) {
+                CppSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CppSettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
@@ -24605,12 +25792,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                PhpSettings.decode = function decode(reader, length) {
+                PhpSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PhpSettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
@@ -24813,12 +26002,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                PythonSettings.decode = function decode(reader, length) {
+                PythonSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PythonSettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
@@ -25021,12 +26212,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                NodeSettings.decode = function decode(reader, length) {
+                NodeSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.NodeSettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
@@ -25294,12 +26487,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                DotnetSettings.decode = function decode(reader, length) {
+                DotnetSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.DotnetSettings(), key, value;
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
@@ -25673,12 +26868,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                RubySettings.decode = function decode(reader, length) {
+                RubySettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.RubySettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
@@ -25881,12 +27078,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                GoSettings.decode = function decode(reader, length) {
+                GoSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.GoSettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
@@ -26113,12 +27312,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                MethodSettings.decode = function decode(reader, length) {
+                MethodSettings.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.selector = reader.string();
@@ -26391,12 +27592,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    LongRunning.decode = function decode(reader, length) {
+                    LongRunning.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings.LongRunning();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.initialPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
@@ -26747,12 +27950,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                RoutingRule.decode = function decode(reader, length) {
+                RoutingRule.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.RoutingRule();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 2: {
                                 if (!(message.routingParameters && message.routingParameters.length))
@@ -26980,12 +28185,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                RoutingParameter.decode = function decode(reader, length) {
+                RoutingParameter.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.RoutingParameter();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.field = reader.string();
@@ -27210,12 +28417,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FileDescriptorSet.decode = function decode(reader, length) {
+                FileDescriptorSet.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FileDescriptorSet();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (!(message.file && message.file.length))
@@ -27610,12 +28819,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FileDescriptorProto.decode = function decode(reader, length) {
+                FileDescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FileDescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -28277,12 +29488,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                DescriptorProto.decode = function decode(reader, length) {
+                DescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.DescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -28762,12 +29975,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ExtensionRange.decode = function decode(reader, length) {
+                    ExtensionRange.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.DescriptorProto.ExtensionRange();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.start = reader.int32();
@@ -29006,12 +30221,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    ReservedRange.decode = function decode(reader, length) {
+                    ReservedRange.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.DescriptorProto.ReservedRange();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.start = reader.int32();
@@ -29262,12 +30479,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                ExtensionRangeOptions.decode = function decode(reader, length) {
+                ExtensionRangeOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ExtensionRangeOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 999: {
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
@@ -29607,12 +30826,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Declaration.decode = function decode(reader, length) {
+                    Declaration.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.number = reader.int32();
@@ -29986,12 +31207,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FieldDescriptorProto.decode = function decode(reader, length) {
+                FieldDescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FieldDescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -30511,12 +31734,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                OneofDescriptorProto.decode = function decode(reader, length) {
+                OneofDescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.OneofDescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -30782,12 +32007,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                EnumDescriptorProto.decode = function decode(reader, length) {
+                EnumDescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.EnumDescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -31101,12 +32328,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    EnumReservedRange.decode = function decode(reader, length) {
+                    EnumReservedRange.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.EnumDescriptorProto.EnumReservedRange();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.start = reader.int32();
@@ -31342,12 +32571,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                EnumValueDescriptorProto.decode = function decode(reader, length) {
+                EnumValueDescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.EnumValueDescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -31599,12 +32830,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                ServiceDescriptorProto.decode = function decode(reader, length) {
+                ServiceDescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ServiceDescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -31907,12 +33140,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                MethodDescriptorProto.decode = function decode(reader, length) {
+                MethodDescriptorProto.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.MethodDescriptorProto();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -32398,12 +33633,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FileOptions.decode = function decode(reader, length) {
+                FileOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FileOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.javaPackage = reader.string();
@@ -32975,12 +34212,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                MessageOptions.decode = function decode(reader, length) {
+                MessageOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.MessageOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.messageSetWireFormat = reader.bool();
@@ -33427,12 +34666,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FieldOptions.decode = function decode(reader, length) {
+                FieldOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FieldOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.ctype = reader.int32();
@@ -34141,12 +35382,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    EditionDefault.decode = function decode(reader, length) {
+                    EditionDefault.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FieldOptions.EditionDefault();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 3: {
                                     message.edition = reader.int32();
@@ -34437,12 +35680,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                OneofOptions.decode = function decode(reader, length) {
+                OneofOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.OneofOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
@@ -34723,12 +35968,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                EnumOptions.decode = function decode(reader, length) {
+                EnumOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.EnumOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 2: {
                                 message.allowAlias = reader.bool();
@@ -35035,12 +36282,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                EnumValueOptions.decode = function decode(reader, length) {
+                EnumValueOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.EnumValueOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.deprecated = reader.bool();
@@ -35357,12 +36606,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                ServiceOptions.decode = function decode(reader, length) {
+                ServiceOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ServiceOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 34: {
                                 message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
@@ -35727,12 +36978,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                MethodOptions.decode = function decode(reader, length) {
+                MethodOptions.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.MethodOptions();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 33: {
                                 message.deprecated = reader.bool();
@@ -36178,12 +37431,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                UninterpretedOption.decode = function decode(reader, length) {
+                UninterpretedOption.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.UninterpretedOption();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 2: {
                                 if (!(message.name && message.name.length))
@@ -36517,12 +37772,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    NamePart.decode = function decode(reader, length) {
+                    NamePart.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.UninterpretedOption.NamePart();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     message.namePart = reader.string();
@@ -36793,12 +38050,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FeatureSet.decode = function decode(reader, length) {
+                FeatureSet.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSet();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.fieldPresence = reader.int32();
@@ -37328,12 +38587,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FeatureSetDefaults.decode = function decode(reader, length) {
+                FeatureSetDefaults.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (!(message.defaults && message.defaults.length))
@@ -37712,12 +38973,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    FeatureSetEditionDefault.decode = function decode(reader, length) {
+                    FeatureSetEditionDefault.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 3: {
                                     message.edition = reader.int32();
@@ -38002,12 +39265,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                SourceCodeInfo.decode = function decode(reader, length) {
+                SourceCodeInfo.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.SourceCodeInfo();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (!(message.location && message.location.length))
@@ -38277,12 +39542,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Location.decode = function decode(reader, length) {
+                    Location.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.SourceCodeInfo.Location();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.path && message.path.length))
@@ -38588,12 +39855,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                GeneratedCodeInfo.decode = function decode(reader, length) {
+                GeneratedCodeInfo.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.GeneratedCodeInfo();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (!(message.annotation && message.annotation.length))
@@ -38856,12 +40125,14 @@
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    Annotation.decode = function decode(reader, length) {
+                    Annotation.decode = function decode(reader, length, error) {
                         if (!(reader instanceof $Reader))
                             reader = $Reader.create(reader);
                         var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.GeneratedCodeInfo.Annotation();
                         while (reader.pos < end) {
                             var tag = reader.uint32();
+                            if (tag === error)
+                                break;
                             switch (tag >>> 3) {
                             case 1: {
                                     if (!(message.path && message.path.length))
@@ -39182,12 +40453,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Duration.decode = function decode(reader, length) {
+                Duration.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Duration();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.seconds = reader.int64();
@@ -39423,12 +40696,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Any.decode = function decode(reader, length) {
+                Any.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Any();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.type_url = reader.string();
@@ -39637,12 +40912,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Empty.decode = function decode(reader, length) {
+                Empty.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Empty();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         default:
                             reader.skipType(tag & 7);
@@ -39834,12 +41111,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Timestamp.decode = function decode(reader, length) {
+                Timestamp.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Timestamp();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.seconds = reader.int64();
@@ -40068,12 +41347,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Struct.decode = function decode(reader, length) {
+                Struct.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Struct(), key, value;
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (message.fields === $util.emptyObject)
@@ -40378,12 +41659,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Value.decode = function decode(reader, length) {
+                Value.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Value();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.nullValue = reader.int32();
@@ -40715,12 +41998,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                ListValue.decode = function decode(reader, length) {
+                ListValue.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ListValue();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (!(message.values && message.values.length))
@@ -40937,12 +42222,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                DoubleValue.decode = function decode(reader, length) {
+                DoubleValue.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.DoubleValue();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.double();
@@ -41140,12 +42427,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                FloatValue.decode = function decode(reader, length) {
+                FloatValue.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FloatValue();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.float();
@@ -41343,12 +42632,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Int64Value.decode = function decode(reader, length) {
+                Int64Value.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Int64Value();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.int64();
@@ -41560,12 +42851,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                UInt64Value.decode = function decode(reader, length) {
+                UInt64Value.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.UInt64Value();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.uint64();
@@ -41777,12 +43070,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Int32Value.decode = function decode(reader, length) {
+                Int32Value.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Int32Value();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.int32();
@@ -41980,12 +43275,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                UInt32Value.decode = function decode(reader, length) {
+                UInt32Value.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.UInt32Value();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.uint32();
@@ -42183,12 +43480,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                BoolValue.decode = function decode(reader, length) {
+                BoolValue.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.BoolValue();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.bool();
@@ -42386,12 +43685,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                StringValue.decode = function decode(reader, length) {
+                StringValue.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.StringValue();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.string();
@@ -42589,12 +43890,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                BytesValue.decode = function decode(reader, length) {
+                BytesValue.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.BytesValue();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.value = reader.bytes();
@@ -43071,12 +44374,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Operation.decode = function decode(reader, length) {
+                Operation.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.Operation();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -43351,12 +44656,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                GetOperationRequest.decode = function decode(reader, length) {
+                GetOperationRequest.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.GetOperationRequest();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -43587,12 +44894,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                ListOperationsRequest.decode = function decode(reader, length) {
+                ListOperationsRequest.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.ListOperationsRequest();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 4: {
                                 message.name = reader.string();
@@ -43840,12 +45149,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                ListOperationsResponse.decode = function decode(reader, length) {
+                ListOperationsResponse.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.ListOperationsResponse();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 if (!(message.operations && message.operations.length))
@@ -44075,12 +45386,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                CancelOperationRequest.decode = function decode(reader, length) {
+                CancelOperationRequest.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.CancelOperationRequest();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -44278,12 +45591,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                DeleteOperationRequest.decode = function decode(reader, length) {
+                DeleteOperationRequest.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.DeleteOperationRequest();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -44492,12 +45807,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                WaitOperationRequest.decode = function decode(reader, length) {
+                WaitOperationRequest.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.WaitOperationRequest();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.name = reader.string();
@@ -44724,12 +46041,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                OperationInfo.decode = function decode(reader, length) {
+                OperationInfo.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.longrunning.OperationInfo();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.responseType = reader.string();
@@ -44976,12 +46295,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                Status.decode = function decode(reader, length) {
+                Status.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.rpc.Status();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.code = reader.int32();
@@ -45247,12 +46568,14 @@
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                LatLng.decode = function decode(reader, length) {
+                LatLng.decode = function decode(reader, length, error) {
                     if (!(reader instanceof $Reader))
                         reader = $Reader.create(reader);
                     var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.type.LatLng();
                     while (reader.pos < end) {
                         var tag = reader.uint32();
+                        if (tag === error)
+                            break;
                         switch (tag >>> 3) {
                         case 1: {
                                 message.latitude = reader.double();

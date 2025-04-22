@@ -67,6 +67,9 @@ import {Transaction} from './transaction';
 import {promisifyAll} from '@google-cloud/promisify';
 import {google} from '../protos/protos';
 import {AggregateQuery} from './aggregate';
+import {SaveEntity} from './interfaces/save';
+import {extendExcludeFromIndexes} from './utils/entity/extendExcludeFromIndexes';
+import {buildEntityProto} from './utils/entity/buildEntityProto';
 
 const {grpc} = new GrpcClient();
 
@@ -132,7 +135,7 @@ const urlSafeKey = new entity.URLSafeKey();
  *
  * <h4>The Datastore Emulator</h4>
  *
- * Make sure you have the <a href="https://cloud.google.com/sdk/downloads">
+ * Make sure you have the <a href="https://cloud.google.com/sdk/docs/install">
  * gcloud SDK installed</a>, then run:
  *
  * <pre>
@@ -1076,7 +1079,7 @@ class Datastore extends DatastoreRequest {
     gaxOptionsOrCallback?: CallOptions | SaveCallback,
     cb?: SaveCallback
   ): void | Promise<SaveResponse> {
-    entities = arrify(entities);
+    entities = arrify(entities) as SaveEntity[];
     const gaxOptions =
       typeof gaxOptionsOrCallback === 'object' ? gaxOptionsOrCallback : {};
     const callback =
@@ -1096,7 +1099,6 @@ class Datastore extends DatastoreRequest {
       .map(DatastoreRequest.prepareEntityObject_)
       .forEach((entityObject: Entity, index: number) => {
         const mutation: Mutation = {};
-        let entityProto: EntityProto = {};
         let method = 'upsert';
 
         if (entityObject.method) {
@@ -1109,55 +1111,12 @@ class Datastore extends DatastoreRequest {
           }
         }
 
-        if (entityObject.excludeLargeProperties) {
-          entityObject.excludeFromIndexes = entity.findLargeProperties_(
-            entityObject.data,
-            '',
-            entityObject.excludeFromIndexes
-          );
-        }
-
         if (!entity.isKeyComplete(entityObject.key)) {
           insertIndexes[index] = true;
         }
 
-        // @TODO remove in @google-cloud/datastore@2.0.0
-        // This was replaced with a more efficient mechanism in the top-level
-        // `excludeFromIndexes` option.
-        if (Array.isArray(entityObject.data)) {
-          entityProto.properties = entityObject.data.reduce(
-            (
-              acc: EntityProtoReduceAccumulator,
-              data: EntityProtoReduceData
-            ) => {
-              const value = entity.encodeValue(
-                data.value,
-                data.name.toString()
-              );
-
-              if (typeof data.excludeFromIndexes === 'boolean') {
-                const excluded = data.excludeFromIndexes;
-                let values = value.arrayValue && value.arrayValue.values;
-
-                if (values) {
-                  values = values.map((x: ValueProto) => {
-                    x.excludeFromIndexes = excluded;
-                    return x;
-                  });
-                } else {
-                  value.excludeFromIndexes = data.excludeFromIndexes;
-                }
-              }
-
-              acc[data.name] = value;
-
-              return acc;
-            },
-            {}
-          );
-        } else {
-          entityProto = entity.entityToEntityProto(entityObject);
-        }
+        extendExcludeFromIndexes(entityObject);
+        const entityProto = buildEntityProto(entityObject);
 
         entityProto.key = entity.keyToKeyProto(entityObject.key);
 
@@ -1285,6 +1244,12 @@ class Datastore extends DatastoreRequest {
     return new entity.Double(value);
   }
 
+  /**
+   * Helper function to get a Datastore Double object.
+   *
+   * @param {number} value The double value.
+   * @returns {object}
+   */
   double(value: number) {
     return Datastore.double(value);
   }
@@ -1292,7 +1257,7 @@ class Datastore extends DatastoreRequest {
   /**
    * Helper function to check if something is a Datastore Double object.
    *
-   * @param {*} value
+   * @param {*} value The double value.
    * @returns {boolean}
    *
    * @example
@@ -1307,6 +1272,13 @@ class Datastore extends DatastoreRequest {
     return entity.isDsDouble(value);
   }
 
+  /**
+   * Helper function to check if something is a Datastore Double object.
+   *
+   * @param {*} value The double value.
+   * @returns {boolean}
+   *
+   */
   isDouble(value?: {}) {
     return Datastore.isDouble(value);
   }
@@ -1314,7 +1286,7 @@ class Datastore extends DatastoreRequest {
   /**
    * Helper function to get a Datastore Geo Point object.
    *
-   * @param {object} coordinates Coordinate value.
+   * @param {object} coordinates The coordinates value.
    * @param {number} coordinates.latitude Latitudinal value.
    * @param {number} coordinates.longitude Longitudinal value.
    * @returns {object}
@@ -1344,6 +1316,15 @@ class Datastore extends DatastoreRequest {
     return new entity.GeoPoint(coordinates);
   }
 
+  /**
+   * Helper function to get a Datastore Geo Point object.
+   *
+   * @param {object} coordinates The coordinates value.
+   * @param {number} coordinates.latitude Latitudinal value.
+   * @param {number} coordinates.longitude Longitudinal value.
+   * @returns {object}
+   *
+   */
   geoPoint(coordinates: entity.Coordinates) {
     return Datastore.geoPoint(coordinates);
   }
@@ -1351,7 +1332,7 @@ class Datastore extends DatastoreRequest {
   /**
    * Helper function to check if something is a Datastore Geo Point object.
    *
-   * @param {*} value
+   * @param {*} value The coordinates value.
    * @returns {boolean}
    *
    * @example
@@ -1371,6 +1352,13 @@ class Datastore extends DatastoreRequest {
     return entity.isDsGeoPoint(value);
   }
 
+  /**
+   * Helper function to check if something is a Datastore Geo Point object.
+   *
+   * @param {*} value The coordinates value.
+   * @returns {boolean}
+   *
+   */
   isGeoPoint(value?: {}) {
     return Datastore.isGeoPoint(value);
   }
@@ -1403,6 +1391,16 @@ class Datastore extends DatastoreRequest {
     return new entity.Int(value);
   }
 
+  /**
+   * Helper function to get a Datastore Integer object.
+   *
+   * This is also useful when using an ID outside the bounds of a JavaScript
+   * Number object.
+   *
+   * @param {number | int} value The integer value.
+   * @returns {object}
+   *
+   */
   int(value: number | string) {
     return Datastore.int(value);
   }
@@ -1410,7 +1408,7 @@ class Datastore extends DatastoreRequest {
   /**
    * Helper function to check if something is a Datastore Integer object.
    *
-   * @param {*} value
+   * @param {*} value The value to check
    * @returns {boolean}
    *
    * @example
@@ -1425,6 +1423,13 @@ class Datastore extends DatastoreRequest {
     return entity.isDsInt(value);
   }
 
+  /**
+   * Helper function to check if something is a Datastore Integer object.
+   *
+   * @param {*} value The value to check
+   * @returns {boolean}
+   *
+   */
   isInt(value?: {}) {
     return Datastore.isInt(value);
   }
@@ -1488,7 +1493,7 @@ class Datastore extends DatastoreRequest {
    * @see {@link Query}
    *
    * @param {string} [namespace] Namespace.
-   * @param {string} kind  The kind to query.
+   * @param {string} kind The kind to query.
    * @returns {Query}
    *
    * @example
@@ -1610,7 +1615,7 @@ class Datastore extends DatastoreRequest {
   /**
    * Helper function to check if something is a Datastore Key object.
    *
-   * @param {*} value
+   * @param {*} value Value to compare property to.
    * @returns {boolean}
    *
    * @example

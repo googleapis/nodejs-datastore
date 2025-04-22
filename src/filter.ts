@@ -33,10 +33,28 @@ enum CompositeOperator {
   OR = 'OR',
 }
 
+/**
+ * And filters are composed of many other filters and when they are applied
+ * then query results are only returned when they pass through all these other
+ * filters.
+ *
+ * @param {EntityFilter[]} filters The list of filters that make up the AND filter.
+ * @returns {CompositeFilter} A composite AND filter.
+ *
+ */
 export function and(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.AND);
 }
 
+/**
+ * Or filters are composed of many other filters and when they are applied
+ * then query results are returned when they pass through any of these other
+ * filters.
+ *
+ * @param {EntityFilter[]} filters The list of filters that make up the OR filter.
+ * @returns {CompositeFilter} A composite OR filter.
+ *
+ */
 export function or(filters: EntityFilter[]): CompositeFilter {
   return new CompositeFilter(filters, CompositeOperator.OR);
 }
@@ -75,9 +93,9 @@ export class PropertyFilter<T extends string>
   /**
    * Build a Property Filter object.
    *
-   * @param {string} Property
-   * @param {Operator} operator
-   * @param {any} val
+   * @param {string} Property The property name that the filter will be applied to.
+   * @param {Operator} operator The comparison operator that the filter applies.
+   * @param {any} val The value that the filter compares the property to.
    */
   constructor(
     public name: T,
@@ -120,7 +138,7 @@ class CompositeFilter extends EntityFilter {
   /**
    * Build a Composite Filter object.
    *
-   * @param {EntityFilter[]} filters
+   * @param {EntityFilter[]} filters The filters that make up the composite filter.
    */
   constructor(filters: EntityFilter[], op: CompositeOperator) {
     super();

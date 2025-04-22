@@ -83,7 +83,7 @@ export namespace entity {
    * Check if something is a Datastore Double object.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is a datastore double.
    * @returns {boolean}
    */
   export function isDsDouble(value?: {}): value is entity.Double {
@@ -94,7 +94,7 @@ export namespace entity {
    * Check if a value is a Datastore Double object converted from JSON.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is datastore double like.
    * @returns {boolean}
    */
   export function isDsDoubleLike(value: unknown) {
@@ -204,7 +204,7 @@ export namespace entity {
    * Check if something is a Datastore Int object.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is a Datastore Int
    * @returns {boolean}
    */
   export function isDsInt(value?: {}): value is entity.Int {
@@ -215,7 +215,7 @@ export namespace entity {
    * Check if a value is a Datastore Int object converted from JSON.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is Datastore IntLike
    * @returns {boolean}
    */
   export function isDsIntLike(value: unknown) {
@@ -273,7 +273,7 @@ export namespace entity {
    * Check if something is a Datastore Geo Point object.
    *
    * @private
-   * @param {*} value
+   * @param {*} value The value to check if it is a Geo point.
    * @returns {boolean}
    */
   export function isDsGeoPoint(value?: {}): value is entity.GeoPoint {
@@ -584,6 +584,7 @@ export namespace entity {
    *
    * @private
    * @param {*} value Native value.
+   * @param {string} property The property to use for the average calculation.
    * @returns {object}
    *
    * @example
@@ -778,7 +779,6 @@ export namespace entity {
    */
   export function entityToEntityProto(entityObject: EntityObject): EntityProto {
     const properties = entityObject.data;
-    const excludeFromIndexes = entityObject.excludeFromIndexes;
 
     const entityProto: EntityProto = {
       key: null,
@@ -793,6 +793,23 @@ export namespace entity {
       ),
     };
 
+    addExcludeFromIndexes(entityObject.excludeFromIndexes, entityProto);
+
+    return entityProto;
+  }
+
+  /**
+   *
+   * @param {string[] | undefined} [entities.excludeFromIndexes] Exclude properties from
+   *     indexing using a simple JSON path notation. See the examples in
+   *     {@link Datastore#save} to see how to target properties at different
+   *     levels of nesting within your entity.
+   * @param {object} entityProto The protocol entity object to convert.
+   */
+  export function addExcludeFromIndexes(
+    excludeFromIndexes: string[] | undefined,
+    entityProto: EntityProto
+  ): EntityProto {
     if (excludeFromIndexes && excludeFromIndexes.length > 0) {
       excludeFromIndexes.forEach((excludePath: string) => {
         excludePathFromEntity(entityProto, excludePath);
@@ -802,6 +819,8 @@ export namespace entity {
     return entityProto;
 
     function excludePathFromEntity(entity: EntityProto, path: string) {
+      if (!entity) return;
+
       const arrayIndex = path.indexOf('[]');
       const entityIndex = path.indexOf('.');
       const wildcardIndex = path.indexOf('.*');
@@ -888,6 +907,7 @@ export namespace entity {
         isFirstPathPartDefined
       ) {
         const array = entity.properties![firstPathPart].arrayValue;
+        if (!array) return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         array.values.forEach((value: any) => {
           if (value.entityValue) {
@@ -983,16 +1003,6 @@ export namespace entity {
     const MAX_DATASTORE_VALUE_LENGTH = 1500;
     if (Array.isArray(entities)) {
       for (const entry of entities) {
-        if (entry && entry.name && entry.value) {
-          if (
-            is.string(entry.value) &&
-            Buffer.from(entry.value).length > MAX_DATASTORE_VALUE_LENGTH
-          ) {
-            entry.excludeFromIndexes = true;
-          } else {
-            continue;
-          }
-        }
         findLargeProperties_(entry, path.concat('[]'), properties);
       }
     } else if (is.object(entities)) {
@@ -1399,7 +1409,7 @@ export namespace entity {
      * Convert buffer to base64 encoding.
      *
      * @private
-     * @param {Buffer} buffer
+     * @param {Buffer} buffer The buffer to convert
      * @returns {string} Base64 encoded string.
      */
     convertToBase64_(buffer: Buffer): string {
@@ -1463,7 +1473,7 @@ export interface ResponseResult {
 
 export interface EntityObject {
   data: {[k: string]: Entity};
-  excludeFromIndexes: string[];
+  excludeFromIndexes?: string[];
 }
 
 export interface Json {

@@ -43,7 +43,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 
 1.  [Select or create a Cloud Platform project][projects].
 1.  [Enable the Google Cloud Datastore API][enable_api].
-1.  [Set up authentication with a service account][auth] so you can access the
+1.  [Set up authentication][auth] so you can access the
     API from your local workstation.
 
 ### Installing the client library
@@ -109,6 +109,10 @@ Samples are in the [`samples/`](https://github.com/googleapis/nodejs-datastore/t
 | Indexes.get | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/indexes.get.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/indexes.get.js,samples/README.md) |
 | Indexes.list | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/indexes.list.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/indexes.list.js,samples/README.md) |
 | Create a union between two filters | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryFilterOr.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryFilterOr.js,samples/README.md) |
+| Run query explain (regular query) | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplain.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplain.js,samples/README.md) |
+| Run query explain (aggregate query) | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAggregation.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplainAggregation.js,samples/README.md) |
+| Run query explain analyze (regular query) | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAnalyze.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplainAnalyze.js,samples/README.md) |
+| Run query explain analyze (aggregate query) | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/queryProfileExplainAnalyzeAggregation.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/queryProfileExplainAnalyzeAggregation.js,samples/README.md) |
 | Quickstart | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/quickstart.js,samples/README.md) |
 | Add Task | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/tasks.add.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/tasks.add.js,samples/README.md) |
 | Delete Task | [source code](https://github.com/googleapis/nodejs-datastore/blob/main/samples/tasks.delete.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-datastore&page=editor&open_in_editor=samples/tasks.delete.js,samples/README.md) |
@@ -184,4 +188,4 @@ See [LICENSE](https://github.com/googleapis/nodejs-datastore/blob/main/LICENSE)
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 [enable_api]: https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com
-[auth]: https://cloud.google.com/docs/authentication/getting-started
+[auth]: https://cloud.google.com/docs/authentication/external/set-up-adc-local

@@ -4,6 +4,57 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [9.2.1](https://github.com/googleapis/nodejs-datastore/compare/v9.2.0...v9.2.1) (2024-11-06)
+
+
+### Bug Fixes
+
+* Address edge cases for excluding large properties when using save ([#1356](https://github.com/googleapis/nodejs-datastore/issues/1356)) ([ceaff7e](https://github.com/googleapis/nodejs-datastore/commit/ceaff7ef468413ff10e03e0b3ed923b4b5a37a08))
+* Create a release ([#1353](https://github.com/googleapis/nodejs-datastore/issues/1353)) ([536873e](https://github.com/googleapis/nodejs-datastore/commit/536873e24bacc9477f1a9c4c5403ed08d5c8cc93))
+
+## [9.2.0](https://github.com/googleapis/nodejs-datastore/compare/v9.1.0...v9.2.0) (2024-10-30)
+
+
+### Features
+
+* Add FindNearest API to the stable branch ([#1333](https://github.com/googleapis/nodejs-datastore/issues/1333)) ([1d56433](https://github.com/googleapis/nodejs-datastore/commit/1d5643369226c5fc220779f4c90fa804d8f876af))
+* Update Go Datastore import path ([#1261](https://github.com/googleapis/nodejs-datastore/issues/1261)) ([bf3dafd](https://github.com/googleapis/nodejs-datastore/commit/bf3dafd8267c447a52f7764505042a60b1a9fd28))
+
+
+### Bug Fixes
+
+* Add excludeFromIndexes in the proper places for large properties of nested fields ([#1266](https://github.com/googleapis/nodejs-datastore/issues/1266)) ([9c7730a](https://github.com/googleapis/nodejs-datastore/commit/9c7730a35699be049beeac0c4bb469239971d471))
+* Query object description ([#1340](https://github.com/googleapis/nodejs-datastore/issues/1340)) ([ad2c6c0](https://github.com/googleapis/nodejs-datastore/commit/ad2c6c01b83f0ae42a3dc4268feb5f4b45890f7c))
+
+## [9.1.0](https://github.com/googleapis/nodejs-datastore/compare/v9.0.0...v9.1.0) (2024-06-24)
+
+
+### Features
+
+* New transaction feature ([#1239](https://github.com/googleapis/nodejs-datastore/issues/1239)) ([cdd2ee9](https://github.com/googleapis/nodejs-datastore/commit/cdd2ee98c50b48b9a2a8cfb2f66b84a5937b3783))
+
+
+### Bug Fixes
+
+* **deps:** Update dependency sinon to v18 ([#1250](https://github.com/googleapis/nodejs-datastore/issues/1250)) ([b7ff5c8](https://github.com/googleapis/nodejs-datastore/commit/b7ff5c86306f80d93f678a0638892c58a3b2088c))
+
+## [9.0.0](https://github.com/googleapis/nodejs-datastore/compare/v8.7.0...v9.0.0) (2024-05-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* An existing method `UpdateVehicleLocation` is removed from service `VehicleService` ([#1248](https://github.com/googleapis/nodejs-datastore/issues/1248))
+
+### Features
+
+* Query profiling feature ([#1221](https://github.com/googleapis/nodejs-datastore/issues/1221)) ([414dec4](https://github.com/googleapis/nodejs-datastore/commit/414dec4e1548f551be06df914d6b56362bdc1790))
+
+
+### Bug Fixes
+
+* An existing method `UpdateVehicleLocation` is removed from service `VehicleService` ([#1248](https://github.com/googleapis/nodejs-datastore/issues/1248)) ([ba79118](https://github.com/googleapis/nodejs-datastore/commit/ba79118ac00ccc3bb0380ee5693c3b687a7ae9c7))
+* Read time should be used for transaction reads ([#1171](https://github.com/googleapis/nodejs-datastore/issues/1171)) ([73a0a39](https://github.com/googleapis/nodejs-datastore/commit/73a0a39b4c0423a5b4802076cdce80fce7c9adda))
+
 ## [8.7.0](https://github.com/googleapis/nodejs-datastore/compare/v8.6.0...v8.7.0) (2024-04-02)
 
 
