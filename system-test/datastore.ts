@@ -3296,7 +3296,28 @@ async.each(
         });
       });
       describe('datastore outages repro', () => {
+        /**
+         * Pauses the execution of an async function for a specified duration.
+         * This function is non-blocking.
+         *
+         * @param {number} ms - The number of milliseconds to sleep (pause).
+         * @returns {Promise<void>} A Promise that resolves after the specified time has elapsed.
+         */
+        function sleep(ms: any) {
+          // Input validation (optional but good practice)
+          if (typeof ms !== 'number' || ms < 0) {
+            console.warn(
+              'sleep function called with invalid duration:',
+              ms,
+              '- defaulting to 0ms'
+            );
+            ms = 0;
+          }
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
         it.only('test', async () => {
+          // require('./logger-setup.js'); // Run the logger setup first!
+
           async function write(
             docKey: string
             // docToWrite: any // sync.ISyncDocument | undefined
@@ -3345,7 +3366,15 @@ async.each(
               throw e;
             }
           }
-          await write('key');
+          for (let i = 0; i < 10000; i++) {
+            try {
+              console.log(`writing ${i}`);
+              await sleep(500);
+              await write('key');
+            } catch (e) {
+              console.log(e);
+            }
+          }
         });
       });
     });
