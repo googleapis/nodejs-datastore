@@ -3367,13 +3367,9 @@ async.each(
             }
           }
           for (let i = 0; i < 10000; i++) {
-            try {
-              console.log(`writing ${i}`);
-              await sleep(500);
-              await write('key');
-            } catch (e) {
-              console.log(e);
-            }
+            console.log(`writing ${i}`);
+            await sleep(50);
+            await write('key');
           }
         });
       });
