@@ -3366,7 +3366,7 @@ async.each(
               throw e;
             }
           }
-          for (let i = 0; i < 10000; i++) {
+          for (let i = 0; i < 1000000; i++) {
             console.log(`writing ${i}`);
             await sleep(50);
             await write('key');
