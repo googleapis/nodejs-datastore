@@ -1,0 +1,34 @@
+## Change log
+----------------------
+- v3.2.0 - fix value 0 from being omitted
+- v3.0.1 - fix column values with zero (0) are being replaced with "" (sregger)
+- v3.0.0 - Promise API & fillTopRow
+- v2.5.2 - fix stream memory limit (issue #64)
+- v2.5.1 - security fixes (npm audit)
+- v2.5.0 - fix nested array issue
+- v2.3.0 - added mapHeaders option
+  - ran npm audit fix
+- v2.2.0 - Better browser distribution
+  - Browser based files in dist are overwritten for best browser building
+  - Found unused code and removed
+  - Updated all depencies
+    - Some had minor version changes
+    - This package now changes its minor from 2.1 to 2.2
+    - Added npm-run-all to safely run npm muli commands across all operating systems
+- v2.0.11 - Tailored for browser by including distribution folder (ackerapple)
+- v2.0.10 - enclose strings containing quotes with more quotes (dozen1488)
+- v2.0.8 - cli improvements
+- v2.0.7 - removed underscore as a dependency (dydx)
+- v2.0.4 - rename option
+- v2.0.0 - stream support + new line fix + remove orderHeaders option + new headers option
+- v1.5.0 - escaping content in headers / arrays (papswell)
+- v1.4.2 - default date handler return date.toLocaleString (jclay)
+- v1.3.2 - fix userOptions optional
+- v1.3.1 - object & array test
+- v1.3.0 - some bug fixes + mocha tests/ + removed options handleArray and handleObject
+- v1.2.2 - special chars escaping improvement (papswell)
+- v1.2.0 - orderHeaders defaults to false
+- v1.1.2 - Escaping text content if needed (papswell)
+- v1.1.0 - Expose library as CLI (cburgmer)
+- v1.0.7 - Fix for prototyped properties
+- v1.0.6 - Create new lines in the CSV file to handle JSON objects with arrays

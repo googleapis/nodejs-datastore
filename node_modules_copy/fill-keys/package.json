@@ -1,0 +1,36 @@
+{
+  "name": "fill-keys",
+  "main": "index.js",
+  "version": "1.0.2",
+  "description": "Fill keys in a destination that are defined on the source",
+  "license": "MIT",
+  "repository": "bendrucker/fill-keys",
+  "author": {
+    "name": "Ben Drucker",
+    "email": "bvdrucker@gmail.com",
+    "url": "bendrucker.me"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "standard && tape test.js"
+  },
+  "keywords": [
+    "keys",
+    "object",
+    "copy"
+  ],
+  "dependencies": {
+    "is-object": "~1.0.1",
+    "merge-descriptors": "~1.0.0"
+  },
+  "devDependencies": {
+    "tape": "^4.0.0",
+    "standard": "^4.0.0"
+  },
+  "files": [
+    "index.js",
+    "readme.md"
+  ]
+}

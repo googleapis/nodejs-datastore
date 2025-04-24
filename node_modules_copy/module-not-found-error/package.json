@@ -1,0 +1,28 @@
+{
+  "name": "module-not-found-error",
+  "main": "index.js",
+  "version": "1.0.1",
+  "description": "Create a module not found error",
+  "license": "MIT",
+  "repository": "bendrucker/module-not-found-error",
+  "author": {
+    "name": "Ben Drucker",
+    "email": "bvdrucker@gmail.com",
+    "url": "bendrucker.me"
+  },
+  "scripts": {
+    "test": "standard && tape test.js"
+  },
+  "keywords": [
+    "module",
+    "not found",
+    "error"
+  ],
+  "devDependencies": {
+    "standard": "^4.5.2",
+    "tape": "^4.0.0"
+  },
+  "files": [
+    "index.js"
+  ]
+}
