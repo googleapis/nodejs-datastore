@@ -3315,7 +3315,7 @@ async.each(
           }
           return new Promise(resolve => setTimeout(resolve, ms));
         }
-        it.only('test', async () => {
+        it('test', async () => {
           // require('./logger-setup.js'); // Run the logger setup first!
 
           async function write(
