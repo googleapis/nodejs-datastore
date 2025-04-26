@@ -214,9 +214,14 @@ describe('v1.DatastoreClient', () => {
         throw err;
       });
       assert(client.datastoreStub);
-      client.close().then(() => {
-        done();
-      });
+      client
+        .close()
+        .then(() => {
+          done();
+        })
+        .catch(err => {
+          throw err;
+        });
     });
 
     it('has close method for the non-initialized client', done => {
@@ -225,9 +230,14 @@ describe('v1.DatastoreClient', () => {
         projectId: 'bogus',
       });
       assert.strictEqual(client.datastoreStub, undefined);
-      client.close().then(() => {
-        done();
-      });
+      client
+        .close()
+        .then(() => {
+          done();
+        })
+        .catch(err => {
+          throw err;
+        });
     });
 
     it('has getProjectId method', async () => {
@@ -375,7 +385,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.lookup(request), expectedError);
     });
   });
@@ -490,7 +502,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.runQuery(request), expectedError);
     });
   });
@@ -609,7 +623,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.runAggregationQuery(request), expectedError);
     });
   });
@@ -727,7 +743,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.beginTransaction(request), expectedError);
     });
   });
@@ -842,7 +860,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.commit(request), expectedError);
     });
   });
@@ -957,7 +977,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.rollback(request), expectedError);
     });
   });
@@ -1075,7 +1097,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.allocateIds(request), expectedError);
     });
   });
@@ -1193,7 +1217,9 @@ describe('v1.DatastoreClient', () => {
       // path template is empty
       request.databaseId = 'value';
       const expectedError = new Error('The client has already been closed.');
-      client.close();
+      client.close().catch(err => {
+        throw err;
+      });
       await assert.rejects(client.reserveIds(request), expectedError);
     });
   });
@@ -1234,20 +1260,24 @@ describe('v1.DatastoreClient', () => {
         .stub()
         .callsArgWith(2, null, expectedResponse);
       const promise = new Promise((resolve, reject) => {
-        client.operationsClient.getOperation(
-          request,
-          undefined,
-          (
-            err?: Error | null,
-            result?: operationsProtos.google.longrunning.Operation | null
-          ) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result);
+        client.operationsClient
+          .getOperation(
+            request,
+            undefined,
+            (
+              err?: Error | null,
+              result?: operationsProtos.google.longrunning.Operation | null
+            ) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
             }
-          }
-        );
+          )
+          .catch(err => {
+            throw err;
+          });
       });
       const response = await promise;
       assert.deepStrictEqual(response, expectedResponse);
@@ -1314,20 +1344,24 @@ describe('v1.DatastoreClient', () => {
         .stub()
         .callsArgWith(2, null, expectedResponse);
       const promise = new Promise((resolve, reject) => {
-        client.operationsClient.cancelOperation(
-          request,
-          undefined,
-          (
-            err?: Error | null,
-            result?: protos.google.protobuf.Empty | null
-          ) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result);
+        client.operationsClient
+          .cancelOperation(
+            request,
+            undefined,
+            (
+              err?: Error | null,
+              result?: protos.google.protobuf.Empty | null
+            ) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
             }
-          }
-        );
+          )
+          .catch(err => {
+            throw err;
+          });
       });
       const response = await promise;
       assert.deepStrictEqual(response, expectedResponse);
@@ -1394,20 +1428,24 @@ describe('v1.DatastoreClient', () => {
         .stub()
         .callsArgWith(2, null, expectedResponse);
       const promise = new Promise((resolve, reject) => {
-        client.operationsClient.deleteOperation(
-          request,
-          undefined,
-          (
-            err?: Error | null,
-            result?: protos.google.protobuf.Empty | null
-          ) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result);
+        client.operationsClient
+          .deleteOperation(
+            request,
+            undefined,
+            (
+              err?: Error | null,
+              result?: protos.google.protobuf.Empty | null
+            ) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
             }
-          }
-        );
+          )
+          .catch(err => {
+            throw err;
+          });
       });
       const response = await promise;
       assert.deepStrictEqual(response, expectedResponse);
