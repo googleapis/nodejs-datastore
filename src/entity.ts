@@ -19,7 +19,6 @@ import * as is from 'is';
 import {Query, QueryProto, IntegerTypeCastOptions} from './query';
 import {PathType} from '.';
 const Protobuf = require('protobufjs');
-import {protobuf as Protobuf2} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
 import {and, PropertyFilter} from './filter';
