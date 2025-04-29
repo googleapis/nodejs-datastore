@@ -23,6 +23,8 @@ import * as path from 'path';
 import {google} from '../protos/protos';
 import {and, PropertyFilter} from './filter';
 
+// Test comment
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace entity {
   export interface InvalidKeyErrorOptions {
