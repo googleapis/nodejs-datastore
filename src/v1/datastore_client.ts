@@ -553,7 +553,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('lookup response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
   /**
@@ -705,7 +705,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('runQuery response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
   /**
@@ -855,7 +855,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('runAggregationQuery response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
   /**
@@ -993,7 +993,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('beginTransaction response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
   /**
@@ -1151,7 +1151,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('commit response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
   /**
@@ -1286,7 +1286,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('rollback response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
   /**
@@ -1422,7 +1422,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('allocateIds response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
   /**
@@ -1558,7 +1558,7 @@ export class DatastoreClient {
         ]) => {
           this._log.info('reserveIds response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
 
@@ -1655,7 +1655,7 @@ export class DatastoreClient {
    */
   listOperationsAsync(
     request: protos.google.longrunning.ListOperationsRequest,
-    options?: gax.CallOptions
+    options?: gax.CallOptions,
   ): AsyncIterable<protos.google.longrunning.IOperation> {
     options = options || {};
     options.otherArgs = options.otherArgs || {};

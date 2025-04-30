@@ -621,7 +621,7 @@ export class DatastoreAdminClient {
         ]) => {
           this._log.info('getIndex response %j', response);
           return [response, options, rawResponse];
-        }
+        },
       );
   }
 
@@ -786,7 +786,7 @@ export class DatastoreAdminClient {
         ]) => {
           this._log.info('exportEntities response %j', rawResponse);
           return [response, rawResponse, _];
-        }
+        },
       );
   }
   /**
@@ -981,7 +981,7 @@ export class DatastoreAdminClient {
         ]) => {
           this._log.info('importEntities response %j', rawResponse);
           return [response, rawResponse, _];
-        }
+        },
       );
   }
   /**
@@ -1166,7 +1166,7 @@ export class DatastoreAdminClient {
         ]) => {
           this._log.info('createIndex response %j', rawResponse);
           return [response, rawResponse, _];
-        }
+        },
       );
   }
   /**
@@ -1348,7 +1348,7 @@ export class DatastoreAdminClient {
         ]) => {
           this._log.info('deleteIndex response %j', rawResponse);
           return [response, rawResponse, _];
-        }
+        },
       );
   }
   /**
@@ -1506,7 +1506,7 @@ export class DatastoreAdminClient {
         ]) => {
           this._log.info('listIndexes values %j', response);
           return [response, input, output];
-        }
+        },
       );
   }
 
@@ -1701,7 +1701,7 @@ export class DatastoreAdminClient {
    */
   listOperationsAsync(
     request: protos.google.longrunning.ListOperationsRequest,
-    options?: gax.CallOptions
+    options?: gax.CallOptions,
   ): AsyncIterable<protos.google.longrunning.IOperation> {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
