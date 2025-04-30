@@ -445,18 +445,22 @@ class DatastoreRequest {
             .map(entity.keyFromKeyProto)
             .map(entity.keyToKeyProto);
 
-          split(entities, stream).then(streamEnded => {
-            if (streamEnded) {
-              return;
-            }
+          split(entities, stream)
+            .then(streamEnded => {
+              if (streamEnded) {
+                return;
+              }
 
-            if (nextKeys.length > 0) {
-              makeRequest(nextKeys);
-              return;
-            }
+              if (nextKeys.length > 0) {
+                makeRequest(nextKeys);
+                return;
+              }
 
-            stream.push(null);
-          });
+              stream.push(null);
+            })
+            .catch(err => {
+              throw err;
+            });
         },
       );
     };
@@ -1046,29 +1050,35 @@ class DatastoreRequest {
       }
 
       // Emit each result right away, then get the rest if necessary.
-      split(entities, stream).then(streamEnded => {
-        if (streamEnded) {
-          return;
-        }
+      split(entities, stream)
+        .then(streamEnded => {
+          if (streamEnded) {
+            return;
+          }
 
-        if (resp.batch.moreResults !== 'NOT_FINISHED') {
-          stream.emit('info', info);
-          stream.push(null);
-          return;
-        }
+          if (resp.batch.moreResults !== 'NOT_FINISHED') {
+            stream.emit('info', info);
+            stream.push(null);
+            return;
+          }
 
-        // The query is "NOT_FINISHED". Get the rest of the results.
-        const offset = query.offsetVal === -1 ? 0 : query.offsetVal;
+          // The query is "NOT_FINISHED". Get the rest of the results.
+          const offset = query.offsetVal === -1 ? 0 : query.offsetVal;
 
-        query.start(info.endCursor!).offset(offset - resp.batch.skippedResults);
+          query
+            .start(info.endCursor!)
+            .offset(offset - resp.batch.skippedResults);
 
-        const limit = query.limitVal;
-        if (limit && limit > -1) {
-          query.limit(limit - resp.batch.entityResults.length);
-        }
+          const limit = query.limitVal;
+          if (limit && limit > -1) {
+            query.limit(limit - resp.batch.entityResults.length);
+          }
 
-        makeRequest(query);
-      });
+          makeRequest(query);
+        })
+        .catch(err => {
+          throw err;
+        });
     };
 
     const stream = streamEvents(new Transform({objectMode: true}));

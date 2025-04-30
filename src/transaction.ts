@@ -189,7 +189,7 @@ class Transaction extends DatastoreRequest {
     this.#withBeginTransaction(
       gaxOptions,
       () => {
-        this.#runCommit(gaxOptions, callback);
+        void this.#runCommit(gaxOptions, callback);
       },
       callback,
     );
@@ -524,7 +524,7 @@ class Transaction extends DatastoreRequest {
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
     const callback =
       typeof optionsOrCallback === 'function' ? optionsOrCallback : cb!;
-    this.#mutex.runExclusive(async () => {
+    void this.#mutex.runExclusive(async () => {
       if (this.state === TransactionState.NOT_STARTED) {
         const runResults = await this.#beginTransactionAsync(options);
         this.#processBeginResults(runResults, callback);
@@ -1035,7 +1035,9 @@ class Transaction extends DatastoreRequest {
         }
       }
       return fn();
-    })();
+    })().catch(err => {
+      throw err;
+    });
   }
 
   /*
@@ -1060,7 +1062,9 @@ class Transaction extends DatastoreRequest {
       } else {
         fn();
       }
-    })();
+    })().catch(err => {
+      throw err;
+    });
   }
 }
 
