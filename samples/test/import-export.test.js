@@ -41,6 +41,7 @@ describe('import/export entities', async () => {
   });
 
   it('should import entities', () => {
+    // Just a comment
     execSync(`node ./import.js ${EXPORTED_FILE}`);
   });
 });
