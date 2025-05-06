@@ -17,7 +17,7 @@ import {Datastore} from '../src';
 import * as assert from 'assert';
 
 import {startServer} from '../mock-server/datastore-server';
-import {sendErrorSeries, shutdownServer} from './grpc-endpoint';
+import {sendErrorSeries, shutdownServer} from './mock-server-tester';
 
 describe.only('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
