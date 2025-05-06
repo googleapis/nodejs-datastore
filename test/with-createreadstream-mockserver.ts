@@ -17,7 +17,7 @@ import {Datastore} from '../src';
 import * as assert from 'assert';
 
 import {startServer} from '../mock-server/datastore-server';
-import {grpcEndpoint} from './grpc-endpoint';
+import {sendNonRetryableError} from './grpc-endpoint';
 
 describe('lookup', () => {
   it('should report an error to the user when it occurs', done => {
@@ -45,7 +45,7 @@ describe('lookup', () => {
           done(e);
         }
       },
-      {lookup: grpcEndpoint},
+      {lookup: sendNonRetryableError},
     );
   });
 });

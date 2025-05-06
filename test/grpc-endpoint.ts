@@ -1,7 +1,7 @@
 const grpc = require('@grpc/grpc-js');
 import {ServiceError} from 'google-gax';
 
-export function grpcEndpoint(call: any, callback: (arg1: any, arg2: {}) => {}) {
+export function sendNonRetryableError(call: any, callback: (arg1: any, arg2: {}) => {}) {
   // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
   const metadata = new grpc.Metadata();
   metadata.set(

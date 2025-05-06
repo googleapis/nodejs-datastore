@@ -17,7 +17,7 @@ import {Datastore} from '../src';
 import * as assert from 'assert';
 
 import {startServer} from '../mock-server/datastore-server';
-import {grpcEndpoint, shutdownServer} from './grpc-endpoint';
+import {sendNonRetryableError, shutdownServer} from './grpc-endpoint';
 
 describe.only('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
@@ -47,7 +47,7 @@ describe.only('runQuery', () => {
           done(e);
         }
       },
-      {runQuery: grpcEndpoint},
+      {runQuery: sendNonRetryableError},
     );
   });
 });
