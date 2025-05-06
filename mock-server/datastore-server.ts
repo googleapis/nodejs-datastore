@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {ServiceError} from 'google-gax';
-
 const {dirname, resolve} = require('node:path');
 
 const PROTO_PATH = __dirname + '/../protos/google/datastore/v1/datastore.proto';
