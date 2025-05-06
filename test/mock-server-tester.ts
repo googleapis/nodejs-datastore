@@ -14,30 +14,31 @@ export function sendNonRetryableError(call: any, callback: (arg1: any, arg2: {})
   callback(error, {});
 }
 
-// TODO: Encapsulate this in a class:
-let errorSeriesCount = 0;
+export class ErrorGenerator {
+  // TODO: Encapsulate this in a class:
+  private errorSeriesCount = 0;
 
-function generateError() {
-  // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  errorSeriesCount++;
-  const metadata = new grpc.Metadata();
-  metadata.set(
-    'grpc-server-stats-bin',
-    Buffer.from([0, 0, 116, 73, 159, 3, 0, 0, 0, 0]),
-  );
-  const error = new Error('error message') as ServiceError;
-  error.code = 4;
-  error.details = `error details: error count: ${errorSeriesCount}`;
-  error.metadata = metadata;
-  return error;
-}
+  generateError() {
+    // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
+    this.errorSeriesCount++;
+    const metadata = new grpc.Metadata();
+    metadata.set(
+      'grpc-server-stats-bin',
+      Buffer.from([0, 0, 116, 73, 159, 3, 0, 0, 0, 0]),
+    );
+    const error = new Error('error message') as ServiceError;
+    error.code = 4;
+    error.details = `error details: error count: ${this.errorSeriesCount}`;
+    error.metadata = metadata;
+    return error;
+  }
 
-export function sendErrorSeries(
-  call: any,
-  callback: (arg1: any, arg2: {}) => {},
-) {
-  const error = generateError();
-  callback(error, {});
+  sendErrorSeries() {
+    return (call: any, callback: (arg1: any, arg2: {}) => {}) => {
+      const error = this.generateError();
+      callback(error, {});
+    };
+  }
 }
 
 export function shutdownServer(server: any) {

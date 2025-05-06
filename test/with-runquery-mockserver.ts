@@ -17,10 +17,11 @@ import {Datastore} from '../src';
 import * as assert from 'assert';
 
 import {startServer} from '../mock-server/datastore-server';
-import {sendErrorSeries, shutdownServer} from './mock-server-tester';
+import {ErrorGenerator, shutdownServer} from './mock-server-tester';
 
 describe.only('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
+    const errorGenerator = new ErrorGenerator();
     const server = startServer(
       async () => {
         try {
@@ -40,7 +41,7 @@ describe.only('runQuery', () => {
             // The error message is based on client library behavior.
             assert.strictEqual(
               (e as Error).message,
-              '4 DEADLINE_EXCEEDED: error details',
+              '4 DEADLINE_EXCEEDED: error details: error count: 1',
             );
             await shutdownServer(server);
             done();
@@ -49,7 +50,7 @@ describe.only('runQuery', () => {
           done(e);
         }
       },
-      {runQuery: sendErrorSeries},
+      {runQuery: errorGenerator.sendErrorSeries},
     );
   });
 });
