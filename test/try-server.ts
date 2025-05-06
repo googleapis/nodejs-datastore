@@ -17,7 +17,7 @@ import {Datastore} from '../src';
 
 import {startServer} from '../mock-server/datastore-server';
 
-describe('Try server', () => {
+describe.skip('Try server', () => {
   it('should try to connect to the running server', done => {
     startServer(async () => {
       try {

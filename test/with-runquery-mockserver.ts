@@ -19,7 +19,7 @@ import * as assert from 'assert';
 import {startServer} from '../mock-server/datastore-server';
 import {sendNonRetryableError, shutdownServer} from './grpc-endpoint';
 
-describe.only('runQuery', () => {
+describe('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
     const server = startServer(
       async () => {

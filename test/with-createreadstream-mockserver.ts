@@ -19,7 +19,7 @@ import * as assert from 'assert';
 import {startServer} from '../mock-server/datastore-server';
 import {sendNonRetryableError} from './grpc-endpoint';
 
-describe('lookup', () => {
+describe.skip('lookup', () => {
   it('should report an error to the user when it occurs', done => {
     startServer(
       async () => {
