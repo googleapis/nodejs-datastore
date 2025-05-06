@@ -31,6 +31,7 @@ describe('lookup', () => {
             });
             const postKey = datastore.key(['Post', 'post1']);
             await datastore.get(postKey);
+            console.log('call failed');
             assert.fail('The call should not have succeeded');
           } catch (e) {
             // The test should produce the right error message here for the user.

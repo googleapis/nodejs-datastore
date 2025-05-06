@@ -32,6 +32,7 @@ describe.only('runQuery', () => {
             const postKey = datastore.key(['Post', 'post1']);
             const query = datastore.createQuery('Post').hasAncestor(postKey);
             await datastore.runQuery(query);
+            console.log('call failed');
             assert.fail('The call should not have succeeded');
           } catch (e) {
             // The test should produce the right error message here for the user.
