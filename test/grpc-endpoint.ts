@@ -33,17 +33,5 @@ export function shutdownServer(server: any) {
         resolve('done');
       }
     });
-
-    // It's also good practice to consider scenarios where `tryShutdown`
-    // might not call the callback at all in certain failure cases.
-    // Depending on the specifics of `server.tryShutdown`,
-    // you might want to add a timeout to prevent the promise from hanging indefinitely.
-    // For example:
-    // const timeoutId = setTimeout(() => {
-    //   reject(new Error('Server shutdown timed out.'));
-    // }, 30000); // 30 seconds timeout
-    //
-    // And then in the callback:
-    // clearTimeout(timeoutId);
   });
 }
