@@ -19,8 +19,8 @@ import * as assert from 'assert';
 import {startServer} from '../mock-server/datastore-server';
 import {sendNonRetryableError} from './mock-server-tester';
 
-describe.skip('lookup', () => {
-  it('should report an error to the user when it occurs', done => {
+describe.skip('Should make calls to lookup', () => {
+  it('should report a NOT_FOUND error to the user when it occurs', done => {
     startServer(
       async () => {
         try {

@@ -19,8 +19,8 @@ import * as assert from 'assert';
 import {startServer} from '../mock-server/datastore-server';
 import {ErrorGenerator, shutdownServer} from './mock-server-tester';
 
-describe.skip('runQuery', () => {
-  it('should report an error to the user when it occurs', done => {
+describe.skip('Should make calls to runQuery', () => {
+  it('should report a DEADLINE_EXCEEDED error to the user when it occurs with the original error details', done => {
     const errorGenerator = new ErrorGenerator();
     const server = startServer(
       async () => {
