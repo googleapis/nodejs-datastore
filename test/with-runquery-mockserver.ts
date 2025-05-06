@@ -17,9 +17,9 @@ import {Datastore} from '../src';
 import * as assert from 'assert';
 
 import {startServer} from '../mock-server/datastore-server';
-import {sendNonRetryableError, shutdownServer} from './grpc-endpoint';
+import {sendErrorSeries, shutdownServer} from './grpc-endpoint';
 
-describe('runQuery', () => {
+describe.only('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
     const server = startServer(
       async () => {
@@ -47,7 +47,7 @@ describe('runQuery', () => {
           done(e);
         }
       },
-      {runQuery: sendNonRetryableError},
+      {runQuery: sendErrorSeries},
     );
   });
 });
