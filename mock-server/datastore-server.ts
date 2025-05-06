@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {ServiceError} from 'google-gax';
+
 const {dirname, resolve} = require('node:path');
 
 const PROTO_PATH = __dirname + '/../protos/google/datastore/v1/datastore.proto';
@@ -41,11 +43,21 @@ const descriptor = grpc.loadPackageDefinition(packageDefinition);
  * Implements the runQuery RPC method.
  */
 function grpcEndpoint(
-  call: {},
-  callback: (arg1: string | null, arg2: {}) => {},
+  call: any,
+  callback: (arg1: any, arg2: {}) => {},
 ) {
   // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  callback(null, {message: 'Hello'});
+  //callback(null, {message: 'Hello'});
+  const metadata = new grpc.Metadata();
+  metadata.set(
+    'grpc-server-stats-bin',
+    Buffer.from([0, 0, 116, 73, 159, 3, 0, 0, 0, 0]),
+  );
+  const error = new Error('error message') as ServiceError;
+  error.code = 5;
+  error.details = 'error details';
+  error.metadata = metadata;
+  callback(error, {});
 }
 
 /**
