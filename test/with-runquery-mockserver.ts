@@ -50,7 +50,7 @@ describe.only('runQuery', () => {
           done(e);
         }
       },
-      {runQuery: errorGenerator.sendErrorSeries},
+      {runQuery: errorGenerator.sendErrorSeries()},
     );
   });
 });
