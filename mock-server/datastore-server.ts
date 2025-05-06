@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {ServiceError} from 'google-gax';
+import {Server} from '@grpc/grpc-js';
+
 const {dirname, resolve} = require('node:path');
 
 const PROTO_PATH = __dirname + '/../protos/google/datastore/v1/datastore.proto';
@@ -37,18 +40,14 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 const descriptor = grpc.loadPackageDefinition(packageDefinition);
 
-/**
- * Implements the runQuery RPC method.
- */
-function grpcEndpoint(call: any, callback: MockServiceCallback) {
-  // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  callback(null, {message: 'Hello'});
-}
+export type CallType = any;
+export type SuccessType = any;
+export type GrpcErrorType = ServiceError | null;
 
-type MockServiceCallback = (arg1: any, arg2: {}) => {};
+type MockServiceCallback = (arg1: GrpcErrorType, arg2: SuccessType) => {};
 
 interface MockServiceConfiguration {
-  [endpoint: string]: (call: any, callback: MockServiceCallback) => void;
+  [endpoint: string]: (call: CallType, callback: MockServiceCallback) => void;
 }
 
 /**
@@ -57,7 +56,15 @@ interface MockServiceConfiguration {
 export function startServer(
   cb: () => void,
   serviceConfigurationOverride?: MockServiceConfiguration,
-) {
+): Server {
+  /**
+   * Implements the runQuery RPC method.
+   */
+  function grpcEndpoint(call: CallType, callback: MockServiceCallback) {
+    // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
+    callback(null, {message: 'Hello'});
+  }
+
   const server = new grpc.Server();
   const service = descriptor.google.datastore.v1.Datastore.service;
   // On the next line, change runQuery to the grpc method you want to investigate
