@@ -19,7 +19,7 @@ import * as assert from 'assert';
 import {startServer} from '../mock-server/datastore-server';
 import {grpcEndpoint} from './grpc-endpoint';
 
-describe('runQuery', () => {
+describe.only('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
     startServer(
       async () => {

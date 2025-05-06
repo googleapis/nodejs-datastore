@@ -1081,7 +1081,7 @@ class DatastoreRequest {
         });
     };
 
-    const stream = streamEvents(new PassThrough({objectMode: true}));
+    const stream = streamEvents(new Transform({objectMode: true}));
     stream.once('reading', () => {
       makeRequest(query);
     });
