@@ -75,4 +75,5 @@ export function startServer(
       cb();
     },
   );
+  return server;
 }

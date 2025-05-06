@@ -19,9 +19,42 @@ import * as assert from 'assert';
 import {startServer} from '../mock-server/datastore-server';
 import {grpcEndpoint} from './grpc-endpoint';
 
+function shutdownServer(server: any) {
+  return new Promise((resolve, reject) => {
+    // Assuming 'server.tryShutdown' is a function that takes a callback.
+    // The callback is expected to be called when the shutdown attempt is complete.
+    // If 'tryShutdown' itself can throw an error or indicate an immediate failure
+    // (without calling the callback), you might need to wrap this call in a try...catch block.
+
+    server.tryShutdown((error: any) => {
+      if (error) {
+        // If the callback is called with an error, reject the promise.
+        console.error('Server shutdown failed:', error);
+        reject(error);
+      } else {
+        // If the callback is called without an error, resolve the promise.
+        console.log('Server has been shut down successfully.');
+        resolve('done');
+      }
+    });
+
+    // It's also good practice to consider scenarios where `tryShutdown`
+    // might not call the callback at all in certain failure cases.
+    // Depending on the specifics of `server.tryShutdown`,
+    // you might want to add a timeout to prevent the promise from hanging indefinitely.
+    // For example:
+    // const timeoutId = setTimeout(() => {
+    //   reject(new Error('Server shutdown timed out.'));
+    // }, 30000); // 30 seconds timeout
+    //
+    // And then in the callback:
+    // clearTimeout(timeoutId);
+  });
+}
+
 describe.only('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
-    startServer(
+    const server = startServer(
       async () => {
         try {
           try {
@@ -40,6 +73,7 @@ describe.only('runQuery', () => {
               (e as Error).message,
               '5 NOT_FOUND: error details',
             );
+            await shutdownServer(server);
             done();
           }
         } catch (e) {
