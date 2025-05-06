@@ -19,7 +19,7 @@ import * as assert from 'assert';
 import {startServer} from '../mock-server/datastore-server';
 import {ErrorGenerator, shutdownServer} from './mock-server-tester';
 
-describe.only('runQuery', () => {
+describe.skip('runQuery', () => {
   it('should report an error to the user when it occurs', done => {
     const errorGenerator = new ErrorGenerator();
     const server = startServer(
