@@ -42,32 +42,31 @@ const descriptor = grpc.loadPackageDefinition(packageDefinition);
 /**
  * Implements the runQuery RPC method.
  */
-function grpcEndpoint(
-  call: any,
-  callback: (arg1: any, arg2: {}) => {},
-) {
+function grpcEndpoint(call: any, callback: MockServiceCallback) {
   // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  //callback(null, {message: 'Hello'});
-  const metadata = new grpc.Metadata();
-  metadata.set(
-    'grpc-server-stats-bin',
-    Buffer.from([0, 0, 116, 73, 159, 3, 0, 0, 0, 0]),
-  );
-  const error = new Error('error message') as ServiceError;
-  error.code = 5;
-  error.details = 'error details';
-  error.metadata = metadata;
-  callback(error, {});
+  callback(null, {message: 'Hello'});
+}
+
+type MockServiceCallback = (arg1: any, arg2: {}) => {};
+
+interface MockServiceConfiguration {
+  [endpoint: string]: (call: any, callback: MockServiceCallback) => void;
 }
 
 /**
  * Starts an RPC server that receives requests for datastore
  */
-export function startServer(cb: () => void) {
+export function startServer(
+  cb: () => void,
+  serviceConfigurationOverride?: MockServiceConfiguration,
+) {
   const server = new grpc.Server();
   const service = descriptor.google.datastore.v1.Datastore.service;
   // On the next line, change runQuery to the grpc method you want to investigate
-  server.addService(service, {runQuery: grpcEndpoint});
+  const serviceConfiguration = serviceConfigurationOverride ?? {
+    runQuery: grpcEndpoint,
+  };
+  server.addService(service, serviceConfiguration);
   server.bindAsync(
     '0.0.0.0:50051',
     grpc.ServerCredentials.createInsecure(),
