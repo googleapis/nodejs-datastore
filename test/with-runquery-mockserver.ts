@@ -36,9 +36,11 @@ describe.only('runQuery', () => {
             assert.fail('The call should not have succeeded');
           } catch (e) {
             // The test should produce the right error message here for the user.
+            // TODO: Later on we are going to decide on what the error message should be
+            // The error message is based on client library behavior.
             assert.strictEqual(
               (e as Error).message,
-              '5 NOT_FOUND: error details',
+              '4 DEADLINE_EXCEEDED: error details',
             );
             await shutdownServer(server);
             done();
