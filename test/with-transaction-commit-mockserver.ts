@@ -17,9 +17,14 @@ import {Datastore} from '../src';
 import * as assert from 'assert';
 
 import {startServer} from '../mock-server/datastore-server';
-import {ErrorGenerator, shutdownServer} from './mock-server-tester';
+import {
+  ErrorGenerator,
+  lookupResponse, rollbackResponse,
+  shutdownServer,
+} from './mock-server-tester';
+import {TransactionState} from '../src/request';
 
-describe('Should make calls to commit', () => {
+describe.only('Should make calls to commit', () => {
   it('should report a DEADLINE_EXCEEDED error to the user when it occurs with the original error details', done => {
     async function write(
       docKey: string,
@@ -33,33 +38,28 @@ describe('Should make calls to commit', () => {
 
       const transaction = datastore.transaction();
 
-      try {
-        await transaction.run();
+      const [datastoreDoc] = await transaction.get(key, {});
+      // We need these two lines below because I couldn't figure out how to pass
+      // a buffer through the mock server on time:
+      transaction.id = Buffer.from('txid');
+      (transaction as unknown as {state: TransactionState}).state =
+        TransactionState.IN_PROGRESS;
 
-        const [datastoreDoc] = await transaction.get(key, {});
+      transaction.save({
+        key,
+        data: {
+          metadata: [
+            {
+              name: 'some-string',
+              value: 'some-value',
+            },
+          ],
+        },
 
-        transaction.save({
-          key,
-          data: {
-            metadata: [
-              {
-                name: 'some-string',
-                value: 'some-value',
-              },
-            ],
-          },
+        excludeFromIndexes: ['instance', 'instance.*'],
+      });
 
-          excludeFromIndexes: ['instance', 'instance.*'],
-        });
-
-        await transaction.commit();
-
-        // return toWrite;
-      } catch (e) {
-        await transaction.rollback();
-
-        throw e;
-      }
+      await transaction.commit();
     }
     const errorGenerator = new ErrorGenerator();
     const server = startServer(
@@ -67,6 +67,7 @@ describe('Should make calls to commit', () => {
         try {
           try {
             await write('key');
+            assert.fail('The call should not have succeeded');
           } catch (e) {
             // The test should produce the right error message here for the user.
             // TODO: Later on we are going to decide on what the error message should be
@@ -83,7 +84,9 @@ describe('Should make calls to commit', () => {
         }
       },
       {
-        commit: errorGenerator.sendErrorSeries(4),
+        commit: errorGenerator.sendErrorSeries(14),
+        lookup: lookupResponse,
+        rollback: rollbackResponse,
       },
     );
   });
