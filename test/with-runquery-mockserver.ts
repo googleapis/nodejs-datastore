@@ -33,7 +33,8 @@ describe('Should make calls to runQuery', () => {
             });
             const postKey = datastore.key(['Post', 'post1']);
             const query = datastore.createQuery('Post').hasAncestor(postKey);
-            await datastore.runQuery(query);
+            // Make the call with a shorter timeout:
+            await datastore.runQuery(query, {gaxOptions: {timeout: 10000}});
             console.log('call failed');
             assert.fail('The call should not have succeeded');
           } catch (e) {
