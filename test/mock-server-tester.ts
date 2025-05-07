@@ -65,7 +65,7 @@ export class ErrorGenerator {
    * @returns {ServiceError} A `ServiceError` object representing a simulated
    *   gRPC error.
    */
-  generateError() {
+  generateError(code: number) {
     // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
     this.errorSeriesCount++;
     const metadata = new grpc.Metadata();
@@ -74,7 +74,7 @@ export class ErrorGenerator {
       Buffer.from([0, 0, 116, 73, 159, 3, 0, 0, 0, 0]),
     );
     const error = new Error('error message') as ServiceError;
-    error.code = 4;
+    error.code = code;
     error.details = `error details: error count: ${this.errorSeriesCount}`;
     error.metadata = metadata;
     return error;
@@ -93,12 +93,12 @@ export class ErrorGenerator {
    *   gRPC call) and a `callback` function, and responds to the call with a
    *   simulated error.
    */
-  sendErrorSeries() {
+  sendErrorSeries(code: number) {
     return (
       call: CallType,
       callback: (arg1: GrpcErrorType, arg2: SuccessType) => {},
     ) => {
-      const error = this.generateError();
+      const error = this.generateError(code);
       callback(error, {});
     };
   }

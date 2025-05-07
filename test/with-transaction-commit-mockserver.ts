@@ -18,24 +18,55 @@ import * as assert from 'assert';
 
 import {startServer} from '../mock-server/datastore-server';
 import {ErrorGenerator, shutdownServer} from './mock-server-tester';
-import {grpc} from 'google-gax';
 
-describe.only('Should make calls to runQuery', () => {
-  it('should report an UNAVAILABLE error to the user when it occurs with the original error details', done => {
+describe('Should make calls to commit', () => {
+  it('should report a DEADLINE_EXCEEDED error to the user when it occurs with the original error details', done => {
+    async function write(
+      docKey: string,
+      // docToWrite: any // sync.ISyncDocument | undefined
+    ) {
+      const datastore = new Datastore({
+        namespace: `${Date.now()}`,
+        apiEndpoint: 'localhost:50051',
+      });
+      const key = datastore.key(['sync_document', docKey]);
+
+      const transaction = datastore.transaction();
+
+      try {
+        await transaction.run();
+
+        const [datastoreDoc] = await transaction.get(key, {});
+
+        transaction.save({
+          key,
+          data: {
+            metadata: [
+              {
+                name: 'some-string',
+                value: 'some-value',
+              },
+            ],
+          },
+
+          excludeFromIndexes: ['instance', 'instance.*'],
+        });
+
+        await transaction.commit();
+
+        // return toWrite;
+      } catch (e) {
+        await transaction.rollback();
+
+        throw e;
+      }
+    }
     const errorGenerator = new ErrorGenerator();
     const server = startServer(
       async () => {
         try {
           try {
-            const datastore = new Datastore({
-              namespace: `${Date.now()}`,
-              apiEndpoint: 'localhost:50051',
-            });
-            const postKey = datastore.key(['Post', 'post1']);
-            const query = datastore.createQuery('Post').hasAncestor(postKey);
-            await datastore.runQuery(query);
-            console.log('call failed');
-            assert.fail('The call should not have succeeded');
+            await write('key');
           } catch (e) {
             // The test should produce the right error message here for the user.
             // TODO: Later on we are going to decide on what the error message should be
@@ -51,7 +82,9 @@ describe.only('Should make calls to runQuery', () => {
           done(e);
         }
       },
-      {runQuery: errorGenerator.sendErrorSeries(grpc.status.UNAVAILABLE)},
+      {
+        commit: errorGenerator.sendErrorSeries(4),
+      },
     );
   });
 });
