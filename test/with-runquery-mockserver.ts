@@ -20,7 +20,7 @@ import {startServer} from '../mock-server/datastore-server';
 import {ErrorGenerator, shutdownServer} from './mock-server-tester';
 import {grpc} from 'google-gax';
 
-describe.only('Should make calls to runQuery', () => {
+describe('Should make calls to runQuery', () => {
   it('should report an UNAVAILABLE error to the user when it occurs with the original error details', done => {
     const errorGenerator = new ErrorGenerator();
     const server = startServer(

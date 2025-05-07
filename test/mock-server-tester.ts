@@ -18,9 +18,8 @@ import {
   SuccessType,
 } from '../mock-server/datastore-server';
 
-const grpc = require('@grpc/grpc-js');
+import grpc = require('@grpc/grpc-js');
 import {ServiceError} from 'google-gax';
-import {Server} from '@grpc/grpc-js';
 
 /**
  * Simulates a non-retryable error response from a gRPC service.
@@ -105,7 +104,7 @@ export class ErrorGenerator {
   }
 }
 
-export function shutdownServer(server: Server) {
+export function shutdownServer(server: grpc.Server) {
   return new Promise((resolve, reject) => {
     // Assuming 'server.tryShutdown' is a function that takes a callback.
     // The callback is expected to be called when the shutdown attempt is complete.
