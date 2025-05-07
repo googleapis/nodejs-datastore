@@ -89,6 +89,7 @@ export class ErrorGenerator {
    * The error includes a DEADLINE_EXCEEDED code (4), a details message indicating the
    * number of errors generated so far by this instance, and some metadata.
    *
+   * @param {number} code The grpc error code for the error sent back
    * @returns {function} A function that takes a `call` object (representing the
    *   gRPC call) and a `callback` function, and responds to the call with a
    *   simulated error.
