@@ -40,10 +40,17 @@ describe.only('Should make calls to runQuery', () => {
             // The test should produce the right error message here for the user.
             // TODO: Later on we are going to decide on what the error message should be
             // The error message is based on client library behavior.
-            assert.strictEqual(
-              (e as Error).message,
-              '4 DEADLINE_EXCEEDED: error details: error count: 1',
+            const message = (e as Error).message;
+            assert.match(
+              message,
+              /Total timeout of API google.datastore.v1.Datastore exceeded 60000 milliseconds retrying error Error: 14 UNAVAILABLE: error details: error count:/,
             );
+            const substringToFind =
+              'before any response was received. : Previous errors : [{message: 14 UNAVAILABLE: error details: error count: 1, code: 14, details: , note: },{message: 14 UNAVAILABLE: error details: error count: 2, code: 14, details: , note: },';
+            const escapedSubstringRegex = new RegExp(
+              substringToFind.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            );
+            assert.match(message, escapedSubstringRegex);
             await shutdownServer(server);
             done();
           }
