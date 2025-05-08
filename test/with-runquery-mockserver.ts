@@ -42,6 +42,8 @@ describe('Should make calls to runQuery', () => {
             // TODO: Later on we are going to decide on what the error message should be
             // The error message is based on client library behavior.
             const message = (e as Error).message;
+            console.log('The error message:');
+            console.log(message);
             assert.match(
               message,
               /Total timeout of API google.datastore.v1.Datastore exceeded 60000 milliseconds retrying error Error: 14 UNAVAILABLE: error details: error count:/,
