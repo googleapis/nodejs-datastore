@@ -32,11 +32,6 @@ describe.only('Should make calls to commit', () => {
 
       const [datastoreDoc] = await transaction.get(key, {});
       const [datastoreDoc2] = await transaction2.get(key, {});
-      // We need these two lines below because I couldn't figure out how to pass
-      // a buffer through the mock server on time:
-      transaction.id = Buffer.from('txid');
-      (transaction as unknown as {state: TransactionState}).state =
-        TransactionState.IN_PROGRESS;
 
       transaction.save({
         key,
