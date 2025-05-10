@@ -26,6 +26,7 @@ import {Entities, entity, Entity} from '../src/entity';
 import {Query, RunQueryInfo, ExecutionStats} from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
 import {transactionExpiredError} from '../src/request';
+const sinon = require('sinon');
 
 const async = require('async');
 
@@ -3293,6 +3294,221 @@ async.each(
           const postKey = datastore.key(['Post', 'post1']);
           const [entity] = await customDatastore.get(postKey);
           assert.strictEqual(entity, undefined);
+        });
+      });
+      describe('Datastore mode data transforms', () => {
+        it('should perform a basic data transform', async () => {
+          const key = datastore.key(['Post', 'post1']);
+          const requestSpy = sinon.spy(datastore.request_);
+          datastore.request_ = requestSpy;
+          const result = await datastore.save({
+            key: key,
+            data: {
+              name: 'test',
+              p1: 3,
+              p2: 4,
+              p3: 5,
+              a1: [3, 4, 5],
+            },
+            transforms: [
+              {
+                property: 'p1',
+                setToServerValue: true,
+              },
+              {
+                property: 'p2',
+                increment: 4,
+              },
+              {
+                property: 'p3',
+                maximum: 9,
+              },
+              {
+                property: 'p2',
+                minimum: 6,
+              },
+              {
+                property: 'a1',
+                appendMissingElements: [5, 6],
+              },
+              {
+                property: 'a1',
+                removeAllFromArray: [3],
+              },
+            ],
+          });
+          // Clean the data from the server first before comparing:
+          result.forEach(serverResult => {
+            delete serverResult['indexUpdates'];
+            serverResult.mutationResults?.forEach(mutationResult => {
+              delete mutationResult['updateTime'];
+              delete mutationResult['createTime'];
+              delete mutationResult['version'];
+              mutationResult.transformResults?.forEach(transformResult => {
+                delete transformResult['timestampValue'];
+              });
+            });
+          });
+          // Now the data should have fixed values.
+          // Do a comparison against the expected result.
+          assert.deepStrictEqual(result, [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      valueType: 'timestampValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '8',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '9',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '6',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ]);
+          // Now check the value that was actually saved to the server:
+          const [entity] = await datastore.get(key);
+          const parsedResult = JSON.parse(JSON.stringify(entity));
+          delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
+          assert.deepStrictEqual(parsedResult, {
+            name: 'test',
+            a1: [4, 5, 6],
+            p2: 6,
+            p3: 9,
+          });
+          delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
+            .partitionId['namespaceId'];
+          assert.deepStrictEqual(requestSpy.args[0][0], {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      p1: {
+                        integerValue: '3',
+                      },
+                      p2: {
+                        integerValue: '4',
+                      },
+                      p3: {
+                        integerValue: '5',
+                      },
+                      a1: {
+                        arrayValue: {
+                          values: [
+                            {
+                              integerValue: '3',
+                            },
+                            {
+                              integerValue: '4',
+                            },
+                            {
+                              integerValue: '5',
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'p1',
+                      setToServerValue: 1,
+                    },
+                    {
+                      property: 'p2',
+                      increment: {
+                        integerValue: '4',
+                      },
+                    },
+                    {
+                      property: 'p3',
+                      maximum: {
+                        integerValue: '9',
+                      },
+                    },
+                    {
+                      property: 'p2',
+                      minimum: {
+                        integerValue: '6',
+                      },
+                    },
+                    {
+                      property: 'a1',
+                      appendMissingElements: {
+                        values: [
+                          {
+                            integerValue: '5',
+                          },
+                          {
+                            integerValue: '6',
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      property: 'a1',
+                      removeAllFromArray: {
+                        values: [
+                          {
+                            integerValue: '3',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          });
         });
       });
     });
