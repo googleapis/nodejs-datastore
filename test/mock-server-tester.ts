@@ -34,9 +34,9 @@ import {ServiceError} from 'google-gax';
  *   simulated error response. It expects two arguments: an error object and an
  *   empty object (representing no response data).
  */
-export function sendNonRetryableError(
+export function sendNonRetryableError<ResponseType>(
   call: CallType,
-  callback: (arg1: GrpcErrorType, arg2: SuccessType) => {},
+  callback: (arg1: GrpcErrorType, arg2: ResponseType) => {},
 ) {
   const metadata = new grpc.Metadata();
   metadata.set(
@@ -47,7 +47,7 @@ export function sendNonRetryableError(
   error.code = 5;
   error.details = 'error details';
   error.metadata = metadata;
-  callback(error, {});
+  callback(error, {} as ResponseType);
 }
 
 export class ErrorGenerator {
@@ -93,13 +93,13 @@ export class ErrorGenerator {
    *   gRPC call) and a `callback` function, and responds to the call with a
    *   simulated error.
    */
-  sendErrorSeries(code: number) {
+  sendErrorSeries<ResponseType>(code: number) {
     return (
       call: CallType,
-      callback: (arg1: GrpcErrorType, arg2: SuccessType) => {},
+      callback: (arg1: GrpcErrorType, arg2: ResponseType) => {},
     ) => {
       const error = this.generateError(code);
-      callback(error, {});
+      callback(error, {} as ResponseType);
     };
   }
 }

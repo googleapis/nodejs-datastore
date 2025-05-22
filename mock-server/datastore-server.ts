@@ -44,27 +44,36 @@ const descriptor = grpc.loadPackageDefinition(packageDefinition);
 /**
  * Implements the runQuery RPC method.
  */
-function grpcEndpoint(call: CallType, callback: MockServiceCallback) {
+function grpcEndpoint<ResponseType>(
+  call: CallType,
+  callback: MockServiceCallback<ResponseType>,
+) {
   // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  callback(null, {message: 'Hello'});
+  callback(null, {message: 'Hello'} as ResponseType);
 }
 
 export type CallType = any;
 export type SuccessType = any;
 export type GrpcErrorType = ServiceError | null;
 
-type MockServiceCallback = (arg1: GrpcErrorType, arg2: SuccessType) => {};
+type MockServiceCallback<ResponseType> = (
+  arg1: GrpcErrorType,
+  arg2: ResponseType,
+) => {};
 
-interface MockServiceConfiguration {
-  [endpoint: string]: (call: CallType, callback: MockServiceCallback) => void;
+interface MockServiceConfiguration<ResponseType> {
+  [endpoint: string]: (
+    call: CallType,
+    callback: MockServiceCallback<ResponseType>,
+  ) => void;
 }
 
 /**
  * Starts an RPC server that receives requests for datastore
  */
-export function startServer(
+export function startServer<ResponseType>(
   cb: () => void,
-  serviceConfigurationOverride?: MockServiceConfiguration,
+  serviceConfigurationOverride?: MockServiceConfiguration<ResponseType>,
 ): Server {
   const server = new grpc.Server();
   const service = descriptor.google.datastore.v1.Datastore.service;
