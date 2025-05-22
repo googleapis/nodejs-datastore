@@ -41,6 +41,14 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 const descriptor = grpc.loadPackageDefinition(packageDefinition);
 
+/**
+ * Implements the runQuery RPC method.
+ */
+function grpcEndpoint(call: CallType, callback: MockServiceCallback) {
+  // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
+  callback(null, {message: 'Hello'});
+}
+
 export type CallType = any;
 export type SuccessType = any;
 export type GrpcErrorType = ServiceError | null;
@@ -58,14 +66,6 @@ export function startServer(
   cb: () => void,
   serviceConfigurationOverride?: MockServiceConfiguration,
 ): Server {
-  /**
-   * Implements the runQuery RPC method.
-   */
-  function grpcEndpoint(call: CallType, callback: MockServiceCallback) {
-    // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-    callback(null, {message: 'Hello'});
-  }
-
   const server = new grpc.Server();
   const service = descriptor.google.datastore.v1.Datastore.service;
   // On the next line, change runQuery to the grpc method you want to investigate
