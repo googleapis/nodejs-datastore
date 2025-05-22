@@ -34,7 +34,7 @@ describe('Should make calls to runQuery', () => {
             const postKey = datastore.key(['Post', 'post1']);
             const query = datastore.createQuery('Post').hasAncestor(postKey);
             // Make the call with a shorter timeout:
-            await datastore.runQuery(query, {gaxOptions: {timeout: 10000}});
+            await datastore.runQuery(query, {gaxOptions: {timeout: 5000}});
             console.log('call failed');
             assert.fail('The call should not have succeeded');
           } catch (e) {
@@ -44,16 +44,18 @@ describe('Should make calls to runQuery', () => {
             const message = (e as Error).message;
             console.log('The error message:');
             console.log(message);
-            assert.match(
-              message,
-              /Total timeout of API google.datastore.v1.Datastore exceeded 60000 milliseconds retrying error Error: 14 UNAVAILABLE: error details: error count:/,
+            const substringToFind1 =
+              'Total timeout of API google.datastore.v1.Datastore exceeded 5000 milliseconds retrying error Error: 14 UNAVAILABLE: error details: error count:';
+            const escapedSubstringRegex1 = new RegExp(
+              substringToFind1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
             );
-            const substringToFind =
+            assert.match(message, escapedSubstringRegex1);
+            const substringToFind2 =
               'before any response was received. : Previous errors : [{message: 14 UNAVAILABLE: error details: error count: 1, code: 14, details: , note: },{message: 14 UNAVAILABLE: error details: error count: 2, code: 14, details: , note: },';
-            const escapedSubstringRegex = new RegExp(
-              substringToFind.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            const escapedSubstringRegex2 = new RegExp(
+              substringToFind2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
             );
-            assert.match(message, escapedSubstringRegex);
+            assert.match(message, escapedSubstringRegex2);
             await shutdownServer(server);
             done();
           }
