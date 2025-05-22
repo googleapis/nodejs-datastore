@@ -15,7 +15,6 @@
 import {
   CallType,
   GrpcErrorType,
-  SuccessType,
 } from '../mock-server/datastore-server';
 
 import grpc = require('@grpc/grpc-js');

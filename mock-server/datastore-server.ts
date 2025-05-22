@@ -53,7 +53,6 @@ function grpcEndpoint<ResponseType>(
 }
 
 export type CallType = any;
-export type SuccessType = any;
 export type GrpcErrorType = ServiceError | null;
 
 type MockServiceCallback<ResponseType> = (
