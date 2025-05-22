@@ -22,7 +22,7 @@ async function main(file = 'YOUR_FILE_NAME') {
      * TODO(developer): Uncomment these variables before running the sample.
      */
     // const file = 'YOUR_FILE_NAME';
-        
+
     const [importOperation] = await datastore.import({file});
 
     // Uncomment to await the results of the operation.
