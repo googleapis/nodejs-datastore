@@ -17,35 +17,6 @@ import {CallType, GrpcErrorType} from '../mock-server/datastore-server';
 import grpc = require('@grpc/grpc-js');
 import {ServiceError} from 'google-gax';
 
-/**
- * Simulates a non-retryable error response from a gRPC service.
- *
- * This function is designed for use in mock server setups during testing.
- * When invoked as a gRPC endpoint handler, it responds with a pre-configured
- * error object representing a non-retryable error. The error includes a
- * NOT_FOUND code (5), a fixed details message, and some metadata.
- *
- * @param {any} call - The gRPC call object, representing the incoming request.
- * @param {function} callback - The callback function to be invoked with the
- *   simulated error response. It expects two arguments: an error object and an
- *   empty object (representing no response data).
- */
-export function sendNonRetryableError<ResponseType>(
-  call: CallType,
-  callback: (arg1: GrpcErrorType, arg2: ResponseType) => {},
-) {
-  const metadata = new grpc.Metadata();
-  metadata.set(
-    'grpc-server-stats-bin',
-    Buffer.from([0, 0, 116, 73, 159, 3, 0, 0, 0, 0]),
-  );
-  const error = new Error('error message') as ServiceError;
-  error.code = 5;
-  error.details = 'error details';
-  error.metadata = metadata;
-  callback(error, {} as ResponseType);
-}
-
 export class ErrorGenerator {
   private errorSeriesCount = 0;
 
