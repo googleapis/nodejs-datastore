@@ -44,16 +44,17 @@ describe('Should make calls to runQuery', () => {
             const message = (e as Error).message;
             console.log('The error message:');
             console.log(message);
+            const regexPattern = /[.*+?^${}()|[\]\\]/g;
             const substringToFind1 =
               'Total timeout of API google.datastore.v1.Datastore exceeded 5000 milliseconds retrying error Error: 14 UNAVAILABLE: error details: error count:';
             const escapedSubstringRegex1 = new RegExp(
-              substringToFind1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+              substringToFind1.replace(regexPattern, '\\$&'),
             );
             assert.match(message, escapedSubstringRegex1);
             const substringToFind2 =
               'before any response was received. : Previous errors : [{message: 14 UNAVAILABLE: error details: error count: 1, code: 14, details: , note: },{message: 14 UNAVAILABLE: error details: error count: 2, code: 14, details: , note: },';
             const escapedSubstringRegex2 = new RegExp(
-              substringToFind2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+              substringToFind2.replace(regexPattern, '\\$&'),
             );
             assert.match(message, escapedSubstringRegex2);
             await shutdownServer(server);
