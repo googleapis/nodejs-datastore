@@ -81,11 +81,9 @@ export function shutdownServer(server: grpc.Server) {
     server.tryShutdown((error: Error | undefined) => {
       if (error) {
         // If the callback is called with an error, reject the promise.
-        console.error('Server shutdown failed:', error);
         reject(error);
       } else {
         // If the callback is called without an error, resolve the promise.
-        console.log('Server has been shut down successfully.');
         resolve('done');
       }
     });

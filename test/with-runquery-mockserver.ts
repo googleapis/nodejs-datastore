@@ -36,15 +36,12 @@ describe('Should make calls to runQuery', () => {
             const query = datastore.createQuery('Post').hasAncestor(postKey);
             // Make the call with a shorter timeout:
             await datastore.runQuery(query, {gaxOptions: {timeout: 5000}});
-            console.log('call failed');
             assert.fail('The call should not have succeeded');
           } catch (e) {
             // The test should produce the right error message here for the user.
             // TODO: Later on we are going to decide on what the error message should be
             // The error message is based on client library behavior.
             const message = (e as Error).message;
-            console.log('The error message:');
-            console.log(message);
             const searchValue = /[.*+?^${}()|[\]\\]/g;
             const replaceValue = '\\$&';
             const substringToFind1 =
