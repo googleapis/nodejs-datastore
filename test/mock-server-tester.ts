@@ -12,10 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  CallType,
-  GrpcErrorType,
-} from '../mock-server/datastore-server';
+import {CallType, GrpcErrorType} from '../mock-server/datastore-server';
 
 import grpc = require('@grpc/grpc-js');
 import {ServiceError} from 'google-gax';
