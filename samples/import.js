@@ -22,7 +22,7 @@ async function main(file = 'YOUR_FILE_NAME') {
      * TODO(developer): Uncomment these variables before running the sample.
      */
     // const file = 'YOUR_FILE_NAME';
-
+        
     const [importOperation] = await datastore.import({file});
 
     // Uncomment to await the results of the operation.
@@ -34,8 +34,8 @@ async function main(file = 'YOUR_FILE_NAME') {
     // You may also choose to include only specific kinds and namespaces.
     const [specificImportOperation] = await datastore.import({
       file,
-      kinds: ['Employee', 'Task'],
-      namespaces: ['Company'],
+      kinds: [], // ie. kinds: ['Employee', 'Task'],
+      namespaces: [], // ie. namespaces: ['Company']
     });
 
     // Uncomment to await the results of the operation.
