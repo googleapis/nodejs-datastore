@@ -69,7 +69,7 @@ import * as protos from '../protos/protos';
 import {serializer} from 'google-gax';
 import * as gax from 'google-gax';
 import {SaveDataValue} from './interfaces/save';
-import {Message} from 'protobufjs';
+
 type JSONValue =
   | string
   | number
