@@ -17,21 +17,17 @@ import {Datastore} from '../src';
 
 import {startServer} from '../mock-server/datastore-server';
 
-describe.skip('Try server', () => {
-  it('should try to connect to the running server', done => {
+describe('Try server', () => {
+  it.skip('should try to connect to the running server', done => {
     startServer(async () => {
-      try {
-        const datastore = new Datastore({
-          namespace: `${Date.now()}`,
-          apiEndpoint: 'localhost:50051',
-        });
-        const postKey = datastore.key(['Post', 'post1']);
-        const query = datastore.createQuery('Post').hasAncestor(postKey);
-        const allResults = await datastore.runQuery(query);
-        done();
-      } catch (e) {
-        done(e);
-      }
+      const datastore = new Datastore({
+        namespace: `${Date.now()}`,
+        apiEndpoint: 'localhost:50051',
+      });
+      const postKey = datastore.key(['Post', 'post1']);
+      const query = datastore.createQuery('Post').hasAncestor(postKey);
+      const allResults = await datastore.runQuery(query);
+      done();
     });
   });
 });
