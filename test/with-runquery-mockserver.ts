@@ -30,6 +30,7 @@ describe('Should make calls to runQuery', () => {
             const datastore = new Datastore({
               namespace: `${Date.now()}`,
               apiEndpoint: 'localhost:50051',
+              projectId: 'test-project', // Provided to avoid 'Unable to detect a Project Id in the current environment.'
             });
             const postKey = datastore.key(['Post', 'post1']);
             const query = datastore.createQuery('Post').hasAncestor(postKey);
@@ -58,12 +59,12 @@ describe('Should make calls to runQuery', () => {
               substringToFind2.replace(searchValue, replaceValue),
             );
             assert.match(message, escapedSubstringRegex2);
-            await shutdownServer(server);
             done();
           }
         } catch (e) {
           done(e);
         }
+        await shutdownServer(server);
       },
       {runQuery: errorGenerator.sendErrorSeries(grpc.status.UNAVAILABLE)},
     );
