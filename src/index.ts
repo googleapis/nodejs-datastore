@@ -107,7 +107,7 @@ export interface LongRunningCallback {
   (
     err: ServiceError | null,
     operation?: Operation,
-    apiResponse?: google.longrunning.IOperation,
+    apiResponse?: google.longrunning.IOperation
   ): void;
 }
 export type LongRunningResponse = [Operation, google.longrunning.IOperation];
@@ -507,7 +507,7 @@ class Datastore extends DatastoreRequest {
       new Set([
         ...gapic.v1.DatastoreClient.scopes,
         ...gapic.v1.DatastoreAdminClient.scopes,
-      ]),
+      ])
     );
 
     this.options = Object.assign(
@@ -518,7 +518,7 @@ class Datastore extends DatastoreRequest {
         servicePath: this.baseUrl_,
         port: typeof this.port_ === 'number' ? this.port_ : 443,
       },
-      options,
+      options
     );
     const isUsingLocalhost =
       this.baseUrl_ &&
@@ -563,7 +563,7 @@ class Datastore extends DatastoreRequest {
   export(config: ExportEntitiesConfig, callback: LongRunningCallback): void;
   export(
     config: ExportEntitiesConfig,
-    callback?: LongRunningCallback,
+    callback?: LongRunningCallback
   ): void | Promise<LongRunningResponse> {
     const reqOpts: ExportEntitiesConfig = {
       entityFilter: {},
@@ -611,7 +611,7 @@ class Datastore extends DatastoreRequest {
         gaxOpts: config.gaxOptions,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback as any,
+      callback as any
     );
   }
 
@@ -633,7 +633,7 @@ class Datastore extends DatastoreRequest {
   getIndexes(callback: GetIndexesCallback): void;
   getIndexes(
     optionsOrCallback?: GetIndexesOptions | GetIndexesCallback,
-    cb?: GetIndexesCallback,
+    cb?: GetIndexesCallback
   ): void | Promise<GetIndexesResponse> {
     let options =
       typeof optionsOrCallback === 'object' ? optionsOrCallback : {};
@@ -685,7 +685,7 @@ class Datastore extends DatastoreRequest {
         const apiResp: google.datastore.admin.v1.IListIndexesResponse = resp[2];
 
         callback(err as ServiceError, indexes, nextQuery, apiResp);
-      },
+      }
     );
   }
 
@@ -713,7 +713,7 @@ class Datastore extends DatastoreRequest {
           next(null, indexInstance);
         },
       }),
-      () => {},
+      () => {}
     );
   }
 
@@ -751,7 +751,7 @@ class Datastore extends DatastoreRequest {
   import(config: ImportEntitiesConfig, callback: LongRunningCallback): void;
   import(
     config: ImportEntitiesConfig,
-    callback?: LongRunningCallback,
+    callback?: LongRunningCallback
   ): void | Promise<LongRunningResponse> {
     const reqOpts: ImportEntitiesConfig = {
       entityFilter: {},
@@ -799,7 +799,7 @@ class Datastore extends DatastoreRequest {
         gaxOpts: config.gaxOptions,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback as any,
+      callback as any
     );
   }
 
@@ -831,7 +831,7 @@ class Datastore extends DatastoreRequest {
   insert(entities: Entities, callback: InsertCallback): void;
   insert(
     entities: Entities,
-    callback?: InsertCallback,
+    callback?: InsertCallback
   ): void | Promise<InsertResponse> {
     entities = arrify(entities)
       .map(DatastoreRequest.prepareEntityObject_)
@@ -1082,13 +1082,13 @@ class Datastore extends DatastoreRequest {
   save(
     entities: Entities,
     gaxOptions: CallOptions,
-    callback: SaveCallback,
+    callback: SaveCallback
   ): void;
   save(entities: Entities, callback: SaveCallback): void;
   save(
     entities: Entities,
     gaxOptionsOrCallback?: CallOptions | SaveCallback,
-    cb?: SaveCallback,
+    cb?: SaveCallback
   ): void | Promise<SaveResponse> {
     entities = arrify(entities) as SaveEntity[];
     const gaxOptions =
@@ -1118,7 +1118,7 @@ class Datastore extends DatastoreRequest {
             method = entityObject.method;
           } else {
             throw new Error(
-              'Method ' + entityObject.method + ' not recognized.',
+              'Method ' + entityObject.method + ' not recognized.'
             );
           }
         }
@@ -1150,7 +1150,7 @@ class Datastore extends DatastoreRequest {
 
     function onCommit(
       err?: Error | null,
-      resp?: google.datastore.v1.ICommitResponse,
+      resp?: google.datastore.v1.ICommitResponse
     ) {
       if (err || !resp) {
         callback(err, resp);
@@ -1183,7 +1183,7 @@ class Datastore extends DatastoreRequest {
         reqOpts,
         gaxOpts: gaxOptions,
       },
-      onCommit,
+      onCommit
     );
   }
 
@@ -1205,7 +1205,7 @@ class Datastore extends DatastoreRequest {
   update(entities: Entities, callback: UpdateCallback): void;
   update(
     entities: Entities,
-    callback?: UpdateCallback,
+    callback?: UpdateCallback
   ): void | Promise<UpdateResponse> {
     entities = arrify(entities)
       .map(DatastoreRequest.prepareEntityObject_)
@@ -1235,7 +1235,7 @@ class Datastore extends DatastoreRequest {
   upsert(entities: Entities, callback: UpsertCallback): void;
   upsert(
     entities: Entities,
-    callback?: UpsertCallback,
+    callback?: UpsertCallback
   ): void | Promise<UpsertResponse> {
     entities = arrify(entities)
       .map(DatastoreRequest.prepareEntityObject_)
@@ -1529,7 +1529,7 @@ class Datastore extends DatastoreRequest {
   createQuery(namespace: string, kind: string[]): Query;
   createQuery(
     namespaceOrKind?: string | string[],
-    kind?: string | string[],
+    kind?: string | string[]
   ): Query {
     let namespace = namespaceOrKind as string;
     if (!kind) {
@@ -1708,17 +1708,17 @@ class Datastore extends DatastoreRequest {
   keyToLegacyUrlSafe(key: entity.Key, locationPrefix?: string): Promise<string>;
   keyToLegacyUrlSafe(
     key: entity.Key,
-    callback: KeyToLegacyUrlSafeCallback,
+    callback: KeyToLegacyUrlSafeCallback
   ): void;
   keyToLegacyUrlSafe(
     key: entity.Key,
     locationPrefix: string,
-    callback: KeyToLegacyUrlSafeCallback,
+    callback: KeyToLegacyUrlSafeCallback
   ): void;
   keyToLegacyUrlSafe(
     key: entity.Key,
     locationPrefixOrCallback?: string | KeyToLegacyUrlSafeCallback,
-    callback?: KeyToLegacyUrlSafeCallback,
+    callback?: KeyToLegacyUrlSafeCallback
   ): Promise<string> | void {
     const locationPrefix =
       typeof locationPrefixOrCallback === 'string'
