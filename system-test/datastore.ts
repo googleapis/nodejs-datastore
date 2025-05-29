@@ -58,7 +58,7 @@ async.each(
       };
 
       const {indexes: DECLARED_INDEXES} = yaml.load(
-        readFileSync(path.join(__dirname, 'data', 'index.yaml'), 'utf8')
+        readFileSync(path.join(__dirname, 'data', 'index.yaml'), 'utf8'),
       ) as {indexes: google.datastore.admin.v1.IIndex[]};
 
       // TODO/DX ensure indexes before testing, and maybe? cleanup indexes after
@@ -472,10 +472,10 @@ async.each(
                   key: secondaryDatastore.key(['Post', keyName]),
                   data: postData,
                 };
-              }
+              },
             );
             await Promise.all(
-              secondaryData.map(async datum => secondaryDatastore.save(datum))
+              secondaryData.map(async datum => secondaryDatastore.save(datum)),
             );
             // Next, ensure that the default database has the right records
             const query = defaultDatastore
@@ -486,7 +486,7 @@ async.each(
             assert.strictEqual(defaultDatastoreResults.length, 1);
             assert.strictEqual(
               defaultDatastoreResults[0].author,
-              defaultAuthor
+              defaultAuthor,
             );
             // Next, ensure that the other database has the right records
             await Promise.all(
@@ -497,12 +497,12 @@ async.each(
                 const [results] = await secondaryDatastore.runQuery(query);
                 assert.strictEqual(results.length, 1);
                 assert.strictEqual(results[0].author, datum.data.author);
-              })
+              }),
             );
             // Cleanup
             await defaultDatastore.delete(defaultPostKey);
             await Promise.all(
-              secondaryData.map(datum => secondaryDatastore.delete(datum.key))
+              secondaryData.map(datum => secondaryDatastore.delete(datum.key)),
             );
           });
         });
@@ -557,7 +557,7 @@ async.each(
           const data = {
             buf: Buffer.from(
               '010100000000000000000059400000000000006940',
-              'hex'
+              'hex',
             ),
           };
           await datastore.save({key: postKey, data});
@@ -657,7 +657,7 @@ async.each(
               key: postKey,
               method: 'insert',
               data: post,
-            })
+            }),
           );
           const [entity] = await datastore.get(postKey);
           delete entity[datastore.KEY];
@@ -672,7 +672,7 @@ async.each(
               key: postKey,
               method: 'update',
               data: post,
-            })
+            }),
           );
         });
 
@@ -721,7 +721,7 @@ async.each(
                   assert.strictEqual(numEntitiesEmitted, 2);
                   datastore.delete([key1, key2], done);
                 });
-            }
+            },
           );
         });
 
@@ -1101,7 +1101,7 @@ async.each(
                 and([
                   new PropertyFilter('family', '=', 'Stark'),
                   new PropertyFilter('appearances', '>=', 20),
-                ])
+                ]),
               );
             const [entities] = await datastore.runQuery(q);
             assert.strictEqual(entities!.length, 6);
@@ -1121,7 +1121,7 @@ async.each(
                 or([
                   new PropertyFilter('family', '=', 'Stark'),
                   new PropertyFilter('appearances', '>=', 20),
-                ])
+                ]),
               );
             const [entities] = await datastore.runQuery(q);
             assert.strictEqual(entities!.length, 8);
@@ -1213,7 +1213,7 @@ async.each(
             });
           }
           function checkAggregationQueryExecutionStats(
-            executionStats?: ExecutionStats
+            executionStats?: ExecutionStats,
           ) {
             // This function ensures the execution stats returned from the server are correct.
             // First fix stats values that will be different every time a query profiling
@@ -1263,7 +1263,7 @@ async.each(
                 assert(!info.explainMetrics);
                 assert.deepStrictEqual(
                   entities.sort(compare).map(entity => entity.name),
-                  [...characters].sort(compare).map(entity => entity.name)
+                  [...characters].sort(compare).map(entity => entity.name),
                 );
                 await transaction.commit();
               });
@@ -1285,7 +1285,7 @@ async.each(
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(
                   info.explainMetrics.planSummary,
-                  expectedRunQueryPlan
+                  expectedRunQueryPlan,
                 );
                 await transaction.commit();
               });
@@ -1307,7 +1307,7 @@ async.each(
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(
                   info.explainMetrics.planSummary,
-                  expectedRunQueryPlan
+                  expectedRunQueryPlan,
                 );
                 await transaction.commit();
               });
@@ -1326,13 +1326,13 @@ async.each(
                 }
                 assert.deepStrictEqual(
                   entities.sort(compare).map(entity => entity.name),
-                  [...characters].sort(compare).map(entity => entity.name)
+                  [...characters].sort(compare).map(entity => entity.name),
                 );
                 assert(info.explainMetrics);
                 checkQueryExecutionStats(info.explainMetrics.executionStats);
                 assert.deepStrictEqual(
                   info.explainMetrics.planSummary,
-                  expectedRunQueryPlan
+                  expectedRunQueryPlan,
                 );
                 await transaction.commit();
               });
@@ -1360,7 +1360,7 @@ async.each(
                 try {
                   [entities, info] = await transaction.runAggregationQuery(
                     aggregate,
-                    {}
+                    {},
                   );
                 } catch (e) {
                   await transaction.rollback();
@@ -1378,7 +1378,7 @@ async.each(
                     aggregate,
                     {
                       explainOptions: {},
-                    }
+                    },
                   );
                 } catch (e) {
                   await transaction.rollback();
@@ -1388,7 +1388,7 @@ async.each(
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(
                   info.explainMetrics.planSummary,
-                  expectedRunAggregationQueryPlan
+                  expectedRunAggregationQueryPlan,
                 );
                 await transaction.commit();
               });
@@ -1402,7 +1402,7 @@ async.each(
                       explainOptions: {
                         analyze: false,
                       },
-                    }
+                    },
                   );
                 } catch (e) {
                   await transaction.rollback();
@@ -1412,7 +1412,7 @@ async.each(
                 assert.deepStrictEqual(entities, []);
                 assert.deepStrictEqual(
                   info.explainMetrics.planSummary,
-                  expectedRunAggregationQueryPlan
+                  expectedRunAggregationQueryPlan,
                 );
                 await transaction.commit();
               });
@@ -1424,7 +1424,7 @@ async.each(
                     aggregate,
                     {
                       explainOptions: {analyze: true},
-                    }
+                    },
                   );
                 } catch (e) {
                   await transaction.rollback();
@@ -1433,11 +1433,11 @@ async.each(
                 assert(info.explainMetrics);
                 assert.deepStrictEqual(entities, expectedAggregationResults);
                 checkAggregationQueryExecutionStats(
-                  info.explainMetrics.executionStats
+                  info.explainMetrics.executionStats,
                 );
                 assert.deepStrictEqual(
                   info.explainMetrics.planSummary,
-                  expectedRunAggregationQueryPlan
+                  expectedRunAggregationQueryPlan,
                 );
                 await transaction.commit();
               });
@@ -1450,7 +1450,7 @@ async.each(
               assert(!info.explainMetrics);
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
-                [...characters].sort(compare).map(entity => entity.name)
+                [...characters].sort(compare).map(entity => entity.name),
               );
             });
             it('should run a query with explain options and no analyze option specified', async () => {
@@ -1462,7 +1462,7 @@ async.each(
               assert(!info.explainMetrics.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunQueryPlan
+                expectedRunQueryPlan,
               );
             });
             it('should run a query with explain options and analyze set to false', async () => {
@@ -1474,7 +1474,7 @@ async.each(
               assert(!info.explainMetrics.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunQueryPlan
+                expectedRunQueryPlan,
               );
             });
             it('should run a query with explain options and analyze set to true', async () => {
@@ -1483,13 +1483,13 @@ async.each(
               });
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
-                [...characters].sort(compare).map(entity => entity.name)
+                [...characters].sort(compare).map(entity => entity.name),
               );
               assert(info.explainMetrics);
               checkQueryExecutionStats(info.explainMetrics.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunQueryPlan
+                expectedRunQueryPlan,
               );
             });
           });
@@ -1500,7 +1500,7 @@ async.each(
               assert(!info.explainMetrics);
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
-                [...characters].sort(compare).map(entity => entity.name)
+                [...characters].sort(compare).map(entity => entity.name),
               );
             });
             it('should run a query with explain options and no value set for analyze', async () => {
@@ -1510,7 +1510,7 @@ async.each(
               assert(!info.explainMetrics.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunQueryPlan
+                expectedRunQueryPlan,
               );
             });
             it('should run a query with explain options and analyze set to false', async () => {
@@ -1522,7 +1522,7 @@ async.each(
               assert(!info.explainMetrics.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunQueryPlan
+                expectedRunQueryPlan,
               );
             });
             it('should run a query with explain options and analyze set to true', async () => {
@@ -1531,14 +1531,14 @@ async.each(
               });
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
-                [...characters].sort(compare).map(entity => entity.name)
+                [...characters].sort(compare).map(entity => entity.name),
               );
               assert(info.explainMetrics);
               checkQueryExecutionStats(info.explainMetrics.executionStats);
               assert(info.explainMetrics.planSummary);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunQueryPlan
+                expectedRunQueryPlan,
               );
             });
           });
@@ -1562,7 +1562,7 @@ async.each(
                     entities
                       .sort(compare)
                       .map((entity: Entity) => entity?.name),
-                    [...characters].sort(compare).map(entity => entity.name)
+                    [...characters].sort(compare).map(entity => entity.name),
                   );
                   assert(!savedInfo.explainMetrics);
                   resolve();
@@ -1590,7 +1590,7 @@ async.each(
                   assert(!savedInfo.explainMetrics.executionStats);
                   assert.deepStrictEqual(
                     savedInfo.explainMetrics.planSummary,
-                    expectedRunQueryPlan
+                    expectedRunQueryPlan,
                   );
                   resolve();
                 });
@@ -1619,7 +1619,7 @@ async.each(
                   assert(!savedInfo.explainMetrics.executionStats);
                   assert.deepStrictEqual(
                     savedInfo.explainMetrics.planSummary,
-                    expectedRunQueryPlan
+                    expectedRunQueryPlan,
                   );
                   resolve();
                 });
@@ -1645,15 +1645,15 @@ async.each(
                     entities
                       .sort(compare)
                       .map((entity: Entity) => entity?.name),
-                    [...characters].sort(compare).map(entity => entity.name)
+                    [...characters].sort(compare).map(entity => entity.name),
                   );
                   assert(savedInfo.explainMetrics);
                   checkQueryExecutionStats(
-                    savedInfo.explainMetrics.executionStats
+                    savedInfo.explainMetrics.executionStats,
                   );
                   assert.deepStrictEqual(
                     savedInfo.explainMetrics.planSummary,
-                    expectedRunQueryPlan
+                    expectedRunQueryPlan,
                   );
                   resolve();
                 });
@@ -1681,14 +1681,14 @@ async.each(
                 aggregate,
                 {
                   explainOptions: {},
-                }
+                },
               );
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
               assert(!info.explainMetrics.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunAggregationQueryPlan
+                expectedRunAggregationQueryPlan,
               );
             });
             it('should run an aggregation query with explain options specified and analyze set to false', async () => {
@@ -1696,14 +1696,14 @@ async.each(
                 aggregate,
                 {
                   explainOptions: {analyze: false},
-                }
+                },
               );
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
               assert(!info.explainMetrics.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunAggregationQueryPlan
+                expectedRunAggregationQueryPlan,
               );
             });
             it('should run an aggregation query with explain options and analyze set to true', async () => {
@@ -1711,16 +1711,16 @@ async.each(
                 aggregate,
                 {
                   explainOptions: {analyze: true},
-                }
+                },
               );
               assert.deepStrictEqual(entities, expectedAggregationResults);
               assert(info.explainMetrics);
               checkAggregationQueryExecutionStats(
-                info.explainMetrics.executionStats
+                info.explainMetrics.executionStats,
               );
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunAggregationQueryPlan
+                expectedRunAggregationQueryPlan,
               );
             });
           });
@@ -1748,7 +1748,7 @@ async.each(
               assert(!info.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunAggregationQueryPlan
+                expectedRunAggregationQueryPlan,
               );
             });
             it('should run an aggregation query with explain options and analyze set to false', async () => {
@@ -1762,7 +1762,7 @@ async.each(
               assert(!info.executionStats);
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunAggregationQueryPlan
+                expectedRunAggregationQueryPlan,
               );
             });
             it('should run an aggregation query with explain options specified and analyze set to true', async () => {
@@ -1772,11 +1772,11 @@ async.each(
               assert.deepStrictEqual(entities, expectedAggregationResults);
               assert(info.explainMetrics);
               checkAggregationQueryExecutionStats(
-                info.explainMetrics.executionStats
+                info.explainMetrics.executionStats,
               );
               assert.deepStrictEqual(
                 info.explainMetrics.planSummary,
-                expectedRunAggregationQueryPlan
+                expectedRunAggregationQueryPlan,
               );
             });
           });
@@ -1871,7 +1871,7 @@ async.each(
             } catch (err: any) {
               assert.strictEqual(
                 err.message,
-                '3 INVALID_ARGUMENT: Aggregations are not supported for the property: __key__'
+                '3 INVALID_ARGUMENT: Aggregations are not supported for the property: __key__',
               );
             }
           });
@@ -1938,7 +1938,7 @@ async.each(
             const aggregate = datastore
               .createAggregationQuery(q)
               .addAggregation(
-                AggregateField.average('appearances').alias('avg1')
+                AggregateField.average('appearances').alias('avg1'),
               );
             const [results] = await datastore.runAggregationQuery(aggregate);
             assert.deepStrictEqual(results, [{avg1: 28.166666666666668}]);
@@ -1948,7 +1948,7 @@ async.each(
             const aggregate = datastore
               .createAggregationQuery(q)
               .addAggregation(
-                AggregateField.average('appearances').alias('avg1')
+                AggregateField.average('appearances').alias('avg1'),
               );
             const [results] = await datastore.runAggregationQuery(aggregate);
             assert.deepStrictEqual(results, [{avg1: 23.375}]);
@@ -2005,7 +2005,7 @@ async.each(
             } catch (err: any) {
               assert.strictEqual(
                 err.message,
-                '3 INVALID_ARGUMENT: Aggregations are not supported for the property: __key__'
+                '3 INVALID_ARGUMENT: Aggregations are not supported for the property: __key__',
               );
             }
           });
@@ -2171,7 +2171,7 @@ async.each(
             } catch (err: any) {
               assert.strictEqual(
                 err.message,
-                '3 INVALID_ARGUMENT: The maximum number of aggregations allowed in an aggregation query is 5. Received: 6'
+                '3 INVALID_ARGUMENT: The maximum number of aggregations allowed in an aggregation query is 5. Received: 6',
               );
             }
           });
@@ -2188,14 +2188,14 @@ async.each(
               .createQuery('Character')
               .filter('status', null)
               .filters.pop()?.val,
-            null
+            null,
           );
           assert.strictEqual(
             datastore
               .createQuery('Character')
               .filter('status', '=', null)
               .filters.pop()?.val,
-            null
+            null,
           );
         });
         it('should filter by key', async () => {
@@ -2606,7 +2606,7 @@ async.each(
                   });
                 });
               });
-            }
+            },
           );
         });
         describe('comparing times with and without transaction.run', async () => {
@@ -2780,7 +2780,7 @@ async.each(
             await datastore.delete(key);
           });
           async function doRunAggregationQueryPutCommit(
-            transaction: Transaction
+            transaction: Transaction,
           ) {
             const query = transaction.createQuery('Company');
             const aggregateQuery = transaction
@@ -2814,7 +2814,7 @@ async.each(
             await datastore.delete(key);
           });
           async function doPutRunAggregationQueryCommit(
-            transaction: Transaction
+            transaction: Transaction,
           ) {
             transaction.save({key, data: obj});
             const query = transaction.createQuery('Company');
@@ -2991,7 +2991,7 @@ async.each(
             const [results] = await datastore.runQuery(query);
             assert.deepStrictEqual(
               results.map(result => result.rating),
-              [100, 100]
+              [100, 100],
             );
           });
           it('should aggregate query within a count transaction', async () => {
@@ -3140,7 +3140,7 @@ async.each(
           const [indexes] = await datastore.getIndexes();
           assert.ok(
             indexes.length >= DECLARED_INDEXES.length,
-            'has at least the number of indexes per system-test/data/index.yaml'
+            'has at least the number of indexes per system-test/data/index.yaml',
           );
 
           // Comparing index.yaml and the actual defined index in Datastore requires
@@ -3151,11 +3151,11 @@ async.each(
           assert.ok(firstIndex, 'first index is readable');
           assert.ok(
             firstIndex.metadata!.properties,
-            'has properties collection'
+            'has properties collection',
           );
           assert.ok(
             firstIndex.metadata!.properties.length,
-            'with properties inside'
+            'with properties inside',
           );
           assert.ok(firstIndex.metadata!.ancestor, 'has the ancestor property');
         });
@@ -3184,7 +3184,7 @@ async.each(
           assert.deepStrictEqual(
             metadata,
             firstIndex.metadata,
-            'asked index is the same as received index'
+            'asked index is the same as received index',
           );
         });
       });
@@ -3204,7 +3204,7 @@ async.each(
           const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
           return new Promise(done => {
             console.info(
-              `retrying "${test.test?.title}" after attempt ${currentAttempt} in ${ms}ms`
+              `retrying "${test.test?.title}" after attempt ${currentAttempt} in ${ms}ms`,
             );
             setTimeout(done, ms);
           });
@@ -3234,7 +3234,7 @@ async.each(
             // Throw an error on every retry except the last one
             if (currentAttempt <= numberOfRetries) {
               throw Error(
-                'This is not the last retry so throw an error to force the test to run again'
+                'This is not the last retry so throw an error to force the test to run again',
               );
             }
             // Check that the attempt number and the number of times console.info is called is correct.
@@ -3268,7 +3268,7 @@ async.each(
             (
               importOperation.metadata as google.datastore.admin.v1.IImportEntitiesMetadata
             ).inputUrl,
-            `gs://${exportedFile.bucket.name}/${exportedFile.name}`
+            `gs://${exportedFile.bucket.name}/${exportedFile.name}`,
           );
 
           await importOperation.cancel();
@@ -3296,221 +3296,237 @@ async.each(
           assert.strictEqual(entity, undefined);
         });
       });
-      describe('Datastore mode data transforms', () => {
-        it('should perform a basic data transform', async () => {
-          const key = datastore.key(['Post', 'post1']);
-          const requestSpy = sinon.spy(datastore.request_);
-          datastore.request_ = requestSpy;
-          const result = await datastore.save({
-            key: key,
-            data: {
-              name: 'test',
-              p1: 3,
-              p2: 4,
-              p3: 5,
-              a1: [3, 4, 5],
-            },
-            transforms: [
-              {
-                property: 'p1',
-                setToServerValue: true,
-              },
-              {
-                property: 'p2',
-                increment: 4,
-              },
-              {
-                property: 'p3',
-                maximum: 9,
-              },
-              {
-                property: 'p2',
-                minimum: 6,
-              },
-              {
-                property: 'a1',
-                appendMissingElements: [5, 6],
-              },
-              {
-                property: 'a1',
-                removeAllFromArray: [3],
-              },
-            ],
-          });
-          // Clean the data from the server first before comparing:
-          result.forEach(serverResult => {
-            delete serverResult['indexUpdates'];
-            serverResult.mutationResults?.forEach(mutationResult => {
-              delete mutationResult['updateTime'];
-              delete mutationResult['createTime'];
-              delete mutationResult['version'];
-              mutationResult.transformResults?.forEach(transformResult => {
-                delete transformResult['timestampValue'];
-              });
-            });
-          });
-          // Now the data should have fixed values.
-          // Do a comparison against the expected result.
-          assert.deepStrictEqual(result, [
+      describe.only('Datastore mode data transforms', () => {
+        const key = datastore.key(['Post', 'post1']);
+        async.each(
+          [
             {
-              mutationResults: [
-                {
-                  transformResults: [
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      valueType: 'timestampValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      integerValue: '8',
-                      valueType: 'integerValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      integerValue: '9',
-                      valueType: 'integerValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      integerValue: '6',
-                      valueType: 'integerValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      nullValue: 'NULL_VALUE',
-                      valueType: 'nullValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      nullValue: 'NULL_VALUE',
-                      valueType: 'nullValue',
-                    },
-                  ],
-                  key: null,
-                  conflictDetected: false,
+              name: 'should perform a basic data transform',
+              saveArg: {
+                key: key,
+                data: {
+                  name: 'test',
+                  p1: 3,
+                  p2: 4,
+                  p3: 5,
+                  a1: [3, 4, 5],
                 },
-              ],
-              commitTime: null,
-            },
-          ]);
-          // Now check the value that was actually saved to the server:
-          const [entity] = await datastore.get(key);
-          const parsedResult = JSON.parse(JSON.stringify(entity));
-          delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
-          assert.deepStrictEqual(parsedResult, {
-            name: 'test',
-            a1: [4, 5, 6],
-            p2: 6,
-            p3: 9,
-          });
-          delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
-            .partitionId['namespaceId'];
-          assert.deepStrictEqual(requestSpy.args[0][0], {
-            client: 'DatastoreClient',
-            method: 'commit',
-            reqOpts: {
-              mutations: [
+                transforms: [
+                  {
+                    property: 'p1',
+                    setToServerValue: true,
+                  },
+                  {
+                    property: 'p2',
+                    increment: 4,
+                  },
+                  {
+                    property: 'p3',
+                    maximum: 9,
+                  },
+                  {
+                    property: 'p2',
+                    minimum: 6,
+                  },
+                  {
+                    property: 'a1',
+                    appendMissingElements: [5, 6],
+                  },
+                  {
+                    property: 'a1',
+                    removeAllFromArray: [3],
+                  },
+                ],
+              },
+              saveResult: [
                 {
-                  upsert: {
-                    key: {
-                      path: [
+                  mutationResults: [
+                    {
+                      transformResults: [
                         {
-                          kind: 'Post',
-                          name: 'post1',
+                          meaning: 0,
+                          excludeFromIndexes: false,
+                          valueType: 'timestampValue',
+                        },
+                        {
+                          meaning: 0,
+                          excludeFromIndexes: false,
+                          integerValue: '8',
+                          valueType: 'integerValue',
+                        },
+                        {
+                          meaning: 0,
+                          excludeFromIndexes: false,
+                          integerValue: '9',
+                          valueType: 'integerValue',
+                        },
+                        {
+                          meaning: 0,
+                          excludeFromIndexes: false,
+                          integerValue: '6',
+                          valueType: 'integerValue',
+                        },
+                        {
+                          meaning: 0,
+                          excludeFromIndexes: false,
+                          nullValue: 'NULL_VALUE',
+                          valueType: 'nullValue',
+                        },
+                        {
+                          meaning: 0,
+                          excludeFromIndexes: false,
+                          nullValue: 'NULL_VALUE',
+                          valueType: 'nullValue',
                         },
                       ],
-                      partitionId: {},
+                      key: null,
+                      conflictDetected: false,
                     },
-                    properties: {
-                      name: {
-                        stringValue: 'test',
-                      },
-                      p1: {
-                        integerValue: '3',
-                      },
-                      p2: {
-                        integerValue: '4',
-                      },
-                      p3: {
-                        integerValue: '5',
-                      },
-                      a1: {
-                        arrayValue: {
-                          values: [
+                  ],
+                  commitTime: null,
+                },
+              ],
+              serverValue: {
+                name: 'test',
+                a1: [4, 5, 6],
+                p2: 6,
+                p3: 9,
+              },
+              gapicRequest: {
+                client: 'DatastoreClient',
+                method: 'commit',
+                reqOpts: {
+                  mutations: [
+                    {
+                      upsert: {
+                        key: {
+                          path: [
                             {
-                              integerValue: '3',
-                            },
-                            {
-                              integerValue: '4',
-                            },
-                            {
-                              integerValue: '5',
+                              kind: 'Post',
+                              name: 'post1',
                             },
                           ],
+                          partitionId: {},
                         },
-                      },
-                    },
-                  },
-                  propertyTransforms: [
-                    {
-                      property: 'p1',
-                      setToServerValue: 1,
-                    },
-                    {
-                      property: 'p2',
-                      increment: {
-                        integerValue: '4',
-                      },
-                    },
-                    {
-                      property: 'p3',
-                      maximum: {
-                        integerValue: '9',
-                      },
-                    },
-                    {
-                      property: 'p2',
-                      minimum: {
-                        integerValue: '6',
-                      },
-                    },
-                    {
-                      property: 'a1',
-                      appendMissingElements: {
-                        values: [
-                          {
-                            integerValue: '5',
+                        properties: {
+                          name: {
+                            stringValue: 'test',
                           },
-                          {
-                            integerValue: '6',
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      property: 'a1',
-                      removeAllFromArray: {
-                        values: [
-                          {
+                          p1: {
                             integerValue: '3',
                           },
-                        ],
+                          p2: {
+                            integerValue: '4',
+                          },
+                          p3: {
+                            integerValue: '5',
+                          },
+                          a1: {
+                            arrayValue: {
+                              values: [
+                                {
+                                  integerValue: '3',
+                                },
+                                {
+                                  integerValue: '4',
+                                },
+                                {
+                                  integerValue: '5',
+                                },
+                              ],
+                            },
+                          },
+                        },
                       },
+                      propertyTransforms: [
+                        {
+                          property: 'p1',
+                          setToServerValue: 1,
+                        },
+                        {
+                          property: 'p2',
+                          increment: {
+                            integerValue: '4',
+                          },
+                        },
+                        {
+                          property: 'p3',
+                          maximum: {
+                            integerValue: '9',
+                          },
+                        },
+                        {
+                          property: 'p2',
+                          minimum: {
+                            integerValue: '6',
+                          },
+                        },
+                        {
+                          property: 'a1',
+                          appendMissingElements: {
+                            values: [
+                              {
+                                integerValue: '5',
+                              },
+                              {
+                                integerValue: '6',
+                              },
+                            ],
+                          },
+                        },
+                        {
+                          property: 'a1',
+                          removeAllFromArray: {
+                            values: [
+                              {
+                                integerValue: '3',
+                              },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
-              ],
+                gaxOpts: {},
+              },
             },
-            gaxOpts: {},
-          });
-        });
+          ],
+          async (testParameters: any) => {
+            it(testParameters.name, async () => {
+              const requestSpy = sinon.spy(datastore.request_);
+              datastore.request_ = requestSpy;
+              const result = await datastore.save(testParameters.saveArg);
+              // Clean the data from the server first before comparing:
+              result.forEach(serverResult => {
+                delete serverResult['indexUpdates'];
+                serverResult.mutationResults?.forEach(mutationResult => {
+                  delete mutationResult['updateTime'];
+                  delete mutationResult['createTime'];
+                  delete mutationResult['version'];
+                  mutationResult.transformResults?.forEach(transformResult => {
+                    delete transformResult['timestampValue'];
+                  });
+                });
+              });
+              // Now the data should have fixed values.
+              // Do a comparison against the expected result.
+              assert.deepStrictEqual(result, testParameters.saveResult);
+              // Now check the value that was actually saved to the server:
+              const [entity] = await datastore.get(key);
+              const parsedResult = JSON.parse(JSON.stringify(entity));
+              delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
+              assert.deepStrictEqual(parsedResult, testParameters.serverValue);
+              delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
+                .partitionId['namespaceId'];
+              assert.deepStrictEqual(
+                requestSpy.args[0][0],
+                testParameters.gapicRequest,
+              );
+            });
+          },
+        );
       });
     });
-  }
+  },
 );
