@@ -34,7 +34,7 @@ export function buildPropertyTransforms(transforms: PropertyTransform[]) {
           property,
           [castedType]: entity.encodeValue(
             transform[castedType],
-            property
+            property,
           ) as IValue,
         });
       }
