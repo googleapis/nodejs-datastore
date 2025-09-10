@@ -17,6 +17,14 @@ import {google} from '../../../protos/protos';
 import IValue = google.datastore.v1.IValue;
 import ServerValue = google.datastore.v1.PropertyTransform.ServerValue;
 
+/**
+ * This method takes the user supplied transforms object and returns a list of
+ * corresponding transforms that are instead in the shape of the protos so that
+ * they can be included in the grpc request to the service directly.
+ *
+ * @param transforms The transforms supplied by the user that the user intends
+ * to apply.
+ */
 export function buildPropertyTransforms(transforms: PropertyTransform[]) {
   const propertyTransforms: google.datastore.v1.IPropertyTransform[] = [];
   transforms.forEach((transform: PropertyTransform) => {

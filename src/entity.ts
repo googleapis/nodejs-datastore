@@ -1473,7 +1473,6 @@ interface EntityWithTransforms {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// TODO: Call out this interface change
 export type Entity = any & EntityWithTransforms;
 export type Entities = Entity | Entity[];
 
