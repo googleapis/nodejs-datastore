@@ -29,12 +29,17 @@ export function buildPropertyTransforms(transforms: PropertyTransform[]) {
   const propertyTransforms: google.datastore.v1.IPropertyTransform[] = [];
   transforms.forEach((transform: PropertyTransform) => {
     const property = transform.property;
+    // If the user's transform has a setToServerValue property then ensure the
+    // propertyTransforms sent in the request have a setToServerValue transform.
     if (transform.setToServerValue) {
       propertyTransforms.push({
         property,
         setToServerValue: ServerValue.REQUEST_TIME,
       });
     }
+    // If the transform has an 'increment', 'maximum' or 'minimum' property then
+    // add the corresponding property transform to the propertyTransforms in the
+    // request.
     ['increment', 'maximum', 'minimum'].forEach(type => {
       const castedType = type as 'increment' | 'maximum' | 'minimum';
       if (transform[castedType]) {
@@ -47,6 +52,9 @@ export function buildPropertyTransforms(transforms: PropertyTransform[]) {
         });
       }
     });
+    // If the transform has an 'appendMissingElements' or 'removeAllFromArray'
+    // property then add the corresponding property transform to the
+    // propertyTransforms in the request.
     ['appendMissingElements', 'removeAllFromArray'].forEach(type => {
       const castedType = type as 'appendMissingElements' | 'removeAllFromArray';
       if (transform[castedType]) {
