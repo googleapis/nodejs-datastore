@@ -18,7 +18,7 @@ import * as extend from 'extend';
 import * as is from 'is';
 import {Query, QueryProto, IntegerTypeCastOptions} from './query';
 import {PathType} from '.';
-import * as Protobuf from 'protobufjs';
+import {protobuf as Protobuf} from 'google-gax';
 import * as path from 'path';
 import {google} from '../protos/protos';
 import {and, PropertyFilter} from './filter';
