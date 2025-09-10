@@ -3298,234 +3298,236 @@ async.each(
       });
       describe.only('Datastore mode data transforms', () => {
         const key = datastore.key(['Post', 'post1']);
-        async.each(
-          [
-            {
-              name: 'should perform a basic data transform',
-              saveArg: {
-                key: key,
-                data: {
-                  name: 'test',
-                  p1: 3,
-                  p2: 4,
-                  p3: 5,
-                  a1: [3, 4, 5],
-                },
-                transforms: [
-                  {
-                    property: 'p1',
-                    setToServerValue: true,
-                  },
-                  {
-                    property: 'p2',
-                    increment: 4,
-                  },
-                  {
-                    property: 'p3',
-                    maximum: 9,
-                  },
-                  {
-                    property: 'p2',
-                    minimum: 6,
-                  },
-                  {
-                    property: 'a1',
-                    appendMissingElements: [5, 6],
-                  },
-                  {
-                    property: 'a1',
-                    removeAllFromArray: [3],
-                  },
-                ],
+        const standardTestCase = {
+          name: 'should perform a basic data transform',
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              p1: 3,
+              p2: 4,
+              p3: 5,
+              a1: [3, 4, 5],
+            },
+            transforms: [
+              {
+                property: 'p1',
+                setToServerValue: true,
               },
-              saveResult: [
+              {
+                property: 'p2',
+                increment: 4,
+              },
+              {
+                property: 'p3',
+                maximum: 9,
+              },
+              {
+                property: 'p2',
+                minimum: 6,
+              },
+              {
+                property: 'a1',
+                appendMissingElements: [5, 6],
+              },
+              {
+                property: 'a1',
+                removeAllFromArray: [3],
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
                 {
-                  mutationResults: [
+                  transformResults: [
                     {
-                      transformResults: [
-                        {
-                          meaning: 0,
-                          excludeFromIndexes: false,
-                          valueType: 'timestampValue',
-                        },
-                        {
-                          meaning: 0,
-                          excludeFromIndexes: false,
-                          integerValue: '8',
-                          valueType: 'integerValue',
-                        },
-                        {
-                          meaning: 0,
-                          excludeFromIndexes: false,
-                          integerValue: '9',
-                          valueType: 'integerValue',
-                        },
-                        {
-                          meaning: 0,
-                          excludeFromIndexes: false,
-                          integerValue: '6',
-                          valueType: 'integerValue',
-                        },
-                        {
-                          meaning: 0,
-                          excludeFromIndexes: false,
-                          nullValue: 'NULL_VALUE',
-                          valueType: 'nullValue',
-                        },
-                        {
-                          meaning: 0,
-                          excludeFromIndexes: false,
-                          nullValue: 'NULL_VALUE',
-                          valueType: 'nullValue',
-                        },
-                      ],
-                      key: null,
-                      conflictDetected: false,
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      valueType: 'timestampValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '8',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '9',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '6',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
                     },
                   ],
-                  commitTime: null,
+                  key: null,
+                  conflictDetected: false,
                 },
               ],
-              serverValue: {
-                name: 'test',
-                a1: [4, 5, 6],
-                p2: 6,
-                p3: 9,
-              },
-              gapicRequest: {
-                client: 'DatastoreClient',
-                method: 'commit',
-                reqOpts: {
-                  mutations: [
-                    {
-                      upsert: {
-                        key: {
-                          path: [
-                            {
-                              kind: 'Post',
-                              name: 'post1',
-                            },
-                          ],
-                          partitionId: {},
-                        },
-                        properties: {
-                          name: {
-                            stringValue: 'test',
-                          },
-                          p1: {
-                            integerValue: '3',
-                          },
-                          p2: {
-                            integerValue: '4',
-                          },
-                          p3: {
-                            integerValue: '5',
-                          },
-                          a1: {
-                            arrayValue: {
-                              values: [
-                                {
-                                  integerValue: '3',
-                                },
-                                {
-                                  integerValue: '4',
-                                },
-                                {
-                                  integerValue: '5',
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                      propertyTransforms: [
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            a1: [4, 5, 6],
+            p2: 6,
+            p3: 9,
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
                         {
-                          property: 'p1',
-                          setToServerValue: 1,
-                        },
-                        {
-                          property: 'p2',
-                          increment: {
-                            integerValue: '4',
-                          },
-                        },
-                        {
-                          property: 'p3',
-                          maximum: {
-                            integerValue: '9',
-                          },
-                        },
-                        {
-                          property: 'p2',
-                          minimum: {
-                            integerValue: '6',
-                          },
-                        },
-                        {
-                          property: 'a1',
-                          appendMissingElements: {
-                            values: [
-                              {
-                                integerValue: '5',
-                              },
-                              {
-                                integerValue: '6',
-                              },
-                            ],
-                          },
-                        },
-                        {
-                          property: 'a1',
-                          removeAllFromArray: {
-                            values: [
-                              {
-                                integerValue: '3',
-                              },
-                            ],
-                          },
+                          kind: 'Post',
+                          name: 'post1',
                         },
                       ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      p1: {
+                        integerValue: '3',
+                      },
+                      p2: {
+                        integerValue: '4',
+                      },
+                      p3: {
+                        integerValue: '5',
+                      },
+                      a1: {
+                        arrayValue: {
+                          values: [
+                            {
+                              integerValue: '3',
+                            },
+                            {
+                              integerValue: '4',
+                            },
+                            {
+                              integerValue: '5',
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'p1',
+                      setToServerValue: 1,
+                    },
+                    {
+                      property: 'p2',
+                      increment: {
+                        integerValue: '4',
+                      },
+                    },
+                    {
+                      property: 'p3',
+                      maximum: {
+                        integerValue: '9',
+                      },
+                    },
+                    {
+                      property: 'p2',
+                      minimum: {
+                        integerValue: '6',
+                      },
+                    },
+                    {
+                      property: 'a1',
+                      appendMissingElements: {
+                        values: [
+                          {
+                            integerValue: '5',
+                          },
+                          {
+                            integerValue: '6',
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      property: 'a1',
+                      removeAllFromArray: {
+                        values: [
+                          {
+                            integerValue: '3',
+                          },
+                        ],
+                      },
                     },
                   ],
                 },
-                gaxOpts: {},
-              },
+              ],
             },
-          ],
-          async (testParameters: any) => {
-            it(testParameters.name, async () => {
-              const requestSpy = sinon.spy(datastore.request_);
-              datastore.request_ = requestSpy;
-              const result = await datastore.save(testParameters.saveArg);
-              // Clean the data from the server first before comparing:
-              result.forEach(serverResult => {
-                delete serverResult['indexUpdates'];
-                serverResult.mutationResults?.forEach(mutationResult => {
-                  delete mutationResult['updateTime'];
-                  delete mutationResult['createTime'];
-                  delete mutationResult['version'];
-                  mutationResult.transformResults?.forEach(transformResult => {
-                    delete transformResult['timestampValue'];
-                  });
+            gaxOpts: {},
+          },
+        };
+        const standardTestCaseWithSetToServerFalse = JSON.parse(
+          JSON.stringify(standardTestCase),
+        );
+        const standardTestCaseWithStringValues = JSON.parse(
+          JSON.stringify(standardTestCase),
+        );
+        async.each([standardTestCase], async (testParameters: any) => {
+          it(testParameters.name, async () => {
+            const requestSpy = sinon.spy(datastore.request_);
+            datastore.request_ = requestSpy;
+            const result = await datastore.save(testParameters.saveArg);
+            // Clean the data from the server first before comparing:
+            result.forEach(serverResult => {
+              delete serverResult['indexUpdates'];
+              serverResult.mutationResults?.forEach(mutationResult => {
+                delete mutationResult['updateTime'];
+                delete mutationResult['createTime'];
+                delete mutationResult['version'];
+                mutationResult.transformResults?.forEach(transformResult => {
+                  delete transformResult['timestampValue'];
                 });
               });
-              // Now the data should have fixed values.
-              // Do a comparison against the expected result.
-              assert.deepStrictEqual(result, testParameters.saveResult);
-              // Now check the value that was actually saved to the server:
-              const [entity] = await datastore.get(key);
-              const parsedResult = JSON.parse(JSON.stringify(entity));
-              delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
-              assert.deepStrictEqual(parsedResult, testParameters.serverValue);
-              delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
-                .partitionId['namespaceId'];
-              assert.deepStrictEqual(
-                requestSpy.args[0][0],
-                testParameters.gapicRequest,
-              );
             });
-          },
-        );
+            // Now the data should have fixed values.
+            // Do a comparison against the expected result.
+            assert.deepStrictEqual(result, testParameters.saveResult);
+            // Now check the value that was actually saved to the server:
+            const [entity] = await datastore.get(key);
+            const parsedResult = JSON.parse(JSON.stringify(entity));
+            delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
+            assert.deepStrictEqual(parsedResult, testParameters.serverValue);
+            delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
+              .partitionId['namespaceId'];
+            assert.deepStrictEqual(
+              requestSpy.args[0][0],
+              testParameters.gapicRequest,
+            );
+          });
+        });
       });
     });
   },
