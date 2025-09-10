@@ -123,6 +123,8 @@ const gapic = Object.freeze({
   v1: require('./v1'),
 });
 
+// Just a comment.
+
 const urlSafeKey = new entity.URLSafeKey();
 
 /**
