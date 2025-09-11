@@ -11,27 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 import * as assert from 'assert';
-import {readFileSync} from 'fs';
+import { readFileSync } from 'fs';
 import * as path from 'path';
-import {after, before, describe, it} from 'mocha';
+import { after, before, describe, it } from 'mocha';
 import * as yaml from 'js-yaml';
-import {Datastore, DatastoreOptions, Index, Transaction} from '../src';
-import {google} from '../protos/protos';
-import {Storage} from '@google-cloud/storage';
-import {AggregateField, AggregateQuery} from '../src/aggregate';
-import {and, or, PropertyFilter} from '../src/filter';
-import {Entities, entity, Entity} from '../src/entity';
-import {Query, RunQueryInfo, ExecutionStats} from '../src/query';
+import { Datastore, DatastoreOptions, Index, Transaction } from '../src';
+import { google } from '../protos/protos';
+import { Storage } from '@google-cloud/storage';
+import { AggregateField, AggregateQuery } from '../src/aggregate';
+import { and, or, PropertyFilter } from '../src/filter';
+import { Entities, entity, Entity } from '../src/entity';
+import { Query, RunQueryInfo, ExecutionStats } from '../src/query';
 import KEY_SYMBOL = entity.KEY_SYMBOL;
-import {transactionExpiredError} from '../src/request';
+import { transactionExpiredError } from '../src/request';
 const sinon = require('sinon');
-
 const async = require('async');
-
 const SECOND_DATABASE_ID = 'multidb-test';
-
 async.each(
   [
     {
@@ -56,22 +52,19 @@ async.each(
         testKinds.push(keyObject.kind);
         return keyObject;
       };
-
-      const {indexes: DECLARED_INDEXES} = yaml.load(
+      const { indexes: DECLARED_INDEXES } = yaml.load(
         readFileSync(path.join(__dirname, 'data', 'index.yaml'), 'utf8'),
-      ) as {indexes: google.datastore.admin.v1.IIndex[]};
-
+      ) as { indexes: google.datastore.admin.v1.IIndex[] };
       // TODO/DX ensure indexes before testing, and maybe? cleanup indexes after
       //  possible implications with kokoro project
-
       // Gets the read time of the latest save so that the test isn't flakey due to race condition.
-      async function getReadTime(path: [{kind: string; name: string}]) {
+      async function getReadTime(path: [{ kind: string; name: string }]) {
         const projectId = await datastore.getProjectId();
         const request = {
           keys: [
             {
               path,
-              partitionId: {namespaceId: datastore.namespace},
+              partitionId: { namespaceId: datastore.namespace },
             },
           ],
           projectId,
@@ -83,7 +76,6 @@ async.each(
         }
         return parseInt(results[0].readTime.seconds) * 1000;
       }
-
       after(async () => {
         async function deleteEntities(kind: string) {
           const query = datastore.createQuery(kind).select('__key__');
@@ -95,17 +87,14 @@ async.each(
         }
         await Promise.all(testKinds.map(kind => deleteEntities(kind)));
       });
-
       it('should allocate IDs', async () => {
         const keys = await datastore.allocateIds(datastore.key('Kind'), 10);
         assert.ok(keys);
       });
-
       it('should get the project id', async () => {
         const projectId = await datastore.getProjectId();
         assert.notEqual(projectId, null);
       });
-
       describe('create, retrieve and delete', () => {
         const post = {
           title: 'How to make the perfect pizza in your grill',
@@ -120,7 +109,6 @@ async.each(
             views: 100,
           },
         };
-
         it('should excludeFromIndexes correctly', async () => {
           const longString = Buffer.alloc(1501, '.').toString();
           const postKey = datastore.key(['Post', 'post1']);
@@ -163,7 +151,6 @@ async.each(
               ],
             },
           };
-
           await datastore.save({
             key: postKey,
             data,
@@ -184,7 +171,6 @@ async.each(
           assert.deepStrictEqual(entity, data);
           await datastore.delete(postKey);
         });
-
         it('should remove index with using wildcard in excludeFromIndexes', async () => {
           const longString = Buffer.alloc(1501, '.').toString();
           const postKey = datastore.key(['Post', 'post3']);
@@ -227,7 +213,6 @@ async.each(
               ],
             },
           };
-
           const excludeFromIndexes = [
             'longString',
             'longStringArray[]',
@@ -235,7 +220,6 @@ async.each(
             'metadata.obj.*',
             'metadata.longStringArray[].*',
           ];
-
           await datastore.save({
             key: postKey,
             data,
@@ -247,7 +231,6 @@ async.each(
           assert.deepStrictEqual(entity, data);
           await datastore.delete(postKey);
         });
-
         it('should auto remove index with excludeLargeProperties enabled', async () => {
           const longString = Buffer.alloc(1501, '.').toString();
           const postKey = datastore.key(['Post', 'post2']);
@@ -290,7 +273,6 @@ async.each(
               ],
             },
           };
-
           await datastore.save({
             key: postKey,
             data,
@@ -302,25 +284,23 @@ async.each(
           assert.deepStrictEqual(entity, data);
           await datastore.delete(postKey);
         });
-
         it('should accurately save/get a large int value via Datastore.int()', async () => {
           const postKey = datastore.key('Team');
           const largeIntValueAsString = '9223372036854775807';
           const points = Datastore.int(largeIntValueAsString);
-          await datastore.save({key: postKey, data: {points}});
-          const [entity] = await datastore.get(postKey, {wrapNumbers: true});
+          await datastore.save({ key: postKey, data: { points } });
+          const [entity] = await datastore.get(postKey, { wrapNumbers: true });
           assert.strictEqual(entity.points.value, largeIntValueAsString);
           assert.throws(() => entity.points.valueOf());
           await datastore.delete(postKey);
         });
-
         it('should wrap specified properties via IntegerTypeCastOptions.properties', async () => {
           const postKey = datastore.key('Scores');
           const largeIntValueAsString = '9223372036854775807';
           const panthers = Datastore.int(largeIntValueAsString);
           const broncos = 922337203;
           let integerTypeCastFunctionCalled = 0;
-          await datastore.save({key: postKey, data: {panthers, broncos}});
+          await datastore.save({ key: postKey, data: { panthers, broncos } });
           const [entity] = await datastore.get(postKey, {
             wrapNumbers: {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -338,17 +318,15 @@ async.each(
           assert.strictEqual(entity.broncos, broncos);
           await datastore.delete(postKey);
         });
-
         it('should save/get/delete with a key name', async () => {
           const postKey = datastore.key(['Post', 'post1']);
-          await datastore.save({key: postKey, data: post});
+          await datastore.save({ key: postKey, data: post });
           const [entity] = await datastore.get(postKey);
           assert.deepStrictEqual(entity[datastore.KEY], postKey);
           delete entity[datastore.KEY];
           assert.deepStrictEqual(entity, post);
           await datastore.delete(postKey);
         });
-
         it('should save a nested name/value pair with name as a long string', async () => {
           const longString = Buffer.alloc(1501, '.').toString();
           const postKey = datastore.key(['Post', 'post1']);
@@ -379,15 +357,14 @@ async.each(
             excludeLargeProperties: true,
           });
         });
-
         describe('multi-db support for read and write operations', () => {
           const namespace = `${Date.now()}`;
           const keyHierarchy = ['Post', 'post1'];
-          const defaultDatastore = new Datastore({namespace});
+          const defaultDatastore = new Datastore({ namespace });
           it('should run a query with another database', async () => {
             // First verify that a record gets written to datastore
             const postKey = defaultDatastore.key(keyHierarchy);
-            await defaultDatastore.save({key: postKey, data: post});
+            await defaultDatastore.save({ key: postKey, data: post });
             const query = defaultDatastore
               .createQuery('Post')
               .hasAncestor(postKey);
@@ -428,7 +405,7 @@ async.each(
               namespace,
               databaseId: SECOND_DATABASE_ID,
             });
-            await otherDatastore.save({key: postKey, data: post});
+            await otherDatastore.save({ key: postKey, data: post });
             const [secondDatastoreResults] =
               await otherDatastore.runQuery(query);
             assert.strictEqual(secondDatastoreResults.length, 1);
@@ -506,7 +483,6 @@ async.each(
             );
           });
         });
-
         it('should save/get/delete from a snapshot', async () => {
           function sleep(ms: number) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -526,13 +502,13 @@ async.each(
           };
           const path = ['Post', 'post1'];
           const postKey = datastore.key(path);
-          await datastore.save({key: postKey, data: post});
+          await datastore.save({ key: postKey, data: post });
           await sleep(10000);
           const savedTime = Date.now();
           await sleep(1000);
           // Save new post2 data, but then verify the timestamp read has post1 data
-          await datastore.save({key: postKey, data: post2});
-          const [entity] = await datastore.get(postKey, {readTime: savedTime});
+          await datastore.save({ key: postKey, data: post2 });
+          const [entity] = await datastore.get(postKey, { readTime: savedTime });
           assert.deepStrictEqual(entity[datastore.KEY], postKey);
           const [entityNoOptions] = await datastore.get(postKey);
           assert.deepStrictEqual(entityNoOptions[datastore.KEY], postKey);
@@ -542,16 +518,14 @@ async.each(
           assert.deepStrictEqual(entityNoOptions, post2);
           await datastore.delete(postKey);
         });
-
         it('should save/get/delete with a numeric key id', async () => {
           const postKey = datastore.key(['Post', 123456789]);
-          await datastore.save({key: postKey, data: post});
+          await datastore.save({ key: postKey, data: post });
           const [entity] = await datastore.get(postKey);
           delete entity[datastore.KEY];
           assert.deepStrictEqual(entity, post);
           await datastore.delete(postKey);
         });
-
         it('should save/get/delete a buffer', async () => {
           const postKey = datastore.key(['Post']);
           const data = {
@@ -560,7 +534,7 @@ async.each(
               'hex',
             ),
           };
-          await datastore.save({key: postKey, data});
+          await datastore.save({ key: postKey, data });
           const assignedId = postKey.id;
           assert(assignedId);
           const [entity] = await datastore.get(postKey);
@@ -568,13 +542,12 @@ async.each(
           assert.deepStrictEqual(entity, data);
           await datastore.delete(datastore.key(['Post', assignedId as string]));
         });
-
         it('should save/get/delete an empty buffer', async () => {
           const postKey = datastore.key(['Post']);
           const data = {
             buf: Buffer.from([]),
           };
-          await datastore.save({key: postKey, data});
+          await datastore.save({ key: postKey, data });
           const assignedId = postKey.id;
           assert(assignedId);
           const [entity] = await datastore.get(postKey);
@@ -582,23 +555,19 @@ async.each(
           assert.deepStrictEqual(entity, data);
           await datastore.delete(datastore.key(['Post', assignedId as string]));
         });
-
         it('should save/get/delete with a generated key id', async () => {
           const postKey = datastore.key('Post');
-          await datastore.save({key: postKey, data: post});
-
+          await datastore.save({ key: postKey, data: post });
           // The key's path should now be complete.
           assert(postKey.id);
-
           const [entity] = await datastore.get(postKey);
           delete entity[datastore.KEY];
           assert.deepStrictEqual(entity, post);
           await datastore.delete(postKey);
         });
-
         it('should save/get/update', async () => {
           const postKey = datastore.key('Post');
-          await datastore.save({key: postKey, data: post});
+          await datastore.save({ key: postKey, data: post });
           const [entity] = await datastore.get(postKey);
           assert.strictEqual(entity.title, post.title);
           entity.title = 'Updated';
@@ -607,7 +576,6 @@ async.each(
           assert.strictEqual(entity2.title, 'Updated');
           await datastore.delete(postKey);
         });
-
         it('should save/get/merge', async () => {
           const postKey = datastore.key(['Post', 1]);
           const originalData = {
@@ -630,7 +598,6 @@ async.each(
           assert.strictEqual(entity.status, originalData.data.status);
           await datastore.delete(postKey);
         });
-
         it('should save and get with a string ID', async () => {
           const longIdKey = datastore.key([
             'Post',
@@ -645,11 +612,9 @@ async.each(
           const [entity] = await datastore.get(longIdKey);
           assert.strictEqual(entity.test, true);
         });
-
         it('should fail explicitly set second insert on save', async () => {
           const postKey = datastore.key('Post');
-          await datastore.save({key: postKey, data: post});
-
+          await datastore.save({ key: postKey, data: post });
           // The key's path should now be complete.
           assert(postKey.id);
           await assert.rejects(
@@ -664,7 +629,6 @@ async.each(
           assert.deepStrictEqual(entity, post);
           await datastore.delete(postKey);
         });
-
         it('should fail explicitly set first update on save', async () => {
           const postKey = datastore.key('Post');
           await assert.rejects(
@@ -675,7 +639,6 @@ async.each(
             }),
           );
         });
-
         it('should save/get/delete multiple entities at once', async () => {
           const post2 = {
             title: 'How to make the perfect homemade pasta',
@@ -689,28 +652,24 @@ async.each(
           const key1 = datastore.key('Post');
           const key2 = datastore.key('Post');
           await datastore.save([
-            {key: key1, data: post},
-            {key: key2, data: post2},
+            { key: key1, data: post },
+            { key: key2, data: post2 },
           ]);
           const [entities] = await datastore.get([key1, key2]);
           assert.strictEqual(entities.length, 2);
           await datastore.delete([key1, key2]);
         });
-
         it('should get multiple entities in a stream', done => {
           const key1 = datastore.key('Post');
           const key2 = datastore.key('Post');
-
           datastore.save(
             [
-              {key: key1, data: post},
-              {key: key2, data: post},
+              { key: key1, data: post },
+              { key: key2, data: post },
             ],
             err => {
               assert.ifError(err);
-
               let numEntitiesEmitted = 0;
-
               datastore
                 .createReadStream([key1, key2])
                 .on('error', done)
@@ -724,7 +683,6 @@ async.each(
             },
           );
         });
-
         it('should save keys as a part of entity and query by key', async () => {
           const personKey = datastore.key(['People', 'US', 'Person', 'name']);
           await datastore.save({
@@ -743,7 +701,6 @@ async.each(
           assert.deepStrictEqual(results![0].linkedTo, personKey);
           await datastore.delete(personKey);
         });
-
         it('should save with an empty buffer', async () => {
           const key = datastore.key(['TEST']);
           const result = await datastore.save({
@@ -756,7 +713,6 @@ async.each(
           const mutationResult = result.pop()?.mutationResults?.pop();
           assert.strictEqual(mutationResult?.key?.path?.pop()?.kind, 'TEST');
         });
-
         describe('entity types', () => {
           it('should save and decode an int', async () => {
             const integerValue = 2015;
@@ -771,7 +727,6 @@ async.each(
             const [entity] = await datastore.get(key);
             assert.strictEqual(entity.year, integerValue);
           });
-
           it('should save and decode a double', async () => {
             const doubleValue = 99.99;
             const doubleType = Datastore.double(doubleValue);
@@ -785,7 +740,6 @@ async.each(
             const [entity] = await datastore.get(key);
             assert.strictEqual(entity.nines, doubleValue);
           });
-
           it('should save and decode a geo point', async () => {
             const geoPointValue = {
               latitude: 40.6894,
@@ -804,10 +758,8 @@ async.each(
           });
         });
       });
-
       describe('querying the datastore', () => {
         const ancestor = datastore.key(['Book', 'GoT']);
-
         const keys = [
           // Paths:
           ['Rickard'],
@@ -821,7 +773,6 @@ async.each(
         ].map(path => {
           return datastore.key(['Book', 'GoT', 'Character'].concat(path));
         });
-
         const characters = [
           {
             name: 'Rickard',
@@ -872,7 +823,6 @@ async.each(
             alive: true,
           },
         ];
-
         before(async () => {
           // This 'sleep' function is used to ensure that when data is saved to datastore,
           // the time on the server is far enough ahead to be sure to be later than timeBeforeDataCreation
@@ -892,17 +842,15 @@ async.each(
           });
           await datastore.save(emptyData);
           timeBeforeDataCreation = await getReadTime([
-            {kind: 'Character', name: 'Rickard'},
+            { kind: 'Character', name: 'Rickard' },
           ]);
           // Sleep for 3 seconds so that any future reads will be later than timeBeforeDataCreation.
           await sleep(3000);
           await datastore.save(keysToSave);
         });
-
         after(async () => {
           await datastore.delete(keys);
         });
-
         it('should limit queries', async () => {
           const q = datastore
             .createQuery('Character')
@@ -917,7 +865,6 @@ async.each(
           const [secondEntities] = await datastore.runQuery(secondQ);
           assert.strictEqual(secondEntities!.length, 3);
         });
-
         it('should not go over a limit', async () => {
           const limit = 3;
           const q = datastore
@@ -927,7 +874,6 @@ async.each(
           const [results] = await datastore.runQuery(q);
           assert.strictEqual(results!.length, limit);
         });
-
         it('should run a query as a stream', done => {
           const q = datastore.createQuery('Character').hasAncestor(ancestor);
           let resultsReturned = 0;
@@ -940,7 +886,6 @@ async.each(
               done();
             });
         });
-
         it('should run a datastore query as a stream via query#runStream', done => {
           const q = datastore.createQuery('Character').hasAncestor(ancestor);
           let resultsReturned = 0;
@@ -952,9 +897,8 @@ async.each(
               done();
             });
         });
-
         it('should run a transaction query as a stream via query#runStream', done => {
-          const transaction = datastore.transaction({readOnly: true});
+          const transaction = datastore.transaction({ readOnly: true });
           const q = transaction.createQuery('Character').hasAncestor(ancestor);
           let resultsReturned = 0;
           q.runStream()
@@ -965,7 +909,6 @@ async.each(
               done();
             });
         });
-
         it('should not go over a limit with a stream', done => {
           const limit = 3;
           const q = datastore
@@ -982,7 +925,6 @@ async.each(
               done();
             });
         });
-
         it('should filter queries with simple indexes', async () => {
           const q = datastore
             .createQuery('Character')
@@ -991,7 +933,6 @@ async.each(
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 6);
         });
-
         it('should filter queries with NOT_EQUAL', async () => {
           const q = datastore
             .createQuery('Character')
@@ -1000,7 +941,6 @@ async.each(
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 6);
         });
-
         it('should filter queries with IN', async () => {
           const q = datastore
             .createQuery('Character')
@@ -1009,7 +949,6 @@ async.each(
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 3);
         });
-
         it('should filter queries with __key__ and IN', async () => {
           const key1 = datastore.key(['Book', 'GoT', 'Character', 'Rickard']);
           const key2 = datastore.key([
@@ -1041,7 +980,6 @@ async.each(
           assert.deepStrictEqual(entities[1][KEY_SYMBOL], key3);
           assert.deepStrictEqual(entities[2][KEY_SYMBOL], key2);
         });
-
         it('should filter queries with NOT_IN', async () => {
           const q = datastore
             .createQuery('Character')
@@ -1050,7 +988,6 @@ async.each(
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 5);
         });
-
         it('should filter queries with defined indexes', async () => {
           const q = datastore
             .createQuery('Character')
@@ -1181,7 +1118,7 @@ async.each(
               },
             ],
           };
-          const compare = (a: {name: string}, b: {name: string}) => {
+          const compare = (a: { name: string }, b: { name: string }) => {
             return a.name > b.name ? 1 : -1;
           };
           function checkQueryExecutionStats(executionStats?: ExecutionStats) {
@@ -1242,7 +1179,6 @@ async.each(
               },
             });
           }
-
           describe('when using transactions', () => {
             describe('when using the runQuery function with transactions', () => {
               let transaction: Transaction;
@@ -1296,7 +1232,7 @@ async.each(
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query, {
-                    explainOptions: {analyze: false},
+                    explainOptions: { analyze: false },
                   });
                 } catch (e) {
                   await transaction.rollback();
@@ -1318,7 +1254,7 @@ async.each(
                 let entities, info;
                 try {
                   [entities, info] = await transaction.runQuery(query, {
-                    explainOptions: {analyze: true},
+                    explainOptions: { analyze: true },
                   });
                 } catch (e) {
                   await transaction.rollback();
@@ -1423,7 +1359,7 @@ async.each(
                   [entities, info] = await transaction.runAggregationQuery(
                     aggregate,
                     {
-                      explainOptions: {analyze: true},
+                      explainOptions: { analyze: true },
                     },
                   );
                 } catch (e) {
@@ -1467,7 +1403,7 @@ async.each(
             });
             it('should run a query with explain options and analyze set to false', async () => {
               const [entities, info] = await datastore.runQuery(q, {
-                explainOptions: {analyze: false},
+                explainOptions: { analyze: false },
               });
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
@@ -1479,7 +1415,7 @@ async.each(
             });
             it('should run a query with explain options and analyze set to true', async () => {
               const [entities, info] = await datastore.runQuery(q, {
-                explainOptions: {analyze: true},
+                explainOptions: { analyze: true },
               });
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
@@ -1504,7 +1440,7 @@ async.each(
               );
             });
             it('should run a query with explain options and no value set for analyze', async () => {
-              const [entities, info] = await q.run({explainOptions: {}});
+              const [entities, info] = await q.run({ explainOptions: {} });
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
               assert(!info.explainMetrics.executionStats);
@@ -1515,7 +1451,7 @@ async.each(
             });
             it('should run a query with explain options and analyze set to false', async () => {
               const [entities, info] = await q.run({
-                explainOptions: {analyze: false},
+                explainOptions: { analyze: false },
               });
               assert.deepStrictEqual(entities, []);
               assert(info.explainMetrics);
@@ -1527,7 +1463,7 @@ async.each(
             });
             it('should run a query with explain options and analyze set to true', async () => {
               const [entities, info] = await q.run({
-                explainOptions: {analyze: true},
+                explainOptions: { analyze: true },
               });
               assert.deepStrictEqual(
                 entities.sort(compare).map(entity => entity.name),
@@ -1627,7 +1563,7 @@ async.each(
             });
             it('should call runQueryStream with explain options specified and analyze set to true', async () => {
               const stream = await datastore.runQueryStream(q, {
-                explainOptions: {analyze: true},
+                explainOptions: { analyze: true },
               });
               const entities: Entities = [];
               let savedInfo: RunQueryInfo;
@@ -1695,7 +1631,7 @@ async.each(
               const [entities, info] = await datastore.runAggregationQuery(
                 aggregate,
                 {
-                  explainOptions: {analyze: false},
+                  explainOptions: { analyze: false },
                 },
               );
               assert.deepStrictEqual(entities, []);
@@ -1710,7 +1646,7 @@ async.each(
               const [entities, info] = await datastore.runAggregationQuery(
                 aggregate,
                 {
-                  explainOptions: {analyze: true},
+                  explainOptions: { analyze: true },
                 },
               );
               assert.deepStrictEqual(entities, expectedAggregationResults);
@@ -1767,7 +1703,7 @@ async.each(
             });
             it('should run an aggregation query with explain options specified and analyze set to true', async () => {
               const [entities, info] = await aggregate.run({
-                explainOptions: {analyze: true},
+                explainOptions: { analyze: true },
               });
               assert.deepStrictEqual(entities, expectedAggregationResults);
               assert(info.explainMetrics);
@@ -1788,7 +1724,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.sum('appearances'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 187}]);
+            assert.deepStrictEqual(results, [{ property_1: 187 }]);
           });
           it('should run a sum aggregation with a list of aggregates', async () => {
             const q = datastore.createQuery('Character');
@@ -1800,7 +1736,7 @@ async.each(
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
             assert.deepStrictEqual(results, [
-              {property_1: 187, property_2: 187},
+              { property_1: 187, property_2: 187 },
             ]);
           });
           it('should run a sum aggregation having other filters', async () => {
@@ -1812,7 +1748,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.sum('appearances').alias('sum1'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{sum1: 169}]);
+            assert.deepStrictEqual(results, [{ sum1: 169 }]);
           });
           it('should run a sum aggregate filter with an alias', async () => {
             const q = datastore.createQuery('Character');
@@ -1820,7 +1756,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.sum('appearances').alias('sum1'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{sum1: 187}]);
+            assert.deepStrictEqual(results, [{ sum1: 187 }]);
           });
           it('should do multiple sum aggregations with aliases', async () => {
             const q = datastore.createQuery('Character');
@@ -1831,7 +1767,7 @@ async.each(
                 AggregateField.sum('appearances').alias('sum2'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{sum1: 187, sum2: 187}]);
+            assert.deepStrictEqual(results, [{ sum1: 187, sum2: 187 }]);
           });
           it('should run a sum aggregation filter with a limit', async () => {
             // When using a limit the test appears to use data points with the lowest appearance values.
@@ -1840,7 +1776,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.sum('appearances'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 91}]);
+            assert.deepStrictEqual(results, [{ property_1: 91 }]);
           });
           it('should run a sum aggregate filter with a limit and an alias', async () => {
             const q = datastore.createQuery('Character').limit(7);
@@ -1850,7 +1786,7 @@ async.each(
                 AggregateField.sum('appearances').alias('sum1'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{sum1: 154}]);
+            assert.deepStrictEqual(results, [{ sum1: 154 }]);
           });
           it('should run a sum aggregate filter against a non-numeric property value', async () => {
             const q = datastore.createQuery('Character');
@@ -1858,7 +1794,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregations([AggregateField.sum('family').alias('sum1')]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{sum1: 0}]);
+            assert.deepStrictEqual(results, [{ sum1: 0 }]);
           });
           it('should run a sum aggregate filter against __key__ property value', async () => {
             const q = datastore.createQuery('Character');
@@ -1885,7 +1821,7 @@ async.each(
                 AggregateField.sum('appearances').alias('sum1'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{sum1: 0}]);
+            assert.deepStrictEqual(results, [{ sum1: 0 }]);
           });
           it('should run a sum aggregate filter against a query from before the data creation', async () => {
             const q = datastore.createQuery('Character');
@@ -1897,7 +1833,7 @@ async.each(
             const [results] = await datastore.runAggregationQuery(aggregate, {
               readTime: timeBeforeDataCreation,
             });
-            assert.deepStrictEqual(results, [{sum1: 0}]);
+            assert.deepStrictEqual(results, [{ sum1: 0 }]);
           });
           it('should run a sum aggregate filter using the alias function, but with no alias', async () => {
             const q = datastore.createQuery('Character');
@@ -1905,7 +1841,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregations([AggregateField.sum('appearances').alias()]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 187}]);
+            assert.deepStrictEqual(results, [{ property_1: 187 }]);
           });
         });
         describe('with an average filter', () => {
@@ -1915,7 +1851,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.average('appearances'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 23.375}]);
+            assert.deepStrictEqual(results, [{ property_1: 23.375 }]);
           });
           it('should run an average aggregation with a list of aggregates', async () => {
             const q = datastore.createQuery('Character');
@@ -1927,7 +1863,7 @@ async.each(
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
             assert.deepStrictEqual(results, [
-              {property_1: 23.375, property_2: 23.375},
+              { property_1: 23.375, property_2: 23.375 },
             ]);
           });
           it('should run an average aggregation having other filters', async () => {
@@ -1941,7 +1877,7 @@ async.each(
                 AggregateField.average('appearances').alias('avg1'),
               );
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{avg1: 28.166666666666668}]);
+            assert.deepStrictEqual(results, [{ avg1: 28.166666666666668 }]);
           });
           it('should run an average aggregate filter with an alias', async () => {
             const q = datastore.createQuery('Character');
@@ -1951,7 +1887,7 @@ async.each(
                 AggregateField.average('appearances').alias('avg1'),
               );
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{avg1: 23.375}]);
+            assert.deepStrictEqual(results, [{ avg1: 23.375 }]);
           });
           it('should do multiple average aggregations with aliases', async () => {
             const q = datastore.createQuery('Character');
@@ -1962,7 +1898,7 @@ async.each(
                 AggregateField.average('appearances').alias('avg2'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{avg1: 23.375, avg2: 23.375}]);
+            assert.deepStrictEqual(results, [{ avg1: 23.375, avg2: 23.375 }]);
           });
           it('should run an average aggregation filter with a limit', async () => {
             const q = datastore.createQuery('Character').limit(5);
@@ -1970,7 +1906,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.average('appearances'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 18.2}]);
+            assert.deepStrictEqual(results, [{ property_1: 18.2 }]);
           });
           it('should run an average aggregate filter with a limit and an alias', async () => {
             const q = datastore.createQuery('Character').limit(7);
@@ -1980,7 +1916,7 @@ async.each(
                 AggregateField.average('appearances').alias('avg1'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{avg1: 22}]);
+            assert.deepStrictEqual(results, [{ avg1: 22 }]);
           });
           it('should run an average aggregate filter against a non-numeric property value', async () => {
             const q = datastore.createQuery('Character');
@@ -1990,7 +1926,7 @@ async.each(
                 AggregateField.average('family').alias('avg1'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{avg1: null}]);
+            assert.deepStrictEqual(results, [{ avg1: null }]);
           });
           it('should run an average aggregate filter against __key__ property value', async () => {
             const q = datastore.createQuery('Character');
@@ -2019,7 +1955,7 @@ async.each(
                 AggregateField.average('appearances').alias('avg1'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{avg1: null}]);
+            assert.deepStrictEqual(results, [{ avg1: null }]);
           });
           it('should run an average aggregate filter against a query from before the data creation', async () => {
             const q = datastore.createQuery('Character');
@@ -2031,7 +1967,7 @@ async.each(
             const [results] = await datastore.runAggregationQuery(aggregate, {
               readTime: timeBeforeDataCreation,
             });
-            assert.deepStrictEqual(results, [{avg1: null}]);
+            assert.deepStrictEqual(results, [{ avg1: null }]);
           });
           it('should run an average aggregate filter using the alias function, but with no alias', async () => {
             const q = datastore.createQuery('Character');
@@ -2039,7 +1975,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregations([AggregateField.average('appearances').alias()]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 23.375}]);
+            assert.deepStrictEqual(results, [{ property_1: 23.375 }]);
           });
         });
         describe('with a count filter', () => {
@@ -2049,7 +1985,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.count());
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 8}]);
+            assert.deepStrictEqual(results, [{ property_1: 8 }]);
           });
           it('should run a count aggregation with a list of aggregates', async () => {
             const q = datastore.createQuery('Character');
@@ -2060,7 +1996,7 @@ async.each(
                 AggregateField.count(),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 8, property_2: 8}]);
+            assert.deepStrictEqual(results, [{ property_1: 8, property_2: 8 }]);
           });
           it('should run a count aggregation having other filters', async () => {
             const q = datastore
@@ -2071,7 +2007,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.count().alias('total'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{total: 6}]);
+            assert.deepStrictEqual(results, [{ total: 6 }]);
           });
           it('should run a count aggregate filter with an alias', async () => {
             const q = datastore.createQuery('Character');
@@ -2079,7 +2015,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.count().alias('total'));
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{total: 8}]);
+            assert.deepStrictEqual(results, [{ total: 8 }]);
           });
           it('should do multiple count aggregations with aliases', async () => {
             const q = datastore.createQuery('Character');
@@ -2090,7 +2026,7 @@ async.each(
                 AggregateField.count().alias('total2'),
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{total: 8, total2: 8}]);
+            assert.deepStrictEqual(results, [{ total: 8, total2: 8 }]);
           });
           it('should run a count aggregation filter with a limit', async () => {
             const q = datastore.createQuery('Character').limit(5);
@@ -2098,7 +2034,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregation(AggregateField.count());
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 5}]);
+            assert.deepStrictEqual(results, [{ property_1: 5 }]);
           });
           it('should run a count aggregate filter with a limit and an alias', async () => {
             const q = datastore.createQuery('Character').limit(7);
@@ -2106,7 +2042,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregations([AggregateField.count().alias('total')]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{total: 7}]);
+            assert.deepStrictEqual(results, [{ total: 7 }]);
           });
           it('should run a count aggregate filter using the alias function, but with no alias', async () => {
             const q = datastore.createQuery('Character');
@@ -2114,7 +2050,7 @@ async.each(
               .createAggregationQuery(q)
               .addAggregations([AggregateField.count().alias()]);
             const [results] = await datastore.runAggregationQuery(aggregate);
-            assert.deepStrictEqual(results, [{property_1: 8}]);
+            assert.deepStrictEqual(results, [{ property_1: 8 }]);
           });
         });
         describe('with multiple types of filters', () => {
@@ -2129,7 +2065,7 @@ async.each(
               ]);
             const [results] = await datastore.runAggregationQuery(aggregate);
             assert.deepStrictEqual(results, [
-              {property_1: 8, property_2: 187, property_3: 23.375},
+              { property_1: 8, property_2: 187, property_3: 23.375 },
             ]);
           });
           it('should run multiple types of aggregations with and without aliases', async () => {
@@ -2181,7 +2117,6 @@ async.each(
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities.length, characters.length);
         });
-
         it('should construct filters by null status', async () => {
           assert.strictEqual(
             datastore
@@ -2207,24 +2142,20 @@ async.each(
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 1);
         });
-
         it('should order queries', async () => {
           const q = datastore
             .createQuery('Character')
             .hasAncestor(ancestor)
             .order('appearances');
-
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities![0].name, characters[0].name);
           assert.strictEqual(entities![7].name, characters[3].name);
         });
-
         it('should select projections', async () => {
           const q = datastore
             .createQuery('Character')
             .hasAncestor(ancestor)
             .select(['name', 'family']);
-
           const [entities] = await datastore.runQuery(q);
           delete entities[0][datastore.KEY];
           assert.deepStrictEqual(entities![0], {
@@ -2237,7 +2168,6 @@ async.each(
             family: 'Stark',
           });
         });
-
         it('should paginate with offset and limit', async () => {
           const q = datastore
             .createQuery('Character')
@@ -2245,7 +2175,6 @@ async.each(
             .offset(2)
             .limit(3)
             .order('appearances');
-
           const [entities, info] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, 3);
           assert.strictEqual(entities![0].name, 'Robb');
@@ -2260,7 +2189,6 @@ async.each(
           assert.strictEqual(secondEntities![0].name, 'Sansa');
           assert.strictEqual(secondEntities![2].name, 'Arya');
         });
-
         it('should resume from a start cursor', async () => {
           const q = datastore
             .createQuery('Character')
@@ -2279,7 +2207,6 @@ async.each(
           assert.strictEqual(secondEntities![0].name, 'Catelyn');
           assert.strictEqual(secondEntities![3].name, 'Arya');
         });
-
         it('should group queries', async () => {
           const q = datastore
             .createQuery('Character')
@@ -2288,12 +2215,10 @@ async.each(
           const [entities] = await datastore.runQuery(q);
           assert.strictEqual(entities!.length, characters.length - 1);
         });
-
         it('should query from the Query object', async () => {
           await datastore.createQuery('Character').run();
         });
       });
-
       describe('querying the datastore with an overflow data set', () => {
         const keys = [
           // Paths:
@@ -2337,7 +2262,7 @@ async.each(
             .addAggregation(AggregateField.sum('appearances'));
           const [results] = await datastore.runAggregationQuery(aggregate);
           assert.deepStrictEqual(results, [
-            {property_1: -18446744073709552000},
+            { property_1: -18446744073709552000 },
           ]);
         });
         it('should run an average aggregation with an overflow dataset', async () => {
@@ -2346,7 +2271,7 @@ async.each(
             .createAggregationQuery(q)
             .addAggregation(AggregateField.average('appearances'));
           const [results] = await datastore.runAggregationQuery(aggregate);
-          assert.deepStrictEqual(results, [{property_1: -9223372036854776000}]);
+          assert.deepStrictEqual(results, [{ property_1: -9223372036854776000 }]);
         });
       });
       describe('querying the datastore with an NaN in the data set', () => {
@@ -2389,15 +2314,14 @@ async.each(
             .createAggregationQuery(q)
             .addAggregation(AggregateField.sum('appearances'));
           const [results] = await datastore.runAggregationQuery(aggregate);
-          assert.deepStrictEqual(results, [{property_1: 4}]);
+          assert.deepStrictEqual(results, [{ property_1: 4 }]);
         });
         it('should run an average aggregation', async () => {
           const q = datastore.createQuery('Character');
-          const aggregate = datastore
-            .createAggregationQuery(q)
+          const aggregate = datastore.createAggregationQuery(q)
             .addAggregation(AggregateField.average('appearances'));
           const [results] = await datastore.runAggregationQuery(aggregate);
-          assert.deepStrictEqual(results, [{property_1: 4}]);
+          assert.deepStrictEqual(results, [{ property_1: 4 }]);
         });
       });
       describe('transactions with and without run', () => {
@@ -2613,7 +2537,7 @@ async.each(
           const key = datastore.key(['Company', 'Google']);
           // Record time for transaction with run
           const startTimeWithRun = new Date().getTime();
-          const transactionWithRun = datastore.transaction({readOnly: true});
+          const transactionWithRun = datastore.transaction({ readOnly: true });
           await transactionWithRun.run();
           await Promise.all([
             transactionWithRun.get(key),
@@ -2623,7 +2547,7 @@ async.each(
           const timeElapsedWithRun = new Date().getTime() - startTimeWithRun;
           // Record time for transaction without run
           const startTimeWithoutRun = new Date().getTime();
-          const transactionWithoutRun = datastore.transaction({readOnly: true});
+          const transactionWithoutRun = datastore.transaction({ readOnly: true });
           await Promise.all([
             transactionWithoutRun.get(key),
             transactionWithoutRun.get(key),
@@ -2644,7 +2568,7 @@ async.each(
           async function doLookupPutCommit(transaction: Transaction) {
             const [firstRead] = await transaction.get(key);
             assert(!firstRead);
-            transaction.save({key, data: obj});
+            transaction.save({ key, data: obj });
             await transaction.commit();
             const [entity] = await datastore.get(key);
             delete entity[datastore.KEY];
@@ -2669,7 +2593,7 @@ async.each(
             await datastore.delete(key);
           });
           async function doPutLookupCommit(transaction: Transaction) {
-            transaction.save({key, data: obj});
+            transaction.save({ key, data: obj });
             const [firstRead] = await transaction.get(key);
             assert(!firstRead);
             await transaction.commit();
@@ -2699,7 +2623,7 @@ async.each(
             const query = transaction.createQuery('Company');
             const [results] = await transaction.runQuery(query);
             assert.deepStrictEqual(results, []);
-            transaction.save({key, data: obj});
+            transaction.save({ key, data: obj });
             await transaction.commit();
             const [entity] = await datastore.get(key);
             delete entity[datastore.KEY];
@@ -2727,18 +2651,18 @@ async.each(
             const query = transaction.createQuery('Company');
             const [results] = await transaction.runQuery(query);
             assert.deepStrictEqual(results, []);
-            await datastore.save({key, data: obj});
+            await datastore.save({ key, data: obj });
             const [results2] = await transaction.runQuery(query);
             assert.deepStrictEqual(results2, []);
             await transaction.commit();
           }
           it('should run in a transaction', async () => {
-            const transaction = datastore.transaction({readOnly: true});
+            const transaction = datastore.transaction({ readOnly: true });
             await transaction.run();
             await doPutRunQueryCommit(transaction);
           });
           it('should run in a transaction without run', async () => {
-            const transaction = datastore.transaction({readOnly: true});
+            const transaction = datastore.transaction({ readOnly: true });
             await doPutRunQueryCommit(transaction);
           });
         });
@@ -2751,7 +2675,7 @@ async.each(
             await datastore.delete(key);
           });
           async function doPutRunQueryCommit(transaction: Transaction) {
-            transaction.save({key, data: obj});
+            transaction.save({ key, data: obj });
             const query = transaction.createQuery('Company');
             const [results] = await transaction.runQuery(query);
             assert.deepStrictEqual(results, []);
@@ -2770,7 +2694,6 @@ async.each(
             await doPutRunQueryCommit(transaction);
           });
         });
-
         describe('runAggregationQuery, put, commit', () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -2788,8 +2711,8 @@ async.each(
               .count('total');
             const [results] =
               await transaction.runAggregationQuery(aggregateQuery);
-            assert.deepStrictEqual(results, [{total: 0}]);
-            transaction.save({key, data: obj});
+            assert.deepStrictEqual(results, [{ total: 0 }]);
+            transaction.save({ key, data: obj });
             await transaction.commit();
             const [entity] = await datastore.get(key);
             delete entity[datastore.KEY];
@@ -2816,14 +2739,14 @@ async.each(
           async function doPutRunAggregationQueryCommit(
             transaction: Transaction,
           ) {
-            transaction.save({key, data: obj});
+            transaction.save({ key, data: obj });
             const query = transaction.createQuery('Company');
             const aggregateQuery = transaction
               .createAggregationQuery(query)
               .count('total');
             const [results] =
               await transaction.runAggregationQuery(aggregateQuery);
-            assert.deepStrictEqual(results, [{total: 0}]);
+            assert.deepStrictEqual(results, [{ total: 0 }]);
             await transaction.commit();
             const [entity] = await datastore.get(key);
             delete entity[datastore.KEY];
@@ -2858,12 +2781,11 @@ async.each(
           // Sleep for 10 seconds to ensure timeBeforeDataCreation includes the empty data
           await sleep(10000);
           timeBeforeDataCreation = await getReadTime([
-            {kind: 'Company', name: 'Google'},
+            { kind: 'Company', name: 'Google' },
           ]);
           // Sleep for 10 seconds so that any future reads will be later than timeBeforeDataCreation.
           await sleep(10000);
         });
-
         it('should run in a transaction', async () => {
           const key = datastore.key(['Company', 'Google']);
           const obj = {
@@ -2872,43 +2794,36 @@ async.each(
           const transaction = datastore.transaction();
           await transaction.run();
           await transaction.get(key);
-          transaction.save({key, data: obj});
+          transaction.save({ key, data: obj });
           await transaction.commit();
           const [entity] = await datastore.get(key);
           delete entity[datastore.KEY];
           assert.deepStrictEqual(entity, obj);
         });
-
         it('should commit all saves and deletes at the end', async () => {
           const deleteKey = datastore.key(['Company', 'Subway']);
           const key = datastore.key(['Company', 'Google']);
           const incompleteKey = datastore.key('Company');
-
           await datastore.save({
             key: deleteKey,
             data: {},
           });
           const transaction = datastore.transaction();
-
           await transaction.run();
           transaction.delete(deleteKey);
-
           transaction.save([
             {
               key,
-              data: {rating: 10},
+              data: { rating: 10 },
             },
             {
               key: incompleteKey,
-              data: {rating: 100},
+              data: { rating: 100 },
             },
           ]);
-
           await transaction.commit();
-
           // Incomplete key should have been given an ID.
           assert.strictEqual(incompleteKey.path.length, 2);
-
           const [[deletedEntity], [fetchedEntity]] = await Promise.all([
             // Deletes the key that is in the deletion queue.
             datastore.get(deleteKey),
@@ -2918,7 +2833,6 @@ async.each(
           assert.strictEqual(typeof deletedEntity, 'undefined');
           assert.strictEqual(fetchedEntity.rating, 10);
         });
-
         it('should use the last modification to a key', async () => {
           const incompleteKey = datastore.key('Company');
           const key = datastore.key(['Company', 'Google']);
@@ -2940,15 +2854,12 @@ async.each(
           ]);
           transaction.delete(key);
           await transaction.commit();
-
           // Should not return a result.
           const [entity] = await datastore.get(key);
           assert.strictEqual(entity, undefined);
-
           // Incomplete key should have been given an id.
           assert.strictEqual(incompleteKey.path.length, 2);
         });
-
         it('should query within a transaction', async () => {
           const transaction = datastore.transaction();
           await transaction.run();
@@ -2963,7 +2874,6 @@ async.each(
           assert(entities!.length > 0);
           await transaction.commit();
         });
-
         it('should query within a transaction at a previous read time', async () => {
           const transaction = datastore.transaction();
           await transaction.run();
@@ -2982,7 +2892,6 @@ async.each(
           assert(entitiesBefore!.length < entitiesNow!.length);
           await transaction.commit();
         });
-
         describe('aggregate query within a transaction', async () => {
           it('should run a query and return the results', async () => {
             // Add a test here to verify what the data is at this time.
@@ -3008,7 +2917,7 @@ async.each(
               await transaction.rollback();
               throw e;
             }
-            assert.deepStrictEqual(result, [{total: 2}]);
+            assert.deepStrictEqual(result, [{ total: 2 }]);
             await transaction.commit();
           });
           it('should aggregate query within a sum transaction', async () => {
@@ -3025,7 +2934,7 @@ async.each(
               await transaction.rollback();
               throw e;
             }
-            assert.deepStrictEqual(result, [{'total rating': 200}]);
+            assert.deepStrictEqual(result, [{ 'total rating': 200 }]);
             await transaction.commit();
           });
           it('should aggregate query within a average transaction', async () => {
@@ -3042,7 +2951,7 @@ async.each(
               await transaction.rollback();
               throw e;
             }
-            assert.deepStrictEqual(result, [{'average rating': 100}]);
+            assert.deepStrictEqual(result, [{ 'average rating': 100 }]);
             await transaction.commit();
           });
           it('readOnly transaction should see consistent snapshot of database', async () => {
@@ -3061,10 +2970,10 @@ async.each(
               return result;
             }
             const key = datastore.key(['Company', 'Google']);
-            const transaction = datastore.transaction({readOnly: true});
+            const transaction = datastore.transaction({ readOnly: true });
             await transaction.run();
             const results = await getResults(transaction);
-            assert.deepStrictEqual(results, [{total: 2}]);
+            assert.deepStrictEqual(results, [{ total: 2 }]);
             await datastore.save([
               {
                 key,
@@ -3074,7 +2983,7 @@ async.each(
               },
             ]);
             const resultsAgain = await getResults(transaction);
-            assert.deepStrictEqual(resultsAgain, [{total: 2}]);
+            assert.deepStrictEqual(resultsAgain, [{ total: 2 }]);
             await transaction.commit();
           });
           it('readOnly transaction should see consistent snapshot of database without transaction.run', async () => {
@@ -3093,9 +3002,9 @@ async.each(
               return result;
             }
             const key = datastore.key(['Company', 'Google']);
-            const transaction = datastore.transaction({readOnly: true});
+            const transaction = datastore.transaction({ readOnly: true });
             const results = await getResults(transaction);
-            assert.deepStrictEqual(results, [{total: 3}]);
+            assert.deepStrictEqual(results, [{ total: 3 }]);
             await datastore.save([
               {
                 key,
@@ -3105,34 +3014,30 @@ async.each(
               },
             ]);
             const resultsAgain = await getResults(transaction);
-            assert.deepStrictEqual(resultsAgain, [{total: 3}]);
+            assert.deepStrictEqual(resultsAgain, [{ total: 3 }]);
             await transaction.commit();
           });
         });
-
         it('should read in a readOnly transaction', async () => {
-          const transaction = datastore.transaction({readOnly: true});
+          const transaction = datastore.transaction({ readOnly: true });
           const key = datastore.key(['Company', 'Google']);
           await transaction.run();
           await transaction.get(key);
         });
-
         it('should read in a readOnly transaction without transaction.run', async () => {
-          const transaction = datastore.transaction({readOnly: true});
+          const transaction = datastore.transaction({ readOnly: true });
           const key = datastore.key(['Company', 'Google']);
           await transaction.get(key);
         });
-
         it('should not write in a readOnly transaction', async () => {
-          const transaction = datastore.transaction({readOnly: true});
+          const transaction = datastore.transaction({ readOnly: true });
           const key = datastore.key(['Company', 'Google']);
           await transaction.run();
           await transaction.get(key);
-          transaction.save({key, data: {}});
+          transaction.save({ key, data: {} });
           await assert.rejects(transaction.commit());
         });
       });
-
       describe('indexes', () => {
         // @TODO: Until the protos support creating indexes, these tests depend on
         // the remote state of declared indexes. Could be flaky!
@@ -3142,12 +3047,10 @@ async.each(
             indexes.length >= DECLARED_INDEXES.length,
             'has at least the number of indexes per system-test/data/index.yaml',
           );
-
           // Comparing index.yaml and the actual defined index in Datastore requires
           // assumptions to complete a shape transformation, so let's just see if
           // a returned index has the right shape and not inspect the values.
           const [firstIndex] = indexes;
-
           assert.ok(firstIndex, 'first index is readable');
           assert.ok(
             firstIndex.metadata!.properties,
@@ -3159,10 +3062,8 @@ async.each(
           );
           assert.ok(firstIndex.metadata!.ancestor, 'has the ancestor property');
         });
-
         it('should get all indexes as a stream', done => {
           const indexes: Index[] = [];
-
           datastore
             .getIndexesStream()
             .on('error', done)
@@ -3174,11 +3075,9 @@ async.each(
               done();
             });
         });
-
         it('should get a specific index', async () => {
           const [indexes] = await datastore.getIndexes();
           const [firstIndex] = indexes;
-
           const index = datastore.index(firstIndex.id);
           const [metadata] = await index.getMetadata();
           assert.deepStrictEqual(
@@ -3188,12 +3087,10 @@ async.each(
           );
         });
       });
-
       describe('importing and exporting entities', () => {
         const gcs = new Storage();
         const bucket = gcs.bucket('nodejs-datastore-system-tests');
         let currentAttempt = 0;
-
         const setupForDelay = () => {
           currentAttempt++;
         };
@@ -3209,17 +3106,14 @@ async.each(
             setTimeout(done, ms);
           });
         };
-
         describe('running tests against the delay function', () => {
           let consoleInfoFunction: (message: string) => void;
           let infoLogCount = 0;
-
           before(async () => {
             infoLogCount = 0;
             currentAttempt = 0;
             consoleInfoFunction = console.info;
           });
-
           it('should be sure that the delay function emits console info messages', async function () {
             // Override console.info to track the number of times it is called.
             console.info = (message: string) => {
@@ -3241,27 +3135,22 @@ async.each(
             assert.strictEqual(infoLogCount, numberOfRetries - 1);
             assert.strictEqual(currentAttempt, numberOfRetries + 1);
           });
-
           after(async () => {
             console.info = consoleInfoFunction;
           });
         });
-
         it('should export, then import entities', async function () {
           setupForDelay();
           this.retries(3);
           await delay(this);
-          const [exportOperation] = await datastore.export({bucket});
+          const [exportOperation] = await datastore.export({ bucket });
           await exportOperation.promise();
-
-          const [files] = await bucket.getFiles({maxResults: 1});
+          const [files] = await bucket.getFiles({ maxResults: 1 });
           const [exportedFile] = files;
           assert.ok(exportedFile.name.includes('overall_export_metadata'));
-
           const [importOperation] = await datastore.import({
             file: exportedFile,
           });
-
           // This is a >20 minute operation, so we're just going to make sure the
           // right type of operation was started.
           assert.strictEqual(
@@ -3270,11 +3159,9 @@ async.each(
             ).inputUrl,
             `gs://${exportedFile.bucket.name}/${exportedFile.name}`,
           );
-
           await importOperation.cancel();
         });
       });
-
       describe('using a custom endpoint', () => {
         it('should complete a request when using the default endpoint as a custom endpoint', async () => {
           const customDatastore = new Datastore({
@@ -3298,42 +3185,226 @@ async.each(
       });
       describe.only('Datastore mode data transforms', () => {
         const key = datastore.key(['Post', 'post1']);
-        // Add test case 1: A complex test case using multiple transforms:
-        const standardTestCase = {
-          name: 'should perform a basic data transform',
+        function getStandardTestCase() {
+          return {
+            name: 'should perform a basic data transform',
+            saveArg: {
+              key: key,
+              data: {
+                name: 'test',
+                p1: 3,
+                p2: 4,
+                p3: 5,
+                a1: [3, 4, 5],
+              },
+              transforms: [
+                {
+                  property: 'p1',
+                  setToServerValue: true,
+                },
+                {
+                  property: 'p2',
+                  increment: 4,
+                },
+                {
+                  property: 'p3',
+                  maximum: 9,
+                },
+                {
+                  property: 'p2',
+                  minimum: 6,
+                },
+                {
+                  property: 'a1',
+                  appendMissingElements: [5, 6],
+                },
+                {
+                  property: 'a1',
+                  removeAllFromArray: [3],
+                },
+              ],
+            },
+            saveResult: [
+              {
+                mutationResults: [
+                  {
+                    transformResults: [
+                      {
+                        meaning: 0,
+                        excludeFromIndexes: false,
+                        valueType: 'timestampValue',
+                      },
+                      {
+                        meaning: 0,
+                        excludeFromIndexes: false,
+                        integerValue: '8',
+                        valueType: 'integerValue',
+                      },
+                      {
+                        meaning: 0,
+                        excludeFromIndexes: false,
+                        integerValue: '9',
+                        valueType: 'integerValue',
+                      },
+                      {
+                        meaning: 0,
+                        excludeFromIndexes: false,
+                        integerValue: '6',
+                        valueType: 'integerValue',
+                      },
+                      {
+                        meaning: 0,
+                        excludeFromIndexes: false,
+                        nullValue: 'NULL_VALUE',
+                        valueType: 'nullValue',
+                      },
+                      {
+                        meaning: 0,
+                        excludeFromIndexes: false,
+                        nullValue: 'NULL_VALUE',
+                        valueType: 'nullValue',
+                      },
+                    ],
+                    key: null,
+                    conflictDetected: false,
+                  },
+                ],
+                commitTime: null,
+              },
+            ],
+            serverValue: {
+              name: 'test',
+              a1: [4, 5, 6],
+              p2: 6,
+              p3: 9,
+            },
+            gapicRequest: {
+              client: 'DatastoreClient',
+              method: 'commit',
+              reqOpts: {
+                mutations: [
+                  {
+                    upsert: {
+                      key: {
+                        path: [
+                          {
+                            kind: 'Post',
+                            name: 'post1',
+                          },
+                        ],
+                        partitionId: {},
+                      },
+                      properties: {
+                        name: {
+                          stringValue: 'test',
+                        },
+                        p1: {
+                          integerValue: '3',
+                        },
+                        p2: {
+                          integerValue: '4',
+                        },
+                        p3: {
+                          integerValue: '5',
+                        },
+                        a1: {
+                          arrayValue: {
+                            values: [
+                              {
+                                integerValue: '3',
+                              },
+                              {
+                                integerValue: '4',
+                              },
+                              {
+                                integerValue: '5',
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                    propertyTransforms: [
+                      {
+                        property: 'p1',
+                        setToServerValue: 1,
+                      },
+                      {
+                        property: 'p2',
+                        increment: {
+                          integerValue: '4',
+                        },
+                      },
+                      {
+                        property: 'p3',
+                        maximum: {
+                          integerValue: '9',
+                        },
+                      },
+                      {
+                        property: 'p2',
+                        minimum: {
+                          integerValue: '6',
+                        },
+                      },
+                      {
+                        property: 'a1',
+                        appendMissingElements: {
+                          values: [
+                            {
+                              integerValue: '5',
+                            },
+                            {
+                              integerValue: '6',
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        property: 'a1',
+                        removeAllFromArray: {
+                          values: [
+                            {
+                              integerValue: '3',
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+              gaxOpts: {},
+            },
+          };
+        }
+        const standardTestCase = getStandardTestCase();
+        // Add test case 2: Setting the server value to false:
+        const standardTestCaseWithSetToServerFalse = getStandardTestCase();
+        standardTestCaseWithSetToServerFalse.name =
+          'should perform a transform with setToServerValue false';
+        standardTestCaseWithSetToServerFalse.saveArg.transforms.shift();
+        standardTestCaseWithSetToServerFalse.saveResult[0].mutationResults[0].transformResults.shift();
+        standardTestCaseWithSetToServerFalse.gapicRequest.reqOpts.mutations[0].propertyTransforms.shift();
+        // Add test case 3: User inputs string values for transforms
+        const standardTestCaseWithStringValues = getStandardTestCase();
+        standardTestCaseWithStringValues.name =
+          'should perform a transform with string values';
+        standardTestCaseWithStringValues.saveArg.transforms[1].increment = '4' as any;
+        standardTestCaseWithStringValues.saveArg.transforms[2].maximum = '9' as any;
+        standardTestCaseWithStringValues.saveArg.transforms[3].minimum = '6' as any;
+        const setToServerValueBooleanTestCase = {
+          name: 'should perform a setToServerValue transform on a boolean property',
           saveArg: {
             key: key,
             data: {
               name: 'test',
-              p1: 3,
-              p2: 4,
-              p3: 5,
-              a1: [3, 4, 5],
+              p1: false,
             },
             transforms: [
               {
                 property: 'p1',
                 setToServerValue: true,
-              },
-              {
-                property: 'p2',
-                increment: 4,
-              },
-              {
-                property: 'p3',
-                maximum: 9,
-              },
-              {
-                property: 'p2',
-                minimum: 6,
-              },
-              {
-                property: 'a1',
-                appendMissingElements: [5, 6],
-              },
-              {
-                property: 'a1',
-                removeAllFromArray: [3],
               },
             ],
           },
@@ -3347,36 +3418,6 @@ async.each(
                       excludeFromIndexes: false,
                       valueType: 'timestampValue',
                     },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      integerValue: '8',
-                      valueType: 'integerValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      integerValue: '9',
-                      valueType: 'integerValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      integerValue: '6',
-                      valueType: 'integerValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      nullValue: 'NULL_VALUE',
-                      valueType: 'nullValue',
-                    },
-                    {
-                      meaning: 0,
-                      excludeFromIndexes: false,
-                      nullValue: 'NULL_VALUE',
-                      valueType: 'nullValue',
-                    },
                   ],
                   key: null,
                   conflictDetected: false,
@@ -3387,9 +3428,6 @@ async.each(
           ],
           serverValue: {
             name: 'test',
-            a1: [4, 5, 6],
-            p2: 6,
-            p3: 9,
           },
           gapicRequest: {
             client: 'DatastoreClient',
@@ -3412,28 +3450,7 @@ async.each(
                         stringValue: 'test',
                       },
                       p1: {
-                        integerValue: '3',
-                      },
-                      p2: {
-                        integerValue: '4',
-                      },
-                      p3: {
-                        integerValue: '5',
-                      },
-                      a1: {
-                        arrayValue: {
-                          values: [
-                            {
-                              integerValue: '3',
-                            },
-                            {
-                              integerValue: '4',
-                            },
-                            {
-                              integerValue: '5',
-                            },
-                          ],
-                        },
+                        booleanValue: false,
                       },
                     },
                   },
@@ -3442,43 +3459,359 @@ async.each(
                       property: 'p1',
                       setToServerValue: 1,
                     },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          },
+        };
+        const incrementFloatTestCase = {
+          name: 'should perform an increment transform on a float property',
+          assertP1: true,
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              p1: 3.5,
+            },
+            transforms: [
+              {
+                property: 'p1',
+                increment: 1.2,
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
                     {
-                      property: 'p2',
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      doubleValue: 4.7,
+                      valueType: 'doubleValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            p1: 4.7,
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      p1: {
+                        doubleValue: 3.5,
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'p1',
                       increment: {
-                        integerValue: '4',
+                        doubleValue: 1.2,
                       },
                     },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          },
+        };
+        const maximumStringTestCase = {
+          name: 'should perform a maximum transform on a string property',
+          assertP1: true,
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              p1: 'apple',
+            },
+            transforms: [
+              {
+                property: 'p1',
+                maximum: 'banana',
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
                     {
-                      property: 'p3',
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      stringValue: 'banana',
+                      valueType: 'stringValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            p1: 'banana',
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      p1: {
+                        stringValue: 'apple',
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'p1',
                       maximum: {
-                        integerValue: '9',
+                        stringValue: 'banana',
                       },
                     },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          },
+        };
+        const minimumDateTestCase = {
+          name: 'should perform a minimum transform on a date property',
+          assertP1: true,
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              p1: new Date('2025-01-01'),
+            },
+            transforms: [
+              {
+                property: 'p1',
+                minimum: new Date('2024-01-01'),
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
                     {
-                      property: 'p2',
-                      minimum: {
-                        integerValue: '6',
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      timestampValue: {
+                        seconds: 1735689600,
+                        nanos: 0,
+                      },
+                      valueType: 'timestampValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            p1: new Date('2025-01-01'),
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      p1: {
+                        timestampValue: {
+                          seconds: 1735689600,
+                          nanos: 0,
+                        },
                       },
                     },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'p1',
+                      minimum: {
+                        timestampValue: {
+                          seconds: 1704067200,
+                          nanos: 0,
+                        },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          },
+        };
+        const appendMissingElementsComplexTestCase = {
+          name: 'should perform an appendMissingElements transform with complex objects',
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              a1: [{ a: 1, b: 'two' }],
+            },
+            transforms: [
+              {
+                property: 'a1',
+                appendMissingElements: [{ a: 1, b: 'two' }, { c: 3 }],
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            a1: [{ a: 1, b: 'two' }, { c: 3 }],
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      a1: {
+                        arrayValue: {
+                          values: [
+                            {
+                              entityValue: {
+                                properties: {
+                                  a: {
+                                    integerValue: '1',
+                                  },
+                                  b: {
+                                    stringValue: 'two',
+                                  },
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                  propertyTransforms: [
                     {
                       property: 'a1',
                       appendMissingElements: {
                         values: [
                           {
-                            integerValue: '5',
+                            entityValue: {
+                              properties: {
+                                a: {
+                                  integerValue: '1',
+                                },
+                                b: {
+                                  stringValue: 'two',
+                                },
+                              },
+                            },
                           },
                           {
-                            integerValue: '6',
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      property: 'a1',
-                      removeAllFromArray: {
-                        values: [
-                          {
-                            integerValue: '3',
+                            entityValue: {
+                              properties: {
+                                c: {
+                                  integerValue: '3',
+                                },
+                              },
+                            },
                           },
                         ],
                       },
@@ -3490,34 +3823,316 @@ async.each(
             gaxOpts: {},
           },
         };
-        // Add test case 2: Setting the server value to false:
-        const standardTestCaseWithSetToServerFalse = JSON.parse(
-          JSON.stringify(standardTestCase),
-        );
-        standardTestCaseWithSetToServerFalse.name =
-          'should perform a transform with setToServerValue false';
-        standardTestCaseWithSetToServerFalse.saveArg.transforms[0].setToServerValue =
-          false;
-        standardTestCaseWithSetToServerFalse.saveResult[0].mutationResults[0].transformResults.shift();
-        standardTestCaseWithSetToServerFalse.gapicRequest.reqOpts.mutations[0].propertyTransforms.shift();
-        // Add test case 3: User inputs string values for transforms
-        const standardTestCaseWithStringValues = JSON.parse(
-          JSON.stringify(standardTestCase),
-        );
-        standardTestCaseWithSetToServerFalse.name =
-          'should perform a transform with string values';
-        standardTestCaseWithStringValues.saveArg.transforms[1].increment =
-          standardTestCaseWithStringValues.saveArg.transforms[1].increment.toString();
-        standardTestCaseWithStringValues.saveArg.transforms[2].maximum =
-          standardTestCaseWithStringValues.saveArg.transforms[2].maximum.toString();
-        standardTestCaseWithStringValues.saveArg.transforms[3].minimum =
-          standardTestCaseWithStringValues.saveArg.transforms[3].minimum.toString();
+        const removeAllFromArrayComplexTestCase = {
+          name: 'should perform a removeAllFromArray transform with complex objects',
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              a1: [{ a: 1, b: 'two' }, { c: 3 }],
+            },
+            transforms: [
+              {
+                property: 'a1',
+                removeAllFromArray: [{ a: 1, b: 'two' }],
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      nullValue: 'NULL_VALUE',
+                      valueType: 'nullValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            a1: [{ c: 3 }],
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      a1: {
+                        arrayValue: {
+                          values: [
+                            {
+                              entityValue: {
+                                properties: {
+                                  a: {
+                                    integerValue: '1',
+                                  },
+                                  b: {
+                                    stringValue: 'two',
+                                  },
+                                },
+                              },
+                            },
+                            {
+                              entityValue: {
+                                properties: {
+                                  c: {
+                                    integerValue: '3',
+                                  },
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'a1',
+                      removeAllFromArray: {
+                        values: [
+                          {
+                            entityValue: {
+                              properties: {
+                                a: {
+                                  integerValue: '1',
+                                },
+                                b: {
+                                  stringValue: 'two',
+                                },
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          },
+        };
+        const orderOfOperationsTestCase = {
+          name: 'should respect the order of operations for transforms',
+          assertP1: true,
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              p1: 5,
+            },
+            transforms: [
+              {
+                property: 'p1',
+                increment: 5, // p1 is now 10
+              },
+              {
+                property: 'p1',
+                maximum: 8, // p1 is now 8
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '10',
+                      valueType: 'integerValue',
+                    },
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '8',
+                      valueType: 'integerValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            p1: 8,
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      p1: {
+                        integerValue: '5',
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'p1',
+                      increment: {
+                        integerValue: '5',
+                      },
+                    },
+                    {
+                      property: 'p1',
+                      maximum: {
+                        integerValue: '8',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          },
+        };
+        const nestedPropertyTransformTestCase = {
+          name: 'should perform a transform on a nested property',
+          assertP1: true,
+          saveArg: {
+            key: key,
+            data: {
+              name: 'test',
+              nested: {
+                p1: 10,
+              },
+            },
+            transforms: [
+              {
+                property: 'nested.p1',
+                increment: 5,
+              },
+            ],
+          },
+          saveResult: [
+            {
+              mutationResults: [
+                {
+                  transformResults: [
+                    {
+                      meaning: 0,
+                      excludeFromIndexes: false,
+                      integerValue: '15',
+                      valueType: 'integerValue',
+                    },
+                  ],
+                  key: null,
+                  conflictDetected: false,
+                },
+              ],
+              commitTime: null,
+            },
+          ],
+          serverValue: {
+            name: 'test',
+            nested: {
+              p1: 15,
+            },
+          },
+          gapicRequest: {
+            client: 'DatastoreClient',
+            method: 'commit',
+            reqOpts: {
+              mutations: [
+                {
+                  upsert: {
+                    key: {
+                      path: [
+                        {
+                          kind: 'Post',
+                          name: 'post1',
+                        },
+                      ],
+                      partitionId: {},
+                    },
+                    properties: {
+                      name: {
+                        stringValue: 'test',
+                      },
+                      nested: {
+                        entityValue: {
+                          properties: {
+                            p1: {
+                              integerValue: '10',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  propertyTransforms: [
+                    {
+                      property: 'nested.p1',
+                      increment: {
+                        integerValue: '5',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            gaxOpts: {},
+          },
+        };
         // Test each of the test cases:
         async.each(
           [
             standardTestCase,
             standardTestCaseWithSetToServerFalse,
             standardTestCaseWithStringValues,
+            setToServerValueBooleanTestCase,
+            incrementFloatTestCase,
+            maximumStringTestCase,
+            minimumDateTestCase,
+            appendMissingElementsComplexTestCase,
+            removeAllFromArrayComplexTestCase,
+            orderOfOperationsTestCase,
+            nestedPropertyTransformTestCase,
           ],
           async (testParameters: any) => {
             it(testParameters.name, async () => {
@@ -3542,10 +4157,14 @@ async.each(
               // Now check the value that was actually saved to the server:
               const [entity] = await datastore.get(key);
               const parsedResult = JSON.parse(JSON.stringify(entity));
-              delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
+              if (!testParameters.assertP1) {
+                delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
+              }
               assert.deepStrictEqual(parsedResult, testParameters.serverValue);
-              delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
-                .partitionId['namespaceId'];
+              if (requestSpy.args[0][0].reqOpts.mutations[0].upsert.key.partitionId) {
+                delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
+                  .partitionId['namespaceId'];
+              }
               assert.deepStrictEqual(
                 requestSpy.args[0][0],
                 testParameters.gapicRequest,
