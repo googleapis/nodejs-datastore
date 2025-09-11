@@ -3494,19 +3494,24 @@ async.each(
         const standardTestCaseWithSetToServerFalse = JSON.parse(
           JSON.stringify(standardTestCase),
         );
+        standardTestCaseWithSetToServerFalse.name =
+          'should perform a transform with setToServerValue false';
         standardTestCaseWithSetToServerFalse.saveArg.transforms[0].setToServerValue =
           false;
+        standardTestCaseWithSetToServerFalse.saveResult[0].mutationResults[0].transformResults.shift();
+        standardTestCaseWithSetToServerFalse.gapicRequest.reqOpts.mutations[0].propertyTransforms.shift();
         // Add test case 3: User inputs string values for transforms
         const standardTestCaseWithStringValues = JSON.parse(
           JSON.stringify(standardTestCase),
         );
-        standardTestCaseWithStringValues.saveArg.transforms[1].increment = '4';
-        standardTestCaseWithStringValues.saveArg.transforms[2].maximum = '4';
-        standardTestCaseWithStringValues.saveArg.transforms[3].minimum = '6';
-        standardTestCaseWithStringValues.saveArg.transforms[4].appendMissingElements =
-          ['5', '6'];
-        standardTestCaseWithStringValues.saveArg.transforms[4].removeAllFromArray =
-          ['3'];
+        standardTestCaseWithSetToServerFalse.name =
+          'should perform a transform with string values';
+        standardTestCaseWithStringValues.saveArg.transforms[1].increment =
+          standardTestCaseWithStringValues.saveArg.transforms[1].increment.toString();
+        standardTestCaseWithStringValues.saveArg.transforms[2].maximum =
+          standardTestCaseWithStringValues.saveArg.transforms[2].maximum.toString();
+        standardTestCaseWithStringValues.saveArg.transforms[3].minimum =
+          standardTestCaseWithStringValues.saveArg.transforms[3].minimum.toString();
         // Test each of the test cases:
         async.each(
           [

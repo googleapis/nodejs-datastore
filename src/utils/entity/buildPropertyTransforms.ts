@@ -46,7 +46,7 @@ export function buildPropertyTransforms(transforms: PropertyTransform[]) {
         propertyTransforms.push({
           property,
           [castedType]: entity.encodeValue(
-            transform[castedType],
+            parseFloat(transform[castedType]),
             property,
           ) as IValue,
         });
