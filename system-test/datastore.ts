@@ -3184,7 +3184,7 @@ async.each(
           assert.strictEqual(entity, undefined);
         });
       });
-      describe.only('Datastore mode data transforms', () => {
+      describe('Datastore mode data transforms', () => {
         const key = datastore.key(['Post', 'post1']);
         function getStandardTestCase() {
           return {
