@@ -3810,7 +3810,7 @@ async.each(
                     {
                       meaning: 0,
                       excludeFromIndexes: false,
-                      integerValue: '8',
+                      integerValue: '10',
                       valueType: 'integerValue',
                     },
                   ],
@@ -3823,7 +3823,7 @@ async.each(
           ],
           serverValue: {
             name: 'test',
-            p1: 8,
+            p1: 10,
           },
           gapicRequest: {
             client: 'DatastoreClient',
@@ -3968,7 +3968,7 @@ async.each(
             incrementFloatTestCase,
             appendMissingElementsComplexTestCase,
             removeAllFromArrayComplexTestCase,
-            // orderOfOperationsTestCase,
+            orderOfOperationsTestCase,
             nestedPropertyTransformTestCase,
           ],
           async (testParameters: any) => {
