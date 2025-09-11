@@ -3298,6 +3298,7 @@ async.each(
       });
       describe.only('Datastore mode data transforms', () => {
         const key = datastore.key(['Post', 'post1']);
+        // Add test case 1: A complex test case using multiple transforms:
         const standardTestCase = {
           name: 'should perform a basic data transform',
           saveArg: {
@@ -3489,45 +3490,64 @@ async.each(
             gaxOpts: {},
           },
         };
+        // Add test case 2: Setting the server value to false:
         const standardTestCaseWithSetToServerFalse = JSON.parse(
           JSON.stringify(standardTestCase),
         );
+        standardTestCaseWithSetToServerFalse.saveArg.transforms[0].setToServerValue =
+          false;
+        // Add test case 3: User inputs string values for transforms
         const standardTestCaseWithStringValues = JSON.parse(
           JSON.stringify(standardTestCase),
         );
-        async.each([standardTestCase], async (testParameters: any) => {
-          it(testParameters.name, async () => {
-            const requestSpy = sinon.spy(datastore.request_);
-            datastore.request_ = requestSpy;
-            const result = await datastore.save(testParameters.saveArg);
-            // Clean the data from the server first before comparing:
-            result.forEach(serverResult => {
-              delete serverResult['indexUpdates'];
-              serverResult.mutationResults?.forEach(mutationResult => {
-                delete mutationResult['updateTime'];
-                delete mutationResult['createTime'];
-                delete mutationResult['version'];
-                mutationResult.transformResults?.forEach(transformResult => {
-                  delete transformResult['timestampValue'];
+        standardTestCaseWithStringValues.saveArg.transforms[1].increment = '4';
+        standardTestCaseWithStringValues.saveArg.transforms[2].maximum = '4';
+        standardTestCaseWithStringValues.saveArg.transforms[3].minimum = '6';
+        standardTestCaseWithStringValues.saveArg.transforms[4].appendMissingElements =
+          ['5', '6'];
+        standardTestCaseWithStringValues.saveArg.transforms[4].removeAllFromArray =
+          ['3'];
+        // Test each of the test cases:
+        async.each(
+          [
+            standardTestCase,
+            standardTestCaseWithSetToServerFalse,
+            standardTestCaseWithStringValues,
+          ],
+          async (testParameters: any) => {
+            it(testParameters.name, async () => {
+              const requestSpy = sinon.spy(datastore.request_);
+              datastore.request_ = requestSpy;
+              const result = await datastore.save(testParameters.saveArg);
+              // Clean the data from the server first before comparing:
+              result.forEach(serverResult => {
+                delete serverResult['indexUpdates'];
+                serverResult.mutationResults?.forEach(mutationResult => {
+                  delete mutationResult['updateTime'];
+                  delete mutationResult['createTime'];
+                  delete mutationResult['version'];
+                  mutationResult.transformResults?.forEach(transformResult => {
+                    delete transformResult['timestampValue'];
+                  });
                 });
               });
+              // Now the data should have fixed values.
+              // Do a comparison against the expected result.
+              assert.deepStrictEqual(result, testParameters.saveResult);
+              // Now check the value that was actually saved to the server:
+              const [entity] = await datastore.get(key);
+              const parsedResult = JSON.parse(JSON.stringify(entity));
+              delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
+              assert.deepStrictEqual(parsedResult, testParameters.serverValue);
+              delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
+                .partitionId['namespaceId'];
+              assert.deepStrictEqual(
+                requestSpy.args[0][0],
+                testParameters.gapicRequest,
+              );
             });
-            // Now the data should have fixed values.
-            // Do a comparison against the expected result.
-            assert.deepStrictEqual(result, testParameters.saveResult);
-            // Now check the value that was actually saved to the server:
-            const [entity] = await datastore.get(key);
-            const parsedResult = JSON.parse(JSON.stringify(entity));
-            delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
-            assert.deepStrictEqual(parsedResult, testParameters.serverValue);
-            delete requestSpy.args[0][0].reqOpts.mutations[0].upsert.key
-              .partitionId['namespaceId'];
-            assert.deepStrictEqual(
-              requestSpy.args[0][0],
-              testParameters.gapicRequest,
-            );
-          });
-        });
+          },
+        );
       });
     });
   },
