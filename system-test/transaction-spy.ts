@@ -57,15 +57,6 @@ class DatastoreWithRequests extends Datastore {
   }
 }
 
-const oldPrototype = RequestsMock.prototype.request_;
-RequestsMock.prototype.request_ = (
-  config: RequestConfig,
-  callback: RequestCallback,
-) => {
-  testRequests.push(config);
-  oldPrototype(config, callback);
-};
-
 const V1Mock = proxyquire('../src/v1/index', {
   './datastore_client': DatastoreClientSpy,
 });
@@ -75,11 +66,6 @@ const RequestMock2 = proxyquire('../src/request', {
 }).DatastoreRequest;
 
 const DatastoreWithMockedRequest = proxyquire('../src', {
-  /*
-  './request': {
-    DatastoreRequest: RequestsMock,
-  },
-   */
   './request': {
     DatastoreRequest: RequestsMock,
   },
@@ -89,6 +75,9 @@ const DatastoreWithMockedRequest = proxyquire('../src', {
 const MockTransaction = proxyquire('../src/transaction', {
   '.': {
     Datastore: DatastoreWithMockedRequest,
+  },
+  './request': {
+    DatastoreRequest: RequestsMock,
   },
 }).Transaction;
 
