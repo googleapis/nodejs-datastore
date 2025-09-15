@@ -13,57 +13,17 @@
 // limitations under the License.
 
 import * as proxyquire from 'proxyquire';
-import {
-  Datastore,
-  DatastoreAdminClient,
-  DatastoreOptions,
-  DatastoreRequest,
-  Transaction,
-  TransactionOptions,
-} from '../src';
-import {DatastoreClient} from '../src/v1/datastore_client';
-import {RequestCallback, RequestConfig, SaveCallback} from '../src/request';
-import {Entities, EntityObject} from '../src/entity';
-import {CallOptions} from 'google-gax';
+import {DatastoreRequest} from '../src';
+import {RequestCallback, RequestConfig} from '../src/request';
 
 const testRequests: RequestConfig[] = [];
-
-class DatastoreClientSpy extends DatastoreClient {
-  // @ts-ignore
-  commit(request, optionsOrCallback, callback) {
-    return super.commit(request, optionsOrCallback, callback);
-  }
-}
-
-const V1GapicSpy = {
-  DatastoreAdminClient,
-  DatastoreClient: DatastoreClientSpy,
-};
 
 class RequestsMock extends DatastoreRequest {
   request_(config: RequestConfig, callback: RequestCallback): void {
     testRequests.push(config);
     super.request_(config, callback);
   }
-
-  static prepareEntityObject_(entity: EntityObject) {
-    return super.prepareEntityObject_(entity);
-  }
 }
-
-class DatastoreWithRequests extends Datastore {
-  constructor(options?: DatastoreOptions) {
-    super(options);
-  }
-}
-
-const V1Mock = proxyquire('../src/v1/index', {
-  './datastore_client': DatastoreClientSpy,
-});
-
-const RequestMock2 = proxyquire('../src/request', {
-  './v1/index': V1Mock,
-}).DatastoreRequest;
 
 const DatastoreWithMockedRequest = proxyquire('../src', {
   './request': {
@@ -80,13 +40,6 @@ const MockTransaction = proxyquire('../src/transaction', {
     DatastoreRequest: RequestsMock,
   },
 }).Transaction;
-
-class MockTransaction2 extends Transaction {
-  constructor(datastore: Datastore, options?: TransactionOptions) {
-    console.log('test');
-    super(datastore, options);
-  }
-}
 
 // Use proxyquire to mock the Datastore class
 const MockedDatastore = proxyquire('../src', {
