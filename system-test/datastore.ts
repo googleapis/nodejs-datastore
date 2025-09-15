@@ -4125,7 +4125,6 @@ async.each(
                             name: 'post1',
                           },
                         ],
-                        partitionId: {},
                       },
                       properties: {
                         name: {
@@ -4279,7 +4278,6 @@ async.each(
                           name: 'post1',
                         },
                       ],
-                      partitionId: {},
                     },
                     properties: {
                       name: {
@@ -4355,7 +4353,6 @@ async.each(
                           name: 'post1',
                         },
                       ],
-                      partitionId: {},
                     },
                     properties: {
                       name: {
@@ -4432,7 +4429,6 @@ async.each(
                           name: 'post1',
                         },
                       ],
-                      partitionId: {},
                     },
                     properties: {
                       name: {
@@ -4546,7 +4542,6 @@ async.each(
                           name: 'post1',
                         },
                       ],
-                      partitionId: {},
                     },
                     properties: {
                       name: {
@@ -4671,7 +4666,6 @@ async.each(
                           name: 'post1',
                         },
                       ],
-                      partitionId: {},
                     },
                     properties: {
                       name: {
@@ -4759,7 +4753,6 @@ async.each(
                           name: 'post1',
                         },
                       ],
-                      partitionId: {},
                     },
                     properties: {
                       name: {
@@ -4805,12 +4798,14 @@ async.each(
           ],
           async (testParameters: any) => {
             it(testParameters.name, async () => {
+              testRequests.splice(0, testRequests.length);
               const transaction = mockedDatastore.transaction();
               await transaction.run();
               transaction.save(testParameters.saveArg);
               await transaction.commit();
               // Now check the value that was actually saved to the server:
-              const [entity] = await datastore.get(key);
+              testRequests.shift(); // Remove the BeginTransaction request.
+              const [entity] = await mockedDatastore.get(key);
               const parsedResult = JSON.parse(JSON.stringify(entity));
               if (!testParameters.assertP1) {
                 delete parsedResult['p1']; // This is a timestamp so we can't consistently test this.
