@@ -25,17 +25,8 @@ class RequestsMock extends DatastoreRequest {
   }
 }
 
-const DatastoreWithMockedRequest = proxyquire('../src', {
-  './request': {
-    DatastoreRequest: RequestsMock,
-  },
-}).Datastore;
-
 // Mock Transaction class
 const MockTransaction = proxyquire('../src/transaction', {
-  '.': {
-    Datastore: DatastoreWithMockedRequest,
-  },
   './request': {
     DatastoreRequest: RequestsMock,
   },
