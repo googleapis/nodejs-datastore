@@ -4015,7 +4015,7 @@ async.each(
           },
         );
       });
-      describe.only('Datastore mode data transforms in transactions', () => {
+      describe('Datastore mode data transforms in transactions', () => {
         const mockedDatastore = new MockedDatastore();
         const key = mockedDatastore.key(['Post', 'post1']);
         function getStandardTestCase() {
