@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// eslint-disable-next-line n/no-extraneous-import
+import {ServiceError} from 'google-gax';
+import {Server} from '@grpc/grpc-js';
+
 const {dirname, resolve} = require('node:path');
 
 const PROTO_PATH = __dirname + '/../protos/google/datastore/v1/datastore.proto';
@@ -40,22 +44,43 @@ const descriptor = grpc.loadPackageDefinition(packageDefinition);
 /**
  * Implements the runQuery RPC method.
  */
-function grpcEndpoint(
-  call: {},
-  callback: (arg1: string | null, arg2: {}) => {},
+function grpcEndpoint<ResponseType>(
+  call: CallType,
+  callback: MockServiceCallback<ResponseType>,
 ) {
   // SET A BREAKPOINT HERE AND EXPLORE `call` TO SEE THE REQUEST.
-  callback(null, {message: 'Hello'});
+  callback(null, {message: 'Hello'} as ResponseType);
+}
+
+export type CallType = () => {};
+export type GrpcErrorType = ServiceError | null;
+
+type MockServiceCallback<ResponseType> = (
+  arg1: GrpcErrorType,
+  arg2: ResponseType,
+) => {};
+
+interface MockServiceConfiguration<ResponseType> {
+  [endpoint: string]: (
+    call: CallType,
+    callback: MockServiceCallback<ResponseType>,
+  ) => void;
 }
 
 /**
  * Starts an RPC server that receives requests for datastore
  */
-export function startServer(cb: () => void) {
+export function startServer<ResponseType>(
+  cb: () => void,
+  serviceConfigurationOverride?: MockServiceConfiguration<ResponseType>,
+): Server {
   const server = new grpc.Server();
   const service = descriptor.google.datastore.v1.Datastore.service;
   // On the next line, change runQuery to the grpc method you want to investigate
-  server.addService(service, {runQuery: grpcEndpoint});
+  const serviceConfiguration = serviceConfigurationOverride ?? {
+    runQuery: grpcEndpoint,
+  };
+  server.addService(service, serviceConfiguration);
   server.bindAsync(
     '0.0.0.0:50051',
     grpc.ServerCredentials.createInsecure(),
@@ -64,4 +89,5 @@ export function startServer(cb: () => void) {
       cb();
     },
   );
+  return server;
 }
