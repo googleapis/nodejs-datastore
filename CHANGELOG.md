@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/datastore?activeTab=versions
 
+## [10.1.0](https://github.com/googleapis/nodejs-datastore/compare/v10.0.1...v10.1.0) (2025-11-20)
+
+
+### Features
+
+* Add datastore mode data transforms ([#1369](https://github.com/googleapis/nodejs-datastore/issues/1369)) ([8ab6209](https://github.com/googleapis/nodejs-datastore/commit/8ab62090f5e59fcc78ca4b729e0d8e0a0aa9de5c))
+
 ## [10.0.1](https://github.com/googleapis/nodejs-datastore/compare/v10.0.0...v10.0.1) (2025-05-08)
 
 
