@@ -131,11 +131,7 @@ class Transaction extends DatastoreRequest {
    * transaction.
    *
    * @param {CallOptions | https://googleapis.github.io/gax-nodejs/global.html#CallOptions} [gaxOptions] Request configuration options.
-   * @param {function} callback The callback function.
-   * @param {?error} callback.err An error returned while making this request.
-   *   If the commit fails, we automatically try to rollback the transaction
-   * (see {module:datastore/transaction#rollback}).
-   * @param {object} callback.apiResponse The full API response.
+   * @returns {Promise<CommitResponse>} The full API response.
    *
    * @example
    * ```
@@ -168,7 +164,15 @@ class Transaction extends DatastoreRequest {
    * @param {object} callback.apiResponse The full API response.
    */
   commit(callback: CommitCallback): void;
+  /**
+   * @param {CallOptions | https://googleapis.github.io/gax-nodejs/global.html#CallOptions} [gaxOptions] Request configuration options.
+   * @param {CommitCallback} callback The callback function.
+   */
   commit(gaxOptions: CallOptions, callback: CommitCallback): void;
+  /**
+   * @param gaxOptionsOrCallback {CallOptions | https://googleapis.github.io/gax-nodejs/global.html#CallOptions} [gaxOptions] Request configuration options.
+   * @param cb The callback function.
+   */
   commit(
     gaxOptionsOrCallback?: CallOptions | CommitCallback,
     cb?: CommitCallback,
