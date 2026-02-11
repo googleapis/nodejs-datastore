@@ -209,8 +209,7 @@ class Transaction extends DatastoreRequest {
    *
    * @see {@link Query}
    *
-   * @param {string} [namespace] Namespace.
-   * @param {string} kind The kind to query.
+   * @param {string} [kind] The kind to query.
    * @returns {Query}
    *
    * @example
@@ -267,9 +266,28 @@ class Transaction extends DatastoreRequest {
    * ```
    */
   createQuery(kind?: string): Query;
+  /**
+   * @param {string[]} [kind] The kind to query.
+   * @returns {Query}
+   */
   createQuery(kind?: string[]): Query;
+  /**
+   * @param {string} namespace Namespace to query.
+   * @param {string} kind Kind to query.
+   * @returns {Query}
+   */
   createQuery(namespace: string, kind: string): Query;
+  /**
+   * @param {string} namespace Namespace to query.
+   * @param {string[]} kind Kind(s) to query.
+   * @returns {Query}
+   */
   createQuery(namespace: string, kind: string[]): Query;
+  /**
+   * @param {string | string[]} [namespaceOrKind] Namespace or kind(s) to query.
+   * @param {string | string[]} [kind] Kind(s) to query, if namespace is provided as the first argument.
+   * @returns {Query}
+   */
   createQuery(
     namespaceOrKind?: string | string[],
     kind?: string | string[],
