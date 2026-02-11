@@ -131,11 +131,7 @@ class Transaction extends DatastoreRequest {
    * transaction.
    *
    * @param {CallOptions | https://googleapis.github.io/gax-nodejs/global.html#CallOptions} [gaxOptions] Request configuration options.
-   * @param {function} callback The callback function.
-   * @param {?error} callback.err An error returned while making this request.
-   *   If the commit fails, we automatically try to rollback the transaction
-   * (see {module:datastore/transaction#rollback}).
-   * @param {object} callback.apiResponse The full API response.
+   * @returns {Promise<CommitResponse>} The full API response.
    *
    * @example
    * ```
@@ -159,8 +155,8 @@ class Transaction extends DatastoreRequest {
    */
   commit(gaxOptions?: CallOptions): Promise<CommitResponse>;
   /**
-   * @param {object} [gaxOptions] Request configuration options, outlined here:
-   *     https://googleapis.github.io/gax-nodejs/global.html#CallOptions.
+   * @param {object} [gaxOptions] Request configuration options.
+   * See {@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions CallOptions Docs}.
    * @param {function} callback The callback function.
    * @param {?error} callback.err An error returned while making this request.
    *   If the commit fails, we automatically try to rollback the transaction
@@ -168,7 +164,17 @@ class Transaction extends DatastoreRequest {
    * @param {object} callback.apiResponse The full API response.
    */
   commit(callback: CommitCallback): void;
+  /**
+   * @param {CallOptions} [gaxOptions] Request configuration options.
+   * See {@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions CallOptions Docs}.
+   * @param {CommitCallback} callback The callback function.
+   */
   commit(gaxOptions: CallOptions, callback: CommitCallback): void;
+  /**
+   * @param {CallOptions} [gaxOptionsOrCallback] Request configuration options.
+   * See {@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions CallOptions Docs}.
+   * @param cb The callback function.
+   */
   commit(
     gaxOptionsOrCallback?: CallOptions | CommitCallback,
     cb?: CommitCallback,
@@ -203,8 +209,7 @@ class Transaction extends DatastoreRequest {
    *
    * @see {@link Query}
    *
-   * @param {string} [namespace] Namespace.
-   * @param {string} kind The kind to query.
+   * @param {string} [kind] The kind to query.
    * @returns {Query}
    *
    * @example
@@ -261,9 +266,28 @@ class Transaction extends DatastoreRequest {
    * ```
    */
   createQuery(kind?: string): Query;
+  /**
+   * @param {string[]} [kind] The kind to query.
+   * @returns {Query}
+   */
   createQuery(kind?: string[]): Query;
+  /**
+   * @param {string} namespace Namespace to query.
+   * @param {string} kind Kind to query.
+   * @returns {Query}
+   */
   createQuery(namespace: string, kind: string): Query;
+  /**
+   * @param {string} namespace Namespace to query.
+   * @param {string[]} kind Kind(s) to query.
+   * @returns {Query}
+   */
   createQuery(namespace: string, kind: string[]): Query;
+  /**
+   * @param {string | string[]} [namespaceOrKind] Namespace or kind(s) to query.
+   * @param {string | string[]} [kind] Kind(s) to query, if namespace is provided as the first argument.
+   * @returns {Query}
+   */
   createQuery(
     namespaceOrKind?: string | string[],
     kind?: string | string[],
