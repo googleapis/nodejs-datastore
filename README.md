@@ -5,7 +5,7 @@
 # [Google Cloud Datastore: Node.js Client](https://github.com/googleapis/nodejs-datastore)
 
 [![release level](https://img.shields.io/badge/release%20level-stable-brightgreen.svg?style=flat)](https://cloud.google.com/terms/launch-stages)
-[![npm version](https://img.shields.io/npm/v/@google-cloud/datastore.svg)](https://www.npmjs.org/package/@google-cloud/datastore)
+[![npm version](https://img.shields.io/npm/v/@google-cloud/datastore.svg)](https://www.npmjs.com/package/@google-cloud/datastore)
 
 
 
